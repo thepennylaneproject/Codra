@@ -1,0 +1,234 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================
+   CODRA COSMIC DESIGN SYSTEM
+   "Cosmic Cockpit Elegance"
+   ======================================== */
+
+:root {
+  /* ========================
+     COSMIC VOID - Deep Space
+     ======================== */
+  --void: #050608;
+  --void-soft: #0A0E12;
+  --void-elevated: #12171D;
+
+  /* ========================
+     STARDUST - Luminous Light
+     ======================== */
+  --stardust: #F8F9FA;
+  --stardust-warm: #FFFDF7;
+  --stardust-muted: #9CA3AF;
+  --stardust-dim: #6B7280;
+
+  /* ========================
+     ENERGY - Accent Spectrum
+     ======================== */
+  --energy-teal: #00D9D9;
+  --energy-cyan: #22D3EE;
+  --energy-magenta: #D81159;
+  --energy-rose: #F43F5E;
+  --energy-gold: #F4D03F;
+  --energy-amber: #F59E0B;
+
+  /* ========================
+     GLOW - Luminous Effects
+     ======================== */
+  --glow-teal: rgba(0, 217, 217, 0.5);
+  --glow-teal-soft: rgba(0, 217, 217, 0.2);
+  --glow-teal-subtle: rgba(0, 217, 217, 0.08);
+  --glow-magenta: rgba(216, 17, 89, 0.5);
+  --glow-magenta-soft: rgba(216, 17, 89, 0.2);
+  --glow-gold: rgba(244, 208, 63, 0.5);
+  --glow-gold-soft: rgba(244, 208, 63, 0.15);
+
+  /* ========================
+     GLASS - Panel Surfaces
+     ======================== */
+  --glass: rgba(18, 23, 29, 0.85);
+  --glass-frosted: rgba(18, 23, 29, 0.92);
+  --glass-clear: rgba(18, 23, 29, 0.6);
+  --glass-edge: rgba(255, 255, 255, 0.08);
+  --glass-edge-bright: rgba(255, 255, 255, 0.15);
+
+  /* ========================
+     SHADOWS - Depth & Glow
+     ======================== */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 18px 50px rgba(0, 0, 0, 0.6);
+  --shadow-glow-teal: 0 0 30px -5px rgba(0, 217, 217, 0.4);
+  --shadow-glow-magenta: 0 0 30px -5px rgba(216, 17, 89, 0.4);
+  --shadow-glow-gold: 0 0 30px -5px rgba(244, 208, 63, 0.4);
+}
+
+/* ========================
+   BASE RESETS
+   ======================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--void);
+  color: var(--stardust);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ========================
+   COSMIC ANIMATIONS
+   ======================== */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes cosmic-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(0, 217, 217, 0.2);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(0, 217, 217, 0.4);
+  }
+}
+
+/* ========================
+   UTILITY CLASSES
+   ======================== */
+.ambient-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Glass morphism base */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-edge);
+}
+
+.glass-frosted {
+  background: var(--glass-frosted);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-edge);
+}
+
+.glass-clear {
+  background: var(--glass-clear);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-edge);
+}
+
+/* Luminous borders */
+.border-glow-teal {
+  border: 1px solid rgba(0, 217, 217, 0.3);
+  box-shadow: 
+    0 0 0 1px rgba(0, 217, 217, 0.1),
+    inset 0 0 20px rgba(0, 217, 217, 0.05);
+}
+
+.border-glow-magenta {
+  border: 1px solid rgba(216, 17, 89, 0.3);
+  box-shadow: 
+    0 0 0 1px rgba(216, 17, 89, 0.1),
+    inset 0 0 20px rgba(216, 17, 89, 0.05);
+}
+
+/* Edge highlights */
+.edge-highlight {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ========================
+   TYPOGRAPHY ENHANCEMENTS
+   ======================== */
+.text-glow-teal {
+  text-shadow: 0 0 20px rgba(0, 217, 217, 0.5);
+}
+
+.text-glow-gold {
+  text-shadow: 0 0 20px rgba(244, 208, 63, 0.5);
+}
+
+/* ========================
+   FOCUS STATES
+   ======================== */
+.focus-cosmic:focus {
+  outline: none;
+  box-shadow: 
+    0 0 0 2px var(--void),
+    0 0 0 4px var(--energy-teal),
+    0 0 20px rgba(0, 217, 217, 0.3);
+}
+
+.focus-cosmic:focus-visible {
+  outline: none;
+  box-shadow: 
+    0 0 0 2px var(--void),
+    0 0 0 4px var(--energy-teal),
+    0 0 20px rgba(0, 217, 217, 0.3);
+}

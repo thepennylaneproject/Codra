@@ -1,0 +1,274 @@
+/**
+ * CODRA TYPOGRAPHY UTILITIES
+ * Protest Poster inspired - Bold, intentional, readable
+ */
+
+/* ========================================
+   FONT IMPORTS
+   ======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+/* Fallback for Protest font (must be installed locally or add to fonts folder) */
+@font-face {
+  font-family: 'Protest';
+  src: local('Protest'), local('Protest-Regular');
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* ========================================
+   DISPLAY / PROTEST POSTER STYLES
+   ======================================== */
+
+.text-display-xl {
+  font-family: 'Protest', 'Space Grotesk', sans-serif;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.text-display-lg {
+  font-family: 'Protest', 'Space Grotesk', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.text-display-md {
+  font-family: 'Protest', 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0em;
+}
+
+/* ========================================
+   HEADING STYLES
+   ======================================== */
+
+.text-heading-xl {
+  font-family: 'Protest', 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.text-heading-lg {
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.text-heading-md {
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.text-heading-sm {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ========================================
+   BODY TEXT
+   ======================================== */
+
+.text-body-lg {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+.text-body-md {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+.text-body-sm {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* ========================================
+   LABELS & UI TEXT
+   ======================================== */
+
+.text-label-lg {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.text-label-md {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.text-label-sm {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ========================================
+   CODE TEXT
+   ======================================== */
+
+.text-code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.text-code-lg {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* ========================================
+   TEXT COLOR UTILITIES
+   ======================================== */
+
+.text-primary {
+  color: #FFFDF7; /* Cream - primary text */
+}
+
+.text-muted {
+  color: #A8B0BB; /* Muted gray-blue */
+}
+
+.text-soft {
+  color: #787E88; /* Softer gray */
+}
+
+.text-accent {
+  color: #F4D03F; /* Gold accent text */
+}
+
+.text-magenta {
+  color: #D81159; /* Deep magenta text */
+}
+
+.text-teal {
+  color: #00D9D9; /* Electric teal text */
+}
+
+/* ========================================
+   FONT WEIGHT UTILITIES
+   ======================================== */
+
+.font-light {
+  font-weight: 300;
+}
+
+.font-normal {
+  font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-extrabold {
+  font-weight: 800;
+}
+
+.font-black {
+  font-weight: 900;
+}
+
+/* ========================================
+   TEXT TRANSFORM UTILITIES
+   ======================================== */
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.normal-case {
+  text-transform: none;
+}
+
+/* ========================================
+   LETTER SPACING UTILITIES
+   ======================================== */
+
+.tracking-tight {
+  letter-spacing: -0.02em;
+}
+
+.tracking-normal {
+  letter-spacing: 0em;
+}
+
+.tracking-wide {
+  letter-spacing: 0.05em;
+}
+
+.tracking-wider {
+  letter-spacing: 0.1em;
+}
+
+/* ========================================
+   LINE HEIGHT UTILITIES
+   ======================================== */
+
+.leading-tight {
+  line-height: 1.2;
+}
+
+.leading-normal {
+  line-height: 1.5;
+}
+
+.leading-relaxed {
+  line-height: 1.75;
+}
+
+.leading-loose {
+  line-height: 2;
+}
