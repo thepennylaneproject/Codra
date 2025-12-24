@@ -1,0 +1,105 @@
+
+import { useOnboardingStore } from '../store';
+
+export const BudgetStep = () => {
+    const { data, updateBudget, setStep } = useOnboardingStore();
+    const { budgetPolicy } = data;
+
+    return (
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+            <header className="space-y-4">
+                <h1 className="text-4xl md:text-5xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
+                    Budget & Policy
+                </h1>
+                <p className="text-xl text-zinc-500 font-light max-w-lg">
+                    Set the operational limits for this project's intelligence retrieval.
+                </p>
+            </header>
+
+            <div className="space-y-12 max-w-xl">
+
+                {/* Daily Limit Slider */}
+                <div className="space-y-6">
+                    <div className="flex justify-between items-baseline">
+                        <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                            Daily Token Limit
+                        </label>
+                        <span className="text-2xl font-light tabular-nums">
+                            {budgetPolicy.dailyLimit}
+                        </span>
+                    </div>
+                    <input
+                        type="range"
+                        min="100"
+                        max="5000"
+                        step="100"
+                        value={budgetPolicy.dailyLimit}
+                        onChange={(e) => updateBudget({ dailyLimit: parseInt(e.target.value) })}
+                        className="w-full h-1 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-zinc-900 dark:accent-zinc-100"
+                    />
+                    <div className="flex justify-between text-xs text-zinc-400 font-mono">
+                        <span>Safe (100)</span>
+                        <span>Aggressive (5000)</span>
+                    </div>
+                </div>
+
+                {/* Max Cost Per Run */}
+                <div className="space-y-6">
+                    <div className="flex justify-between items-baseline">
+                        <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                            Max Cost Per Run ($)
+                        </label>
+                        <span className="text-2xl font-light tabular-nums">
+                            ${budgetPolicy.maxCostPerRun}
+                        </span>
+                    </div>
+                    <input
+                        type="range"
+                        min="1"
+                        max="200"
+                        step="1"
+                        value={budgetPolicy.maxCostPerRun}
+                        onChange={(e) => updateBudget({ maxCostPerRun: parseInt(e.target.value) })}
+                        className="w-full h-1 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-zinc-900 dark:accent-zinc-100"
+                    />
+                </div>
+
+                {/* Approval Policy */}
+                <div className="flex items-center justify-between py-6 border-t border-b border-zinc-100 dark:border-zinc-900/50">
+                    <div>
+                        <label className="block text-base font-medium text-zinc-900 dark:text-zinc-200">
+                            Require Human Approval
+                        </label>
+                        <p className="text-sm text-zinc-500 mt-1">
+                            Pauses high-cost operations for manual review.
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => updateBudget({ approvalRequired: !budgetPolicy.approvalRequired })}
+                        className={`w-12 h-6 rounded-full p-1 transition-colors duration-300 ease-in-out ${budgetPolicy.approvalRequired ? 'bg-zinc-900 dark:bg-zinc-100' : 'bg-zinc-200 dark:bg-zinc-800'
+                            }`}
+                    >
+                        <div className={`w-4 h-4 bg-white dark:bg-zinc-900 rounded-full shadow-sm transform transition-transform duration-300 ${budgetPolicy.approvalRequired ? 'translate-x-6' : 'translate-x-0'
+                            }`} />
+                    </button>
+                </div>
+
+                <div className="flex justify-between pt-8">
+                    <button
+                        onClick={() => setStep('desks')}
+                        className="text-sm font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                    >
+                        &larr; Back
+                    </button>
+                    <button
+                        onClick={() => setStep('tone')}
+                        className="group flex items-center gap-2 text-lg font-medium text-zinc-900 dark:text-zinc-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                    >
+                        Tone Check
+                        <span className="block w-6 h-[1px] bg-current group-hover:w-10 transition-all" />
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};

@@ -1,0 +1,200 @@
+import React, { useState } from 'react';
+import { Sparkles, Maximize2, RefreshCcw, Download, Layers, ShieldCheck, Plus } from 'lucide-react';
+import { MOCK_ASSETS } from '../../../domain/integrations';
+import { ModelSelector } from '../ModelSelector';
+import { DeskEvents } from '../../../lib/desks/DeskBridge';
+
+interface ArtDeskCanvasProps {
+    selectedModelId?: string;
+    onSelectModel?: (modelId: string, providerId: string) => void;
+}
+
+export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 'flux-pro', onSelectModel }) => {
+    const [prompt, setPrompt] = useState('');
+    const [isDraggingOver, setIsDraggingOver] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [localAssets, setLocalAssets] = useState(MOCK_ASSETS);
+
+    const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const newAsset = {
+            id: Math.random().toString(36).substr(2, 9),
+            name: file.name,
+            url: URL.createObjectURL(file), // Real implementation would upload to Supabase/Cloudinary
+            thumbnailUrl: URL.createObjectURL(file),
+            type: 'image' as const,
+            source: 's3' as const,
+            format: file.type.split('/')[1] || 'png',
+            tags: ['user-upload']
+        };
+
+        setLocalAssets(prev => [newAsset, ...prev]);
+    };
+
+    const handleGenerate = () => {
+        setIsGenerating(true);
+        // Simulate generation
+        setTimeout(() => {
+            setIsGenerating(false);
+            // Emit cross-desk event
+            DeskEvents.imageGenerated(`img-${Date.now()}`, prompt.substring(0, 30) + '...');
+        }, 3000);
+    };
+
+    const onAssetDragStart = (e: React.DragEvent, assetName: string) => {
+        e.dataTransfer.setData('text/plain', `[Asset Context: ${assetName}]`);
+    };
+
+    return (
+        <div className="w-full h-full flex gap-8">
+            {/* Context Sidebar */}
+            <aside className="w-64 flex flex-col gap-6 shrink-0">
+                <section>
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-[10px] text-[var(--desk-text-muted)] font-bold uppercase tracking-widest">Resource Library</h3>
+                        <span className="flex items-center gap-1 text-[8px] font-bold text-rose-500 uppercase tracking-wider">
+                            Cloudinary
+                        </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                        {localAssets.map(asset => (
+                            <div
+                                key={asset.id}
+                                draggable
+                                onDragStart={(e) => onAssetDragStart(e, asset.name)}
+                                className="aspect-square rounded-lg border border-[var(--desk-border)] bg-[var(--desk-bg)]/50 overflow-hidden group cursor-grab active:cursor-grabbing hover:border-rose-500/50 transition-all shadow-lg"
+                                title={asset.name}
+                            >
+                                <img src={asset.thumbnailUrl} alt={asset.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all opacity-40 group-hover:opacity-100" />
+                            </div>
+                        ))}
+                        <button
+                            onClick={() => document.getElementById('art-asset-upload')?.click()}
+                            className="aspect-square rounded-lg border border-dashed border-[var(--desk-border)] flex flex-col items-center justify-center gap-1 text-[var(--desk-text-muted)] hover:text-rose-500 hover:border-rose-500 hover:bg-rose-500/5 transition-all"
+                        >
+                            <input
+                                type="file"
+                                id="art-asset-upload"
+                                className="hidden"
+                                onChange={handleUpload}
+                                accept="image/*"
+                            />
+                            <Plus size={16} />
+                            <span className="text-[8px] font-black uppercase tracking-tighter">Add</span>
+                        </button>
+                    </div>
+                </section>
+
+                <section className="mt-auto">
+                    <div className="p-4 rounded-xl bg-[var(--desk-bg)]/10 border border-[var(--desk-border)] border-dashed">
+                        <p className="text-[10px] font-mono text-[var(--desk-text-muted)] uppercase tracking-widest text-center">Drag assets to prompt</p>
+                    </div>
+                </section>
+            </aside>
+
+            <div className="flex-1 flex flex-col gap-8 min-w-0">
+                {/* Stage: 2x2 Grid or Hero */}
+                <div className="flex-1 min-h-0 grid grid-cols-2 gap-6">
+                    {[...Array(4)].map((_, i) => (
+                        <div
+                            key={i}
+                            className="group relative bg-[var(--desk-bg)]/40 rounded-3xl border border-[var(--desk-border)] overflow-hidden aspect-square flex items-center justify-center transition-all hover:border-rose-500/50"
+                        >
+                            {isGenerating ? (
+                                <div className="flex flex-col items-center gap-3">
+                                    <RefreshCcw size={24} className="text-rose-500 animate-spin" />
+                                    <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--desk-text-muted)]">Iterating {i + 1}...</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <Sparkles size={48} className="text-[var(--desk-bg)]" />
+                                    </div>
+
+                                    {/* Overlay Controls */}
+                                    <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex gap-2">
+                                                <button className="p-2 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-md transition-colors">
+                                                    <Maximize2 size={14} className="text-white" />
+                                                </button>
+                                                <button className="p-2 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-md transition-colors">
+                                                    <Download size={14} className="text-white" />
+                                                </button>
+                                            </div>
+                                            <button
+                                                onClick={() => DeskEvents.artifactApproved('art-design', `img-${i}`, 'Generated Image')}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-500 rounded-lg text-white font-bold text-xs shadow-lg shadow-rose-500/40"
+                                            >
+                                                <Layers size={12} />
+                                                Promote to Spread
+                                            </button>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    ))}
+                </div>
+
+                {/* Prompt Console */}
+                <div
+                    onDragOver={(e) => { e.preventDefault(); setIsDraggingOver(true); }}
+                    onDragLeave={() => setIsDraggingOver(false)}
+                    onDrop={(e) => {
+                        e.preventDefault();
+                        setIsDraggingOver(false);
+                        const assetContext = e.dataTransfer.getData('text/plain');
+                        setPrompt(prev => prev + (prev ? ' ' : '') + assetContext);
+                    }}
+                    className={`bg-[var(--desk-surface)]/80 backdrop-blur-2xl border transition-all duration-300 rounded-2xl p-4 flex flex-col gap-4 shadow-2xl ${isDraggingOver ? 'border-rose-500 bg-rose-500/5 scale-[1.01]' : 'border-[var(--desk-border)]'}`}
+                >
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <ModelSelector
+                                selectedModelId={selectedModelId}
+                                onSelectModel={onSelectModel || (() => { })}
+                                filterTag="visual"
+                                variant="minimal"
+                                className="w-auto"
+                            />
+                            <div className="w-px h-4 bg-[var(--desk-border)]" />
+                            <div className="flex items-center gap-2 text-[10px] font-bold text-[var(--desk-text-muted)] uppercase tracking-widest">
+                                <ShieldCheck size={12} className="text-green-500" />
+                                <span>Safe Search: On</span>
+                            </div>
+                        </div>
+
+                        <span className="text-[10px] font-mono text-[var(--desk-text-muted)] uppercase tracking-tight">Est. Cost: $0.12</span>
+                    </div>
+
+                    <div className="flex gap-3">
+                        <div className="flex-1 relative group">
+                            <textarea
+                                value={prompt}
+                                onChange={(e) => setPrompt(e.target.value)}
+                                placeholder="Describe your visual intent or drag assets here..."
+                                className="w-full bg-[var(--desk-bg)]/40 border border-[var(--desk-border)] rounded-xl px-4 py-3 text-sm min-h-[60px] resize-none focus:outline-none focus:ring-1 focus:ring-rose-500/50 transition-all placeholder:text-[var(--desk-text-muted)] font-mono text-[var(--desk-text-primary)]"
+                            />
+                            <div className="absolute right-3 bottom-3 flex gap-2">
+                                <button className="p-1.5 bg-[var(--desk-bg)] hover:bg-[var(--desk-border)] rounded-lg transition-colors text-[var(--desk-text-muted)]">
+                                    <RefreshCcw size={14} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={handleGenerate}
+                            disabled={isGenerating}
+                            className="px-8 bg-[var(--desk-text-primary)] hover:bg-[var(--desk-text-primary)]/90 disabled:opacity-50 text-[var(--desk-surface)] font-black uppercase tracking-widest text-sm rounded-xl transition-all shadow-xl shadow-white/5"
+                        >
+                            {isGenerating ? 'Firing...' : 'Generate'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};

@@ -131,7 +131,7 @@ export const assetsClient = {
      */
     async get(assetId: string, workspaceId: string): Promise<Asset | null> {
         const result = await this.list({ workspaceId, limit: 1 });
-        return result.assets.find(a => a.id === assetId) || null;
+        return result.assets.find((a: Asset) => a.id === assetId) || null;
     },
 
     /**

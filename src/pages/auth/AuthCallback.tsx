@@ -19,12 +19,12 @@ function LoadingState() {
         {/* Animated Logo */}
         <div className="relative">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 animate-pulse" />
-          <div
+          <div 
             className="absolute inset-0 w-16 h-16 rounded-2xl border-2 border-indigo-400/30 animate-spin"
             style={{ animationDuration: '3s' }}
           />
         </div>
-
+        
         <div className="text-center">
           <h2 className="text-lg font-medium text-zinc-200 mb-2">Completing sign in...</h2>
           <p className="text-sm text-zinc-500">Please wait while we verify your credentials</p>
@@ -90,8 +90,8 @@ function ErrorState({ error, description, onRetry }: ErrorStateProps) {
         {/* Error Icon */}
         <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
           <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
         </div>
 
@@ -132,7 +132,7 @@ export function AuthCallback() {
       // Check for errors in URL
       const errorParam = searchParams.get('error');
       const errorDesc = searchParams.get('error_description');
-
+      
       if (errorParam) {
         setError(errorParam);
         setErrorDescription(errorDesc || undefined);
@@ -159,7 +159,7 @@ export function AuthCallback() {
           // No session - might be a magic link or email confirmation
           // Check for type parameter
           const type = searchParams.get('type');
-
+          
           if (type === 'recovery') {
             // Password recovery - redirect to reset password page
             navigate('/reset-password', { replace: true });

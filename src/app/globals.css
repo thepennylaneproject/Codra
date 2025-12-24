@@ -201,8 +201,9 @@ body {
 }
 
 body {
-  background: var(--bg-default);
-  color: var(--text-primary);
+  background-color: transparent;
+  /* Allow fixed background to show through */
+  color: var(--stardust);
   font-family: var(--font-family-base);
   font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
@@ -701,6 +702,40 @@ select {
   letter-spacing: 0.08em;
 }
 
+/* Glass morphism base - Photonic Glass */
+.glass {
+  background: var(--glass-bg, rgba(18, 23, 29, 0.85));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.08));
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+/* User Requested Class */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.04);
+  /* As per instructions */
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-frosted {
+  background: var(--glass-frosted, rgba(18, 23, 29, 0.92));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.08));
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.glass-clear {
+  background: var(--glass-clear, rgba(18, 23, 29, 0.6));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.08));
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
 .architect-textarea {
   min-height: 76px;
   resize: vertical;
@@ -792,6 +827,64 @@ select {
 .architect-primary-button:active {
   background: var(--color-primary-active);
   border-color: var(--color-primary-active);
+}
+
+/* ============================================
+   THEME PRESETS - Data Attribute Switches
+   ============================================ */
+
+/* Cyber Cyan */
+[data-theme='cyber-cyan'] {
+  --theme-bg-image: url('/assets/backgrounds/texture_cyan_circuit.jpg');
+  --theme-overlay-color: rgba(0, 255, 255, 0.25);
+  --particle-color-start: #00ffff;
+  --atmosphere-glass-tint: rgba(8, 28, 35, 0.6);
+  --atmosphere-glow-color: rgba(0, 255, 255, 0.25);
+}
+
+/* Deep Space */
+[data-theme='deep-space'] {
+  --theme-bg-image: url('/assets/backgrounds/texture_deep_space.jpg');
+  --theme-overlay-color: rgba(88, 80, 200, 0.25);
+  --particle-color-start: #a855f7;
+  --atmosphere-glass-tint: rgba(15, 10, 30, 0.6);
+  --atmosphere-glow-color: rgba(88, 80, 200, 0.25);
+}
+
+/* Midas Touch */
+[data-theme='midas-touch'] {
+  --theme-bg-image: url('/assets/backgrounds/texture_midas_touch.jpg');
+  --theme-overlay-color: rgba(120, 90, 40, 0.18);
+  --particle-color-start: #fbbf24;
+  --atmosphere-glass-tint: rgba(30, 22, 12, 0.6);
+  --atmosphere-glow-color: rgba(120, 90, 40, 0.18);
+}
+
+/* Stealth Noir */
+[data-theme='stealth-noir'] {
+  --theme-bg-image: url('/assets/backgrounds/texture_stealth_noir.jpg');
+  --theme-overlay-color: rgba(0, 0, 0, 0.35);
+  --particle-color-start: #ffffff;
+  --atmosphere-glass-tint: rgba(10, 10, 10, 0.8);
+  --atmosphere-glow-color: rgba(0, 0, 0, 0.35);
+}
+
+/* Default V1 */
+[data-theme='default-v1'] {
+  --theme-bg-image: url('/assets/backgrounds/texture_default_v1.jpg');
+  --theme-overlay-color: rgba(56, 189, 248, 0.1);
+  --particle-color-start: #D4AF37;
+  --atmosphere-glass-tint: rgba(15, 23, 42, 0.6);
+  --atmosphere-glow-color: rgba(56, 189, 248, 0.1);
+}
+
+/* Default V2 */
+[data-theme='default-v2'] {
+  --theme-bg-image: url('/assets/backgrounds/texture_default_v2.jpg');
+  --theme-overlay-color: rgba(56, 189, 248, 0.1);
+  --particle-color-start: #D4AF37;
+  --atmosphere-glass-tint: rgba(15, 23, 42, 0.6);
+  --atmosphere-glow-color: rgba(56, 189, 248, 0.1);
 }
 
 /* =========================================

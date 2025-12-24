@@ -4,7 +4,7 @@
 // Dark mode, industrial-refined aesthetic matching Admin Console
 // ============================================================
 
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, type FormEvent, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../lib/auth/AuthProvider';
 import type { OAuthProvider } from '../../lib/api/auth.types';
@@ -106,11 +106,11 @@ interface FormInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   error?: string;
   disabled?: boolean;
   autoComplete?: string;
-  rightElement?: React.ReactNode;
+  rightElement?: ReactNode;
   optional?: boolean;
 }
 
@@ -154,8 +154,8 @@ function FormInput({
             disabled:opacity-50 disabled:cursor-not-allowed
             ${icon ? 'pl-11' : ''}
             ${rightElement ? 'pr-11' : ''}
-            ${error
-              ? 'border-red-500/50 focus:border-red-500'
+            ${error 
+              ? 'border-red-500/50 focus:border-red-500' 
               : 'border-zinc-800 hover:border-zinc-700 focus:border-indigo-500'
             }
           `}
@@ -211,15 +211,17 @@ function PasswordStrength({ password }: PasswordStrengthProps) {
           {[1, 2, 3, 4].map((level) => (
             <div
               key={level}
-              className={`flex-1 h-full rounded-full transition-all duration-300 ${level <= strength.level ? strength.color : 'bg-zinc-800'
-                }`}
+              className={`flex-1 h-full rounded-full transition-all duration-300 ${
+                level <= strength.level ? strength.color : 'bg-zinc-800'
+              }`}
             />
           ))}
         </div>
         {strength.label && (
-          <span className={`text-xs font-medium ${strength.level >= 3 ? 'text-emerald-400' :
+          <span className={`text-xs font-medium ${
+            strength.level >= 3 ? 'text-emerald-400' : 
             strength.level >= 2 ? 'text-yellow-400' : 'text-red-400'
-            }`}>
+          }`}>
             {strength.label}
           </span>
         )}
@@ -228,10 +230,11 @@ function PasswordStrength({ password }: PasswordStrengthProps) {
       {/* Requirements Checklist */}
       <div className="grid grid-cols-2 gap-2">
         {requirements.map((req, idx) => (
-          <div
+          <div 
             key={idx}
-            className={`flex items-center gap-2 text-xs transition-colors ${req.met ? 'text-emerald-400' : 'text-zinc-600'
-              }`}
+            className={`flex items-center gap-2 text-xs transition-colors ${
+              req.met ? 'text-emerald-400' : 'text-zinc-600'
+            }`}
           >
             {req.met ? <Icons.Check /> : <Icons.X />}
             {req.label}
@@ -321,7 +324,6 @@ function SignupSuccess({ email }: SignupSuccessProps) {
 // ============================================================
 
 export function SignupForm() {
-
   const { signup, loginWithOAuth, isLoading } = useAuth();
 
   // Form state
@@ -338,13 +340,13 @@ export function SignupForm() {
   // Password validation
   const isPasswordValid = useMemo(() => {
     return password.length >= 8 &&
-      /[A-Z]/.test(password) &&
-      /[a-z]/.test(password) &&
-      /[0-9]/.test(password);
+           /[A-Z]/.test(password) &&
+           /[a-z]/.test(password) &&
+           /[0-9]/.test(password);
   }, [password]);
 
   // Handle form submission
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -607,8 +609,8 @@ export function SignupForm() {
           {/* Login Link */}
           <p className="mt-8 text-center text-zinc-500">
             Already have an account?{' '}
-            <Link
-              to="/login"
+            <Link 
+              to="/login" 
               className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
             >
               Sign in

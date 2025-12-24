@@ -2,7 +2,7 @@
 -- Run in Supabase SQL Editor
 
 -- Table: image_generation_jobs
--- Tracks all image generation requests and their status
+-- Tracks all image generation requests and their statu                           IOs
 CREATE TABLE IF NOT EXISTS image_generation_jobs (
   id TEXT PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,

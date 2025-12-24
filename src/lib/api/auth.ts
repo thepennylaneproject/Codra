@@ -4,7 +4,8 @@
 // Following the adapter pattern - unified interface for auth operations
 // ============================================================
 
-import { createClient, SupabaseClient, User, Session, AuthChangeEvent } from '@supabase/supabase-js';
+import { User, Session, AuthChangeEvent } from '@supabase/supabase-js';
+import { supabase } from '../supabase';
 import type {
   UserProfile,
   SignupData,
@@ -18,27 +19,8 @@ import type {
 } from './auth.types';
 import { AUTH_ERROR_CODES } from './auth.types';
 
-// ============================================================
-// Supabase Client Initialization
-// ============================================================
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    'Missing Supabase environment variables. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY'
-  );
-}
-
-export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-    flowType: 'pkce',
-  },
-});
+// Use the consolidated singleton from src/lib/supabase.ts
+export { supabase };
 
 // ============================================================
 // Helper Functions

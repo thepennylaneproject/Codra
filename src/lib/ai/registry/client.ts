@@ -17,12 +17,12 @@
  */
 
 import {
-    ProviderRegistryResponse,
+    Modality,
     ProviderRegistryEntry,
     ModelRegistryEntry,
-    Modality,
-    ProviderRegistryErrorResponse
+    ProviderRegistryResponse,
 } from './types';
+import { PROVIDER_REGISTRY } from './provider-registry';
 
 // ============================================================================
 // CONFIGURATION
@@ -77,11 +77,9 @@ export async function fetchProviderRegistry(
         });
 
         if (!response.ok) {
-            const errorData: ProviderRegistryErrorResponse = await response.json().catch(() => ({
-                error: `HTTP ${response.status}`,
-                code: 'HTTP_ERROR'
-            }));
-            throw new Error(errorData.error || 'Failed to fetch provider registry');
+            // Fallback to static registry in development or on error
+            console.warn(`[ProviderRegistry] Fetch failed with status ${response.status}, falling back to static registry.`);
+            return { providers: PROVIDER_REGISTRY };
         }
 
         const data: ProviderRegistryResponse = await response.json();
@@ -94,12 +92,9 @@ export async function fetchProviderRegistry(
 
         return data;
     } catch (error) {
-        // If we have stale cache data, return it instead of failing
-        if (registryCache.data) {
-            console.warn('[ProviderRegistry] Fetch failed, using stale cache:', error);
-            return registryCache.data;
-        }
-        throw error;
+        // Fallback to static registry on network error
+        console.warn('[ProviderRegistry] Network error, falling back to static registry:', error);
+        return { providers: PROVIDER_REGISTRY };
     }
 }
 
@@ -309,7 +304,6 @@ export interface UseProviderRegistryState {
  * This is a factory that accepts React to avoid hard dependency
  * 
  * @example
- * import { useState, useEffect, useCallback } from 'react';
  * const useProviderRegistry = createUseProviderRegistry(useState, useEffect, useCallback);
  */
 export function createUseProviderRegistry(

@@ -168,7 +168,8 @@ export class CodraFlowExecutor implements FlowExecutor {
             }
 
             // 2. Resolve template strings in node.data
-            const resolvedData = this.resolveNodeData(node.data, context.variables, context);
+            const nodeData = (node as any).data || {};
+            const resolvedData = this.resolveNodeData(nodeData, context.variables, context);
 
             // 3. Execute
             // merging incomingData and resolvedData as inputs is node-specific, 

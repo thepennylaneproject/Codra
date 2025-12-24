@@ -10,6 +10,8 @@ describe('Flow Execution Engine', () => {
 
     it('should execute a simple linear flow', async () => {
         const flow = {
+            id: 'test-flow',
+            name: 'Test Flow',
             nodes: [
                 { id: '1', type: 'trigger', data: { label: 'Start' }, position: { x: 0, y: 0 } },
                 { id: '2', type: 'transform', data: { label: 'Transform', output: { msg: 'Hello {{1.name}}' } }, position: { x: 100, y: 0 } },
@@ -30,6 +32,8 @@ describe('Flow Execution Engine', () => {
 
     it('should handle conditions', async () => {
         const flow = {
+            id: 'condition-flow',
+            name: 'Condition Flow',
             nodes: [
                 { id: '1', type: 'trigger', position: { x: 0, y: 0 }, data: {} },
                 { id: '2', type: 'condition', data: { operator: 'equals', left: '{{1.value}}', right: '10' }, position: { x: 100, y: 0 } },

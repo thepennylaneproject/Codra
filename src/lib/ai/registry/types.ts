@@ -38,6 +38,8 @@ export interface ModelRegistryEntry {
     latencyHintMs?: number | null;
     /** Optional tags for filtering/categorization (e.g., 'fast', 'reasoning', 'cheap') */
     tags?: string[];
+    /** The creator of the model (e.g., 'OpenAI', 'Google', 'Mistral') */
+    creator: string;
 }
 
 /**

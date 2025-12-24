@@ -1,8 +1,16 @@
 import { useState, useEffect } from 'react';
 import { localFS, FileEntry } from '../lib/fs/local';
-import { EditorFile } from '../components/editor/types';
-// I will implement raw IDB to avoid adding dependencies if possible, or assume simple IDB usage.
-// Actually, raw IDB is verbose. I'll use a simple wrapper.
+
+export interface EditorFile {
+    id: string;
+    name: string;
+    path: string;
+    language: string;
+    content: string;
+    isDirty: boolean;
+}
+
+// Simple IDB wrapper since we can't easily install packages without user permission and it's cleaner.
 
 // Simple IDB wrapper since we can't easily install packages without user permission and it's cleaner.
 const DB_NAME = 'codra-fs';

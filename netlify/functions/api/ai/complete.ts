@@ -10,6 +10,10 @@ import { createClient } from '@supabase/supabase-js';
 import { AimlApiProvider } from '../../../../src/lib/ai/providers/aimlapi';
 import { DeepSeekProvider } from '../../../../src/lib/ai/providers/deepseek';
 import { GeminiProvider } from '../../../../src/lib/ai/providers/gemini';
+import { OpenAIProvider } from '../../../../src/lib/ai/providers/openai';
+import { MistralProvider } from '../../../../src/lib/ai/providers/mistral';
+import { CohereProvider } from '../../../../src/lib/ai/providers/cohere';
+import { HuggingFaceProvider } from '../../../../src/lib/ai/providers/huggingface';
 import { AIRouter } from '../../../../src/lib/ai/router';
 import type { AICompletionRequest, AICompletionResponse } from '../../../../src/lib/ai/types';
 
@@ -120,8 +124,8 @@ const handler: Handler = async (event, context) => {
 
         // Initialize router
         const router = new AIRouter({
-            primaryProvider: 'aimlapi',
-            fallbackProviders: ['deepseek', 'gemini'],
+            primaryProvider: body.provider || 'aimlapi',
+            fallbackProviders: ['openai', 'deepseek', 'gemini'],
         });
 
         // Register providers with decrypted keys
@@ -144,6 +148,34 @@ const handler: Handler = async (event, context) => {
             router.registerProvider(new GeminiProvider(geminiKey));
         } catch (e) {
             console.warn('Gemini not available:', e);
+        }
+
+        try {
+            const openaiKey = await getCredentialForProvider(user.id, 'openai');
+            router.registerProvider(new OpenAIProvider(openaiKey));
+        } catch (e) {
+            console.warn('OpenAI not available:', e);
+        }
+
+        try {
+            const mistralKey = await getCredentialForProvider(user.id, 'mistral');
+            router.registerProvider(new MistralProvider(mistralKey));
+        } catch (e) {
+            console.warn('Mistral not available:', e);
+        }
+
+        try {
+            const cohereKey = await getCredentialForProvider(user.id, 'cohere');
+            router.registerProvider(new CohereProvider(cohereKey));
+        } catch (e) {
+            console.warn('Cohere not available:', e);
+        }
+
+        try {
+            const hfKey = await getCredentialForProvider(user.id, 'huggingface');
+            router.registerProvider(new HuggingFaceProvider(hfKey));
+        } catch (e) {
+            console.warn('HuggingFace not available:', e);
         }
 
         // Execute completion

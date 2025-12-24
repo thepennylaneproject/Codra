@@ -6,7 +6,7 @@
 
 import { Handler } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
-import { CredentialEncryption, type EncryptedCredential } from '../src/lib/encryption';
+import { deriveUserEncryptionKey, decryptApiKey } from '../../src/lib/api/encryption';
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL!,
@@ -61,7 +61,7 @@ const PROVIDER_TESTS: Record<string, (key: string) => Promise<boolean>> = {
     try {
       const response = await fetch(
         'https://generativelanguage.googleapis.com/v1beta/models?key=' +
-          key,
+        key,
         {
           method: 'GET',
         }
@@ -169,12 +169,12 @@ export const handler: Handler = async (event) => {
 
     // Decrypt the API key
     const appSecret = process.env.CODRA_APP_SECRET!;
-    const encryptionKey = CredentialEncryption.deriveKey(user.id, appSecret);
+    const encryptionKey = await deriveUserEncryptionKey(user.id, appSecret);
 
     let decryptedKey: string;
     try {
-      decryptedKey = CredentialEncryption.decrypt(
-        credential.encrypted_key as EncryptedCredential,
+      decryptedKey = await decryptApiKey(
+        credential.encrypted_key as string,
         encryptionKey
       );
     } catch (error) {

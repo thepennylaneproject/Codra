@@ -3,7 +3,7 @@
  * Queue management for async image generation jobs
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../../supabase';
 import {
   ImageGenerationJob,
   ImageGenerationOptions,
@@ -14,10 +14,7 @@ import {
 } from '../types-image';
 
 export class ImageGeneratorQueue {
-  private supabase = createClient(
-    process.env.VITE_SUPABASE_URL!,
-    process.env.VITE_SUPABASE_ANON_KEY!
-  );
+  private supabase = supabase;
 
   // private providers: Map<string, IImageProvider>;
 

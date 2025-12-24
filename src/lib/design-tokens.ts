@@ -8,21 +8,20 @@
  * High contrast, bold, intentional design for creative automation
  */
 export const BRAND = {
-  ink: '#0A0E12',           // Nearly pure black - primary background
-  cream: '#FFFDF7',         // Warm white - primary text
-  magenta: '#D81159',       // Deep magenta - primary action/statement color
-  gold: '#F4D03F',          // Electric gold - secondary highlight
-  teal: '#00D9D9',          // Electric teal - tertiary/interactive
-  charcoal: '#1A1F26',      // Elevated backgrounds
+  ink: '#1A1A1A',           // Deep Ink - primary dark / text
+  ivory: '#FFFAF0',         // Warm Ivory - primary background
+  coral: '#FF4D4D',         // Vibrant Coral - Codra accent
+  gold: '#C7A76A',          // Muted Gold Foil
+  charcoal: '#2D2D2D',      // Sub-ink for depth
 } as const;
 
 /**
  * Background color tokens
  */
 export const BACKGROUND = {
-  default: '#0A0E12',       // Ink - primary dark background
-  elevated: '#1A1F26',      // Charcoal - elevated surfaces
-  subtle: '#0F1319',        // Slightly lighter ink for subtle separation
+  default: '#FFFAF0',       // Ivory
+  elevated: '#F5F0E6',      // Slightly darker ivory
+  subtle: '#FAF5ED',        // Very subtle ivory
 } as const;
 
 /**
@@ -47,10 +46,10 @@ export const BORDER = {
  * Text color tokens
  */
 export const TEXT = {
-  primary: '#FFFDF7',       // Cream - main text
-  muted: '#A8B0BB',         // Muted gray-blue
-  soft: '#787E88',          // Softer gray
-  accent: '#F4D03F',        // Gold accent text
+  primary: '#1A1A1A',       // Ink
+  muted: '#5A5A5A',         // Muted ink
+  soft: '#8A8A8A',          // Lighter gray
+  accent: '#FF4D4D',        // Coral accent
 } as const;
 
 /**
@@ -301,6 +300,73 @@ export const Z_INDEX = {
 } as const;
 
 /**
+ * Motion tokens - Atmospheric effects
+ * "Guardians of the Galaxy meets Apple" - slow, subtle, optional
+ */
+export const MOTION = {
+  parallax: {
+    duration: '20s',
+    distance: '50px',
+    easing: 'linear',
+  },
+  shimmer: {
+    duration: '8s',
+    opacity: 0.04,
+  },
+  transition: {
+    instant: '100ms ease',
+    expressive: '400ms ease-out',
+    atmospheric: '800ms ease-in-out',
+  },
+  // User preference support
+  preference: {
+    key: 'codra-motion-preference',
+    options: ['auto', 'on', 'off'] as const,
+  },
+} as const;
+
+/**
+ * Gold Accent tokens - Restrained usage only
+ * Permitted: Primary CTAs, Active states, Success indicators
+ */
+export const GOLD_ACCENT = {
+  permitted: ['primary-cta', 'active-state', 'success-indicator'] as const,
+  primary: '#C7A76A',
+  glow: 'rgba(199, 167, 106, 0.35)',
+  border: 'rgba(199, 167, 106, 0.25)',
+  text: '#D4AF37',
+  // Never allow solid gold backgrounds
+  solidBackground: false,
+} as const;
+
+/**
+ * Accessibility tokens - WCAG compliance
+ */
+export const A11Y = {
+  contrast: {
+    normal: 4.5,    // WCAG AA for normal text
+    large: 3.0,     // WCAG AA for large text (18px+ or 14px bold)
+    enhanced: 7.0,  // WCAG AAA
+  },
+  focusRing: {
+    width: '3px',
+    offset: '2px',
+    color: 'var(--energy-teal)',
+  },
+  // Motion preference detection
+  reducedMotionQuery: '(prefers-reduced-motion: reduce)',
+} as const;
+
+/**
+ * Glass density tokens - Adaptive opacity
+ */
+export const GLASS_DENSITY = {
+  sparse: 0.45,
+  balanced: 0.6,
+  dense: 0.8,
+} as const;
+
+/**
  * Gradient tokens - Protest Poster inspired
  */
 export const GRADIENT = {
@@ -321,11 +387,11 @@ export const GRADIENT = {
  * Semantic color aliases for component states
  */
 export const SEMANTIC = {
-  /* Primary action states - Magenta */
-  primary: BRAND.magenta,           // #D81159
-  primaryHover: '#B30D47',          // Darker magenta on hover
-  primaryActive: '#8B0A35',         // Even darker on active
-  primaryDisabled: 'rgba(216, 17, 89, 0.4)',
+  /* Primary action states - Coral */
+  primary: BRAND.coral,             // #FF4D4D
+  primaryHover: '#E64545',          // Darker coral on hover
+  primaryActive: '#CC3D3D',         // Even darker on active
+  primaryDisabled: 'rgba(255, 77, 77, 0.4)',
 
   /* Danger/error states */
   danger: STATE.error,
@@ -560,4 +626,9 @@ export default {
   BREAKPOINTS,
   PALETTE,
   COMPONENTS,
+  MOTION,
+  GOLD_ACCENT,
+  A11Y,
+  GLASS_DENSITY,
 };
+

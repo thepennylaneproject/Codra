@@ -20,8 +20,8 @@ function LoadingSpinner() {
         {/* Codra Logo Spinner */}
         <div className="relative">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 animate-pulse" />
-          <div className="absolute inset-0 w-12 h-12 rounded-xl border-2 border-indigo-400/30 animate-spin"
-            style={{ animationDuration: '2s' }} />
+          <div className="absolute inset-0 w-12 h-12 rounded-xl border-2 border-indigo-400/30 animate-spin" 
+               style={{ animationDuration: '2s' }} />
         </div>
         <div className="text-zinc-500 text-sm font-medium">Loading...</div>
       </div>
@@ -47,8 +47,8 @@ function Unauthorized({ message, requiredPlan }: UnauthorizedProps) {
         {/* Icon */}
         <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
           <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
         </div>
 
@@ -99,25 +99,25 @@ function Unauthorized({ message, requiredPlan }: UnauthorizedProps) {
 
 interface ProtectedRouteProps {
   children: ReactNode;
-
+  
   /** Redirect path when not authenticated */
   redirectTo?: string;
-
+  
   /** Required user plans to access this route */
   requiredPlans?: UserPlan[];
-
+  
   /** Custom check function for additional authorization */
   checkAccess?: () => boolean | Promise<boolean>;
-
+  
   /** Show custom loading component */
   loadingComponent?: ReactNode;
-
+  
   /** Show custom unauthorized component */
   unauthorizedComponent?: ReactNode;
-
+  
   /** Require onboarding to be completed */
   requireOnboarding?: boolean;
-
+  
   /** Skip redirect and show unauthorized page instead */
   showUnauthorized?: boolean;
 }
@@ -176,7 +176,7 @@ export function ProtectedRoute({
       return (
         <>
           {unauthorizedComponent || (
-            <Unauthorized
+            <Unauthorized 
               message={`This feature requires a ${requiredPlans[0]} plan or higher.`}
               requiredPlan={requiredPlans[0]}
             />
@@ -189,7 +189,7 @@ export function ProtectedRoute({
   // Custom access check
   if (checkAccess) {
     const hasAccess = checkAccess();
-
+    
     // Handle async check
     if (hasAccess instanceof Promise) {
       // For async checks, we'd need additional state management

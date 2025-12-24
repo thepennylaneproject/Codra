@@ -17,59 +17,34 @@ import {
   ResetPasswordForm,
 } from './components/auth';
 import { AuthCallback } from './pages/auth/AuthCallback';
-import { BillingSettingsPage } from './pages/BillingSettings';
-import { AIPlayground } from './pages/AIPlayground';
-import { LandingPage } from './pages/LandingPage';
+import { Outlet } from 'react-router-dom';
 
-import { Dashboard } from './components/Dashboard';
-import { PromptLibrary } from './components/prompts/PromptLibrary';
-import { PromptEditor } from './components/prompts/PromptEditor';
-import { StudioPage } from './pages/StudioPage';
-import { CodeWorkspace } from './components/editor/CodeWorkspace';
-import { AppShell } from './components/layout/AppShell';
-import { SEOHead } from './components/seo/SEOHead';
+const AppShell = () => (
+  <div className="min-h-screen bg-[#FFFAF0]">
+    <Outlet />
+  </div>
+);
+
+const SEOHead = () => null;
 
 // Settings & Theme
 import { ThemeProvider } from './lib/design/ThemeContext';
 import { AtmosphereProvider } from './lib/design/AtmosphereContext';
+import { MotionProvider } from './lib/design/MotionContext';
 import { PlacementProvider } from './lib/placement/PlacementContext';
-import { PlacementLayer } from './components/layout/PlacementLayer';
-import { SettingsLayout } from './pages/settings/SettingsLayout';
-import { ProfileSettings } from './pages/settings/ProfileSettings';
-import { AppearanceSettings } from './pages/settings/AppearanceSettings';
-import { CredentialsSettings } from './pages/settings/CredentialsSettings';
-import { IntegrationsSettings } from './pages/settings/IntegrationsSettings';
-import { DeploySettings } from './pages/settings/DeploySettings';
-import { NotificationSettings } from './pages/settings/NotificationSettings';
-import { AdvancedSettings } from './pages/settings/AdvancedSettings';
 
-
-// Projects / Architect
-import { ProjectsListPage } from './pages/ProjectsListPage';
-import { ProjectDetailPage } from './pages/ProjectDetailPage';
-import { ProjectIntakeWizard } from './components/architect/intake/ProjectIntakeWizard';
-
-// Asset Library
-import { AssetsPage } from './pages/AssetsPage';
-import { AssetsManifestPage } from './pages/AssetsManifestPage';
-
-// Removed placeholder components
-
-import { FlowEditor } from './components/flow/FlowEditor';
-import { NodePalette } from './components/flow/NodePalette';
-
-const FlowBuilder = () => (
-  <div className="flex h-screen bg-zinc-950">
-    <NodePalette />
-    <div className="flex-1 h-full">
-      <FlowEditor />
-    </div>
-  </div>
-);
-
-
-import { OnboardingWizard } from './components/onboarding/OnboardingWizard';
-import { AdminDashboard } from './pages/admin/AdminDashboard';
+// New Pipeline
+import { NewSpreadPage } from './new/routes/NewSpreadPage';
+import { ProjectContextPage } from './new/routes/ProjectContextPage';
+import { NewProjectOnboarding } from './new/routes/onboarding/NewProjectOnboarding';
+import { DeskWorkspacePage } from './new/routes/DeskWorkspacePage';
+import { ProjectsPage } from './new/routes/ProjectsPage';
+import { SettingsPage } from './new/routes/SettingsPage';
+import { PricingPage } from './new/routes/PricingPage';
+import { BlueprintGalleryPage } from './new/routes/BlueprintGalleryPage';
+import { TermsPage } from './new/routes/TermsPage';
+import { PrivacyPage } from './new/routes/PrivacyPage';
+import { ToastContainer } from './new/components/Toast';
 
 // ============================================================
 // App Component
@@ -80,151 +55,128 @@ const queryClient = new QueryClient();
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AuthProvider>
           <ThemeProvider>
             <AtmosphereProvider>
               <PlacementProvider>
-                <PlacementLayer />
-                <SEOHead />
-                <Routes>
+                <MotionProvider>
+                  <SEOHead />
+                  <Routes>
 
-                  {/* ============================================ */}
-                  {/* PUBLIC ROUTES (Guest only - redirect if authenticated) */}
-                  {/* ============================================ */}
+                    {/* ============================================ */}
+                    {/* PUBLIC ROUTES */}
+                    {/* ============================================ */}
 
-                  {/* Main Landing Page (Public) */}
-                  <Route path="/" element={<LandingPage />} />
+                    <Route path="/" element={<Navigate to="/projects" replace />} />
+                    <Route path="/pricing" element={<PricingPage />} />
+                    <Route path="/blueprints" element={<BlueprintGalleryPage />} />
+                    <Route path="/terms" element={<TermsPage />} />
+                    <Route path="/privacy" element={<PrivacyPage />} />
 
-                  <Route
-                    path="/login"
-                    element={
-                      <GuestRoute redirectTo="/dashboard">
-                        <LoginForm />
-                      </GuestRoute>
-                    }
-                  />
+                    <Route
+                      path="/login"
+                      element={
+                        <GuestRoute redirectTo="/projects">
+                          <LoginForm />
+                        </GuestRoute>
+                      }
+                    />
 
-                  <Route
-                    path="/signup"
-                    element={
-                      <GuestRoute redirectTo="/dashboard">
-                        <SignupForm />
-                      </GuestRoute>
-                    }
-                  />
+                    <Route
+                      path="/signup"
+                      element={
+                        <GuestRoute redirectTo="/projects">
+                          <SignupForm />
+                        </GuestRoute>
+                      }
+                    />
 
-                  <Route
-                    path="/forgot-password"
-                    element={
-                      <GuestRoute redirectTo="/dashboard">
-                        <ForgotPasswordForm />
-                      </GuestRoute>
-                    }
-                  />
+                    <Route
+                      path="/forgot-password"
+                      element={
+                        <GuestRoute redirectTo="/projects">
+                          <ForgotPasswordForm />
+                        </GuestRoute>
+                      }
+                    />
 
-                  {/* ============================================ */}
-                  {/* AUTH CALLBACK (handles OAuth and magic links) */}
-                  {/* ============================================ */}
+                    {/* ============================================ */}
+                    {/* AUTH CALLBACK & PASSWORD RESET */}
+                    {/* ============================================ */}
 
-                  <Route path="/auth/callback" element={<AuthCallback />} />
+                    <Route path="/auth/callback" element={<AuthCallback />} />
+                    <Route path="/reset-password" element={<ResetPasswordForm />} />
 
-                  {/* Reset password - accessible when user has recovery session */}
-                  <Route path="/reset-password" element={<ResetPasswordForm />} />
+                    {/* ============================================ */}
+                    {/* PROTECTED ROUTES */}
+                    {/* ============================================ */}
 
-                  {/* ============================================ */}
-                  {/* PROTECTED ROUTES (require authentication) */}
-                  {/* ============================================ */}
-
-                  {/* App Shell Layout */}
-                  <Route element={
-                    <ProtectedRoute>
-                      <AppShell />
-                    </ProtectedRoute>
-                  }>
-                    {/* Main dashboard */}
-                    <Route path="/dashboard" element={<Dashboard />} />
-
-                    {/* Admin console - keeping its own layout for now or nesting? 
-                  The plan implies global shell. Admin might want distinct look but let's wrap it for consistency 
-                  unless it has its own full page layout. AdminLayout usually has its own sidebar.
-                  Let's exclude Admin from AppShell if it has AdminLayout.
-              */}
-
-                    {/* Projects / Architect */}
-                    <Route path="/projects" element={<ProjectsListPage />} />
-                    <Route path="/projects/new" element={<ProjectIntakeWizard />} />
-                    <Route path="/projects/:id" element={<ProjectDetailPage />} />
-
-                    {/* Asset Library */}
-                    <Route path="/assets" element={<AssetsPage />} />
-                    <Route path="/assets/manifests" element={<AssetsManifestPage />} />
-
-                    {/* AI Playground */}
-                    <Route path="/ai" element={<AIPlayground />} />
-
-                    {/* Settings */}
-                    <Route path="/settings" element={<SettingsLayout />}>
-                      <Route index element={<Navigate to="profile" replace />} />
-                      <Route path="profile" element={<ProfileSettings />} />
-                      <Route path="appearance" element={<AppearanceSettings />} />
-                      <Route path="credentials" element={<CredentialsSettings />} />
-                      <Route path="billing" element={<BillingSettingsPage />} />
-                      <Route path="integrations" element={<IntegrationsSettings />} />
-                      <Route path="deploy" element={<DeploySettings />} />
-                      <Route path="notifications" element={<NotificationSettings />} />
-                      <Route path="advanced" element={<AdvancedSettings />} />
+                    <Route element={
+                      <ProtectedRoute>
+                        <AppShell />
+                      </ProtectedRoute>
+                    }>
+                      <Route path="/projects" element={<ProjectsPage />} />
+                      <Route path="/settings" element={<SettingsPage />} />
+                      <Route path="/dashboard" element={<Navigate to="/projects" replace />} />
                     </Route>
 
-                    {/* Prompt Library */}
-                    <Route path="/prompts" element={<PromptLibrary />} />
-                    <Route path="/prompts/:id" element={<PromptEditor />} />
 
-                    {/* Studio & Tools */}
-                    <Route path="/studio" element={<StudioPage />} />
-                    <Route path="/studio/code" element={<CodeWorkspace />} />
-                    <Route path="/flow" element={<FlowBuilder />} />
 
-                    {/* Plan Restricted */}
-                    <Route path="/pro/*" element={
-                      <div className="min-h-screen p-8">
-                        <h1 className="text-2xl font-bold text-zinc-100">Pro Features</h1>
-                      </div>
-                    } />
-                    <Route path="/team/*" element={
-                      <div className="min-h-screen p-8">
-                        <h1 className="text-2xl font-bold text-zinc-100">Team Features</h1>
-                      </div>
-                    } />
-                  </Route>
+                    {/* Onboarding (Legacy) */}
 
-                  {/* Admin Console (Separate Layout) */}
-                  <Route
-                    path="/admin/*"
-                    element={
-                      <ProtectedRoute>
-                        <AdminDashboard />
-                      </ProtectedRoute>
-                    }
-                  />
 
-                  {/* Onboarding (Separate Layout) */}
-                  <Route
-                    path="/onboarding"
-                    element={
-                      <ProtectedRoute>
-                        <OnboardingWizard />
-                      </ProtectedRoute>
-                    }
-                  />
+                    {/* New Editorial Onboarding */}
+                    <Route
+                      path="/onboarding/new-project"
+                      element={
+                        <ProtectedRoute>
+                          <NewProjectOnboarding />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                  {/* ============================================ */}
-                  {/* CATCH-ALL */}
-                  {/* ============================================ */}
+                    {/* ============================================ */}
+                    {/* NEW PIPELINE ROUTES */}
+                    {/* ============================================ */}
 
-                  {/* 404 - redirect to home */}
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
+                    <Route
+                      path="/p/:projectId/spread"
+                      element={
+                        <ProtectedRoute>
+                          <NewSpreadPage />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/p/:projectId/context"
+                      element={
+                        <ProtectedRoute>
+                          <ProjectContextPage />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/p/:projectId/desk/:deskId"
+                      element={
+                        <ProtectedRoute>
+                          <DeskWorkspacePage />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    {/* ============================================ */}
+                    {/* CATCH-ALL */}
+                    {/* ============================================ */}
+
+                    {/* 404 - redirect to home */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                  <ToastContainer />
+                </MotionProvider>
               </PlacementProvider>
             </AtmosphereProvider>
           </ThemeProvider>

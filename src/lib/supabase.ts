@@ -17,9 +17,16 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 /**
  * Supabase client instance
- * Use this for all database and auth operations
+ * Use this singleton for all database and auth operations
  */
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+    flowType: 'pkce',
+  },
+});
 
 /**
  * Get the current authenticated user

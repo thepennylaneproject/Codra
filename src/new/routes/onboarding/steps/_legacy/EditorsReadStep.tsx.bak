@@ -1,0 +1,158 @@
+import { useState } from 'react';
+import { useOnboardingStore } from '../store';
+
+const SUGGESTED_GOALS = [
+    "Increase Audience Reach",
+    "Drive Conversion",
+    "Establish Thought Leadership",
+    "Prototype New Feature",
+    "Technical Feasibility Study",
+    "Visual Identity Refresh",
+    "Internal Alignment"
+];
+
+const SUGGESTED_BOUNDARIES = [
+    "Strict Deadline",
+    "No External Contractors",
+    "Mobile-First",
+    "Accessibility AA Required",
+    "Use Existing Assets Only",
+    "Experimental Visuals Allowed"
+];
+
+export const EditorsReadStep = () => {
+    const { data, updateData, setStep } = useOnboardingStore();
+    const [showHelper, setShowHelper] = useState(false);
+
+    const toggleGoal = (goal: string) => {
+        const current = data.goals || [];
+        if (current.includes(goal)) {
+            updateData({ goals: current.filter(g => g !== goal) });
+        } else if (current.length < 3) {
+            updateData({ goals: [...current, goal] });
+        }
+    };
+
+    const toggleBoundary = (boundary: string) => {
+        const current = data.boundaries || [];
+        if (current.includes(boundary)) {
+            updateData({ boundaries: current.filter(b => b !== boundary) });
+        } else {
+            updateData({ boundaries: [...current, boundary] });
+        }
+    };
+
+    const applyHelperRecommendation = (type: 'internal' | 'public') => {
+        if (type === 'internal') {
+            updateData({ goals: ["Internal Alignment", "Technical Feasibility Study"] });
+        } else {
+            updateData({ goals: ["Increase Audience Reach", "Establish Thought Leadership"] });
+        }
+        setShowHelper(false);
+    };
+
+    return (
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+            <header className="space-y-4">
+                <h1 className="text-4xl md:text-5xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
+                    Editor's Read
+                </h1>
+                <p className="text-xl text-zinc-500 font-light max-w-lg">
+                    Define the parameters of success. What are we aiming for?
+                </p>
+            </header>
+
+            <div className="space-y-10">
+
+                {/* Goals */}
+                <div className="space-y-4">
+                    <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                        What are the success criteria? <span className="text-zinc-300 font-normal normal-case ml-2">(Select up to 3)</span>
+                    </label>
+                    <div className="flex flex-wrap gap-3">
+                        {SUGGESTED_GOALS.map(goal => (
+                            <button
+                                key={goal}
+                                onClick={() => toggleGoal(goal)}
+                                className={`px-4 py-2 border text-sm transition-all duration-300 ${data.goals?.includes(goal)
+                                    ? 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900'
+                                    : 'border-zinc-200 text-zinc-600 hover:border-zinc-400 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-600'
+                                    }`}
+                            >
+                                {goal}
+                            </button>
+                        ))}
+                    </div>
+
+                    {!showHelper && (!data.goals || data.goals.length === 0) && (
+                        <button
+                            onClick={() => setShowHelper(true)}
+                            className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 underline underline-offset-4 decoration-dotted mt-2"
+                        >
+                            I'm not sure — help me decide
+                        </button>
+                    )}
+
+                    {showHelper && (
+                        <div className="p-4 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 rounded-lg space-y-3 animate-in fade-in slide-in-from-top-1">
+                            <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                                Is this work primarily for internal alignment or public consumption?
+                            </p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => applyHelperRecommendation('internal')}
+                                    className="px-3 py-1.5 text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm rounded hover:border-amber-400 transition-colors"
+                                >
+                                    Internal / Experimental
+                                </button>
+                                <button
+                                    onClick={() => applyHelperRecommendation('public')}
+                                    className="px-3 py-1.5 text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm rounded hover:border-amber-400 transition-colors"
+                                >
+                                    Public / Production
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Boundaries */}
+                <div className="space-y-4">
+                    <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                        What are the non-negotiables?
+                    </label>
+                    <div className="flex flex-wrap gap-3">
+                        {SUGGESTED_BOUNDARIES.map(boundary => (
+                            <button
+                                key={boundary}
+                                onClick={() => toggleBoundary(boundary)}
+                                className={`px-4 py-2 border text-sm transition-all duration-300 ${data.boundaries?.includes(boundary)
+                                    ? 'border-red-900 bg-red-50 text-red-900 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200'
+                                    : 'border-zinc-200 text-zinc-600 hover:border-red-200 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-red-900/50'
+                                    }`}
+                            >
+                                {boundary}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="flex justify-between pt-8 border-t border-zinc-100 dark:border-zinc-900">
+                    <button
+                        onClick={() => setStep('assignment')}
+                        className="text-sm font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                    >
+                        &larr; Back
+                    </button>
+                    <button
+                        onClick={() => setStep('desks')}
+                        className="group flex items-center gap-2 text-lg font-medium text-zinc-900 dark:text-zinc-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                    >
+                        Staffing & Desks
+                        <span className="block w-6 h-[1px] bg-current group-hover:w-10 transition-all" />
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};

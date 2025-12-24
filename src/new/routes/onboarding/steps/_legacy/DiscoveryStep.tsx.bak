@@ -1,0 +1,99 @@
+import { useOnboardingStore } from '../store';
+
+const ROLES = [
+    { id: 'editor', label: 'Editor-in-Chief', description: 'Oversight, direction, and final approval.' },
+    { id: 'writer', label: 'Lead Writer', description: 'Drafting, voice tuning, and narrative.' },
+    { id: 'strategist', label: 'Content Strategist', description: 'Planning, audience alignment, and goals.' },
+    { id: 'producer', label: 'Producer / PM', description: 'Workflow, timeline, and resource management.' },
+];
+
+const EXPERIENCES = [
+    { id: 'novice', label: 'AI Curious', description: 'First time using advanced editorial AI.' },
+    { id: 'proficient', label: 'Proficient', description: 'Comfortable with prompting and generation.' },
+    { id: 'expert', label: 'Power User', description: 'Deep technical understanding of models and contexts.' },
+];
+
+const GOALS = [
+    { id: 'draft', label: 'Drafting Content', description: 'I need to write something from scratch.' },
+    { id: 'refine', label: 'Refining & Polishing', description: 'I have text that needs improvement.' },
+    { id: 'plan', label: 'Strategic Planning', description: 'I need to organize a campaign or issue.' },
+    { id: 'experiment', label: 'Exploring Ideas', description: 'I want to see what Codra can do.' },
+];
+
+export const DiscoveryStep = () => {
+    const { discovery, updateDiscovery, setStep } = useOnboardingStore();
+
+    const renderOption = (item: { id: string, label: string, description: string }, current: string, onSelect: (id: string) => void) => (
+        <button
+            key={item.id}
+            onClick={() => onSelect(item.id)}
+            className={`p-4 text-left border rounded-sm transition-all duration-200 ${current === item.id
+                ? 'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-900'
+                : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700'
+                }`}
+        >
+            <div className="font-medium text-zinc-900 dark:text-zinc-100 mb-1">{item.label}</div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">{item.description}</div>
+        </button>
+    );
+
+    const canProceed = discovery.role && discovery.experience && discovery.goal;
+
+    return (
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-20">
+            <header className="space-y-4">
+                <h1 className="text-4xl md:text-5xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
+                    Tell us about yourself
+                </h1>
+                <p className="text-xl text-zinc-500 font-light max-w-lg">
+                    We'll tailor the workspace tools to your role and objectives.
+                </p>
+            </header>
+
+            <div className="space-y-10">
+                <div className="space-y-4">
+                    <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                        Primary Role
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {ROLES.map(r => renderOption(r, discovery.role, (id) => updateDiscovery({ role: id })))}
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                        Experience with AI
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {EXPERIENCES.map(e => renderOption(e, discovery.experience, (id) => updateDiscovery({ experience: id })))}
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                        Goal for this Session
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {GOALS.map(g => renderOption(g, discovery.goal, (id) => updateDiscovery({ goal: id })))}
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex justify-between pt-8 border-t border-zinc-100 dark:border-zinc-900">
+                <button
+                    onClick={() => setStep('mode')}
+                    className="text-sm font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                >
+                    &larr; Back
+                </button>
+                <button
+                    onClick={() => setStep('first-gen')}
+                    disabled={!canProceed}
+                    className="text-lg font-medium text-zinc-900 dark:text-zinc-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors disabled:opacity-30 disabled:hover:text-zinc-900"
+                >
+                    Continue &rarr;
+                </button>
+            </div>
+        </div>
+    );
+};

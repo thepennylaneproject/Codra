@@ -30,7 +30,8 @@ const AIMLAPI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 128000,
         priceHint: { inputPer1k: 0.005, outputPer1k: 0.015 },
         latencyHintMs: 800,
-        tags: ['fast', 'multimodal', 'recommended']
+        tags: ['fast', 'multimodal', 'recommended', 'reasoning', 'code', 'visual'],
+        creator: 'OpenAI'
     },
     {
         id: 'gpt-4-turbo',
@@ -39,7 +40,8 @@ const AIMLAPI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 128000,
         priceHint: { inputPer1k: 0.01, outputPer1k: 0.03 },
         latencyHintMs: 1200,
-        tags: ['powerful', 'multimodal']
+        tags: ['powerful', 'multimodal', 'reasoning', 'code', 'visual'],
+        creator: 'OpenAI'
     },
     {
         id: 'gpt-3.5-turbo',
@@ -48,7 +50,8 @@ const AIMLAPI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 16385,
         priceHint: { inputPer1k: 0.0005, outputPer1k: 0.0015 },
         latencyHintMs: 400,
-        tags: ['fast', 'cheap', 'legacy']
+        tags: ['fast', 'cheap', 'legacy', 'balanced'],
+        creator: 'OpenAI'
     },
     {
         id: 'claude-3-5-sonnet-20241022',
@@ -57,7 +60,8 @@ const AIMLAPI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 200000,
         priceHint: { inputPer1k: 0.003, outputPer1k: 0.015 },
         latencyHintMs: 900,
-        tags: ['reasoning', 'long-context', 'recommended']
+        tags: ['reasoning', 'long-context', 'recommended', 'code'],
+        creator: 'Anthropic'
     },
     {
         id: 'claude-3-opus-20240229',
@@ -66,7 +70,8 @@ const AIMLAPI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 200000,
         priceHint: { inputPer1k: 0.015, outputPer1k: 0.075 },
         latencyHintMs: 2000,
-        tags: ['powerful', 'reasoning', 'expensive']
+        tags: ['powerful', 'reasoning', 'expensive'],
+        creator: 'Anthropic'
     },
     {
         id: 'claude-3-haiku-20240307',
@@ -75,7 +80,8 @@ const AIMLAPI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 200000,
         priceHint: { inputPer1k: 0.00025, outputPer1k: 0.00125 },
         latencyHintMs: 300,
-        tags: ['fast', 'cheap']
+        tags: ['fast', 'cheap'],
+        creator: 'Anthropic'
     },
     {
         id: 'meta-llama/Llama-3.3-70B-Instruct-Turbo',
@@ -84,7 +90,8 @@ const AIMLAPI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 8192,
         priceHint: { inputPer1k: 0.0007, outputPer1k: 0.0009 },
         latencyHintMs: 600,
-        tags: ['open-source', 'fast']
+        tags: ['open-source', 'fast'],
+        creator: 'Meta'
     },
     {
         id: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
@@ -93,26 +100,294 @@ const AIMLAPI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 32768,
         priceHint: { inputPer1k: 0.00027, outputPer1k: 0.00027 },
         latencyHintMs: 500,
-        tags: ['open-source', 'cheap', 'moe']
+        tags: ['open-source', 'cheap', 'moe'],
+        creator: 'Mistral'
     },
-    // Image models
+    // FLUX Family
     {
         id: 'flux-pro',
-        displayName: 'Flux Pro',
+        displayName: 'FLUX.1 [pro]',
         modalities: ['image'],
         contextWindow: 0,
         priceHint: { inputPer1k: 0, outputPer1k: 0.05 },
         latencyHintMs: 8000,
-        tags: ['image-gen', 'high-quality']
+        tags: ['image-gen', 'high-quality', 'visual', 'recommended'],
+        creator: 'Black Forest Labs'
     },
     {
-        id: 'stable-diffusion-xl',
-        displayName: 'Stable Diffusion XL',
+        id: 'flux-dev',
+        displayName: 'FLUX.1 [dev]',
         modalities: ['image'],
         contextWindow: 0,
         priceHint: { inputPer1k: 0, outputPer1k: 0.02 },
         latencyHintMs: 5000,
-        tags: ['image-gen', 'open-source']
+        tags: ['image-gen', 'visual'],
+        creator: 'Black Forest Labs'
+    },
+    {
+        id: 'flux-schnell',
+        displayName: 'FLUX.1 [schnell]',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.01 },
+        latencyHintMs: 2000,
+        tags: ['image-gen', 'fast', 'visual'],
+        creator: 'Black Forest Labs'
+    },
+    {
+        id: 'flux-realism',
+        displayName: 'FLUX Realism',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.04 },
+        latencyHintMs: 10000,
+        tags: ['image-gen', 'photo-real', 'visual'],
+        creator: 'Black Forest Labs'
+    },
+    // Stable Diffusion Family
+    {
+        id: 'stable-diffusion-xl',
+        displayName: 'Stable Diffusion XL 1.0',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.02 },
+        latencyHintMs: 5000,
+        tags: ['image-gen', 'open-source', 'visual'],
+        creator: 'Stability AI'
+    },
+    {
+        id: 'sdxl-turbo',
+        displayName: 'SDXL Turbo',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.01 },
+        latencyHintMs: 1500,
+        tags: ['image-gen', 'fast', 'visual'],
+        creator: 'Stability AI'
+    },
+    {
+        id: 'sd-3.5-large',
+        displayName: 'Stable Diffusion 3.5 Large',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.035 },
+        latencyHintMs: 6000,
+        tags: ['image-gen', 'high-quality', 'visual'],
+        creator: 'Stability AI'
+    },
+    {
+        id: 'sd-3.0',
+        displayName: 'Stable Diffusion 3.0',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.03 },
+        latencyHintMs: 5000,
+        tags: ['image-gen', 'visual'],
+        creator: 'Stability AI'
+    },
+    // DALL-E (Placeholder via aggregator)
+    {
+        id: 'dall-e-3',
+        displayName: 'DALL-E 3',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.04 },
+        latencyHintMs: 12000,
+        tags: ['image-gen', 'visual'],
+        creator: 'OpenAI'
+    },
+    // More Specialized / Open-Source Image Models
+    {
+        id: 'playground-v2.5',
+        displayName: 'Playground v2.5',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.015 },
+        latencyHintMs: 4000,
+        tags: ['image-gen', 'aesthetic', 'visual'],
+        creator: 'Playground AI'
+    },
+    {
+        id: 'aura-flow',
+        displayName: 'AuraFlow v1',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.02 },
+        latencyHintMs: 6000,
+        tags: ['image-gen', 'long-context', 'visual'],
+        creator: 'fal.ai'
+    },
+    {
+        id: 'kolors',
+        displayName: 'Kolors (Kuaishou)',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.025 },
+        latencyHintMs: 7000,
+        tags: ['image-gen', 'photoreal', 'visual'],
+        creator: 'Kuaishou'
+    },
+    {
+        id: 'midjourney-v6',
+        displayName: 'Midjourney v6',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.10 },
+        latencyHintMs: 15000,
+        tags: ['image-gen', 'artistic', 'visual', 'expensive'],
+        creator: 'Midjourney'
+    },
+    {
+        id: 'imagen-3',
+        displayName: 'Imagen 3',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.03 },
+        latencyHintMs: 8000,
+        tags: ['image-gen', 'high-fidelity', 'visual'],
+        creator: 'Google'
+    }
+];
+
+const OPENAI_MODELS: ModelRegistryEntry[] = [
+    {
+        id: 'gpt-4o',
+        displayName: 'GPT-4o',
+        modalities: ['text', 'code', 'vision'],
+        contextWindow: 128000,
+        priceHint: { inputPer1k: 0.005, outputPer1k: 0.015 },
+        latencyHintMs: 800,
+        tags: ['fast', 'multimodal', 'recommended', 'reasoning', 'code', 'visual'],
+        creator: 'OpenAI'
+    },
+    {
+        id: 'gpt-4o-mini',
+        displayName: 'GPT-4o Mini',
+        modalities: ['text', 'code', 'vision'],
+        contextWindow: 128000,
+        priceHint: { inputPer1k: 0.00015, outputPer1k: 0.0006 },
+        latencyHintMs: 400,
+        tags: ['fast', 'cheap', 'recommended', 'balanced', 'code'],
+        creator: 'OpenAI'
+    },
+    {
+        id: 'o1',
+        displayName: 'OpenAI o1',
+        modalities: ['text', 'code'],
+        contextWindow: 128000,
+        priceHint: { inputPer1k: 0.015, outputPer1k: 0.06 },
+        latencyHintMs: 10000,
+        tags: ['reasoning', 'powerful', 'recommended', 'code'],
+        creator: 'OpenAI'
+    },
+    {
+        id: 'o1-mini',
+        displayName: 'OpenAI o1-mini',
+        modalities: ['text', 'code'],
+        contextWindow: 128000,
+        priceHint: { inputPer1k: 0.003, outputPer1k: 0.012 },
+        latencyHintMs: 2000,
+        tags: ['reasoning', 'fast', 'recommended'],
+        creator: 'OpenAI'
+    }
+];
+
+const MISTRAL_MODELS: ModelRegistryEntry[] = [
+    {
+        id: 'mistral-large-latest',
+        displayName: 'Mistral Large',
+        modalities: ['text', 'code'],
+        contextWindow: 128000,
+        priceHint: { inputPer1k: 0.004, outputPer1k: 0.012 },
+        latencyHintMs: 1200,
+        tags: ['powerful', 'reasoning', 'code'],
+        creator: 'Mistral'
+    },
+    {
+        id: 'mistral-medium',
+        displayName: 'Mistral Medium',
+        modalities: ['text', 'code'],
+        contextWindow: 32000,
+        priceHint: { inputPer1k: 0.0027, outputPer1k: 0.0081 },
+        latencyHintMs: 800,
+        tags: ['balanced', 'reasoning'],
+        creator: 'Mistral'
+    },
+    {
+        id: 'open-mixtral-8x22b',
+        displayName: 'Mixtral 8x22B',
+        modalities: ['text', 'code'],
+        contextWindow: 64000,
+        priceHint: { inputPer1k: 0.002, outputPer1k: 0.006 },
+        latencyHintMs: 1000,
+        tags: ['open-source', 'moe'],
+        creator: 'Mistral'
+    }
+];
+
+const COHERE_MODELS: ModelRegistryEntry[] = [
+    {
+        id: 'command-r-plus',
+        displayName: 'Command R+',
+        modalities: ['text', 'code'],
+        contextWindow: 128000,
+        priceHint: { inputPer1k: 0.003, outputPer1k: 0.015 },
+        latencyHintMs: 1500,
+        tags: ['rag', 'powerful', 'reasoning', 'balanced'],
+        creator: 'Cohere'
+    },
+    {
+        id: 'command-r',
+        displayName: 'Command R',
+        modalities: ['text', 'code'],
+        contextWindow: 128000,
+        priceHint: { inputPer1k: 0.0005, outputPer1k: 0.0015 },
+        latencyHintMs: 800,
+        tags: ['rag', 'fast', 'cheap'],
+        creator: 'Cohere'
+    }
+];
+
+const HUGGINGFACE_MODELS: ModelRegistryEntry[] = [
+    {
+        id: 'meta-llama/Meta-Llama-3-70B-Instruct',
+        displayName: 'Llama 3 70B',
+        modalities: ['text', 'code'],
+        contextWindow: 8192,
+        priceHint: { inputPer1k: 0.0007, outputPer1k: 0.0009 },
+        latencyHintMs: 1200,
+        tags: ['open-source', 'powerful'],
+        creator: 'Meta'
+    },
+    {
+        id: 'mistralai/Mistral-7B-Instruct-v0.3',
+        displayName: 'Mistral 7B v0.3',
+        modalities: ['text', 'code'],
+        contextWindow: 32768,
+        priceHint: { inputPer1k: 0.0002, outputPer1k: 0.0002 },
+        latencyHintMs: 500,
+        tags: ['open-source', 'fast', 'cheap'],
+        creator: 'Mistral'
+    },
+    {
+        id: 'google/gemma-2-9b-it',
+        displayName: 'Gemma 2 9B',
+        modalities: ['text', 'code'],
+        contextWindow: 8192,
+        priceHint: { inputPer1k: 0.0002, outputPer1k: 0.0002 },
+        latencyHintMs: 400,
+        tags: ['open-source', 'efficient'],
+        creator: 'Google'
+    },
+    {
+        id: 'microsoft/Phi-3-mini-4k-instruct',
+        displayName: 'Phi-3 Mini',
+        modalities: ['text', 'code'],
+        contextWindow: 4096,
+        priceHint: { inputPer1k: 0.0001, outputPer1k: 0.0001 },
+        latencyHintMs: 300,
+        tags: ['open-source', 'tiny', 'cheap'],
+        creator: 'Microsoft'
     }
 ];
 
@@ -124,7 +399,8 @@ const DEEPSEEK_MODELS: ModelRegistryEntry[] = [
         contextWindow: 64000,
         priceHint: { inputPer1k: 0.00014, outputPer1k: 0.00028 },
         latencyHintMs: 500,
-        tags: ['cheap', 'fast']
+        tags: ['cheap', 'fast', 'balanced'],
+        creator: 'DeepSeek'
     },
     {
         id: 'deepseek-coder',
@@ -133,7 +409,8 @@ const DEEPSEEK_MODELS: ModelRegistryEntry[] = [
         contextWindow: 64000,
         priceHint: { inputPer1k: 0.00014, outputPer1k: 0.00028 },
         latencyHintMs: 500,
-        tags: ['code', 'cheap']
+        tags: ['code', 'cheap', 'fast'],
+        creator: 'DeepSeek'
     },
     {
         id: 'deepseek-reasoner',
@@ -142,19 +419,41 @@ const DEEPSEEK_MODELS: ModelRegistryEntry[] = [
         contextWindow: 64000,
         priceHint: { inputPer1k: 0.00055, outputPer1k: 0.00219 },
         latencyHintMs: 3000,
-        tags: ['reasoning', 'chain-of-thought']
+        tags: ['reasoning', 'chain-of-thought', 'powerful'],
+        creator: 'DeepSeek'
     }
 ];
 
 const GEMINI_MODELS: ModelRegistryEntry[] = [
     {
-        id: 'gemini-2.0-flash',
-        displayName: 'Gemini 2.0 Flash',
+        id: 'gemini-2.0-flash-exp',
+        displayName: 'Gemini 2.0 Flash (Experimental)',
         modalities: ['text', 'code', 'vision'],
         contextWindow: 1000000,
-        priceHint: { inputPer1k: 0.0001, outputPer1k: 0.0004 },
+        priceHint: { inputPer1k: 0, outputPer1k: 0 },
         latencyHintMs: 400,
-        tags: ['fast', 'multimodal', 'cheap', 'recommended']
+        tags: ['fast', 'multimodal', 'experimental', 'balanced', 'code'],
+        creator: 'Google'
+    },
+    {
+        id: 'gemini-2.0-pro-exp-02-05',
+        displayName: 'Gemini 2.0 Pro (Experimental)',
+        modalities: ['text', 'code', 'vision'],
+        contextWindow: 2000000,
+        priceHint: { inputPer1k: 0, outputPer1k: 0 },
+        latencyHintMs: 1500,
+        tags: ['powerful', 'reasoning', 'experimental', 'code', 'long-context'],
+        creator: 'Google'
+    },
+    {
+        id: 'gemini-2.0-flash-thinking-exp',
+        displayName: 'Gemini 2.0 Flash Thinking',
+        modalities: ['text', 'code', 'vision'],
+        contextWindow: 1000000,
+        priceHint: { inputPer1k: 0, outputPer1k: 0 },
+        latencyHintMs: 5000,
+        tags: ['reasoning', 'thinking', 'experimental', 'multimodal'],
+        creator: 'Google'
     },
     {
         id: 'gemini-1.5-pro',
@@ -163,7 +462,8 @@ const GEMINI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 2000000,
         priceHint: { inputPer1k: 0.00125, outputPer1k: 0.005 },
         latencyHintMs: 1000,
-        tags: ['long-context', 'multimodal', 'powerful']
+        tags: ['long-context', 'multimodal', 'powerful', 'reasoning', 'recommended', 'code'],
+        creator: 'Google'
     },
     {
         id: 'gemini-1.5-flash',
@@ -172,7 +472,18 @@ const GEMINI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 1000000,
         priceHint: { inputPer1k: 0.000075, outputPer1k: 0.0003 },
         latencyHintMs: 300,
-        tags: ['fast', 'cheap', 'multimodal']
+        tags: ['fast', 'cheap', 'multimodal', 'balanced'],
+        creator: 'Google'
+    },
+    {
+        id: 'imagen-3',
+        displayName: 'Imagen 3',
+        modalities: ['image'],
+        contextWindow: 0,
+        priceHint: { inputPer1k: 0, outputPer1k: 0.03 },
+        latencyHintMs: 8000,
+        tags: ['image-gen', 'high-fidelity', 'visual'],
+        creator: 'Google'
     }
 ];
 
@@ -184,7 +495,8 @@ const DEEPAI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 0,
         priceHint: { inputPer1k: 0, outputPer1k: 0.01 },
         latencyHintMs: 4000,
-        tags: ['image-gen']
+        tags: ['image-gen', 'visual'],
+        creator: 'DeepAI'
     },
     {
         id: 'super-resolution',
@@ -193,7 +505,8 @@ const DEEPAI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 0,
         priceHint: { inputPer1k: 0, outputPer1k: 0.01 },
         latencyHintMs: 3000,
-        tags: ['image-enhance', 'upscale']
+        tags: ['image-enhance', 'upscale'],
+        creator: 'DeepAI'
     },
     {
         id: 'colorizer',
@@ -202,7 +515,8 @@ const DEEPAI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 0,
         priceHint: { inputPer1k: 0, outputPer1k: 0.01 },
         latencyHintMs: 3000,
-        tags: ['image-enhance']
+        tags: ['image-enhance'],
+        creator: 'DeepAI'
     },
     {
         id: 'toonify',
@@ -211,7 +525,8 @@ const DEEPAI_MODELS: ModelRegistryEntry[] = [
         contextWindow: 0,
         priceHint: { inputPer1k: 0, outputPer1k: 0.01 },
         latencyHintMs: 3000,
-        tags: ['image-transform', 'fun']
+        tags: ['image-transform', 'fun'],
+        creator: 'DeepAI'
     }
 ];
 
@@ -251,6 +566,34 @@ export const PROVIDER_REGISTRY: ProviderRegistryEntry[] = [
         modalities: ['image'],
         supportsStreaming: false,
         models: DEEPAI_MODELS
+    },
+    {
+        id: 'openai',
+        displayName: 'OpenAI',
+        modalities: ['text', 'code', 'vision'],
+        supportsStreaming: true,
+        models: OPENAI_MODELS
+    },
+    {
+        id: 'mistral',
+        displayName: 'Mistral AI',
+        modalities: ['text', 'code'],
+        supportsStreaming: true,
+        models: MISTRAL_MODELS
+    },
+    {
+        id: 'cohere',
+        displayName: 'Cohere',
+        modalities: ['text', 'code'],
+        supportsStreaming: true,
+        models: COHERE_MODELS
+    },
+    {
+        id: 'huggingface',
+        displayName: 'Hugging Face',
+        modalities: ['text', 'code'],
+        supportsStreaming: true,
+        models: HUGGINGFACE_MODELS
     }
 ];
 

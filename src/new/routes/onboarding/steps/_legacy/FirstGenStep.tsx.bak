@@ -1,0 +1,100 @@
+import { useState } from 'react';
+import { useOnboardingStore } from '../store';
+
+export const FirstGenStep = () => {
+    const { updateFirstGen, setStep } = useOnboardingStore();
+    const [prompt, setPrompt] = useState('');
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [generatedContent, setGeneratedContent] = useState<string | null>(null);
+
+    const handleGenerate = async () => {
+        if (!prompt.trim()) return;
+        setIsGenerating(true);
+        // Simulate generation
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setGeneratedContent(
+            "Here is a draft based on your request. Codra has analyzed the intent and produced a preliminary structure. " +
+            "Notice how the tone leans towards Clarity but maintains a professional distance."
+        );
+        updateFirstGen({ artifact: "Sample Generated Artifact" });
+        setIsGenerating(false);
+    };
+
+    const handleFeedback = (feedback: 'closer' | 'not-quite') => {
+        updateFirstGen({ feedback });
+        setStep('assignment');
+    };
+
+    return (
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-20">
+            <header className="space-y-4">
+                <h1 className="text-4xl md:text-5xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
+                    Calibration
+                </h1>
+                <p className="text-xl text-zinc-500 font-light max-w-lg">
+                    Let's create a quick artifact to calibrate the engine to your taste.
+                </p>
+            </header>
+
+            {!generatedContent ? (
+                <div className="space-y-6 max-w-xl">
+                    <div className="space-y-2">
+                        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                            What is one thing you need to write or explore right now?
+                        </label>
+                        <textarea
+                            value={prompt}
+                            onChange={(e) => setPrompt(e.target.value)}
+                            placeholder="e.g., A rejection letter to a vendor, an opening paragraph for a manifesto, a tagline for a coffee brand..."
+                            className="w-full h-32 p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:ring-1 focus:ring-amber-500 rounded-sm resize-none"
+                        />
+                    </div>
+                    <button
+                        onClick={handleGenerate}
+                        disabled={!prompt.trim() || isGenerating}
+                        className="bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 px-6 py-3 font-medium rounded-sm disabled:opacity-50 hover:opacity-90 transition-opacity w-full sm:w-auto"
+                    >
+                        {isGenerating ? 'Generating...' : 'Generate Test Artifact'}
+                    </button>
+
+                    {/* Skip option */}
+                    <button
+                        onClick={() => setStep('assignment')}
+                        className="block text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 mt-4"
+                    >
+                        Skip Calibration (Use Defaults)
+                    </button>
+                </div>
+            ) : (
+                <div className="space-y-8 animate-in fade-in zoom-in-95 duration-500">
+                    <div className="p-6 bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 shadow-sm rounded-sm">
+                        <div className="text-xs uppercase tracking-widest text-zinc-400 mb-4">Codra Output</div>
+                        <p className="font-serif text-lg leading-relaxed text-zinc-800 dark:text-zinc-200">
+                            {generatedContent}
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400 text-center">
+                            How does this feel?
+                        </p>
+                        <div className="flex justify-center gap-4">
+                            <button
+                                onClick={() => handleFeedback('not-quite')}
+                                className="px-6 py-3 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 text-zinc-600 dark:text-zinc-400 transition-colors"
+                            >
+                                Not Quite
+                            </button>
+                            <button
+                                onClick={() => handleFeedback('closer')}
+                                className="px-6 py-3 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90 transition-opacity"
+                            >
+                                Closer / Good Start
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};

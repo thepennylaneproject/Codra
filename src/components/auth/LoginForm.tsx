@@ -8,13 +8,39 @@ import React, { useState, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../lib/auth/AuthProvider';
 import type { OAuthProvider } from '../../lib/api/auth.types';
-import { Eye, EyeOff, Mail, Lock, Loader2, AlertCircle, Activity } from 'lucide-react';
 
 // ============================================================
 // Icons
 // ============================================================
 
 const Icons = {
+  Eye: () => (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    </svg>
+  ),
+  EyeOff: () => (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+    </svg>
+  ),
+  Mail: () => (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+    </svg>
+  ),
+  Lock: () => (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+    </svg>
+  ),
+  Loader: () => (
+    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+    </svg>
+  ),
   Google: () => (
     <svg className="w-5 h-5" viewBox="0 0 24 24">
       <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -31,6 +57,16 @@ const Icons = {
   Discord: () => (
     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
       <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+    </svg>
+  ),
+  AlertCircle: () => (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+  Activity: () => (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
     </svg>
   ),
 };
@@ -66,12 +102,12 @@ function FormInput({
 }: FormInputProps) {
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-text-primary">
+      <label className="block text-sm font-medium text-zinc-300">
         {label}
       </label>
       <div className="relative">
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
             {icon}
           </div>
         )}
@@ -84,15 +120,15 @@ function FormInput({
           autoComplete={autoComplete}
           className={`
             w-full px-4 py-3 rounded-xl
-            bg-background-subtle/50 border transition-all duration-200
-            text-text-primary placeholder-zinc-600
+            bg-zinc-900/50 border transition-all duration-200
+            text-zinc-100 placeholder-zinc-600
             focus:outline-none focus:ring-2 focus:ring-indigo-500/50
             disabled:opacity-50 disabled:cursor-not-allowed
             ${icon ? 'pl-11' : ''}
             ${rightElement ? 'pr-11' : ''}
-            ${error
-              ? 'border-red-500/50 focus:border-red-500'
-              : 'border-border-subtle hover:border-border-strong focus:border-indigo-500'
+            ${error 
+              ? 'border-red-500/50 focus:border-red-500' 
+              : 'border-zinc-800 hover:border-zinc-700 focus:border-indigo-500'
             }
           `}
         />
@@ -104,7 +140,7 @@ function FormInput({
       </div>
       {error && (
         <p className="text-sm text-red-400 flex items-center gap-1.5">
-          <AlertCircle className="w-5 h-5" />
+          <Icons.AlertCircle />
           {error}
         </p>
       )}
@@ -127,12 +163,12 @@ function OAuthButton({ provider, onClick, disabled }: OAuthButtonProps) {
     google: {
       icon: <Icons.Google />,
       label: 'Google',
-      className: 'hover:bg-surface-chip',
+      className: 'hover:bg-zinc-800',
     },
     github: {
       icon: <Icons.GitHub />,
       label: 'GitHub',
-      className: 'hover:bg-surface-chip',
+      className: 'hover:bg-zinc-800',
     },
     discord: {
       icon: <Icons.Discord />,
@@ -150,7 +186,7 @@ function OAuthButton({ provider, onClick, disabled }: OAuthButtonProps) {
       disabled={disabled}
       className={`
         flex items-center justify-center gap-2 px-4 py-3 rounded-xl
-        bg-background-subtle/50 border border-border-subtle text-text-primary
+        bg-zinc-900/50 border border-zinc-800 text-zinc-300
         transition-all duration-200
         disabled:opacity-50 disabled:cursor-not-allowed
         ${className}
@@ -217,7 +253,7 @@ export function LoginForm() {
   const formDisabled = isLoading || isSubmitting;
 
   return (
-    <div className="min-h-screen bg-background-default flex">
+    <div className="min-h-screen bg-zinc-950 flex">
       {/* Left Panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-zinc-900 to-zinc-950 p-12 flex-col justify-between relative overflow-hidden">
         {/* Background Pattern */}
@@ -231,7 +267,7 @@ export function LoginForm() {
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-            <Activity className="w-6 h-6 text-white" />
+            <Icons.Activity />
           </div>
           <span className="text-2xl font-bold text-white tracking-tight">Codra</span>
         </div>
@@ -241,7 +277,7 @@ export function LoginForm() {
           <h1 className="text-4xl font-bold text-white mb-4 leading-tight">
             Build smarter with unified AI workflows
           </h1>
-          <p className="text-lg text-text-soft">
+          <p className="text-lg text-zinc-400">
             One platform for code, images, and assets. 200+ AI models at your fingertips.
           </p>
         </div>
@@ -253,7 +289,7 @@ export function LoginForm() {
             'Visual workflow builder',
             'Local file system access',
           ].map((feature, idx) => (
-            <div key={idx} className="flex items-center gap-3 text-text-soft">
+            <div key={idx} className="flex items-center gap-3 text-zinc-400">
               <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
               <span>{feature}</span>
             </div>
@@ -267,21 +303,21 @@ export function LoginForm() {
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-              <Activity className="w-6 h-6 text-white" />
+              <Icons.Activity />
             </div>
             <span className="text-2xl font-bold text-white tracking-tight">Codra</span>
           </div>
 
           {/* Header */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold text-text-primary mb-2">Welcome back</h2>
-            <p className="text-text-muted">Sign in to your account to continue</p>
+            <h2 className="text-2xl font-semibold text-zinc-100 mb-2">Welcome back</h2>
+            <p className="text-zinc-500">Sign in to your account to continue</p>
           </div>
 
           {/* Error Alert */}
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-400" />
+              <Icons.AlertCircle />
               <p className="text-sm text-red-400">{error}</p>
             </div>
           )}
@@ -296,10 +332,10 @@ export function LoginForm() {
           {/* Divider */}
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border-subtle" />
+              <div className="w-full border-t border-zinc-800" />
             </div>
             <div className="relative flex justify-center">
-              <span className="px-4 text-sm text-zinc-600 bg-background-default">or continue with email</span>
+              <span className="px-4 text-sm text-zinc-600 bg-zinc-950">or continue with email</span>
             </div>
           </div>
 
@@ -311,7 +347,7 @@ export function LoginForm() {
               value={email}
               onChange={setEmail}
               placeholder="you@example.com"
-              icon={<Mail className="w-5 h-5" />}
+              icon={<Icons.Mail />}
               disabled={formDisabled}
               autoComplete="email"
             />
@@ -322,24 +358,24 @@ export function LoginForm() {
               value={password}
               onChange={setPassword}
               placeholder="••••••••"
-              icon={<Lock className="w-5 h-5" />}
+              icon={<Icons.Lock />}
               disabled={formDisabled}
               autoComplete="current-password"
               rightElement={
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-text-muted hover:text-text-soft transition-colors"
+                  className="text-zinc-500 hover:text-zinc-400 transition-colors"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <Icons.EyeOff /> : <Icons.Eye />}
                 </button>
               }
             />
 
             {/* Forgot Password Link */}
             <div className="flex justify-end">
-              <Link
-                to="/forgot-password"
+              <Link 
+                to="/forgot-password" 
                 className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
               >
                 Forgot password?
@@ -362,7 +398,7 @@ export function LoginForm() {
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Icons.Loader />
                   Signing in...
                 </>
               ) : (
@@ -372,10 +408,10 @@ export function LoginForm() {
           </form>
 
           {/* Sign Up Link */}
-          <p className="mt-8 text-center text-text-muted">
+          <p className="mt-8 text-center text-zinc-500">
             Don't have an account?{' '}
-            <Link
-              to="/signup"
+            <Link 
+              to="/signup" 
               className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
             >
               Create one

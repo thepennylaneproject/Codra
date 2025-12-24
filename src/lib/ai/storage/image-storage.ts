@@ -3,13 +3,10 @@
  * Supabase Storage integration for image persistence
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../../supabase';
 
 export class ImageStorage {
-  private supabase = createClient(
-    process.env.VITE_SUPABASE_URL!,
-    process.env.VITE_SUPABASE_ANON_KEY!
-  );
+  private supabase = supabase;
 
   private bucketName = 'generated-images';
 

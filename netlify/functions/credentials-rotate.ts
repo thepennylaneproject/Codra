@@ -6,7 +6,7 @@
 
 import { Handler } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
-import { CredentialEncryption } from '../src/lib/encryption';
+import { deriveUserEncryptionKey, encryptApiKey } from '../../src/lib/api/encryption';
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL!,
@@ -78,8 +78,8 @@ export const handler: Handler = async (event) => {
 
     // Encrypt the new API key
     const appSecret = process.env.CODRA_APP_SECRET!;
-    const encryptionKey = CredentialEncryption.deriveKey(user.id, appSecret);
-    const encryptedKey = CredentialEncryption.encrypt(newApiKey, encryptionKey);
+    const encryptionKey = await deriveUserEncryptionKey(user.id, appSecret);
+    const encryptedKey = await encryptApiKey(newApiKey, encryptionKey);
 
     // Generate masked key
     const maskedKey = `...${newApiKey.slice(-4)}`;

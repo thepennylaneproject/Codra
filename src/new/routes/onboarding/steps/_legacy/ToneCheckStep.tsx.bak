@@ -1,0 +1,127 @@
+
+import { useOnboardingStore } from '../store';
+import { EditorialPreferences } from '../../../../domain/types';
+
+const TONES: { id: EditorialPreferences['tone']; label: string; description: string }[] = [
+    { id: 'neutral', label: 'Neutral / Journalistic', description: 'Objective, balanced, and fact-forward.' },
+    { id: 'authoritative', label: 'Authoritative', description: 'Expert, decisive, and commanding.' },
+    { id: 'conversational', label: 'Conversational', description: 'Accessible, engaging, and human.' },
+    { id: 'provocative', label: 'Provocative', description: 'Bold, challenging, and edgy.' },
+];
+
+const PACINGS: { id: EditorialPreferences['pacing']; label: string; description: string }[] = [
+    { id: 'rapid', label: 'Rapid Fire', description: 'Short sentences. High energy. Quick beats.' },
+    { id: 'steady', label: 'Steady Rhythm', description: 'Balanced flow designed for clarity and retention.' },
+    { id: 'deliberate', label: 'Deliberate', description: 'Complex structures. Deep analysis. Slow burn.' },
+];
+
+const POSTURES: { id: NonNullable<EditorialPreferences['visualPosture']>; label: string; description: string }[] = [
+    { id: 'minimal', label: 'Minimal', description: 'Whitespace driven. Clean. Breathable.' },
+    { id: 'dense', label: 'Dense', description: 'Information rich. Newsletter style. Compact.' },
+    { id: 'bold', label: 'Bold', description: 'High contrast. Large typography. Impactful.' },
+    { id: 'soft', label: 'Soft', description: 'Organic shapes. Muted tones. Approachable.' },
+    { id: 'architectural', label: 'Architectural', description: 'Grid-based. Structured. Precise.' },
+];
+
+const OUTPUTS: { id: NonNullable<EditorialPreferences['intendedOutput']>; label: string; description: string }[] = [
+    { id: 'brief', label: 'Brief / Update', description: 'Short-form status or digest.' },
+    { id: 'article', label: 'Article', description: 'Standard long-form narrative.' },
+    { id: 'report', label: 'Analytical Report', description: 'Data-heavy insights and tables.' },
+    { id: 'deck', label: 'Presentation Deck', description: 'Slide-based storytelling.' },
+    { id: 'visual-essay', label: 'Visual Essay', description: 'Image-led narrative flow.' },
+];
+
+const AUDIENCES: { id: NonNullable<EditorialPreferences['audienceRelationship']>; label: string; description: string }[] = [
+    { id: 'peer', label: 'Peer-to-Peer', description: 'Talking to equals. Shared context.' },
+    { id: 'expert-to-novice', label: 'Expert-to-Novice', description: 'Educational. Guiding. Explanatory.' },
+    { id: 'seller-to-buyer', label: 'Seller-to-Buyer', description: 'Persuasive. Value-focused.' },
+    { id: 'collaborator', label: 'Collaborator', description: 'Co-creative. Open-ended.' },
+];
+
+export const ToneCheckStep = () => {
+    const { data, updateEditorial, setStep } = useOnboardingStore();
+    const { editorialPreferences } = data;
+
+    // Defaults handled in store/generator, but safe access here
+    const tone = editorialPreferences?.tone || 'neutral';
+    const pacing = editorialPreferences?.pacing || 'steady';
+    const visualPosture = editorialPreferences?.visualPosture || 'minimal';
+    const intendedOutput = editorialPreferences?.intendedOutput || 'article';
+    const audienceRelationship = editorialPreferences?.audienceRelationship || 'peer';
+
+    const renderSection = (
+        title: string,
+        items: { id: string; label: string; description: string }[],
+        currentValue: string,
+        onSelect: (id: any) => void
+    ) => (
+        <div className="space-y-4">
+            <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                {title}
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {items.map(item => (
+                    <button
+                        key={item.id}
+                        onClick={() => onSelect(item.id)}
+                        className={`p-4 text-left border transition-all duration-300 group ${currentValue === item.id
+                            ? 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900'
+                            : 'border-zinc-200 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600'
+                            }`}
+                    >
+                        <div className="flex items-start justify-between">
+                            <div className="font-medium text-sm mb-1">{item.label}</div>
+                            {currentValue === item.id && (
+                                <div className="w-1.5 h-1.5 rounded-full bg-current shrink-0 mt-1" />
+                            )}
+                        </div>
+                        <div className={`text-xs leading-relaxed ${currentValue === item.id ? 'text-zinc-300 dark:text-zinc-500' : 'text-zinc-500 group-hover:text-zinc-700 dark:group-hover:text-zinc-300'}`}>
+                            {item.description}
+                        </div>
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-20">
+            <header className="space-y-4">
+                <h1 className="text-4xl md:text-5xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
+                    Editorial Direction
+                </h1>
+                <p className="text-xl text-zinc-500 font-light max-w-lg">
+                    Define the voice, look, and feel of your project.
+                </p>
+            </header>
+
+            <div className="space-y-16">
+                {renderSection('Voice & Tone', TONES, tone, (id) => updateEditorial({ tone: id }))}
+
+                {renderSection('Visual Posture', POSTURES, visualPosture, (id) => updateEditorial({ visualPosture: id }))}
+
+                {renderSection('Intended Format', OUTPUTS, intendedOutput, (id) => updateEditorial({ intendedOutput: id }))}
+
+                {renderSection('Audience Relationship', AUDIENCES, audienceRelationship, (id) => updateEditorial({ audienceRelationship: id }))}
+
+                {renderSection('Pacing & Rhythm', PACINGS, pacing, (id) => updateEditorial({ pacing: id }))}
+            </div>
+
+            <div className="flex justify-between pt-8 border-t border-zinc-100 dark:border-zinc-900 sticky bottom-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md py-6 -mx-6 px-6 md:-mx-12 md:px-12 border-t border-zinc-200">
+                <button
+                    onClick={() => setStep('budget')}
+                    className="text-sm font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                >
+                    &larr; Back
+                </button>
+                <button
+                    onClick={() => setStep('close')}
+                    className="group flex items-center gap-2 text-lg font-medium text-zinc-900 dark:text-zinc-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                >
+                    Review & Initialize
+                    <span className="block w-6 h-[1px] bg-current group-hover:w-10 transition-all" />
+                </button>
+            </div>
+        </div>
+    );
+};

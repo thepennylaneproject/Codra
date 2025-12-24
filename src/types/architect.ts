@@ -45,7 +45,7 @@ export interface ProjectTechStack {
     aiProviders?: string[];       // e.g., ["AIMLAPI", "DeepSeek"]
 }
 
-import type { GeneratedTheme } from '../types/design';
+import type { GeneratedTheme } from './design';
 
 // ... existing imports ...
 

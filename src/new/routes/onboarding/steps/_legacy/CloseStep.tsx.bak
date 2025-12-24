@@ -1,0 +1,125 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useOnboardingStore } from '../store';
+import { createProject } from '../../../../domain/projects';
+import { generateMoodboard } from '../moodboardGenerator';
+import { TearSheetRevision } from '../../../../domain/types';
+
+export const CloseStep = () => {
+    const { data, setStep } = useOnboardingStore();
+    const navigate = useNavigate();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmit = async () => {
+        setIsSubmitting(true);
+        try {
+            // 1. Generate Moodboard
+            const moodboard = generateMoodboard(data);
+            const enrichedData = { ...data, moodboard };
+
+            // 2. Create Project
+            const project = await createProject(enrichedData);
+
+            // 3. Generate Draft Tear Sheet
+            const draftRevision: TearSheetRevision = {
+                id: crypto.randomUUID(),
+                version: 1,
+                createdAt: new Date().toISOString(),
+                summary: 'Initial Draft from Onboarding',
+                status: 'draft',
+                createdFrom: 'onboarding',
+                scopeImpact: 'Medium',
+                data: enrichedData, // Includes moodboard
+                impact: {
+                    affectedSections: ['Project Brief', 'Goals'],
+                    costEstimation: '$$ - Moderate Start',
+                    workflowChanges: enrichedData.selectedDesks?.includes('art') ? ['Art Desk Approval Queue'] : []
+                }
+            };
+            localStorage.setItem(`codra:tearSheet:${project.id}`, JSON.stringify([draftRevision]));
+
+            // 3. Route to Draft Tear Sheet (Skip Spread Layout init)
+            navigate(`/p/${project.id}/tear-sheet?mode=draft&from=onboarding`);
+        } catch (e) {
+            console.error(e);
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+            <header className="space-y-4">
+                <h1 className="text-4xl md:text-5xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
+                    Pre-Flight Check
+                </h1>
+                <p className="text-xl text-zinc-500 font-light max-w-lg">
+                    Confirm details before initializing the workspace.
+                </p>
+            </header>
+
+            <div className="space-y-8 bg-zinc-50 dark:bg-zinc-900/50 p-8 border border-zinc-200 dark:border-zinc-800">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-2">Project</h3>
+                        <p className="text-lg font-medium">{data.projectName}</p>
+                        <p className="text-zinc-500 text-sm mt-1">{data.description}</p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-2">Desks</h3>
+                        <div className="flex flex-wrap gap-2">
+                            {data.selectedDesks?.length ? data.selectedDesks.map(d => (
+                                <span key={d} className="text-xs border px-2 py-1 rounded-full uppercase tracking-wide border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400">
+                                    {d}
+                                </span>
+                            )) : <span className="text-zinc-400 italic text-sm">None selected</span>}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-2">Key Objectives</h3>
+                        <ul className="list-disc list-inside text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                            {data.goals?.map(g => <li key={g}>{g}</li>)}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-2">Editorial Voice</h3>
+                        <p className="text-sm capitalize text-zinc-600 dark:text-zinc-400">
+                            {data.editorialPreferences?.tone} / {data.editorialPreferences?.pacing}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex justify-between items-center pt-4">
+                <button
+                    onClick={() => setStep('tone')}
+                    disabled={isSubmitting}
+                    className="text-sm font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors disabled:opacity-50"
+                >
+                    &larr; Back
+                </button>
+                <div className="flex items-center gap-4">
+                    <span className="text-xs text-zinc-400 uppercase tracking-widest">
+                        {isSubmitting ? 'Generating Draft...' : 'Ready to Proof'}
+                    </span>
+                    <button
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                        className="bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 px-8 py-3 text-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-70 flex items-center gap-2"
+                    >
+                        {isSubmitting ? (
+                            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                        ) : (
+                            'Preview Tear Sheet'
+                        )}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};

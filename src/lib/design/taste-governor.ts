@@ -59,6 +59,44 @@ export const TASTE_GOVERNOR = {
         }
     },
 
+    // Gold Accent Constraints
+    // "The throne room, not the marketplace"
+    goldAccent: {
+        // ONLY these use cases are permitted
+        permitted: [
+            'primary-cta',      // Main action buttons
+            'active-state',     // Currently selected items
+            'success-indicator' // Completion/success states
+        ] as const,
+        // Intensity constraints
+        borderOpacity: 0.25,
+        glowOpacity: 0.35,
+        textOpacity: 1.0,
+        // NEVER solid gold backgrounds
+        solidBackground: false,
+        // Hairline-only for borders
+        maxBorderWidth: '1px',
+    },
+
+    // Iconography Constraints
+    // "Clarity through consistency"
+    icons: {
+        strokeWidth: 1.5, // Consistent across all icons
+        sizes: {
+            xs: 14,
+            sm: 16,
+            md: 20,
+            lg: 24,
+            xl: 32,
+        },
+        // Icons should be muted unless active
+        defaultOpacity: 0.7,
+        activeOpacity: 1.0,
+        hoverOpacity: 0.9,
+        // No filled icons by default
+        defaultVariant: 'outline' as const,
+    },
+
     // Asset Generation Prompts (for runtime reference)
     prompts: {
         masterConstraint: `

@@ -22,8 +22,8 @@ const CONTRAST_CONFIG = {
 
 export function generateTheme(seed: ThemeSeed, name: string = 'Custom'): GeneratedTheme {
     const { baseHue, accentHue, intensity, contrastPreference, mode } = seed;
-    const intensityConfig = INTENSITY_CONFIG[intensity];
-    const contrastConfig = CONTRAST_CONFIG[contrastPreference];
+    const intensityConfig = INTENSITY_CONFIG[intensity as keyof typeof INTENSITY_CONFIG];
+    const contrastConfig = CONTRAST_CONFIG[contrastPreference as keyof typeof CONTRAST_CONFIG];
 
     // Base colors depend on mode
     const isDark = mode === 'dark';
@@ -87,6 +87,7 @@ export function generateTheme(seed: ThemeSeed, name: string = 'Custom'): Generat
             md: `0 8px 24px rgba(0,0,0,${isDark ? 0.55 : 0.2})`,
             lg: `0 16px 48px rgba(0,0,0,${isDark ? 0.7 : 0.25})`,
         },
+        clean: { sm: 'none', md: 'none', lg: 'none' },
     };
 
     return {
@@ -133,7 +134,7 @@ export function generateTheme(seed: ThemeSeed, name: string = 'Custom'): Generat
             lg: '14px',
             full: '999px',
         },
-        shadows: shadowConfig[seed.surfaceStyle],
+        shadows: shadowConfig[seed.surfaceStyle as keyof typeof shadowConfig],
     };
 }
 
