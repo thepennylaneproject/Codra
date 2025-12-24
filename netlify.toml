@@ -29,7 +29,7 @@
 
 # Environment-specific settings
 [context.production]
-  environment = { NODE_ENV = "production" }
+  environment = {  }
 
 [context.deploy-preview]
   environment = { NODE_ENV = "preview" }
