@@ -6,12 +6,6 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Redirects for SPA routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
 # Headers for security
 [[headers]]
   for = "/*"
@@ -25,6 +19,12 @@
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
+  status = 200
+
+# Redirects for SPA routing (CATCH-ALL MUST BE LAST)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
 
 # Environment-specific settings
