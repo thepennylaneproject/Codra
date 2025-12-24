@@ -38,10 +38,12 @@ export function useImageGeneration() {
       }));
 
       try {
+        const { data: { session } } = await (await import('@/lib/supabase')).supabase.auth.getSession();
         const response = await fetch('/.netlify/functions/image-generate', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            ...(session?.access_token ? { 'Authorization': `Bearer ${session.access_token}` } : {}),
           },
           body: JSON.stringify(request),
         });

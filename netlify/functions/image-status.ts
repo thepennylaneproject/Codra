@@ -4,8 +4,8 @@
  */
 
 import { Handler } from '@netlify/functions';
+import { createClient } from '@supabase/supabase-js';
 import { ImageGeneratorQueue } from '../../src/lib/ai/queue/generator-queue';
-import { Map as ProviderMap } from '../../src/lib/ai/types-image';
 
 const queue = new ImageGeneratorQueue(new Map());
 
@@ -25,7 +25,23 @@ const statusHandler: Handler = async (event, context) => {
       };
     }
 
-    const userId = context.clientContext?.user?.sub;
+    const supabase = createClient(
+      process.env.VITE_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    // Verify authentication
+    let userId = context.clientContext?.user?.sub;
+
+    const authHeader = event.headers.authorization || event.headers.Authorization;
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.slice(7);
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (user) {
+        userId = user.id;
+      }
+    }
+
     if (!userId) {
       return {
         statusCode: 401,
@@ -66,5 +82,4 @@ const statusHandler: Handler = async (event, context) => {
   }
 };
 
-
-
+export const handler = statusHandler;

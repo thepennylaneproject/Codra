@@ -3,6 +3,12 @@
  * List image generation jobs for user or workspace
  */
 
+import { Handler } from '@netlify/functions';
+import { createClient } from '@supabase/supabase-js';
+import { ImageGeneratorQueue } from '../../src/lib/ai/queue/generator-queue';
+
+const queue = new ImageGeneratorQueue(new Map());
+
 interface ListQueryParams {
     userId?: string;
     workspaceId?: string;
@@ -13,7 +19,23 @@ interface ListQueryParams {
 
 const listHandler: Handler = async (event, context) => {
     try {
-        const authUserId = context.clientContext?.user?.sub;
+        const supabase = createClient(
+            process.env.VITE_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+
+        // Verify authentication
+        let authUserId = context.clientContext?.user?.sub;
+
+        const authHeader = event.headers.authorization || event.headers.Authorization;
+        if (authHeader?.startsWith('Bearer ')) {
+            const token = authHeader.slice(7);
+            const { data: { user } } = await supabase.auth.getUser(token);
+            if (user) {
+                authUserId = user.id;
+            }
+        }
+
         if (!authUserId) {
             return {
                 statusCode: 401,
@@ -56,3 +78,5 @@ const listHandler: Handler = async (event, context) => {
         };
     }
 };
+
+export const handler = listHandler;

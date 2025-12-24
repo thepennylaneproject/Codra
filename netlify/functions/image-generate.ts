@@ -50,19 +50,29 @@ const handler: Handler = async (event, context) => {
 
     const body = JSON.parse(event.body || '{}') as RequestBody;
 
-    // Verify authentication (from context.clientContext set by Netlify Auth)
-    const userId = context.clientContext?.user?.sub;
+    const supabase = createClient(
+      process.env.VITE_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY! // Server-side key
+    );
+
+    // Verify authentication
+    let userId = context.clientContext?.user?.sub;
+
+    const authHeader = event.headers.authorization || event.headers.Authorization;
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.slice(7);
+      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+      if (user) {
+        userId = user.id;
+      }
+    }
+
     if (!userId) {
       return {
         statusCode: 401,
         body: JSON.stringify({ message: 'Unauthorized' }),
       };
     }
-
-    const supabase = createClient(
-      process.env.VITE_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY! // Server-side key
-    );
 
     // Get workspace from header
     const workspaceId = event.headers['x-workspace-id'] || 'default';

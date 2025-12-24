@@ -3,6 +3,7 @@ import { Sparkles, Maximize2, RefreshCcw, Download, Layers, ShieldCheck, Plus } 
 import { MOCK_ASSETS } from '../../../domain/integrations';
 import { ModelSelector } from '../ModelSelector';
 import { DeskEvents } from '../../../lib/desks/DeskBridge';
+import { useImageGeneration } from '../../../hooks/useImageGeneration';
 
 interface ArtDeskCanvasProps {
     selectedModelId?: string;
@@ -12,7 +13,7 @@ interface ArtDeskCanvasProps {
 export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 'flux-pro', onSelectModel }) => {
     const [prompt, setPrompt] = useState('');
     const [isDraggingOver, setIsDraggingOver] = useState(false);
-    const [isGenerating, setIsGenerating] = useState(false);
+    const { generate, isLoading, result, error } = useImageGeneration();
     const [localAssets, setLocalAssets] = useState(MOCK_ASSETS);
 
     const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,14 +34,20 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
         setLocalAssets(prev => [newAsset, ...prev]);
     };
 
-    const handleGenerate = () => {
-        setIsGenerating(true);
-        // Simulate generation
-        setTimeout(() => {
-            setIsGenerating(false);
+    const handleGenerate = async () => {
+        if (!prompt) return;
+        
+        const response = await generate({
+            prompt,
+            model: selectedModelId,
+            width: 1024,
+            height: 1024
+        });
+
+        if (response?.status === 'completed' && response.result) {
             // Emit cross-desk event
-            DeskEvents.imageGenerated(`img-${Date.now()}`, prompt.substring(0, 30) + '...');
-        }, 3000);
+            DeskEvents.imageGenerated(response.jobId || `img-${Date.now()}`, prompt.substring(0, 30) + '...');
+        }
     };
 
     const onAssetDragStart = (e: React.DragEvent, assetName: string) => {
@@ -102,7 +109,7 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
                             key={i}
                             className="group relative bg-[var(--desk-bg)]/40 rounded-3xl border border-[var(--desk-border)] overflow-hidden aspect-square flex items-center justify-center transition-all hover:border-rose-500/50"
                         >
-                            {isGenerating ? (
+                            {isLoading ? (
                                 <div className="flex flex-col items-center gap-3">
                                     <RefreshCcw size={24} className="text-rose-500 animate-spin" />
                                     <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--desk-text-muted)]">Iterating {i + 1}...</p>
@@ -110,8 +117,18 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
                             ) : (
                                 <>
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <Sparkles size={48} className="text-[var(--desk-bg)]" />
+                                        {result && i === 0 ? (
+                                            <img src={result.url} alt="Generated" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <Sparkles size={48} className="text-[var(--desk-bg)]" />
+                                        )}
                                     </div>
+                                    
+                                    {error && i === 0 && (
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 p-4 text-center">
+                                            <p className="text-xs text-rose-400 font-mono">{error}</p>
+                                        </div>
+                                    )}
 
                                     {/* Overlay Controls */}
                                     <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
@@ -125,7 +142,11 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
                                                 </button>
                                             </div>
                                             <button
-                                                onClick={() => DeskEvents.artifactApproved('art-design', `img-${i}`, 'Generated Image')}
+                                                onClick={() => {
+                                                    if (result && i === 0) {
+                                                        DeskEvents.artifactApproved('art-design', result.url, 'Generated Image');
+                                                    }
+                                                }}
                                                 className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-500 rounded-lg text-white font-bold text-xs shadow-lg shadow-rose-500/40"
                                             >
                                                 <Layers size={12} />
@@ -187,10 +208,10 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
 
                         <button
                             onClick={handleGenerate}
-                            disabled={isGenerating}
+                            disabled={isLoading}
                             className="px-8 bg-[var(--desk-text-primary)] hover:bg-[var(--desk-text-primary)]/90 disabled:opacity-50 text-[var(--desk-surface)] font-black uppercase tracking-widest text-sm rounded-xl transition-all shadow-xl shadow-white/5"
                         >
-                            {isGenerating ? 'Firing...' : 'Generate'}
+                            {isLoading ? 'Firing...' : 'Generate'}
                         </button>
                     </div>
                 </div>

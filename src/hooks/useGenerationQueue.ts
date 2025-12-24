@@ -21,17 +21,21 @@ export function useGenerationQueue(userId?: string) {
         error: null,
     });
 
-    // Load initial jobs
     useEffect(() => {
         const loadJobs = async () => {
             try {
                 setState(prev => ({ ...prev, isLoading: true, error: null }));
 
+                const { data: { session } } = await (await import('@/lib/supabase')).supabase.auth.getSession();
+                const headers = {
+                    ...(session?.access_token ? { 'Authorization': `Bearer ${session.access_token}` } : {}),
+                };
+
                 const endpoint = userId
                     ? `/.netlify/functions/image-list?userId=${userId}`
                     : '/.netlify/functions/image-list';
 
-                const response = await fetch(endpoint);
+                const response = await fetch(endpoint, { headers });
 
                 if (!response.ok) {
                     throw new Error(`Failed to load jobs: ${response.statusText}`);
@@ -67,7 +71,12 @@ export function useGenerationQueue(userId?: string) {
     const checkJobStatus = useCallback(
         async (jobId: string): Promise<ImageGenerationJob | null> => {
             try {
-                const response = await fetch(`/.netlify/functions/image-status/${jobId}`);
+                const { data: { session } } = await (await import('@/lib/supabase')).supabase.auth.getSession();
+                const headers = {
+                    ...(session?.access_token ? { 'Authorization': `Bearer ${session.access_token}` } : {}),
+                };
+
+                const response = await fetch(`/.netlify/functions/image-status/${jobId}`, { headers });
 
                 if (!response.ok) {
                     if (response.status === 404) {
@@ -98,10 +107,12 @@ export function useGenerationQueue(userId?: string) {
     const retryJob = useCallback(
         async (jobId: string): Promise<ImageGenerationJob | null> => {
             try {
+                const { data: { session } } = await (await import('@/lib/supabase')).supabase.auth.getSession();
                 const response = await fetch('/.netlify/functions/image-generate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        ...(session?.access_token ? { 'Authorization': `Bearer ${session.access_token}` } : {}),
                     },
                     body: JSON.stringify({ retryJobId: jobId }),
                 });
