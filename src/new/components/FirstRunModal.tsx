@@ -5,32 +5,46 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, Layers, Zap, ArrowRight } from 'lucide-react';
+import { X, Sparkles, Layers, Zap, ArrowRight, FileText, Palette } from 'lucide-react';
 
 const SLIDES = [
     {
         icon: Sparkles,
-        title: 'Your Production Studio',
-        description: 'Codra is your AI-powered creative production studio. Deliver high-fidelity brand systems, campaigns, and content with specialized assistance.',
+        title: 'Welcome to Codra',
+        description: 'Create visual assets, write content, and build code — all with AI specialists that understand your project goals and brand.',
+        color: 'coral',
+    },
+    {
+        icon: FileText,
+        title: 'Project Brief',
+        description: 'Every project starts with a Brief — your source of truth. It captures goals, audience, brand constraints, and success criteria so AI always has context.',
         color: 'amber',
     },
     {
         icon: Layers,
-        title: 'Editorial Spreads',
-        description: 'Every client assignment gets a "Spread" — a focused workspace with specialized desks for Art, Writing, Engineering, and more.',
+        title: 'Workspaces',
+        description: 'Your Workspace is your canvas for each project. It shows your project sections, tasks, and lets you manage everything in one place.',
         color: 'blue',
     },
     {
+        icon: Palette,
+        title: 'Specialized Desks',
+        description: 'Each Desk (Art, Writing, Engineering, etc.) is a focused environment with the right AI models and tools for that discipline.',
+        color: 'purple',
+    },
+    {
         icon: Zap,
-        title: 'Rapid Deployment',
-        description: 'Initiate a draft and hit Launch. Iterate in real-time — nothing is production-locked until you decide it is.',
+        title: 'Ready to Create',
+        description: 'Start a project, review your Brief, then execute tasks. Iterate freely — nothing is final until you say so.',
         color: 'emerald',
     },
 ];
 
 const COLOR_MAP: Record<string, string> = {
+    coral: 'bg-[#FF4D4D] shadow-[#FF4D4D]/30',
     amber: 'bg-amber-500 shadow-amber-500/30',
     blue: 'bg-blue-500 shadow-blue-500/30',
+    purple: 'bg-purple-500 shadow-purple-500/30',
     emerald: 'bg-emerald-500 shadow-emerald-500/30',
 };
 

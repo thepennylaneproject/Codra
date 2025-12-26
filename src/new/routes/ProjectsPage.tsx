@@ -14,9 +14,12 @@ import {
     Settings,
     User,
     Layers,
+    MoreVertical,
+    Trash2,
+    Upload
     Zap
 } from 'lucide-react';
-import { getProjects, createProject } from '../../domain/projects';
+import { getProjects, createProject, deleteProject } from '../../domain/projects';
 import { Project, PRODUCTION_DESKS, ProductionDeskId } from '../../domain/types';
 import { useToast } from '../components/Toast';
 import { FirstRunModal } from '../components/FirstRunModal';
@@ -51,7 +54,7 @@ export function ProjectsPage() {
                     try {
                         const demoProject = await createProject({
                             projectName: 'Welcome to Codra',
-                            description: 'Explore this demo project to see how Codra works. Click through the Spread, try the Desks, and customize as you go!',
+                            description: 'Explore this demo project to see how Codra works. Try the workspace, visit the Desks, and customize as you go!',
                             audience: 'New users learning Codra',
                             goals: ['Explore the workspace', 'Try AI generation', 'Customize your first project'],
                             boundaries: ['This is a sandbox — experiment freely!'],
@@ -128,6 +131,39 @@ export function ProjectsPage() {
         setCodebaseModalOpen(true);
     };
 
+    const handleDeleteProject = async (projectId: string) => {
+        try {
+            await deleteProject(projectId);
+            setProjects(prev => prev.filter(p => p.id !== projectId));
+            toast.success('Project deleted');
+        } catch (err) {
+            toast.error('Failed to delete project');
+            console.error(err);
+        }
+    };
+
+    const handleExportProject = (project: Project) => {
+        const exportData = {
+            name: project.name,
+            description: project.description,
+            audience: project.audience,
+            goals: project.goals,
+            boundaries: project.boundaries,
+            budgetPolicy: project.budgetPolicy,
+            activeDesks: project.activeDesks,
+            exportedAt: new Date().toISOString(),
+            version: '1.0'
+        };
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${project.name.toLowerCase().replace(/\s+/g, '-')}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast.success(`Exported "${project.name}"`);
+    };
+
     const confirmCodebaseImport = async () => {
         if (!codebaseUrl.trim()) {
             toast.warning('Please enter a repository URL');
@@ -170,7 +206,7 @@ export function ProjectsPage() {
                             Studio Workspaces
                         </h1>
                         <p className="text-lg text-[#5A5A5A] max-w-md font-medium leading-relaxed italic">
-                            Select a spread to resume editorial production or initiate a new client assignment.
+                            Select a project to continue, or start a new one.
                         </p>
                     </div>
 
@@ -287,14 +323,34 @@ export function ProjectsPage() {
                                     project={project}
                                     delay={idx * 0.05}
                                     onClick={() => navigate(`/p/${project.id}/spread`)}
+                                    onDelete={() => handleDeleteProject(project.id)}
+                                    onExport={() => handleExportProject(project)}
                                 />
                             ))}
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center py-32 text-center opacity-40">
-                            <Sparkles size={48} className="mb-6 text-[#1A1A1A]" />
-                            <h2 className="text-2xl font-bold mb-2">No workspaces found</h2>
-                            <p className="text-sm">Initiate a new project to populate your registry.</p>
+                        <div className="flex flex-col items-center justify-center py-32 text-center">
+                            <div className="w-20 h-20 rounded-3xl bg-[#FF4D4D]/10 flex items-center justify-center mb-8">
+                                <Sparkles size={40} className="text-[#FF4D4D]" />
+                            </div>
+                            <h2 className="text-2xl font-bold mb-3 text-[#1A1A1A]">No projects yet</h2>
+                            <p className="text-[#5A5A5A] mb-8 max-w-sm">Start your first project to experience AI-powered creative production.</p>
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={() => navigate('/onboarding/new-project')}
+                                    className="flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#FF4D4D] text-white rounded-xl font-black uppercase tracking-widest text-xs transition-all shadow-xl"
+                                >
+                                    <Plus size={16} />
+                                    Create First Project
+                                </button>
+                                <button
+                                    onClick={handleSandbox}
+                                    className="flex items-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 text-[#5A5A5A] hover:text-[#1A1A1A] rounded-xl font-bold text-xs transition-all border border-[#1A1A1A]/10"
+                                >
+                                    <Sparkles size={14} />
+                                    Try Demo
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -363,17 +419,40 @@ export function ProjectsPage() {
     );
 }
 
-function ProjectCard({ project, onClick, delay = 0 }: { project: Project, onClick: () => void, delay?: number }) {
+function ProjectCard({ project, onClick, onDelete, onExport, delay = 0 }: { project: Project, onClick: () => void, onDelete: () => void, onExport: () => void, delay?: number }) {
+    const [showMenu, setShowMenu] = useState(false);
+
+    const handleMenuClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setShowMenu(!showMenu);
+    };
+
+    const handleExport = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setShowMenu(false);
+        onExport();
+    };
+
+    const handleDelete = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setShowMenu(false);
+        if (window.confirm(`Delete "${project.name}"? This cannot be undone.`)) {
+            onDelete();
+        }
+    };
+
     return (
-        <motion.button
+        <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            onClick={onClick}
-            className="group relative flex flex-col text-left active:scale-[0.98] transition-transform"
+            className="group relative flex flex-col text-left"
         >
             {/* Card Body */}
-            <div className="relative p-8 bg-white border border-[#1A1A1A]/5 rounded-3xl overflow-hidden transition-all group-hover:border-[#FF4D4D]/20 group-hover:shadow-2xl group-hover:shadow-[#1A1A1A]/5">
+            <button
+                onClick={onClick}
+                className="relative p-8 bg-white border border-[#1A1A1A]/5 rounded-3xl overflow-hidden transition-all group-hover:border-[#FF4D4D]/20 group-hover:shadow-2xl group-hover:shadow-[#1A1A1A]/5 text-left active:scale-[0.98]"
+            >
                 {/* Accent Line */}
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-[#1A1A1A]/5 group-hover:bg-[#FF4D4D] transition-colors" />
 
@@ -382,9 +461,11 @@ function ProjectCard({ project, onClick, delay = 0 }: { project: Project, onClic
                     <div className="p-3 bg-[#FFFAF0] rounded-2xl text-[#1A1A1A]">
                         <LayoutTemplate size={20} />
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1 bg-[#1A1A1A]/5 rounded-full">
-                        <div className="w-1 h-1 rounded-full bg-[#1A1A1A]/40" />
-                        <span className="text-[9px] font-bold uppercase tracking-tight text-[#1A1A1A]/60">Revision Stable</span>
+                    <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 px-3 py-1 bg-[#1A1A1A]/5 rounded-full">
+                            <div className="w-1 h-1 rounded-full bg-[#1A1A1A]/40" />
+                            <span className="text-[9px] font-bold uppercase tracking-tight text-[#1A1A1A]/60">Revision Stable</span>
+                        </div>
                     </div>
                 </div>
 
@@ -403,15 +484,53 @@ function ProjectCard({ project, onClick, delay = 0 }: { project: Project, onClic
                         </div>
                         <div className="flex items-center gap-1.5">
                             <FileText size={12} />
-                            <span>Editorial active</span>
+                            <span>Active</span>
                         </div>
                     </div>
                     <ArrowUpRight size={16} className="text-[#1A1A1A]/20 group-hover:text-[#FF4D4D] transition-all transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </div>
+            </button>
+
+            {/* Menu Button */}
+            <div className="absolute top-4 right-4 z-10">
+                <button
+                    onClick={handleMenuClick}
+                    className="p-2 rounded-xl bg-white/80 hover:bg-white border border-[#1A1A1A]/5 text-[#8A8A8A] hover:text-[#1A1A1A] transition-all opacity-0 group-hover:opacity-100"
+                >
+                    <MoreVertical size={16} />
+                </button>
+
+                {/* Dropdown Menu */}
+                {showMenu && (
+                    <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-xl border border-[#1A1A1A]/10 shadow-xl overflow-hidden">
+                        <button
+                            onClick={handleExport}
+                            className="w-full px-4 py-3 flex items-center gap-2 text-sm text-[#5A5A5A] hover:bg-zinc-50 transition-colors"
+                        >
+                            <Upload size={14} />
+                            Export Project
+                        </button>
+                        <button
+                            onClick={handleDelete}
+                            className="w-full px-4 py-3 flex items-center gap-2 text-sm text-red-500 hover:bg-red-50 transition-colors border-t border-zinc-100"
+                        >
+                            <Trash2 size={14} />
+                            Delete Project
+                        </button>
+                    </div>
+                )}
             </div>
 
+            {/* Click outside to close menu */}
+            {showMenu && (
+                <div
+                    className="fixed inset-0 z-0"
+                    onClick={(e) => { e.stopPropagation(); setShowMenu(false); }}
+                />
+            )}
+
             {/* Subtle Reflection Effect */}
-            <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-10 transition-opacity bg-gradient-to-tr from-transparent via-[#FFFAF0] to-transparent" />
-        </motion.button>
+            <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-10 transition-opacity bg-gradient-to-tr from-transparent via-[#FFFAF0] to-transparent rounded-3xl" />
+        </motion.div>
     );
 }

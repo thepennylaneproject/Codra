@@ -179,7 +179,7 @@ export const GeneratingStep = () => {
                 <div className="w-12 h-px bg-[#1A1A1A]/10" />
                 <ProgressIcon
                     icon={FileText}
-                    label="Tear Sheet"
+                    label="Project Brief"
                     status={getStepStatus('tear-sheet', phase)}
                 />
             </div>
@@ -191,7 +191,7 @@ export const GeneratingStep = () => {
 
             {/* Helper text */}
             <p className="text-[10px] text-[#8A8A8A] font-black uppercase tracking-[0.2em] max-w-xs leading-loose">
-                Assembling editorial foundation.<br/>
+                Assembling your workspace.<br/>
                 Final review and confirmation required before launch.
             </p>
         </div>

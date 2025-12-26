@@ -145,7 +145,7 @@ export function ActivityStrip({
                 <div className="flex items-center gap-2">
                     <Terminal size={12} className="text-[#8A8A8A]" />
                     <span className="text-[9px] font-black uppercase tracking-widest text-[#8A8A8A]">
-                        v12.0.4-editorial
+                        v0.2.0
                     </span>
                 </div>
             </div>
