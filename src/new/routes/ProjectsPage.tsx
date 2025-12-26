@@ -15,7 +15,8 @@ import {
     User,
     Layers,
     MoreVertical,
-    Trash2
+    Trash2,
+    Upload
 } from 'lucide-react';
 import { getProjects, createProject, deleteProject } from '../../domain/projects';
 import { Project, PRODUCTION_DESKS, ProductionDeskId } from '../../domain/types';
@@ -52,7 +53,7 @@ export function ProjectsPage() {
                     try {
                         const demoProject = await createProject({
                             projectName: 'Welcome to Codra',
-                            description: 'Explore this demo project to see how Codra works. Click through the Spread, try the Desks, and customize as you go!',
+                            description: 'Explore this demo project to see how Codra works. Try the workspace, visit the Desks, and customize as you go!',
                             audience: 'New users learning Codra',
                             goals: ['Explore the workspace', 'Try AI generation', 'Customize your first project'],
                             boundaries: ['This is a sandbox — experiment freely!'],
@@ -138,6 +139,28 @@ export function ProjectsPage() {
             toast.error('Failed to delete project');
             console.error(err);
         }
+    };
+
+    const handleExportProject = (project: Project) => {
+        const exportData = {
+            name: project.name,
+            description: project.description,
+            audience: project.audience,
+            goals: project.goals,
+            boundaries: project.boundaries,
+            budgetPolicy: project.budgetPolicy,
+            activeDesks: project.activeDesks,
+            exportedAt: new Date().toISOString(),
+            version: '1.0'
+        };
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${project.name.toLowerCase().replace(/\s+/g, '-')}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast.success(`Exported "${project.name}"`);
     };
 
     const confirmCodebaseImport = async () => {
@@ -281,6 +304,7 @@ export function ProjectsPage() {
                                     delay={idx * 0.05}
                                     onClick={() => navigate(`/p/${project.id}/spread`)}
                                     onDelete={() => handleDeleteProject(project.id)}
+                                    onExport={() => handleExportProject(project)}
                                 />
                             ))}
                         </div>
@@ -375,12 +399,18 @@ export function ProjectsPage() {
     );
 }
 
-function ProjectCard({ project, onClick, onDelete, delay = 0 }: { project: Project, onClick: () => void, onDelete: () => void, delay?: number }) {
+function ProjectCard({ project, onClick, onDelete, onExport, delay = 0 }: { project: Project, onClick: () => void, onDelete: () => void, onExport: () => void, delay?: number }) {
     const [showMenu, setShowMenu] = useState(false);
 
     const handleMenuClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         setShowMenu(!showMenu);
+    };
+
+    const handleExport = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setShowMenu(false);
+        onExport();
     };
 
     const handleDelete = (e: React.MouseEvent) => {
@@ -434,7 +464,7 @@ function ProjectCard({ project, onClick, onDelete, delay = 0 }: { project: Proje
                         </div>
                         <div className="flex items-center gap-1.5">
                             <FileText size={12} />
-                            <span>Editorial active</span>
+                            <span>Active</span>
                         </div>
                     </div>
                     <ArrowUpRight size={16} className="text-[#1A1A1A]/20 group-hover:text-[#FF4D4D] transition-all transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -454,8 +484,15 @@ function ProjectCard({ project, onClick, onDelete, delay = 0 }: { project: Proje
                 {showMenu && (
                     <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-xl border border-[#1A1A1A]/10 shadow-xl overflow-hidden">
                         <button
+                            onClick={handleExport}
+                            className="w-full px-4 py-3 flex items-center gap-2 text-sm text-[#5A5A5A] hover:bg-zinc-50 transition-colors"
+                        >
+                            <Upload size={14} />
+                            Export Project
+                        </button>
+                        <button
                             onClick={handleDelete}
-                            className="w-full px-4 py-3 flex items-center gap-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                            className="w-full px-4 py-3 flex items-center gap-2 text-sm text-red-500 hover:bg-red-50 transition-colors border-t border-zinc-100"
                         >
                             <Trash2 size={14} />
                             Delete Project

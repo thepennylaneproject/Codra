@@ -160,7 +160,7 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                                 Initializing Canvas
                             </h2>
                             <p className="text-[#8A8A8A] text-sm italic">
-                                Preparing the editorial environment...
+                                Preparing your workspace...
                             </p>
                         </div>
                     )}

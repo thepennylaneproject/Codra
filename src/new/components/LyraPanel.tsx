@@ -154,7 +154,7 @@ export function LyraPanel({ onStartWithLyra, onDismissQuestion }: LyraPanelProps
                             <span className="text-sm font-bold tracking-tight text-zinc-900">Lyra</span>
                             <div className="w-1 h-1 rounded-full bg-rose-500 animate-pulse" />
                         </div>
-                        <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold">Editorial AI</p>
+                        <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold">Creative AI</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-1">

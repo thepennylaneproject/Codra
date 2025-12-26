@@ -153,7 +153,7 @@ export const DeskWorkspacePage: React.FC = () => {
                             <div className="flex-1 p-4 flex flex-col justify-end">
                                 <div className="p-3 bg-[var(--desk-bg)]/50 rounded-2xl rounded-bl-sm border border-[var(--desk-border)] max-w-[85%] self-start mb-4 shadow-sm">
                                     <p className="text-xs text-[var(--desk-text-primary)] leading-relaxed">
-                                        I've prepared the {desk?.label} workspace based on your editorial brief. Ready to start generating assets or exploring code?
+                                        I've prepared the {desk?.label} workspace based on your project brief. Ready to start generating assets or exploring code?
                                     </p>
                                 </div>
                                 <div className="relative mt-4">
