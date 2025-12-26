@@ -45,6 +45,7 @@ import { BlueprintGalleryPage } from './new/routes/BlueprintGalleryPage';
 import { TermsPage } from './new/routes/TermsPage';
 import { PrivacyPage } from './new/routes/PrivacyPage';
 import { ToastContainer } from './new/components/Toast';
+import CoherenceScanPage from './new/routes/CoherenceScanPage';
 
 // ============================================================
 // App Component
@@ -164,6 +165,24 @@ export function App() {
                       element={
                         <ProtectedRoute>
                           <DeskWorkspacePage />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    {/* Coherence Scan */}
+                    <Route
+                      path="/coherence-scan"
+                      element={
+                        <ProtectedRoute>
+                          <CoherenceScanPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/coherence-scan/:scanId"
+                      element={
+                        <ProtectedRoute>
+                          <CoherenceScanPage />
                         </ProtectedRoute>
                       }
                     />

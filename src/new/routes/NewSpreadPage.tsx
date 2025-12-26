@@ -27,9 +27,10 @@ import { OutputInspector } from '../components/OutputInspector';
 import { GitPanel } from '../components/panels/git/GitPanel';
 import { DeployPanel } from '../components/panels/deploy/DeployPanel';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { useToast } from '../components/Toast';
 
 // Shell Components
-import { MagazineChrome } from '../components/shell/MagazineChrome';
+import { WorkspaceHeader } from '../components/shell/WorkspaceHeader';
 import { ActivityStrip } from '../components/shell/ActivityStrip';
 import { CodraWorkspace } from '../components/CodraWorkspace';
 import { PromptArchitectPanel } from '../components/panels/PromptArchitectPanel';
@@ -37,6 +38,8 @@ import { AssetRegistryPanel } from '../components/panels/AssetRegistryPanel';
 import { useFlowStore } from '../../lib/store/useFlowStore';
 import { useToast } from '../components/Toast';
 import { LyraRecallButton } from '../components/LyraRecallButton';
+import { uploadAssets } from '../../lib/assets/upload';
+import { useProjectMemory } from '../../lib/memory/useProjectMemory';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -45,6 +48,7 @@ function cn(...inputs: ClassValue[]) {
 export function NewSpreadPage() {
     const { projectId } = useParams<{ projectId: string }>();
     const navigate = useNavigate();
+    const toast = useToast();
 
     // Store State
     const {
@@ -58,6 +62,8 @@ export function NewSpreadPage() {
 
     // Toast notifications
     const toast = useToast();
+    // Context Memory System
+    const { usageStats } = useProjectMemory(projectId);
 
     const [project, setProject] = useState<Project | null>(null);
     const [spread, setSpread] = useState<Spread | null>(null);
@@ -331,8 +337,8 @@ export function NewSpreadPage() {
                 `[AI Task Complete] ${result.modelUsed} | ${result.tokensUsed} tokens | $${result.cost.toFixed(4)} | ${result.durationMs}ms`
             );
 
-            // Show success toast
-            toast.success(`Task completed: ${task?.title || 'Unknown task'}`);
+            // Success feedback
+            toast.success(`"${task.title}" completed • ${result.tokensUsed} tokens`);
         } catch (error) {
             console.error('[AI Task Execution Failed]', error);
 
@@ -341,8 +347,8 @@ export function NewSpreadPage() {
             setTaskQueue(updatedQueue);
             persistTaskQueue(updatedQueue);
 
-            // Show error toast
-            toast.error(`Task execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            // Error feedback with longer duration
+            toast.error(`Task failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 8000);
         } finally {
             setExecutingTaskId(null);
         }
@@ -407,7 +413,7 @@ export function NewSpreadPage() {
     }, [isResizing, onMouseMove, stopResizing]);
 
     if (!project) {
-        return <div className="h-screen bg-[#FFFAF0] text-[#1A1A1A]/40 flex items-center justify-center font-mono uppercase tracking-[0.2em] animate-pulse">Initializing Workspace...</div>;
+        return <div className="h-screen bg-[#FFFAF0] text-[#1A1A1A]/40 flex items-center justify-center font-mono uppercase tracking-[0.2em] animate-pulse">Reviewing Spread...</div>;
     }
 
     const blockingEscalation = escalations.find(e => e.severity === 'blocking' && !e.resolved);
@@ -426,14 +432,18 @@ export function NewSpreadPage() {
                         />
                     )}
 
-                    {/* Masthead */}
-                    <MagazineChrome
+                    {/* Workspace Header */}
+                    <WorkspaceHeader
                         projectName={project.name}
                         projectId={projectId || ''}
                         leftDockVisible={layout.leftDockVisible}
                         rightDockVisible={layout.rightDockVisible}
                         onToggleLeftDock={() => toggleDock('left')}
                         onToggleRightDock={() => toggleDock('right')}
+                        contextMemory={{
+                            percentage: usageStats.percentage,
+                            level: usageStats.level,
+                        }}
                     />
 
                     {/* Main Workspace */}
@@ -455,7 +465,7 @@ export function NewSpreadPage() {
                                                 : "text-[#8A8A8A] border-transparent hover:text-[#1A1A1A]"
                                         )}
                                     >
-                                        Contents
+                                        Sections
                                     </button>
                                     <button
                                         onClick={() => setActiveLeftTab('prompts')}
@@ -466,7 +476,7 @@ export function NewSpreadPage() {
                                                 : "text-[#8A8A8A] border-transparent hover:text-[#1A1A1A]"
                                         )}
                                     >
-                                        Backlog
+                                        AI Tasks
                                     </button>
                                 </div>
 
@@ -587,14 +597,27 @@ export function NewSpreadPage() {
                                     {activeRightPanel === 'assets' && (
                                         <AssetRegistryPanel
                                             assets={assets || []}
-                                            onUpload={(files) => {
-                                                const newAssets: Asset[] = files.map(f => ({
-                                                    id: Math.random().toString(36).substr(2, 9),
-                                                    name: f.name,
-                                                    url: URL.createObjectURL(f),
-                                                    projectId: projectId || ''
-                                                }));
-                                                setAssets(prev => [...(prev || []), ...newAssets]);
+                                            onUpload={async (files) => {
+                                                toast.info(`Uploading ${files.length} file${files.length > 1 ? 's' : ''}...`);
+                                                
+                                                const { successes, errors } = await uploadAssets(
+                                                    files,
+                                                    projectId || '',
+                                                    (completed, total) => {
+                                                        // Progress tracking could update UI
+                                                        console.log(`Uploaded ${completed}/${total}`);
+                                                    }
+                                                );
+
+                                                if (successes.length > 0) {
+                                                    setAssets(prev => [...(prev || []), ...successes]);
+                                                    toast.success(`${successes.length} asset${successes.length > 1 ? 's' : ''} uploaded`);
+                                                }
+
+                                                if (errors.length > 0) {
+                                                    toast.error(`${errors.length} upload${errors.length > 1 ? 's' : ''} failed`);
+                                                    console.error('Upload errors:', errors);
+                                                }
                                             }}
                                             onDelete={(id) => setAssets(prev => (prev || []).filter(a => a.id !== id))}
                                         />

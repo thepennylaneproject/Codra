@@ -17,6 +17,7 @@ import {
     MoreVertical,
     Trash2,
     Upload
+    Zap
 } from 'lucide-react';
 import { getProjects, createProject, deleteProject } from '../../domain/projects';
 import { Project, PRODUCTION_DESKS, ProductionDeskId } from '../../domain/types';
@@ -198,7 +199,7 @@ export function ProjectsPage() {
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-2 h-2 rounded-full bg-[#FF4D4D] animate-pulse" />
                          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8A8A8A]">
-                                Production Registry
+                                Studio Registry
                             </span>
                         </div>
                         <h1 className="text-6xl font-black tracking-tighter leading-none mb-4">
@@ -209,25 +210,52 @@ export function ProjectsPage() {
                         </p>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
-                        <div className="relative group w-full sm:w-64">
-                            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8A8A8A] transition-colors group-focus-within:text-[#FF4D4D]" />
-                            <input
-                                type="text"
-                                placeholder="Filter workspaces..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-11 pr-6 py-4 bg-white border border-[#1A1A1A]/10 rounded-2xl text-sm focus:outline-none focus:border-[#FF4D4D] transition-all w-full shadow-sm"
-                            />
+                    {/* Primary Actions */}
+                    <div className="flex flex-col gap-4 w-full md:w-auto">
+                        <div className="flex flex-wrap items-center gap-3">
+                            {/* Search */}
+                            <div className="relative group w-full sm:w-56">
+                                <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8A8A8A] transition-colors group-focus-within:text-[#FF4D4D]" />
+                                <input
+                                    type="text"
+                                    placeholder="Filter workspaces..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="pl-11 pr-4 py-3 bg-white border border-[#1A1A1A]/10 rounded-xl text-sm focus:outline-none focus:border-[#FF4D4D] transition-all w-full shadow-sm"
+                                />
+                            </div>
+
+                            {/* Sandbox */}
+                            <button
+                                onClick={handleSandbox}
+                                className="px-6 py-3 bg-amber-50 text-amber-900 border border-amber-200 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-amber-100 transition-all flex items-center gap-2 shadow-sm active:scale-95"
+                            >
+                                <Sparkles size={14} strokeWidth={3} className="text-amber-600" />
+                                Sandbox
+                            </button>
+
+                            {/* New Workspace - Hero CTA */}
+                            <button
+                                onClick={() => navigate('/onboarding/new-project')}
+                                className="px-8 py-3 bg-[#1A1A1A] text-white rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-[#FF4D4D] transition-all flex items-center gap-2 shadow-lg shadow-[#1A1A1A]/10 active:scale-95"
+                            >
+                                <Plus size={14} strokeWidth={3} />
+                                New Workspace
+                            </button>
                         </div>
-                        <button
-                            onClick={handleSandbox}
-                            className="px-8 py-4 bg-amber-50 text-amber-900 border border-amber-200 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-amber-100 transition-all flex items-center gap-3 shadow-xl shadow-amber-900/5 active:scale-95 w-full sm:w-auto justify-center"
-                        >
-                            <Sparkles size={16} strokeWidth={3} className="text-amber-600" />
-                            Sandbox
-                        </button>
+
+                        {/* Secondary Actions */}
                         <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => navigate('/blueprints')}
+                                className="px-4 py-2 text-[#5A5A5A] hover:text-[#FF4D4D] text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-1.5"
+                            >
+                                <Layers size={12} />
+                                Templates
+                            </button>
+
+                            <span className="text-[#1A1A1A]/20">|</span>
+
                             <input
                                 type="file"
                                 id="import-project"
@@ -237,39 +265,31 @@ export function ProjectsPage() {
                             />
                             <button
                                 onClick={() => document.getElementById('import-project')?.click()}
-                                className="px-6 py-4 bg-white text-[#1A1A1A] border border-[#1A1A1A]/10 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-zinc-50 transition-all flex items-center gap-2 shadow-sm"
+                                className="px-4 py-2 text-[#5A5A5A] hover:text-[#FF4D4D] text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-1.5"
                             >
-                                <Download size={14} strokeWidth={3} />
+                                <Download size={12} />
                                 Import
                             </button>
+
                             <button
                                 onClick={handleImportCodebase}
-                                className="px-6 py-4 bg-white text-[#1A1A1A] border border-[#1A1A1A]/10 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-zinc-50 transition-all flex items-center gap-2 shadow-sm"
+                                className="px-4 py-2 text-[#5A5A5A] hover:text-[#FF4D4D] text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-1.5 group relative"
                             >
-                                <Github size={14} />
+                                <Github size={12} />
                                 Codebase
+                                <span className="absolute -top-1 -right-1 px-1 py-0.5 bg-amber-100 text-amber-700 text-[7px] font-black rounded uppercase">Beta</span>
                             </button>
+
+                            <span className="text-[#1A1A1A]/20">|</span>
+
                             <button
-                                onClick={() => navigate('/onboarding/new-project')}
-                                className="px-8 py-4 bg-[#1A1A1A] text-white rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-[#FF4D4D] transition-all flex items-center gap-3 shadow-xl shadow-[#1A1A1A]/10 active:scale-95 w-full sm:w-auto justify-center"
+                                onClick={() => navigate('/coherence-scan')}
+                                className="px-4 py-2 text-emerald-600 hover:text-emerald-700 text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-1.5 group"
                             >
-                                <Plus size={16} strokeWidth={3} />
-                                New Project
+                                <Zap size={12} strokeWidth={3} />
+                                Coherence Scan
                             </button>
                         </div>
-                        <button
-                            onClick={() => navigate('/blueprints')}
-                            className="px-6 py-4 bg-white text-[#8A8A8A] hover:text-[#FF4D4D] border border-[#1A1A1A]/5 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-2 group"
-                        >
-                            <Layers size={14} className="group-hover:text-[#FF4D4D]" />
-                            Browse Blueprints
-                        </button>
-                        <button
-                            onClick={() => navigate('/pricing')}
-                            className="px-6 py-4 bg-white text-[#8A8A8A] hover:text-[#FF4D4D] border border-[#1A1A1A]/5 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-2"
-                        >
-                            Pricing
-                        </button>
                     </div>
                 </div>
                 <div className="absolute top-8 right-8 flex items-center gap-4">

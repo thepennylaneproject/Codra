@@ -6,37 +6,45 @@ import {
     PanelRight,
     Search,
     User,
-    Settings
+    Settings,
+    Brain,
+    Zap
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { ContextWindowBadge } from '../ContextWindowIndicator';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-interface MagazineChromeProps {
+interface WorkspaceHeaderProps {
     projectName: string;
     projectId: string;
     leftDockVisible: boolean;
     rightDockVisible: boolean;
     onToggleLeftDock: () => void;
     onToggleRightDock: () => void;
+    contextMemory?: {
+        percentage: number;
+        level: 'low' | 'medium' | 'high' | 'critical';
+    };
 }
 
 /**
- * MAGAZINE CHROME
- * The top masthead for the Codra Editorial pipeline.
+ * WORKSPACE HEADER
+ * The top navigation bar for the Codra creative workspace.
  * Clean, bold typography and Ivory & Ink aesthetic.
  */
-export function MagazineChrome({
+export function WorkspaceHeader({
     projectName,
     projectId,
     leftDockVisible,
     rightDockVisible,
     onToggleLeftDock,
-    onToggleRightDock
-}: MagazineChromeProps) {
+    onToggleRightDock,
+    contextMemory
+}: WorkspaceHeaderProps) {
     const location = useLocation();
     const isSpread = location.pathname.includes('/spread');
     const isContext = location.pathname.includes('/context');
@@ -74,7 +82,7 @@ export function MagazineChrome({
                     )}
                 >
                     <LayoutTemplate size={12} className={isSpread ? "text-[#FF4D4D]" : ""} />
-                    Workspace
+                    Spread
                 </Link>
                 <Link
                     to={`/p/${projectId}/context`}
@@ -92,7 +100,25 @@ export function MagazineChrome({
 
             {/* Actions & Docks */}
             <div className="flex items-center gap-4">
+                {/* Context Memory Indicator */}
+                {contextMemory && (
+                    <div className="flex items-center gap-2 pr-4 border-r border-[#1A1A1A]/10">
+                        <Brain size={14} className="text-[#8A8A8A]" />
+                        <ContextWindowBadge 
+                            level={contextMemory.level} 
+                            percentage={contextMemory.percentage} 
+                        />
+                    </div>
+                )}
+                
                 <div className="flex items-center gap-1 mr-4">
+                    <Link 
+                        to={`/coherence-scan?projectId=${projectId}`}
+                        className="p-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition-all"
+                        title="Run Coherence Scan"
+                    >
+                        <Zap size={18} strokeWidth={3} />
+                    </Link>
                     <button className="p-2 text-[#8A8A8A] hover:text-[#1A1A1A] hover:bg-[#1A1A1A]/5 rounded-xl transition-all">
                         <Search size={18} />
                     </button>
