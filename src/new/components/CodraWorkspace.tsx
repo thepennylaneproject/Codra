@@ -27,6 +27,9 @@ import { ArtDeskCanvas } from './desks/ArtDeskCanvas';
 import { EngineeringDeskCanvas } from './desks/EngineeringDeskCanvas';
 import { WritingDeskCanvas } from './desks/WritingDeskCanvas';
 import { WorkflowDeskCanvas } from './desks/WorkflowDeskCanvas';
+import { MarketingDeskCanvas } from './desks/MarketingDeskCanvas';
+import { CareerAssetsDeskCanvas } from './desks/CareerAssetsDeskCanvas';
+import { DataAnalysisDeskCanvas } from './desks/DataAnalysisDeskCanvas';
 import { ErrorBoundary } from './ErrorBoundary';
 import { LyraNudgeContainer } from './LyraNudgeBubble';
 import { CrossDeskBadge } from './CrossDeskSuggestions';
@@ -215,11 +218,23 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                                                     onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
                                                 />
                                             )}
-                                            {!['art-design', 'engineering', 'writing', 'workflow'].includes(activeTask.deskId) && (
-                                                <div className="h-full flex flex-col items-center justify-center text-center py-20 grayscale opacity-40">
-                                                    <Sparkles size={40} className="mb-4" />
-                                                    <p className="text-xs font-mono uppercase tracking-widest">Generalized {activeTask.deskId} Canvas</p>
-                                                </div>
+                                            {activeTask.deskId === 'marketing' && (
+                                                <MarketingDeskCanvas
+                                                    selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
+                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
+                                                />
+                                            )}
+                                            {activeTask.deskId === 'career-assets' && (
+                                                <CareerAssetsDeskCanvas
+                                                    selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
+                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
+                                                />
+                                            )}
+                                            {activeTask.deskId === 'data-analysis' && (
+                                                <DataAnalysisDeskCanvas
+                                                    selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
+                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
+                                                />
                                             )}
                                         </ErrorBoundary>
                                     </div>

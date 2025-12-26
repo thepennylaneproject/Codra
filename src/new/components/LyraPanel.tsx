@@ -4,7 +4,6 @@ import { useLyraOptional, ArtifactSuggestion, ClarifyingQuestion } from '../../l
 import { ProductionDeskId, PRODUCTION_DESKS } from '../../domain/types';
 import {
     Sparkles,
-    MessageCircle,
     ChevronRight,
     HelpCircle,
     Lightbulb,

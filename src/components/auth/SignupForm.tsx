@@ -433,10 +433,10 @@ export function SignupForm() {
         {/* Tagline */}
         <div className="relative z-10 max-w-md">
           <h1 className="text-4xl font-black text-white mb-4 leading-tight tracking-tight">
-            Start building with AI-powered workflows
+            Create with AI specialists
           </h1>
           <p className="text-lg text-white/60 font-medium italic">
-            Your creative production studio for design, writing, and engineering.
+            Design visuals, write content, and build code with AI that understands your project.
           </p>
         </div>
 

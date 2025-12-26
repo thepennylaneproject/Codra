@@ -11,7 +11,7 @@ const SLIDES = [
     {
         icon: Sparkles,
         title: 'Welcome to Codra',
-        description: 'Your AI-powered creative production studio. Design, write, and build with specialized AI assistants that understand your project context.',
+        description: 'Create visual assets, write content, and build code — all with AI specialists that understand your project goals and brand.',
         color: 'coral',
     },
     {

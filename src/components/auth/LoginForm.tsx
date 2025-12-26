@@ -277,10 +277,10 @@ export function LoginForm() {
         {/* Tagline */}
         <div className="relative z-10 max-w-md">
           <h1 className="text-4xl font-black text-white mb-4 leading-tight tracking-tight">
-            Your AI-powered creative production studio
+            AI creative studio
           </h1>
           <p className="text-lg text-white/60 font-medium italic">
-            Editorial-grade workflows for design, writing, and engineering.
+            Design visuals, write content, and build code with AI specialists that understand your project.
           </p>
         </div>
 

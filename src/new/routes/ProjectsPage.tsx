@@ -13,9 +13,11 @@ import {
     Github,
     Settings,
     User,
-    Layers
+    Layers,
+    MoreVertical,
+    Trash2
 } from 'lucide-react';
-import { getProjects, createProject } from '../../domain/projects';
+import { getProjects, createProject, deleteProject } from '../../domain/projects';
 import { Project, PRODUCTION_DESKS, ProductionDeskId } from '../../domain/types';
 import { useToast } from '../components/Toast';
 import { FirstRunModal } from '../components/FirstRunModal';
@@ -127,6 +129,17 @@ export function ProjectsPage() {
         setCodebaseModalOpen(true);
     };
 
+    const handleDeleteProject = async (projectId: string) => {
+        try {
+            await deleteProject(projectId);
+            setProjects(prev => prev.filter(p => p.id !== projectId));
+            toast.success('Project deleted');
+        } catch (err) {
+            toast.error('Failed to delete project');
+            console.error(err);
+        }
+    };
+
     const confirmCodebaseImport = async () => {
         if (!codebaseUrl.trim()) {
             toast.warning('Please enter a repository URL');
@@ -169,7 +182,7 @@ export function ProjectsPage() {
                             Studio Workspaces
                         </h1>
                         <p className="text-lg text-[#5A5A5A] max-w-md font-medium leading-relaxed italic">
-                            Select a spread to resume editorial production or initiate a new client assignment.
+                            Select a project to continue, or start a new one.
                         </p>
                     </div>
 
@@ -267,6 +280,7 @@ export function ProjectsPage() {
                                     project={project}
                                     delay={idx * 0.05}
                                     onClick={() => navigate(`/p/${project.id}/spread`)}
+                                    onDelete={() => handleDeleteProject(project.id)}
                                 />
                             ))}
                         </div>
@@ -279,14 +293,14 @@ export function ProjectsPage() {
                             <p className="text-[#5A5A5A] mb-8 max-w-sm">Start your first project to experience AI-powered creative production.</p>
                             <div className="flex items-center gap-4">
                                 <button
-                                    onClick={handleNewProject}
+                                    onClick={() => navigate('/onboarding/new-project')}
                                     className="flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#FF4D4D] text-white rounded-xl font-black uppercase tracking-widest text-xs transition-all shadow-xl"
                                 >
                                     <Plus size={16} />
                                     Create First Project
                                 </button>
                                 <button
-                                    onClick={handleCreateSandbox}
+                                    onClick={handleSandbox}
                                     className="flex items-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 text-[#5A5A5A] hover:text-[#1A1A1A] rounded-xl font-bold text-xs transition-all border border-[#1A1A1A]/10"
                                 >
                                     <Sparkles size={14} />
@@ -361,17 +375,34 @@ export function ProjectsPage() {
     );
 }
 
-function ProjectCard({ project, onClick, delay = 0 }: { project: Project, onClick: () => void, delay?: number }) {
+function ProjectCard({ project, onClick, onDelete, delay = 0 }: { project: Project, onClick: () => void, onDelete: () => void, delay?: number }) {
+    const [showMenu, setShowMenu] = useState(false);
+
+    const handleMenuClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setShowMenu(!showMenu);
+    };
+
+    const handleDelete = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setShowMenu(false);
+        if (window.confirm(`Delete "${project.name}"? This cannot be undone.`)) {
+            onDelete();
+        }
+    };
+
     return (
-        <motion.button
+        <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            onClick={onClick}
-            className="group relative flex flex-col text-left active:scale-[0.98] transition-transform"
+            className="group relative flex flex-col text-left"
         >
             {/* Card Body */}
-            <div className="relative p-8 bg-white border border-[#1A1A1A]/5 rounded-3xl overflow-hidden transition-all group-hover:border-[#FF4D4D]/20 group-hover:shadow-2xl group-hover:shadow-[#1A1A1A]/5">
+            <button
+                onClick={onClick}
+                className="relative p-8 bg-white border border-[#1A1A1A]/5 rounded-3xl overflow-hidden transition-all group-hover:border-[#FF4D4D]/20 group-hover:shadow-2xl group-hover:shadow-[#1A1A1A]/5 text-left active:scale-[0.98]"
+            >
                 {/* Accent Line */}
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-[#1A1A1A]/5 group-hover:bg-[#FF4D4D] transition-colors" />
 
@@ -380,9 +411,11 @@ function ProjectCard({ project, onClick, delay = 0 }: { project: Project, onClic
                     <div className="p-3 bg-[#FFFAF0] rounded-2xl text-[#1A1A1A]">
                         <LayoutTemplate size={20} />
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1 bg-[#1A1A1A]/5 rounded-full">
-                        <div className="w-1 h-1 rounded-full bg-[#1A1A1A]/40" />
-                        <span className="text-[9px] font-bold uppercase tracking-tight text-[#1A1A1A]/60">Revision Stable</span>
+                    <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 px-3 py-1 bg-[#1A1A1A]/5 rounded-full">
+                            <div className="w-1 h-1 rounded-full bg-[#1A1A1A]/40" />
+                            <span className="text-[9px] font-bold uppercase tracking-tight text-[#1A1A1A]/60">Revision Stable</span>
+                        </div>
                     </div>
                 </div>
 
@@ -406,10 +439,41 @@ function ProjectCard({ project, onClick, delay = 0 }: { project: Project, onClic
                     </div>
                     <ArrowUpRight size={16} className="text-[#1A1A1A]/20 group-hover:text-[#FF4D4D] transition-all transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </div>
+            </button>
+
+            {/* Menu Button */}
+            <div className="absolute top-4 right-4 z-10">
+                <button
+                    onClick={handleMenuClick}
+                    className="p-2 rounded-xl bg-white/80 hover:bg-white border border-[#1A1A1A]/5 text-[#8A8A8A] hover:text-[#1A1A1A] transition-all opacity-0 group-hover:opacity-100"
+                >
+                    <MoreVertical size={16} />
+                </button>
+
+                {/* Dropdown Menu */}
+                {showMenu && (
+                    <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-xl border border-[#1A1A1A]/10 shadow-xl overflow-hidden">
+                        <button
+                            onClick={handleDelete}
+                            className="w-full px-4 py-3 flex items-center gap-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                        >
+                            <Trash2 size={14} />
+                            Delete Project
+                        </button>
+                    </div>
+                )}
             </div>
 
+            {/* Click outside to close menu */}
+            {showMenu && (
+                <div
+                    className="fixed inset-0 z-0"
+                    onClick={(e) => { e.stopPropagation(); setShowMenu(false); }}
+                />
+            )}
+
             {/* Subtle Reflection Effect */}
-            <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-10 transition-opacity bg-gradient-to-tr from-transparent via-[#FFFAF0] to-transparent" />
-        </motion.button>
+            <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-10 transition-opacity bg-gradient-to-tr from-transparent via-[#FFFAF0] to-transparent rounded-3xl" />
+        </motion.div>
     );
 }
