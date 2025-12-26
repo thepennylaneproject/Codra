@@ -1,7 +1,7 @@
 // ============================================================
 // CODRA LOGIN FORM
 // src/components/auth/LoginForm.tsx
-// Dark mode, industrial-refined aesthetic matching Admin Console
+// Light mode, editorial ivory/coral aesthetic matching app theme
 // ============================================================
 
 import React, { useState, useCallback } from 'react';
@@ -102,12 +102,12 @@ function FormInput({
 }: FormInputProps) {
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-zinc-300">
+      <label className="block text-sm font-medium text-[#1A1A1A]">
         {label}
       </label>
       <div className="relative">
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A8A8A]">
             {icon}
           </div>
         )}
@@ -120,15 +120,15 @@ function FormInput({
           autoComplete={autoComplete}
           className={`
             w-full px-4 py-3 rounded-xl
-            bg-zinc-900/50 border transition-all duration-200
-            text-zinc-100 placeholder-zinc-600
-            focus:outline-none focus:ring-2 focus:ring-indigo-500/50
+            bg-white border transition-all duration-200
+            text-[#1A1A1A] placeholder-[#8A8A8A]
+            focus:outline-none focus:ring-2 focus:ring-[#FF4D4D]/30
             disabled:opacity-50 disabled:cursor-not-allowed
             ${icon ? 'pl-11' : ''}
             ${rightElement ? 'pr-11' : ''}
-            ${error 
-              ? 'border-red-500/50 focus:border-red-500' 
-              : 'border-zinc-800 hover:border-zinc-700 focus:border-indigo-500'
+            ${error
+              ? 'border-red-500/50 focus:border-red-500'
+              : 'border-[#1A1A1A]/10 hover:border-[#1A1A1A]/20 focus:border-[#FF4D4D]'
             }
           `}
         />
@@ -139,7 +139,7 @@ function FormInput({
         )}
       </div>
       {error && (
-        <p className="text-sm text-red-400 flex items-center gap-1.5">
+        <p className="text-sm text-red-500 flex items-center gap-1.5">
           <Icons.AlertCircle />
           {error}
         </p>
@@ -163,12 +163,12 @@ function OAuthButton({ provider, onClick, disabled }: OAuthButtonProps) {
     google: {
       icon: <Icons.Google />,
       label: 'Google',
-      className: 'hover:bg-zinc-800',
+      className: 'hover:bg-[#1A1A1A]/5',
     },
     github: {
       icon: <Icons.GitHub />,
       label: 'GitHub',
-      className: 'hover:bg-zinc-800',
+      className: 'hover:bg-[#1A1A1A]/5',
     },
     discord: {
       icon: <Icons.Discord />,
@@ -186,7 +186,7 @@ function OAuthButton({ provider, onClick, disabled }: OAuthButtonProps) {
       disabled={disabled}
       className={`
         flex items-center justify-center gap-2 px-4 py-3 rounded-xl
-        bg-zinc-900/50 border border-zinc-800 text-zinc-300
+        bg-white border border-[#1A1A1A]/10 text-[#5A5A5A]
         transition-all duration-200
         disabled:opacity-50 disabled:cursor-not-allowed
         ${className}
@@ -253,9 +253,9 @@ export function LoginForm() {
   const formDisabled = isLoading || isSubmitting;
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex">
+    <div className="min-h-screen bg-[#FFFAF0] flex">
       {/* Left Panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-zinc-900 to-zinc-950 p-12 flex-col justify-between relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-[#1A1A1A] p-12 flex-col justify-between relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
@@ -263,34 +263,36 @@ export function LoginForm() {
             backgroundSize: '32px 32px',
           }} />
         </div>
+        {/* Accent Gradient */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#FF4D4D]/20 blur-[120px] rounded-full -mr-48 -mt-48" />
 
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[#FF4D4D] flex items-center justify-center text-white shadow-lg shadow-[#FF4D4D]/30">
             <Icons.Activity />
           </div>
-          <span className="text-2xl font-bold text-white tracking-tight">Codra</span>
+          <span className="text-2xl font-black text-white tracking-tight">Codra</span>
         </div>
 
         {/* Tagline */}
         <div className="relative z-10 max-w-md">
-          <h1 className="text-4xl font-bold text-white mb-4 leading-tight">
-            Build smarter with unified AI workflows
+          <h1 className="text-4xl font-black text-white mb-4 leading-tight tracking-tight">
+            Your AI-powered creative production studio
           </h1>
-          <p className="text-lg text-zinc-400">
-            One platform for code, images, and assets. 200+ AI models at your fingertips.
+          <p className="text-lg text-white/60 font-medium italic">
+            Editorial-grade workflows for design, writing, and engineering.
           </p>
         </div>
 
         {/* Feature highlights */}
         <div className="relative z-10 space-y-4">
           {[
-            'Multi-provider AI with unified billing',
-            'Visual workflow builder',
-            'Local file system access',
+            'Multi-provider AI with smart routing',
+            'Specialized desks for every discipline',
+            'Budget guardrails and cost tracking',
           ].map((feature, idx) => (
-            <div key={idx} className="flex items-center gap-3 text-zinc-400">
-              <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+            <div key={idx} className="flex items-center gap-3 text-white/60">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#FF4D4D]" />
               <span>{feature}</span>
             </div>
           ))}
@@ -302,23 +304,23 @@ export function LoginForm() {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#FF4D4D] flex items-center justify-center text-white shadow-lg shadow-[#FF4D4D]/30">
               <Icons.Activity />
             </div>
-            <span className="text-2xl font-bold text-white tracking-tight">Codra</span>
+            <span className="text-2xl font-black text-[#1A1A1A] tracking-tight">Codra</span>
           </div>
 
           {/* Header */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold text-zinc-100 mb-2">Welcome back</h2>
-            <p className="text-zinc-500">Sign in to your account to continue</p>
+            <h2 className="text-2xl font-bold text-[#1A1A1A] mb-2">Welcome back</h2>
+            <p className="text-[#5A5A5A]">Sign in to your account to continue</p>
           </div>
 
           {/* Error Alert */}
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
+            <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3">
               <Icons.AlertCircle />
-              <p className="text-sm text-red-400">{error}</p>
+              <p className="text-sm text-red-600">{error}</p>
             </div>
           )}
 
@@ -332,10 +334,10 @@ export function LoginForm() {
           {/* Divider */}
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-zinc-800" />
+              <div className="w-full border-t border-[#1A1A1A]/10" />
             </div>
             <div className="relative flex justify-center">
-              <span className="px-4 text-sm text-zinc-600 bg-zinc-950">or continue with email</span>
+              <span className="px-4 text-sm text-[#8A8A8A] bg-[#FFFAF0]">or continue with email</span>
             </div>
           </div>
 
@@ -374,9 +376,9 @@ export function LoginForm() {
 
             {/* Forgot Password Link */}
             <div className="flex justify-end">
-              <Link 
-                to="/forgot-password" 
-                className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
+              <Link
+                to="/forgot-password"
+                className="text-sm text-[#FF4D4D] hover:text-[#1A1A1A] transition-colors font-medium"
               >
                 Forgot password?
               </Link>
@@ -387,12 +389,12 @@ export function LoginForm() {
               type="submit"
               disabled={formDisabled || !email || !password}
               className="
-                w-full py-3 px-4 rounded-xl font-medium
-                bg-gradient-to-r from-indigo-500 to-purple-600 text-white
-                hover:from-indigo-600 hover:to-purple-700
-                focus:outline-none focus:ring-2 focus:ring-indigo-500/50
+                w-full py-4 px-4 rounded-xl font-black uppercase tracking-widest text-xs
+                bg-[#1A1A1A] text-white
+                hover:bg-[#FF4D4D]
+                focus:outline-none focus:ring-2 focus:ring-[#FF4D4D]/50
                 disabled:opacity-50 disabled:cursor-not-allowed
-                transition-all duration-200
+                transition-all duration-200 shadow-xl shadow-[#1A1A1A]/10
                 flex items-center justify-center gap-2
               "
             >
@@ -408,11 +410,11 @@ export function LoginForm() {
           </form>
 
           {/* Sign Up Link */}
-          <p className="mt-8 text-center text-zinc-500">
+          <p className="mt-8 text-center text-[#5A5A5A]">
             Don't have an account?{' '}
-            <Link 
-              to="/signup" 
-              className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+            <Link
+              to="/signup"
+              className="text-[#FF4D4D] hover:text-[#1A1A1A] font-bold transition-colors"
             >
               Create one
             </Link>

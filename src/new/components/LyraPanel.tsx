@@ -246,13 +246,30 @@ export function LyraPanel({ onStartWithLyra, onDismissQuestion }: LyraPanelProps
                 </section>
             </div>
 
-            {/* Footer - Chat Entry */}
-            <div className="p-3 border-t border-zinc-100">
+            {/* Footer - Quick Actions */}
+            <div className="p-3 border-t border-zinc-100 space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                    <button
+                        onClick={() => onStartWithLyra?.('writing')}
+                        className="p-2.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-lg flex items-center justify-center gap-2 font-medium text-xs transition-colors"
+                    >
+                        <PenTool size={14} />
+                        Draft Copy
+                    </button>
+                    <button
+                        onClick={() => onStartWithLyra?.('art-design')}
+                        className="p-2.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-lg flex items-center justify-center gap-2 font-medium text-xs transition-colors"
+                    >
+                        <Palette size={14} />
+                        Create Visual
+                    </button>
+                </div>
                 <button
-                    className={`w-full p-3 bg-zinc-900 text-white rounded-lg flex items-center justify-center gap-2 font-medium text-sm hover:bg-zinc-800 transition-colors shadow-sm`}
+                    onClick={() => onStartWithLyra?.('workflow')}
+                    className="w-full p-3 bg-[#1A1A1A] hover:bg-[#FF4D4D] text-white rounded-lg flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-widest transition-colors shadow-sm"
                 >
-                    <MessageCircle size={16} />
-                    Ask Lyra
+                    <Lightbulb size={14} />
+                    Suggest Tasks
                 </button>
             </div>
         </div>

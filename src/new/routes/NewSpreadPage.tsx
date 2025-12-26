@@ -35,6 +35,8 @@ import { CodraWorkspace } from '../components/CodraWorkspace';
 import { PromptArchitectPanel } from '../components/panels/PromptArchitectPanel';
 import { AssetRegistryPanel } from '../components/panels/AssetRegistryPanel';
 import { useFlowStore } from '../../lib/store/useFlowStore';
+import { useToast } from '../components/Toast';
+import { LyraRecallButton } from '../components/LyraRecallButton';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -53,6 +55,9 @@ export function NewSpreadPage() {
         setActiveSection,
         addToSessionCost
     } = useFlowStore();
+
+    // Toast notifications
+    const toast = useToast();
 
     const [project, setProject] = useState<Project | null>(null);
     const [spread, setSpread] = useState<Spread | null>(null);
@@ -326,7 +331,8 @@ export function NewSpreadPage() {
                 `[AI Task Complete] ${result.modelUsed} | ${result.tokensUsed} tokens | $${result.cost.toFixed(4)} | ${result.durationMs}ms`
             );
 
-            // TODO: Show success toast
+            // Show success toast
+            toast.success(`Task completed: ${task?.title || 'Unknown task'}`);
         } catch (error) {
             console.error('[AI Task Execution Failed]', error);
 
@@ -335,8 +341,8 @@ export function NewSpreadPage() {
             setTaskQueue(updatedQueue);
             persistTaskQueue(updatedQueue);
 
-            // TODO: Show error toast with retry option
-            alert(`Task execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            // Show error toast
+            toast.error(`Task execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
         } finally {
             setExecutingTaskId(null);
         }
@@ -353,6 +359,7 @@ export function NewSpreadPage() {
         providers,
         persistTaskQueue,
         addToSessionCost,
+        toast,
     ]);
 
     const handleResolveEscalation = (id: string, confirmed: boolean) => {
@@ -530,6 +537,7 @@ export function NewSpreadPage() {
                                     activeTask={taskQueue?.tasks.find(t => t.id === activeTaskId) || null}
                                     pastMemories={taskQueue?.tasks.filter(t => (t.status as string) === 'complete').map(t => ({ title: t.title, memory: t.memory || '' }))}
                                     onRunTask={handleRunTask}
+                                    onCancel={() => setActiveTaskId(null)}
                                     onSectionUpdate={handleSectionUpdate}
                                     deskModels={deskModels}
                                     onSetDeskModel={(deskId, modelId, providerId) => setDeskModels(prev => ({ ...prev, [deskId]: { modelId, providerId } }))}
@@ -640,6 +648,9 @@ export function NewSpreadPage() {
                         </div>
                     )}
                 </div>
+
+                {/* Floating Lyra Recall Button */}
+                <LyraRecallButton />
             </LyraProvider>
         </ErrorBoundary>
     );

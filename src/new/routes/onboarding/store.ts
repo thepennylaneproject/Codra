@@ -27,11 +27,11 @@ export type OnboardingStep =
     | 'generating'        // Generation Step (automatic)
     | 'complete';         // Done - redirect to tear sheet
 
-// Progress tracking for new project flow
-export const STEP_ORDER: OnboardingStep[] = ['mode', 'context', 'ai-preferences', 'budget', 'visual', 'generating', 'complete'];
+// Progress tracking for new project flow (simplified to 4 steps + generation)
+export const STEP_ORDER: OnboardingStep[] = ['mode', 'context', 'ai-preferences', 'generating', 'complete'];
 
-// Progress tracking for import flow
-export const IMPORT_STEP_ORDER: OnboardingStep[] = ['mode', 'import', 'ai-preferences', 'budget', 'generating', 'complete'];
+// Progress tracking for import flow (simplified)
+export const IMPORT_STEP_ORDER: OnboardingStep[] = ['mode', 'import', 'ai-preferences', 'generating', 'complete'];
 
 export const STEP_METADATA: Record<OnboardingStep, {
     title: string;
@@ -83,13 +83,13 @@ export const STEP_METADATA: Record<OnboardingStep, {
     },
     'tear-sheet-intent': {
         title: 'Project Brief',
-        description: 'Finalize the purpose and detail of your Tear Sheet.',
-        helperText: 'The Tear Sheet becomes your project\'s source of truth.',
+        description: 'Finalize the purpose and detail of your Project Brief.',
+        helperText: 'The Project Brief becomes your source of truth.',
         progressLabel: 'Brief',
     },
     generating: {
         title: 'Generating Your Project',
-        description: 'Creating your Moodboard and Tear Sheet...',
+        description: 'Creating your Moodboard and Project Brief...',
         helperText: 'This takes just a moment.',
         progressLabel: 'Generate',
     },
@@ -423,14 +423,10 @@ export function canProceedFromStep(step: OnboardingStep, state: OnboardingState)
 
         case 'context':
             const ctx = state.profile.context;
-            const tsi = state.profile.tearSheetIntent;
+            // Simplified: only require project description and type
             return !!(
                 ctx.firstProjectDescription &&
-                state.profile.projectType &&
-                ctx.primaryAudience &&
-                ctx.creativeGoals.length > 0 &&
-                tsi.storyStatement &&
-                tsi.coreMessage
+                state.profile.projectType
             );
 
         case 'import':
@@ -445,12 +441,8 @@ export function canProceedFromStep(step: OnboardingStep, state: OnboardingState)
             );
 
         case 'ai-preferences':
-            const ai = state.profile.aiPreferences;
-            return !!(
-                ai.qualityPriority &&
-                ai.dataSensitivity &&
-                ai.multiModelStrategy
-            );
+            // Simplified: always allow proceeding (defaults are sufficient)
+            return true;
 
         case 'budget':
             const budget = state.profile.budgetPreferences;

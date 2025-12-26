@@ -41,6 +41,7 @@ interface CodraWorkspaceProps {
     activeTask: SpreadTask | null;
     pastMemories?: Array<{ title: string; memory: string }>;
     onRunTask: (taskId: string) => void;
+    onCancel?: () => void;
     onSectionUpdate: (sectionId: string, content: Record<string, any>) => void;
     deskModels: Record<string, { modelId: string; providerId: string }>;
     onSetDeskModel: (deskId: string, modelId: string, providerId: string) => void;
@@ -53,6 +54,7 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
     activeTask,
     pastMemories,
     onRunTask,
+    onCancel,
     onSectionUpdate,
     deskModels,
     onSetDeskModel,
@@ -123,16 +125,16 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                 )}>
                     {spread ? (
                         <div className="space-y-12">
-                            {/* Spread Header */}
+                            {/* Workspace Header */}
                             <header className="mb-20">
                                 <div className="flex items-center gap-3 mb-4">
                                     <Layout size={16} className="text-[#8A8A8A]" />
                                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#8A8A8A]">
-                                        Editorial Spread v1.0
+                                        Project Workspace
                                     </span>
                                 </div>
                                 <h1 className="text-5xl font-black text-[#1A1A1A] tracking-tighter leading-[0.9] mb-6">
-                                    Project Insights
+                                    Project Overview
                                 </h1>
                                 <div className="w-20 h-1 bg-[#FF4D4D]" />
                             </header>
@@ -244,7 +246,10 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                                         Est. Resolution: ~30s
                                     </span>
                                     <div className="flex items-center gap-4">
-                                        <button className="text-[10px] font-black uppercase tracking-widest text-[var(--desk-text-muted)] hover:text-[var(--desk-text-primary)] transition-colors">
+                                        <button
+                                            onClick={onCancel}
+                                            className="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-[var(--desk-text-muted)] hover:text-[var(--desk-text-primary)] hover:bg-[var(--desk-border)]/50 rounded-full transition-colors"
+                                        >
                                             Cancel
                                         </button>
                                         <button

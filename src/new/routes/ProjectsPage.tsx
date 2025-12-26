@@ -271,10 +271,28 @@ export function ProjectsPage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center py-32 text-center opacity-40">
-                            <Sparkles size={48} className="mb-6 text-[#1A1A1A]" />
-                            <h2 className="text-2xl font-bold mb-2">No workspaces found</h2>
-                            <p className="text-sm">Initiate a new project to populate your registry.</p>
+                        <div className="flex flex-col items-center justify-center py-32 text-center">
+                            <div className="w-20 h-20 rounded-3xl bg-[#FF4D4D]/10 flex items-center justify-center mb-8">
+                                <Sparkles size={40} className="text-[#FF4D4D]" />
+                            </div>
+                            <h2 className="text-2xl font-bold mb-3 text-[#1A1A1A]">No projects yet</h2>
+                            <p className="text-[#5A5A5A] mb-8 max-w-sm">Start your first project to experience AI-powered creative production.</p>
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={handleNewProject}
+                                    className="flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#FF4D4D] text-white rounded-xl font-black uppercase tracking-widest text-xs transition-all shadow-xl"
+                                >
+                                    <Plus size={16} />
+                                    Create First Project
+                                </button>
+                                <button
+                                    onClick={handleCreateSandbox}
+                                    className="flex items-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 text-[#5A5A5A] hover:text-[#1A1A1A] rounded-xl font-bold text-xs transition-all border border-[#1A1A1A]/10"
+                                >
+                                    <Sparkles size={14} />
+                                    Try Demo
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>

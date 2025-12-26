@@ -1,7 +1,7 @@
 // ============================================================
 // CODRA SIGNUP FORM
 // src/components/auth/SignupForm.tsx
-// Dark mode, industrial-refined aesthetic matching Admin Console
+// Light mode, editorial ivory/coral aesthetic matching app theme
 // ============================================================
 
 import { useState, useCallback, useMemo, type FormEvent, type ReactNode } from 'react';
@@ -129,13 +129,13 @@ function FormInput({
 }: FormInputProps) {
   return (
     <div className="space-y-2">
-      <label className="flex items-center gap-2 text-sm font-medium text-zinc-300">
+      <label className="flex items-center gap-2 text-sm font-medium text-[#1A1A1A]">
         {label}
-        {optional && <span className="text-zinc-600 font-normal">(optional)</span>}
+        {optional && <span className="text-[#8A8A8A] font-normal">(optional)</span>}
       </label>
       <div className="relative">
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A8A8A]">
             {icon}
           </div>
         )}
@@ -148,15 +148,15 @@ function FormInput({
           autoComplete={autoComplete}
           className={`
             w-full px-4 py-3 rounded-xl
-            bg-zinc-900/50 border transition-all duration-200
-            text-zinc-100 placeholder-zinc-600
-            focus:outline-none focus:ring-2 focus:ring-indigo-500/50
+            bg-white border transition-all duration-200
+            text-[#1A1A1A] placeholder-[#8A8A8A]
+            focus:outline-none focus:ring-2 focus:ring-[#FF4D4D]/30
             disabled:opacity-50 disabled:cursor-not-allowed
             ${icon ? 'pl-11' : ''}
             ${rightElement ? 'pr-11' : ''}
-            ${error 
-              ? 'border-red-500/50 focus:border-red-500' 
-              : 'border-zinc-800 hover:border-zinc-700 focus:border-indigo-500'
+            ${error
+              ? 'border-red-500/50 focus:border-red-500'
+              : 'border-[#1A1A1A]/10 hover:border-[#1A1A1A]/20 focus:border-[#FF4D4D]'
             }
           `}
         />
@@ -167,7 +167,7 @@ function FormInput({
         )}
       </div>
       {error && (
-        <p className="text-sm text-red-400 flex items-center gap-1.5">
+        <p className="text-sm text-red-500 flex items-center gap-1.5">
           <Icons.AlertCircle />
           {error}
         </p>
@@ -207,20 +207,20 @@ function PasswordStrength({ password }: PasswordStrengthProps) {
     <div className="space-y-3">
       {/* Strength Bar */}
       <div className="flex items-center gap-3">
-        <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden flex gap-1">
+        <div className="flex-1 h-1.5 bg-[#1A1A1A]/10 rounded-full overflow-hidden flex gap-1">
           {[1, 2, 3, 4].map((level) => (
             <div
               key={level}
               className={`flex-1 h-full rounded-full transition-all duration-300 ${
-                level <= strength.level ? strength.color : 'bg-zinc-800'
+                level <= strength.level ? strength.color : 'bg-[#1A1A1A]/10'
               }`}
             />
           ))}
         </div>
         {strength.label && (
           <span className={`text-xs font-medium ${
-            strength.level >= 3 ? 'text-emerald-400' : 
-            strength.level >= 2 ? 'text-yellow-400' : 'text-red-400'
+            strength.level >= 3 ? 'text-emerald-600' :
+            strength.level >= 2 ? 'text-yellow-600' : 'text-red-500'
           }`}>
             {strength.label}
           </span>
@@ -230,10 +230,10 @@ function PasswordStrength({ password }: PasswordStrengthProps) {
       {/* Requirements Checklist */}
       <div className="grid grid-cols-2 gap-2">
         {requirements.map((req, idx) => (
-          <div 
+          <div
             key={idx}
             className={`flex items-center gap-2 text-xs transition-colors ${
-              req.met ? 'text-emerald-400' : 'text-zinc-600'
+              req.met ? 'text-emerald-600' : 'text-[#8A8A8A]'
             }`}
           >
             {req.met ? <Icons.Check /> : <Icons.X />}
@@ -271,8 +271,8 @@ function OAuthButton({ provider, onClick, disabled }: OAuthButtonProps) {
       disabled={disabled}
       className="
         flex items-center justify-center gap-2 px-4 py-3 rounded-xl
-        bg-zinc-900/50 border border-zinc-800 text-zinc-300
-        hover:bg-zinc-800 transition-all duration-200
+        bg-white border border-[#1A1A1A]/10 text-[#5A5A5A]
+        hover:bg-[#1A1A1A]/5 transition-all duration-200
         disabled:opacity-50 disabled:cursor-not-allowed
       "
     >
@@ -294,24 +294,24 @@ function SignupSuccess({ email }: SignupSuccessProps) {
   return (
     <div className="text-center">
       {/* Success Icon */}
-      <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+      <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
         <Icons.CheckCircle />
       </div>
 
-      <h2 className="text-2xl font-semibold text-zinc-100 mb-2">Check your email</h2>
-      <p className="text-zinc-400 mb-6">
-        We've sent a confirmation link to <span className="text-zinc-200">{email}</span>
+      <h2 className="text-2xl font-bold text-[#1A1A1A] mb-2">Check your email</h2>
+      <p className="text-[#5A5A5A] mb-6">
+        We've sent a confirmation link to <span className="text-[#1A1A1A] font-medium">{email}</span>
       </p>
 
-      <div className="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 text-left">
-        <p className="text-sm text-zinc-400">
+      <div className="p-4 rounded-xl bg-white border border-[#1A1A1A]/10 text-left">
+        <p className="text-sm text-[#5A5A5A]">
           Click the link in the email to verify your account. If you don't see it, check your spam folder.
         </p>
       </div>
 
       <Link
         to="/login"
-        className="mt-6 inline-block text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors"
+        className="mt-6 inline-block text-[#FF4D4D] hover:text-[#1A1A1A] text-sm font-bold transition-colors"
       >
         Back to login
       </Link>
@@ -400,7 +400,7 @@ export function SignupForm() {
   // Show success state
   if (showSuccess) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-[#FFFAF0] flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <SignupSuccess email={email} />
         </div>
@@ -409,9 +409,9 @@ export function SignupForm() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex">
+    <div className="min-h-screen bg-[#FFFAF0] flex">
       {/* Left Panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-zinc-900 to-zinc-950 p-12 flex-col justify-between relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-[#1A1A1A] p-12 flex-col justify-between relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
@@ -419,37 +419,39 @@ export function SignupForm() {
             backgroundSize: '32px 32px',
           }} />
         </div>
+        {/* Accent Gradient */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#FF4D4D]/20 blur-[120px] rounded-full -mr-48 -mt-48" />
 
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[#FF4D4D] flex items-center justify-center text-white shadow-lg shadow-[#FF4D4D]/30">
             <Icons.Activity />
           </div>
-          <span className="text-2xl font-bold text-white tracking-tight">Codra</span>
+          <span className="text-2xl font-black text-white tracking-tight">Codra</span>
         </div>
 
         {/* Tagline */}
         <div className="relative z-10 max-w-md">
-          <h1 className="text-4xl font-bold text-white mb-4 leading-tight">
+          <h1 className="text-4xl font-black text-white mb-4 leading-tight tracking-tight">
             Start building with AI-powered workflows
           </h1>
-          <p className="text-lg text-zinc-400">
-            Get access to 200+ AI models, visual workflows, and seamless integrations.
+          <p className="text-lg text-white/60 font-medium italic">
+            Your creative production studio for design, writing, and engineering.
           </p>
         </div>
 
         {/* What's included */}
         <div className="relative z-10 space-y-4">
-          <p className="text-sm font-medium text-zinc-500 uppercase tracking-wider">What's included</p>
+          <p className="text-sm font-black text-white/40 uppercase tracking-widest">What's included</p>
           {[
             'Free tier with 1,000 AI requests/month',
-            'Access to all major AI providers',
-            'Visual workflow builder',
-            'Local file system access',
-            'Community templates',
+            'Specialized desks for every discipline',
+            'Budget guardrails and cost tracking',
+            'Editorial-grade project context',
+            'Community blueprints',
           ].map((feature, idx) => (
-            <div key={idx} className="flex items-center gap-3 text-zinc-400">
-              <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <div key={idx} className="flex items-center gap-3 text-white/60">
+              <div className="w-5 h-5 rounded-full bg-[#FF4D4D]/20 flex items-center justify-center text-[#FF4D4D]">
                 <Icons.Check />
               </div>
               <span>{feature}</span>
@@ -463,23 +465,23 @@ export function SignupForm() {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#FF4D4D] flex items-center justify-center text-white shadow-lg shadow-[#FF4D4D]/30">
               <Icons.Activity />
             </div>
-            <span className="text-2xl font-bold text-white tracking-tight">Codra</span>
+            <span className="text-2xl font-black text-[#1A1A1A] tracking-tight">Codra</span>
           </div>
 
           {/* Header */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold text-zinc-100 mb-2">Create your account</h2>
-            <p className="text-zinc-500">Start building with AI in minutes</p>
+            <h2 className="text-2xl font-bold text-[#1A1A1A] mb-2">Create your account</h2>
+            <p className="text-[#5A5A5A]">Start building with AI in minutes</p>
           </div>
 
           {/* Error Alert */}
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
+            <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3">
               <Icons.AlertCircle />
-              <p className="text-sm text-red-400">{error}</p>
+              <p className="text-sm text-red-600">{error}</p>
             </div>
           )}
 
@@ -493,10 +495,10 @@ export function SignupForm() {
           {/* Divider */}
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-zinc-800" />
+              <div className="w-full border-t border-[#1A1A1A]/10" />
             </div>
             <div className="relative flex justify-center">
-              <span className="px-4 text-sm text-zinc-600 bg-zinc-950">or continue with email</span>
+              <span className="px-4 text-sm text-[#8A8A8A] bg-[#FFFAF0]">or continue with email</span>
             </div>
           </div>
 
@@ -539,7 +541,7 @@ export function SignupForm() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="text-zinc-500 hover:text-zinc-400 transition-colors"
+                    className="text-[#8A8A8A] hover:text-[#1A1A1A] transition-colors"
                   >
                     {showPassword ? <Icons.EyeOff /> : <Icons.Eye />}
                   </button>
@@ -569,15 +571,15 @@ export function SignupForm() {
                   onChange={(e) => setAgreedToTerms(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-5 h-5 rounded-md border border-zinc-700 bg-zinc-900/50 peer-checked:bg-indigo-500 peer-checked:border-indigo-500 transition-all flex items-center justify-center">
+                <div className="w-5 h-5 rounded-md border border-[#1A1A1A]/20 bg-white peer-checked:bg-[#FF4D4D] peer-checked:border-[#FF4D4D] transition-all flex items-center justify-center text-white">
                   {agreedToTerms && <Icons.Check />}
                 </div>
               </div>
-              <span className="text-sm text-zinc-400 group-hover:text-zinc-300 transition-colors">
+              <span className="text-sm text-[#5A5A5A] group-hover:text-[#1A1A1A] transition-colors">
                 I agree to the{' '}
-                <a href="/terms" className="text-indigo-400 hover:text-indigo-300">Terms of Service</a>
+                <a href="/terms" className="text-[#FF4D4D] hover:text-[#1A1A1A] font-medium">Terms of Service</a>
                 {' '}and{' '}
-                <a href="/privacy" className="text-indigo-400 hover:text-indigo-300">Privacy Policy</a>
+                <a href="/privacy" className="text-[#FF4D4D] hover:text-[#1A1A1A] font-medium">Privacy Policy</a>
               </span>
             </label>
 
@@ -586,12 +588,12 @@ export function SignupForm() {
               type="submit"
               disabled={formDisabled || !email || !password || !agreedToTerms}
               className="
-                w-full py-3 px-4 rounded-xl font-medium
-                bg-gradient-to-r from-indigo-500 to-purple-600 text-white
-                hover:from-indigo-600 hover:to-purple-700
-                focus:outline-none focus:ring-2 focus:ring-indigo-500/50
+                w-full py-4 px-4 rounded-xl font-black uppercase tracking-widest text-xs
+                bg-[#1A1A1A] text-white
+                hover:bg-[#FF4D4D]
+                focus:outline-none focus:ring-2 focus:ring-[#FF4D4D]/50
                 disabled:opacity-50 disabled:cursor-not-allowed
-                transition-all duration-200
+                transition-all duration-200 shadow-xl shadow-[#1A1A1A]/10
                 flex items-center justify-center gap-2
               "
             >
@@ -607,11 +609,11 @@ export function SignupForm() {
           </form>
 
           {/* Login Link */}
-          <p className="mt-8 text-center text-zinc-500">
+          <p className="mt-8 text-center text-[#5A5A5A]">
             Already have an account?{' '}
-            <Link 
-              to="/login" 
-              className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+            <Link
+              to="/login"
+              className="text-[#FF4D4D] hover:text-[#1A1A1A] font-bold transition-colors"
             >
               Sign in
             </Link>
