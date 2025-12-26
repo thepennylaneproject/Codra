@@ -20,11 +20,15 @@ import {
     Cpu,
     Target,
     Calculator,
-    Info
+    Info,
+    Sparkles
 } from 'lucide-react';
 import { usePromptArchitectStore } from '../../../lib/prompt-architect/prompt-architect-store';
 import { useFlowStore } from '../../../lib/store/useFlowStore';
 import { smartRouter, mapOutputTypeToTaskType, mapModeToQuality } from '../../../lib/ai/router/smart-router';
+import { THINKING_MODES, ThinkingMode } from '../../../lib/strategy/thinking-modes';
+import { useAuthenticity } from '../../../lib/copy/useAuthenticity';
+
 
 export function PromptArchitectPanel() {
     const {
@@ -52,6 +56,10 @@ export function PromptArchitectPanel() {
 
     const [isVisible, setIsVisible] = useState(true);
     const [showRoutingTrace, setShowRoutingTrace] = useState(false);
+    const [thinkingMode, setThinkingMode] = useState<ThinkingMode>('convergent');
+    
+    // P2: Authenticity Detection
+    const { analyze, score, grade, issues } = useAuthenticity();
 
     // Update routing decision when intent or mode changes
     useEffect(() => {
@@ -178,6 +186,41 @@ export function PromptArchitectPanel() {
                                             {status === 'needs-clarification' ? 'Re-Generate' : 'Architect'}
                                         </button>
                                     </div>
+                                </div>
+
+                                {/* Thinking Mode Selector */}
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2">
+                                        <Sparkles size={12} className="text-[#8A8A8A]" />
+                                        <label className="text-[9px] font-black uppercase tracking-[0.15em] text-[#8A8A8A]">
+                                            Thinking Mode
+                                        </label>
+                                    </div>
+                                    <div className="grid grid-cols-4 gap-2">
+                                        {(Object.keys(THINKING_MODES) as ThinkingMode[]).map((modeKey) => {
+                                            const mConfig = THINKING_MODES[modeKey];
+                                            return (
+                                                <button
+                                                    key={modeKey}
+                                                    onClick={() => setThinkingMode(modeKey)}
+                                                    className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all ${
+                                                        thinkingMode === modeKey
+                                                            ? 'bg-[#1A1A1A] text-white border-transparent shadow-lg'
+                                                            : 'bg-white text-[#8A8A8A] border-[#1A1A1A]/10 hover:border-[#1A1A1A]/30'
+                                                    }`}
+                                                    title={mConfig.description}
+                                                >
+                                                    <span className="text-lg">{mConfig.icon}</span>
+                                                    <span className="text-[8px] font-black uppercase tracking-wider">{mConfig.name}</span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    {thinkingMode !== 'convergent' && (
+                                        <p className="text-[9px] text-[#8A8A8A] italic pl-1">
+                                            {THINKING_MODES[thinkingMode].description}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Routing Decision View */}
@@ -329,9 +372,36 @@ export function PromptArchitectPanel() {
                                         className="space-y-3"
                                     >
                                         <div className="flex items-center justify-between">
-                                            <label className="text-[10px] font-black uppercase tracking-[0.15em] text-[#8A8A8A]">
-                                                Draft Output
-                                            </label>
+                                            <div className="flex items-center gap-3">
+                                                <label className="text-[10px] font-black uppercase tracking-[0.15em] text-[#8A8A8A]">
+                                                    Draft Output
+                                                </label>
+                                                {/* P2: Authenticity Badge */}
+                                                {grade && (
+                                                    <button
+                                                        onClick={() => analyze(generatedPrompt?.primary || '')}
+                                                        className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border ${
+                                                            grade === 'A' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
+                                                            grade === 'B' ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                                                            grade === 'C' ? 'bg-amber-50 text-amber-600 border-amber-200' :
+                                                            grade === 'D' ? 'bg-orange-50 text-orange-600 border-orange-200' :
+                                                            'bg-red-50 text-red-600 border-red-200'
+                                                        }`}
+                                                        title={issues.length > 0 ? `${issues.length} AI patterns detected` : 'Authentic content'}
+                                                    >
+                                                        <span>{grade}</span>
+                                                        <span className="opacity-60">{score}%</span>
+                                                    </button>
+                                                )}
+                                                {!grade && generatedPrompt && (
+                                                    <button
+                                                        onClick={() => analyze(generatedPrompt.primary)}
+                                                        className="px-2 py-0.5 rounded-full text-[9px] font-bold text-[#8A8A8A] bg-[#1A1A1A]/5 hover:bg-[#1A1A1A]/10 transition-colors"
+                                                    >
+                                                        Check Authenticity
+                                                    </button>
+                                                )}
+                                            </div>
                                             <div className="flex items-center gap-4">
                                                 {(['prompt', 'system', 'negative', 'sources'] as const).map((tab) => (
                                                     <button

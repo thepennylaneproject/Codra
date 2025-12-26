@@ -4,7 +4,7 @@ import { useOnboardingStore, STEP_METADATA } from '../store';
 import { createProject } from '../../../../domain/projects';
 import { TearSheetRevision, OnboardingProfile } from '../../../../domain/types';
 import { ProjectType, PROJECT_TYPE_OPTIONS } from '../../../../domain/onboarding-types';
-import { ArrowRight, Loader2, Zap } from 'lucide-react';
+import { ArrowRight, Loader2, Zap, Layers } from 'lucide-react';
 import { useSettingsStore } from '../../../../lib/store/useSettingsStore';
 
 const MANUAL_DEFAULT_PROFILE: OnboardingProfile = {
@@ -230,7 +230,7 @@ export const ModeSelectionStep = () => {
                     </div>
                 </div>
 
-                {/* Secondary: Guided Setup & Import */}
+                {/* Secondary: Guided Setup, Import & Templates */}
                 <div className="flex flex-col sm:flex-row gap-4">
                     <button
                         onClick={handleContinue}
@@ -239,6 +239,14 @@ export const ModeSelectionStep = () => {
                     >
                         Guided Consultation
                         <span className="text-[9px] opacity-40 lowercase italic font-serif">full control</span>
+                    </button>
+                    <button
+                        onClick={() => navigate('/blueprints')}
+                        className="flex-1 flex items-center justify-center gap-3 px-8 py-4 text-[10px] font-black uppercase tracking-widest border border-[#1A1A1A]/10 rounded-2xl text-[#8A8A8A] hover:bg-white hover:text-[#FF4D4D] hover:border-[#FF4D4D]/20 transition-all group"
+                    >
+                        <Layers size={14} className="group-hover:text-[#FF4D4D]" />
+                        Browse Templates
+                        <span className="text-[9px] opacity-40 lowercase italic font-serif">8 blueprints</span>
                     </button>
                     <button
                         onClick={handleImportProject}

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Sparkles, Maximize2, RefreshCcw, Download, Layers, ShieldCheck, Plus } from 'lucide-react';
+import { Sparkles, Maximize2, RefreshCcw, Download, Layers, ShieldCheck, Plus, Lock, Unlock } from 'lucide-react';
 import { MOCK_ASSETS } from '../../../domain/integrations';
 import { ModelSelector } from '../ModelSelector';
 import { DeskEvents } from '../../../lib/desks/DeskBridge';
 import { useImageGeneration } from '../../../hooks/useImageGeneration';
+import { STYLE_PRESETS, ImageStyle, applyStyleToPrompt, generateRandomSeed } from '../../../lib/image/seed-preservation';
 
 interface ArtDeskCanvasProps {
     selectedModelId?: string;
@@ -15,6 +16,11 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
     const [isDraggingOver, setIsDraggingOver] = useState(false);
     const { generate, isLoading, result, error } = useImageGeneration();
     const [localAssets, setLocalAssets] = useState(MOCK_ASSETS);
+    
+    // P2: Seed Preservation & Anti-Slop
+    const [currentStyle, setCurrentStyle] = useState<ImageStyle>('organic');
+    const [currentSeed, setCurrentSeed] = useState<number>(generateRandomSeed());
+    const [seedLocked, setSeedLocked] = useState(false);
 
     const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -37,11 +43,21 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
     const handleGenerate = async () => {
         if (!prompt) return;
         
+        // Apply anti-slop style to prompt
+        const { prompt: styledPrompt, negativePrompt } = applyStyleToPrompt(prompt, currentStyle);
+        
+        // Generate new seed if not locked
+        if (!seedLocked) {
+            setCurrentSeed(generateRandomSeed());
+        }
+        
         const response = await generate({
-            prompt,
+            prompt: styledPrompt,
+            negativePrompt,
             model: selectedModelId,
             width: 1024,
-            height: 1024
+            height: 1024,
+            seed: currentSeed,
         });
 
         if (response?.status === 'completed' && response.result) {
@@ -181,6 +197,45 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
                                 variant="minimal"
                                 className="w-auto"
                             />
+                            <div className="w-px h-4 bg-[var(--desk-border)]" />
+                            
+                            {/* P2: Anti-Slop Style Selector */}
+                            <div className="flex items-center gap-1">
+                                {(Object.keys(STYLE_PRESETS) as ImageStyle[]).slice(0, 4).map((style) => {
+                                    const preset = STYLE_PRESETS[style];
+                                    return (
+                                        <button
+                                            key={style}
+                                            onClick={() => setCurrentStyle(style)}
+                                            className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all ${
+                                                currentStyle === style
+                                                    ? 'bg-rose-500 text-white'
+                                                    : 'bg-[var(--desk-bg)]/50 text-[var(--desk-text-muted)] hover:bg-rose-500/20'
+                                            }`}
+                                            title={preset.description}
+                                        >
+                                            {preset.icon}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            
+                            <div className="w-px h-4 bg-[var(--desk-border)]" />
+                            
+                            {/* P2: Seed Lock */}
+                            <button
+                                onClick={() => setSeedLocked(!seedLocked)}
+                                className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-bold transition-all ${
+                                    seedLocked
+                                        ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30'
+                                        : 'bg-[var(--desk-bg)]/50 text-[var(--desk-text-muted)] hover:bg-[var(--desk-border)]'
+                                }`}
+                                title={seedLocked ? `Seed locked: ${currentSeed}` : 'Lock seed for variations'}
+                            >
+                                {seedLocked ? <Lock size={10} /> : <Unlock size={10} />}
+                                {seedLocked ? 'Locked' : 'Seed'}
+                            </button>
+                            
                             <div className="w-px h-4 bg-[var(--desk-border)]" />
                             <div className="flex items-center gap-2 text-[10px] font-bold text-[var(--desk-text-muted)] uppercase tracking-widest">
                                 <ShieldCheck size={12} className="text-green-500" />

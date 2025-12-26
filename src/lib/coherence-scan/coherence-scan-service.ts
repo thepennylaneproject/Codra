@@ -1,0 +1,381 @@
+/**
+ * COHERENCE SCAN SERVICE
+ * 
+ * Main orchestrator for running scans, managing state, and converting findings to tasks.
+ */
+
+import { v4 as uuid } from 'uuid';
+import type {
+    AuditType,
+    CoherenceScan,
+    ScanContext,
+    ScanFinding,
+    ScanSummary,
+    ScanType,
+} from '../../domain/coherence-scan';
+import {
+    getAuditsForScanType,
+    estimateScanCost,
+    calculateHealthScore,
+    severityToPriority,
+    categoryToDesk,
+} from '../../domain/coherence-scan';
+import {
+    parseAuditResponse,
+    CLARIFYING_QUESTIONS,
+    type AuditOutputSchema,
+} from '../../domain/audit-templates';
+import { createRoutingPlan, type RoutingDecision } from './scan-model-router';
+import { canRunScan, recordScanUsage } from './scan-usage-tracker';
+import type { SpreadTask } from '../../domain/task-queue';
+
+// ============================================
+// Scan State Management
+// ============================================
+
+// In-memory scan storage (would be Supabase in production)
+const scansInProgress = new Map<string, CoherenceScan>();
+
+// ============================================
+// Service Functions
+// ============================================
+
+/**
+ * Initiate a new scan
+ */
+export async function initiateScan(
+    userId: string,
+    projectId: string,
+    scanType: ScanType,
+    userTier: 'free' | 'pro' | 'team'
+): Promise<{ scan: CoherenceScan; allowed: boolean; error?: string }> {
+    // Check if user can run this scan
+    const canRun = await canRunScan(userId, scanType, userTier);
+    
+    if (!canRun.allowed) {
+        return {
+            scan: null as unknown as CoherenceScan,
+            allowed: false,
+            error: canRun.reason,
+        };
+    }
+    
+    // Determine which audits to run
+    const auditTypes = getAuditsForScanType(scanType);
+    const estimatedCost = estimateScanCost(auditTypes);
+    
+    const scan: CoherenceScan = {
+        id: uuid(),
+        projectId,
+        userId,
+        scanType,
+        status: 'pending',
+        auditTypes,
+        findings: [],
+        estimatedCost,
+        createdAt: new Date().toISOString(),
+    };
+    
+    scansInProgress.set(scan.id, scan);
+    
+    return { scan, allowed: true };
+}
+
+/**
+ * Get clarifying questions for a scan
+ */
+export function getClarifyingQuestions() {
+    return CLARIFYING_QUESTIONS;
+}
+
+/**
+ * Submit context and start the scan
+ */
+export async function submitContextAndStartScan(
+    scanId: string,
+    context: ScanContext
+): Promise<CoherenceScan> {
+    const scan = scansInProgress.get(scanId);
+    if (!scan) {
+        throw new Error(`Scan ${scanId} not found`);
+    }
+    
+    scan.context = context;
+    scan.status = 'queued';
+    scansInProgress.set(scanId, scan);
+    
+    // Start scan execution (in real implementation, this would be async/queued)
+    executeScan(scanId).catch(console.error);
+    
+    return scan;
+}
+
+/**
+ * Execute the scan
+ */
+export async function executeScan(scanId: string): Promise<void> {
+    const scan = scansInProgress.get(scanId);
+    if (!scan) {
+        throw new Error(`Scan ${scanId} not found`);
+    }
+    
+    scan.status = 'scanning';
+    scan.startedAt = new Date().toISOString();
+    scansInProgress.set(scanId, scan);
+    
+    const routingPlan = createRoutingPlan(scan.auditTypes, scan.scanType);
+    const allFindings: ScanFinding[] = [];
+    let actualCost = 0;
+    
+    try {
+        // Run each audit
+        for (const decision of routingPlan.decisions) {
+            const auditFindings = await runAudit(
+                decision,
+                scan.context!
+            );
+            allFindings.push(...auditFindings.findings);
+            actualCost += decision.estimatedCost;
+        }
+        
+        // Calculate summary
+        const summary = calculateSummary(allFindings);
+        
+        scan.findings = allFindings;
+        scan.summary = summary;
+        scan.actualCost = actualCost;
+        scan.status = 'complete';
+        scan.completedAt = new Date().toISOString();
+        
+        // Record usage
+        await recordScanUsage(scan.userId, scan.scanType, actualCost);
+        
+    } catch (error) {
+        scan.status = 'failed';
+        scan.error = error instanceof Error ? error.message : 'Unknown error';
+    }
+    
+    scansInProgress.set(scanId, scan);
+}
+
+/**
+ * Run a single audit
+ */
+async function runAudit(
+    decision: RoutingDecision,
+    _context: ScanContext
+): Promise<{ findings: ScanFinding[] }> {
+    // NOTE: In production, we would use buildAuditPrompt() here to call the AI
+    // For now, we return mock findings for development purposes
+    
+    // TODO: Integrate with actual AI provider
+    // For now, return mock findings
+    const mockResponse = generateMockFindings(decision.auditType);
+    const parsed = parseAuditResponse(JSON.stringify(mockResponse));
+    
+    if (!parsed) {
+        return { findings: [] };
+    }
+    
+    // Convert to ScanFinding with IDs
+    const findings: ScanFinding[] = parsed.findings.map(f => ({
+        id: uuid(),
+        auditType: decision.auditType,
+        category: f.category,
+        severity: f.severity,
+        title: f.title,
+        observation: f.observation,
+        whyItMatters: f.whyItMatters,
+        userImpact: f.userImpact,
+        recommendation: f.recommendation,
+        estimatedEffort: f.estimatedEffort,
+        selected: false,
+    }));
+    
+    return { findings };
+}
+
+/**
+ * Calculate scan summary from findings
+ */
+function calculateSummary(findings: ScanFinding[]): ScanSummary {
+    const severityCounts = {
+        critical: 0,
+        high: 0,
+        medium: 0,
+        low: 0,
+        info: 0,
+    };
+    
+    const effortCounts = {
+        trivial: 0,
+        small: 0,
+        medium: 0,
+        large: 0,
+    };
+    
+    for (const f of findings) {
+        severityCounts[f.severity]++;
+        effortCounts[f.estimatedEffort]++;
+    }
+    
+    return {
+        criticalCount: severityCounts.critical,
+        highCount: severityCounts.high,
+        mediumCount: severityCounts.medium,
+        lowCount: severityCounts.low,
+        infoCount: severityCounts.info,
+        healthScore: calculateHealthScore(findings),
+        totalEffort: effortCounts,
+    };
+}
+
+/**
+ * Get a scan by ID
+ */
+export function getScan(scanId: string): CoherenceScan | undefined {
+    return scansInProgress.get(scanId);
+}
+
+/**
+ * Toggle finding selection
+ */
+export function toggleFindingSelection(scanId: string, findingId: string): void {
+    const scan = scansInProgress.get(scanId);
+    if (!scan) return;
+    
+    const finding = scan.findings.find(f => f.id === findingId);
+    if (finding) {
+        finding.selected = !finding.selected;
+    }
+    scansInProgress.set(scanId, scan);
+}
+
+/**
+ * Convert selected findings to tasks
+ */
+export function convertFindingsToTasks(
+    scan: CoherenceScan,
+    _projectContext: { projectId: string; title: string }
+): SpreadTask[] {
+    const selectedFindings = scan.findings.filter(f => f.selected);
+    
+    return selectedFindings.map((finding, index) => ({
+        id: uuid(),
+        title: `Fix: ${finding.title}`,
+        description: `${finding.observation}\n\nRecommendation: ${finding.recommendation}`,
+        deskId: categoryToDesk(finding.category),
+        status: 'pending' as const,
+        order: index + 1,
+        priority: severityToPriority(finding.severity),
+        dependencies: [],
+        estimatedCost: 0.10, // Rough estimate for task execution
+        tearSheetAnchor: `coherence-scan:${scan.id}:${finding.id}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    }));
+}
+
+// ============================================
+// Mock Data (for development)
+// ============================================
+
+function generateMockFindings(auditType: AuditType): AuditOutputSchema {
+    const mockFindings: Record<AuditType, AuditOutputSchema> = {
+        'ship-ready': {
+            findings: [
+                {
+                    category: 'onboarding',
+                    severity: 'high',
+                    title: 'Cold start provides no guidance',
+                    observation: 'New users land on an empty dashboard with no clear next step.',
+                    whyItMatters: 'Users who don\'t understand how to start will leave immediately.',
+                    userImpact: 'High bounce rate, low activation.',
+                    recommendation: 'Add a first-run wizard or checklist that guides users to their first success.',
+                    estimatedEffort: 'medium',
+                },
+                {
+                    category: 'state-feedback-trust',
+                    severity: 'medium',
+                    title: 'Save actions lack confirmation',
+                    observation: 'When users save settings, there\'s no visual feedback confirming the action.',
+                    whyItMatters: 'Users may click save multiple times or not trust that it worked.',
+                    userImpact: 'Anxiety, repeated actions, potential data issues.',
+                    recommendation: 'Add toast notifications or inline success messages for all save actions.',
+                    estimatedEffort: 'small',
+                },
+            ],
+            summary: {
+                topBlindSpot: 'Onboarding assumes users know what the product does.',
+                topStrength: 'Core functionality is well-implemented.',
+                strategicQuestion: 'What does "success" look like in the first 5 minutes?',
+            },
+        },
+        'blind-spot': {
+            findings: [
+                {
+                    category: 'builder-bias',
+                    severity: 'high',
+                    title: 'Expert terminology leaking into UI',
+                    observation: 'Labels like "Spread" and "Production Desk" assume domain knowledge.',
+                    whyItMatters: 'New users won\'t understand what these mean.',
+                    userImpact: 'Confusion, feature underutilization.',
+                    recommendation: 'Add tooltips or use more intuitive language.',
+                    estimatedEffort: 'small',
+                },
+            ],
+            summary: {
+                topBlindSpot: 'You assume users understand industry terms.',
+                topStrength: 'Deep domain expertise is visible in the feature depth.',
+                strategicQuestion: 'Would a complete beginner understand what problem you solve?',
+            },
+        },
+        'kill-list': {
+            findings: [
+                {
+                    category: 'timing',
+                    severity: 'medium',
+                    title: 'Settings page has premature options',
+                    observation: 'Advanced AI configuration visible to users who haven\'t used basic features yet.',
+                    whyItMatters: 'Overwhelming options reduce perceived simplicity.',
+                    userImpact: 'Cognitive overload, decision paralysis.',
+                    recommendation: 'Hide advanced settings behind progressive disclosure.',
+                    estimatedEffort: 'small',
+                },
+            ],
+        },
+        'investor-diligence': {
+            findings: [
+                {
+                    category: 'feature-visibility',
+                    severity: 'medium',
+                    title: 'No social proof visible',
+                    observation: 'Landing page lacks testimonials, case studies, or usage stats.',
+                    whyItMatters: 'Investors and users need proof of traction.',
+                    userImpact: 'Lower trust, higher acquisition cost.',
+                    recommendation: 'Add customer logos, testimonials, or aggregate usage stats.',
+                    estimatedEffort: 'medium',
+                },
+            ],
+        },
+        'unclaimed-value': {
+            findings: [
+                {
+                    category: 'underutilized-feature',
+                    severity: 'low',
+                    title: 'Export functionality is buried',
+                    observation: 'Users can export work but the feature is hidden in a submenu.',
+                    whyItMatters: 'This could be a key differentiator.',
+                    userImpact: 'Users may not realize they can share/export their work.',
+                    recommendation: 'Surface export options more prominently after task completion.',
+                    estimatedEffort: 'trivial',
+                },
+            ],
+        },
+        'coherence-loop': {
+            findings: [],
+        },
+    };
+    
+    return mockFindings[auditType] ?? { findings: [] };
+}

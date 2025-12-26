@@ -11,9 +11,70 @@ export interface ProjectBlueprint {
     category: 'Marketing' | 'Branding' | 'Product' | 'Strategy';
     previewImage?: string;
     difficulty: 'Entry' | 'Intermediate' | 'Advanced';
+    
+    // Pre-filled content for faster starts
+    defaultBrief?: {
+        audience: string;
+        goals: string[];
+        boundaries: string[];
+    };
+    
+    // Suggested moodboard seeds
+    moodboardSeeds?: string[];
+    
+    // Pre-generated task suggestions
+    starterTasks?: string[];
 }
 
 export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
+    {
+        id: 'portfolio-site',
+        name: 'Portfolio Website',
+        description: 'Personal showcase for creatives, developers, and designers.',
+        type: 'landing-page',
+        goals: ['website-app', 'brand-identity'],
+        desks: ['art-design', 'engineering', 'writing'],
+        category: 'Product',
+        difficulty: 'Entry',
+        defaultBrief: {
+            audience: 'Potential employers and clients',
+            goals: ['Showcase work', 'Generate leads', 'Establish credibility'],
+            boundaries: ['Keep it professional', 'Mobile-first design']
+        },
+        starterTasks: ['Design hero section', 'Write project descriptions', 'Create responsive layout']
+    },
+    {
+        id: 'landing-page',
+        name: 'Landing Page Builder',
+        description: 'High-conversion single page for product launches or lead gen.',
+        type: 'marketing-site',
+        goals: ['marketing-campaign', 'website-app'],
+        desks: ['art-design', 'writing', 'engineering'],
+        category: 'Marketing',
+        difficulty: 'Entry',
+        defaultBrief: {
+            audience: 'Target customers ready to convert',
+            goals: ['Drive signups', 'Communicate value prop', 'Build trust'],
+            boundaries: ['Fast load times', 'Clear CTA hierarchy']
+        },
+        starterTasks: ['Write headline copy', 'Design above-the-fold', 'Create social proof section']
+    },
+    {
+        id: 'brand-refresh',
+        name: 'Brand Refresh Kit',
+        description: 'Modernize an existing brand with updated visuals and messaging.',
+        type: 'other',
+        goals: ['brand-identity', 'print-materials'],
+        desks: ['art-design', 'writing'],
+        category: 'Branding',
+        difficulty: 'Intermediate',
+        defaultBrief: {
+            audience: 'Existing customers and new markets',
+            goals: ['Update visual identity', 'Maintain brand recognition', 'Expand appeal'],
+            boundaries: ['Respect brand heritage', 'Phased rollout']
+        },
+        starterTasks: ['Audit current brand assets', 'Design new color palette', 'Update typography']
+    },
     {
         id: 'product-launch-kit',
         name: 'Product Launch Kit',
@@ -22,7 +83,12 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         goals: ['brand-identity', 'marketing-campaign', 'social-content'],
         desks: ['art-design', 'writing', 'marketing'],
         category: 'Marketing',
-        difficulty: 'Intermediate'
+        difficulty: 'Intermediate',
+        defaultBrief: {
+            audience: 'Early adopters and target market',
+            goals: ['Generate buzz', 'Drive pre-orders', 'Establish positioning'],
+            boundaries: ['Launch timeline constraints', 'Budget-conscious']
+        }
     },
     {
         id: 'pitch-deck-studio',
@@ -32,7 +98,12 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         goals: ['pitch-deck', 'print-materials'],
         desks: ['writing', 'art-design'],
         category: 'Strategy',
-        difficulty: 'Entry'
+        difficulty: 'Entry',
+        defaultBrief: {
+            audience: 'Investors and advisors',
+            goals: ['Secure funding', 'Tell compelling story', 'Demonstrate traction'],
+            boundaries: ['10-15 slides max', 'Data-driven claims']
+        }
     },
     {
         id: 'saas-brand-system',
@@ -42,7 +113,12 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         goals: ['brand-identity', 'website-app'],
         desks: ['art-design', 'engineering'],
         category: 'Branding',
-        difficulty: 'Advanced'
+        difficulty: 'Advanced',
+        defaultBrief: {
+            audience: 'Business users and developers',
+            goals: ['Create cohesive design system', 'Enable rapid development', 'Establish premium feel'],
+            boundaries: ['Accessibility compliance', 'Cross-platform consistency']
+        }
     },
     {
         id: 'ecommerce-campaign',

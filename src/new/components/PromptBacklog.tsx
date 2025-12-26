@@ -68,17 +68,50 @@ export function PromptBacklog({ taskQueue, activeTaskId, onSelectTask, onRunTask
                     <label className="text-[10px] font-black text-[#8A8A8A] uppercase tracking-[0.2em] block ml-1">
                         Upcoming
                     </label>
-                    <div className="space-y-3">
-                        {pendingTasks.map(task => (
-                            <PromptCard
-                                key={task.id}
-                                task={task}
-                                isActive={task.id === activeTaskId}
-                                onSelect={() => onSelectTask(task)}
-                                onRun={onRunTask}
-                            />
-                        ))}
-                    </div>
+                    {pendingTasks.length > 0 ? (
+                        <div className="space-y-3">
+                            {pendingTasks.map(task => (
+                                <PromptCard
+                                    key={task.id}
+                                    task={task}
+                                    isActive={task.id === activeTaskId}
+                                    onSelect={() => onSelectTask(task)}
+                                    onRun={onRunTask}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        /* First-Task Guidance */
+                        <div className="bg-white border border-[#1A1A1A]/5 rounded-2xl p-6 text-center space-y-4">
+                            <div className="w-12 h-12 mx-auto rounded-2xl bg-[#FF4D4D]/10 flex items-center justify-center">
+                                <span className="text-2xl">✨</span>
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-sm font-bold text-[#1A1A1A]">
+                                    Ready to Create
+                                </h3>
+                                <p className="text-xs text-[#8A8A8A] leading-relaxed">
+                                    Use the <span className="font-bold text-[#FF4D4D]">Architect</span> panel on the right to add your first AI task, or click a section in the workspace to generate content.
+                                </p>
+                            </div>
+                            <div className="flex flex-col gap-2 pt-2">
+                                <div className="text-[9px] font-black uppercase tracking-widest text-[#8A8A8A]">
+                                    Quick Ideas
+                                </div>
+                                <div className="flex flex-wrap gap-2 justify-center">
+                                    <span className="px-3 py-1.5 bg-[#1A1A1A]/5 rounded-full text-[10px] font-bold text-[#5A5A5A]">
+                                        Write hero copy
+                                    </span>
+                                    <span className="px-3 py-1.5 bg-[#1A1A1A]/5 rounded-full text-[10px] font-bold text-[#5A5A5A]">
+                                        Design color palette
+                                    </span>
+                                    <span className="px-3 py-1.5 bg-[#1A1A1A]/5 rounded-full text-[10px] font-bold text-[#5A5A5A]">
+                                        Draft about page
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Completed Tasks */}
