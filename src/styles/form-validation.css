@@ -1,0 +1,80 @@
+/**
+ * Form Validation Styles
+ * 
+ * Styles for required field indicators, error states, and validation messages.
+ */
+
+/* Required field indicator (red asterisk) */
+.required-indicator {
+    color: #e11d48;
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+/* Field error state - section border highlight */
+.section-error {
+    border-color: #e11d48 !important;
+    background-color: rgba(225, 29, 72, 0.02);
+}
+
+/* Error message below fields */
+.error-message {
+    color: #e11d48;
+    font-size: 12px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.error-message svg {
+    flex-shrink: 0;
+}
+
+/* Validation banner shown in footer */
+.validation-banner {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.validation-banner-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e11d48;
+    flex-shrink: 0;
+}
+
+.validation-banner-content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #991b1b;
+    margin-bottom: 2px;
+}
+
+.validation-banner-content p {
+    font-size: 12px;
+    color: #b91c1c;
+}
+
+/* Shake animation for validation errors */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}

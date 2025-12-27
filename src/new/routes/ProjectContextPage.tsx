@@ -11,6 +11,8 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { analytics } from '../../lib/analytics';
 import { useToast } from '../components/Toast';
+import { validateProjectContext, getValidationSummary, type ProjectContextFormState } from '../../lib/validation/projectBrief';
+import '../../styles/form-validation.css';
 
 export function ProjectContextPage() {
     const { projectId } = useParams<{ projectId: string }>();
@@ -28,6 +30,7 @@ export function ProjectContextPage() {
     const [editingSection, setEditingSection] = useState<string | null>(null);
     const [tempData, setTempData] = useState<any>(null);
     const [isExporting, setIsExporting] = useState(false);
+    const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
     const exportRef = useRef<HTMLDivElement>(null);
 
     // active revision data helper
@@ -164,6 +167,30 @@ export function ProjectContextPage() {
 
     const handleApproveAndLaunch = () => {
         if (!projectId || !project || !activeRevision) return;
+
+        // Validate required fields before proceeding
+        const formData: ProjectContextFormState = {
+            audience: displayData.audience,
+            brand: displayData.brand,
+            success: displayData.success,
+            guardrails: displayData.guardrails
+        };
+
+        const validation = validateProjectContext(formData);
+        
+        if (!validation.isValid) {
+            setValidationErrors(validation.errors);
+            const summary = getValidationSummary(validation.errors);
+            toast.error(summary);
+            analytics.track('project_context_validation_failed', { 
+                projectId, 
+                errors: Object.keys(validation.errors) 
+            });
+            return;
+        }
+
+        // Clear any previous validation errors
+        setValidationErrors({});
 
         // 1. Mark revision as approved
         const updatedRevisions = revisions.map(r =>
@@ -450,10 +477,12 @@ export function ProjectContextPage() {
                         onEdit={() => handleStartEdit('audience', displayData.audience)}
                         onSave={() => handleSaveSection('audience')}
                         onCancel={handleCancelEdit}
+                        isRequired={true}
+                        error={validationErrors.audience}
                         renderEdit={() => (
                             <div className="space-y-6">
                                 <div>
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 block mb-2">Primary Segment</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 block mb-2">Primary Segment<span className="required-indicator">*</span></label>
                                     <input
                                         type="text"
                                         value={tempData.primary}
@@ -516,10 +545,12 @@ export function ProjectContextPage() {
                         onEdit={() => handleStartEdit('brand', displayData.brand)}
                         onSave={() => handleSaveSection('brand')}
                         onCancel={handleCancelEdit}
+                        isRequired={true}
+                        error={validationErrors.brand}
                         renderEdit={() => (
                             <div className="space-y-6">
                                 <div>
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 block mb-2">Brand Voice & Guidelines</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 block mb-2">Brand Voice & Guidelines<span className="required-indicator">*</span></label>
                                     <textarea
                                         value={tempData.voiceGuidelines}
                                         onChange={(e) => setTempData({ ...tempData, voiceGuidelines: e.target.value })}
@@ -578,9 +609,11 @@ export function ProjectContextPage() {
                         onEdit={() => handleStartEdit('success', displayData.success)}
                         onSave={() => handleSaveSection('success')}
                         onCancel={handleCancelEdit}
+                        isRequired={true}
+                        error={validationErrors.success}
                         renderEdit={() => (
                             <div className="space-y-4">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 block">Definition of Done</label>
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 block">Definition of Done<span className="required-indicator">*</span></label>
                                 {(tempData.definitionOfDone || []).map((step: string, i: number) => (
                                     <div key={i} className="flex gap-2">
                                         <input
@@ -636,10 +669,12 @@ export function ProjectContextPage() {
                         onEdit={() => handleStartEdit('guardrails', displayData.guardrails)}
                         onSave={() => handleSaveSection('guardrails')}
                         onCancel={handleCancelEdit}
+                        isRequired={true}
+                        error={validationErrors.guardrails}
                         renderEdit={() => (
                             <div className="space-y-8">
                                 <div>
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-rose-500 block mb-3">Must Avoid</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-rose-500 block mb-3">Must Avoid<span className="required-indicator">*</span></label>
                                     <div className="space-y-3">
                                         {(tempData.mustAvoid || []).map((item: string, i: number) => (
                                             <div key={i} className="flex gap-2">
@@ -711,7 +746,7 @@ export function ProjectContextPage() {
                     >
                         <div className="space-y-6">
                             <div>
-                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-2 text-rose-500">Must Avoid</h4>
+                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-rose-500 mb-2">Must Avoid</h4>
                                 <ul className="space-y-2">
                                     {displayData.guardrails.mustAvoid?.map((item: string, i: number) => (
                                         <li key={i} className="flex gap-3 text-sm text-zinc-600">
@@ -722,7 +757,7 @@ export function ProjectContextPage() {
                                 </ul>
                             </div>
                             <div>
-                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-2 text-emerald-500">Competitors To Watch</h4>
+                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-2">Competitors To Watch</h4>
                                 <div className="flex flex-wrap gap-2">
                                     {displayData.guardrails.competitors?.map((c: string, i: number) => (
                                         <span key={i} className="text-xs px-2 py-1 bg-zinc-100 text-zinc-600 rounded-sm">
@@ -810,7 +845,9 @@ function ContextSection({
     onEdit,
     onSave,
     onCancel,
-    renderEdit
+    renderEdit,
+    isRequired,
+    error
 }: {
     title: string;
     icon: React.ReactNode;
@@ -821,13 +858,16 @@ function ContextSection({
     onSave?: () => void;
     onCancel?: () => void;
     renderEdit?: () => React.ReactNode;
+    isRequired?: boolean;
+    error?: string;
 }) {
     return (
-        <section className={cn("space-y-6 relative group", className)}>
-            <div className="flex items-center justify-between border-b border-zinc-200 pb-3">
+        <section className={cn("space-y-6 relative group", error && "section-error", className)}>
+            <div className={cn("flex items-center justify-between border-b pb-3", error ? "border-rose-200" : "border-zinc-200")}>
                 <h3 className="text-[10px] font-bold tracking-[0.2em] text-zinc-900 uppercase flex items-center gap-2">
-                    <span className="text-rose-500">{icon}</span>
+                    <span className={error ? "text-rose-500" : "text-rose-500"}>{icon}</span>
                     {title}
+                    {isRequired && <span className="required-indicator">*</span>}
                 </h3>
                 {!isEditing && onEdit && (
                     <button
@@ -858,7 +898,15 @@ function ContextSection({
                     </div>
                 </div>
             ) : (
-                children
+                <>
+                    {children}
+                    {error && (
+                        <div className="error-message">
+                            <AlertTriangle size={14} />
+                            <span>{error}</span>
+                        </div>
+                    )}
+                </>
             )}
         </section>
     );
