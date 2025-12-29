@@ -23,7 +23,7 @@ export const OnboardingProgress = ({ currentStep }: OnboardingProgressProps) => 
             {/* Progress Bar */}
             <div className="relative h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                 <div
-                    className="absolute inset-y-0 left-0 bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 ease-out"
+                    className="absolute inset-y-0 left-0 bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 ease-out animate-shimmer"
                     style={{ width: `${progress}%` }}
                 />
             </div>
@@ -53,7 +53,7 @@ export const OnboardingProgress = ({ currentStep }: OnboardingProgressProps) => 
                                     ? 'bg-zinc-200 text-zinc-900 dark:bg-zinc-700 dark:text-zinc-100 ring-2 ring-zinc-900 dark:ring-zinc-100 ring-offset-2 ring-offset-white dark:ring-offset-zinc-950'
                                     : 'bg-zinc-100 dark:bg-zinc-800'
                                 }`}>
-                                {isComplete ? <Check size={12} /> : index + 1}
+                                {isComplete ? <Check size={12} strokeWidth={1.5} /> : index + 1}
                             </div>
 
                             {/* Label (hidden on mobile except for current) */}

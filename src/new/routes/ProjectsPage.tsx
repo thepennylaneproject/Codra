@@ -179,7 +179,7 @@ export function ProjectsPage() {
                         <div className="flex flex-wrap items-center gap-3">
                             {/* Search */}
                             <div className="relative group w-full sm:w-56">
-                                <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8A8A8A] transition-colors group-focus-within:text-[#FF4D4D]" />
+                                <Search size={16} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8A8A8A] transition-colors group-focus-within:text-[#FF4D4D]" />
                                 <input
                                     type="text"
                                     placeholder="Filter workspaces..."
@@ -194,7 +194,7 @@ export function ProjectsPage() {
                                 onClick={handleSandbox}
                                 className="px-6 py-3 bg-amber-50 text-amber-900 border border-amber-200 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-amber-100 transition-all flex items-center gap-2 shadow-sm active:scale-95"
                             >
-                                <Sparkles size={14} strokeWidth={3} className="text-amber-600" />
+                                <Sparkles size={14} strokeWidth={1.5} className="text-amber-600" />
                                 Sandbox
                             </button>
 
@@ -203,7 +203,7 @@ export function ProjectsPage() {
                                 onClick={() => navigate('/onboarding/new-project')}
                                 className="px-8 py-3 bg-[#1A1A1A] text-white rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-[#FF4D4D] transition-all flex items-center gap-2 shadow-lg shadow-[#1A1A1A]/10 active:scale-95"
                             >
-                                <Plus size={14} strokeWidth={3} />
+                                <Plus size={14} strokeWidth={1.5} />
                                 New Workspace
                             </button>
                         </div>
@@ -212,9 +212,9 @@ export function ProjectsPage() {
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => navigate('/blueprints')}
-                                className="px-4 py-2 text-[#5A5A5A] hover:text-[#FF4D4D] text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-1.5"
+                                className="px-4 py-2 text-[#5A5A5A] hover:text-[#FF4D4D] text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1.5"
                             >
-                                <Layers size={12} />
+                                <Layers size={14} strokeWidth={1.5} />
                                 Templates
                             </button>
 
@@ -229,17 +229,17 @@ export function ProjectsPage() {
                             />
                             <button
                                 onClick={() => document.getElementById('import-project')?.click()}
-                                className="px-4 py-2 text-[#5A5A5A] hover:text-[#FF4D4D] text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-1.5"
+                                className="px-4 py-2 text-[#5A5A5A] hover:text-[#FF4D4D] text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1.5"
                             >
-                                <Download size={12} />
+                                <Download size={14} strokeWidth={1.5} />
                                 Import
                             </button>
 
                             <button
                                 onClick={handleImportCodebase}
-                                className="px-4 py-2 text-[#5A5A5A] hover:text-[#FF4D4D] text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-1.5 group relative"
+                                className="px-4 py-2 text-[#5A5A5A] hover:text-[#FF4D4D] text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1.5 group relative"
                             >
-                                <Github size={12} />
+                                <Github size={14} strokeWidth={1.5} />
                                 Codebase
                                 <span className="absolute -top-1 -right-1 px-1 py-0.5 bg-amber-100 text-amber-700 text-[7px] font-black rounded uppercase">Beta</span>
                             </button>
@@ -276,7 +276,7 @@ export function ProjectsPage() {
                     {loading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
                             {[1, 2, 3].map(i => (
-                                <div key={i} className="h-64 bg-[#1A1A1A]/5 rounded-3xl" />
+                                <div key={i} className="h-64 bg-[#1A1A1A]/5 rounded-xl" />
                             ))}
                         </div>
                     ) : filteredProjects.length > 0 ? (
@@ -373,7 +373,7 @@ function ProjectCard({ project, onClick, delay = 0 }: { project: Project, onClic
             className="group relative flex flex-col text-left active:scale-[0.98] transition-transform"
         >
             {/* Card Body */}
-            <div className="relative p-8 bg-white border border-[#1A1A1A]/5 rounded-3xl overflow-hidden transition-all group-hover:border-[#FF4D4D]/20 group-hover:shadow-2xl group-hover:shadow-[#1A1A1A]/5">
+            <div className="relative p-8 bg-white border border-[#1A1A1A]/5 rounded-xl overflow-hidden transition-all group-hover:border-[#FF4D4D]/20 group-hover:shadow-2xl group-hover:shadow-[#1A1A1A]/5">
                 {/* Accent Line */}
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-[#1A1A1A]/5 group-hover:bg-[#FF4D4D] transition-colors" />
 

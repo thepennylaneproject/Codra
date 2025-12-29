@@ -1,6 +1,6 @@
 /**
  * CROSS DESK SUGGESTION CARD
- * Displays suggestions from other Production Desks
+ * Displays suggestions from other Task Workspaces
  * 
  * Shows cross-pollination opportunities when one desk's output
  * could benefit work in another desk.

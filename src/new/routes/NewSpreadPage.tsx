@@ -539,6 +539,7 @@ export function NewSpreadPage() {
                                 <CodraWorkspace
                                     mode={activeTaskId ? 'execute' : 'consult'}
                                     spread={spread}
+                                    projectName={project.name}
                                     activeTask={taskQueue?.tasks.find(t => t.id === activeTaskId) || null}
                                     pastMemories={taskQueue?.tasks.filter(t => (t.status as string) === 'complete').map(t => ({ title: t.title, memory: t.memory || '' }))}
                                     onRunTask={handleRunTask}

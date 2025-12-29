@@ -30,6 +30,7 @@ import { WorkflowDeskCanvas } from './desks/WorkflowDeskCanvas';
 import { ErrorBoundary } from './ErrorBoundary';
 import { LyraNudgeContainer } from './LyraNudgeBubble';
 import { CrossDeskBadge } from './CrossDeskSuggestions';
+import { MissionBanner } from '../../components/codra/MissionBanner';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -45,6 +46,7 @@ interface CodraWorkspaceProps {
     deskModels: Record<string, { modelId: string; providerId: string }>;
     onSetDeskModel: (deskId: string, modelId: string, providerId: string) => void;
     globalModelId: string;
+    projectName?: string;
 }
 
 export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
@@ -56,7 +58,8 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
     onSectionUpdate,
     deskModels,
     onSetDeskModel,
-    globalModelId
+    globalModelId,
+    projectName
 }) => {
     return (
         <div className="h-full flex flex-col relative overflow-hidden">
@@ -121,6 +124,7 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                     "max-w-4xl mx-auto py-24 px-8 transition-all duration-700",
                     mode === 'execute' ? "opacity-40 scale-[0.98] blur-sm pointer-events-none" : "opacity-100 scale-100 blur-0"
                 )}>
+                    {projectName === 'AI Playground' && <MissionBanner />}
                     {spread ? (
                         <div className="space-y-12">
                             {/* Spread Header */}
@@ -128,7 +132,7 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                                 <div className="flex items-center gap-3 mb-4">
                                     <Layout size={16} className="text-[#8A8A8A]" />
                                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#8A8A8A]">
-                                        Editorial Spread v1.0
+                                        Project v1.0
                                     </span>
                                 </div>
                                 <h1 className="text-5xl font-black text-[#1A1A1A] tracking-tighter leading-[0.9] mb-6">

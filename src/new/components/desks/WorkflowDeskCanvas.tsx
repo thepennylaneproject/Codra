@@ -13,7 +13,7 @@ export const WorkflowDeskCanvas: React.FC<WorkflowDeskCanvasProps> = ({ selected
         <div className="w-full h-full flex flex-col gap-8">
             <header className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-black tracking-tight uppercase text-[var(--desk-text-primary)]">Workflow Studio</h2>
+                    <h2 className="text-2xl font-black tracking-tight uppercase text-[var(--desk-text-primary)]">Workflow Workspace</h2>
                     <p className="text-xs text-[var(--desk-text-muted)] font-mono uppercase tracking-widest mt-1">Linear Integration Active</p>
                 </div>
 

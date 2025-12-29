@@ -253,7 +253,7 @@ export function LoginForm() {
   const formDisabled = isLoading || isSubmitting;
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex">
+    <div className="min-h-screen bg-zinc-950 flex font-sans selection:bg-[var(--brand-teal)]/30">
       {/* Left Panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-zinc-900 to-zinc-950 p-12 flex-col justify-between relative overflow-hidden">
         {/* Background Pattern */}
@@ -298,20 +298,20 @@ export function LoginForm() {
       </div>
 
       {/* Right Panel - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 bg-[#FFFAF0]">
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[var(--brand-teal)] flex items-center justify-center text-zinc-950">
               <Icons.Activity />
             </div>
-            <span className="text-2xl font-bold text-white tracking-tight">Codra</span>
+            <span className="text-2xl font-bold text-zinc-900 tracking-tight">Codra</span>
           </div>
 
           {/* Header */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold text-zinc-100 mb-2">Welcome back</h2>
-            <p className="text-zinc-500">Sign in to your account to continue</p>
+            <h2 className="text-3xl font-black text-zinc-900 mb-2 tracking-tight">Welcome back</h2>
+            <p className="text-zinc-500 font-medium italic">Sign in to your account to continue</p>
           </div>
 
           {/* Error Alert */}
@@ -340,43 +340,51 @@ export function LoginForm() {
           </div>
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <FormInput
-              label="Email"
-              type="email"
-              value={email}
-              onChange={setEmail}
-              placeholder="you@example.com"
-              icon={<Icons.Mail />}
-              disabled={formDisabled}
-              autoComplete="email"
-            />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label className="block text-sm font-bold uppercase tracking-widest text-zinc-400">Email</label>
+              <div className="relative group">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors group-focus-within:text-[var(--brand-teal)]">
+                  <Icons.Mail />
+                </div>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="w-full pl-12 pr-4 py-4 bg-white border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-[var(--brand-teal)] transition-all shadow-sm"
+                />
+              </div>
+            </div>
 
-            <FormInput
-              label="Password"
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={setPassword}
-              placeholder="••••••••"
-              icon={<Icons.Lock />}
-              disabled={formDisabled}
-              autoComplete="current-password"
-              rightElement={
+            <div className="space-y-2">
+              <label className="block text-sm font-bold uppercase tracking-widest text-zinc-400">Password</label>
+              <div className="relative group">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors group-focus-within:text-[var(--brand-teal)]">
+                  <Icons.Lock />
+                </div>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full pl-12 pr-12 py-4 bg-white border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-[var(--brand-teal)] transition-all shadow-sm"
+                />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-zinc-500 hover:text-zinc-400 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
                 >
                   {showPassword ? <Icons.EyeOff /> : <Icons.Eye />}
                 </button>
-              }
-            />
+              </div>
+            </div>
 
             {/* Forgot Password Link */}
-            <div className="flex justify-end">
+            <div className="flex justify-end pt-1">
               <Link 
                 to="/forgot-password" 
-                className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
+                className="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-[var(--brand-teal)] transition-colors"
               >
                 Forgot password?
               </Link>
@@ -387,32 +395,32 @@ export function LoginForm() {
               type="submit"
               disabled={formDisabled || !email || !password}
               className="
-                w-full py-3 px-4 rounded-xl font-medium
-                bg-gradient-to-r from-indigo-500 to-purple-600 text-white
-                hover:from-indigo-600 hover:to-purple-700
-                focus:outline-none focus:ring-2 focus:ring-indigo-500/50
+                w-full py-4 px-4 rounded-xl font-black uppercase tracking-[0.2em] text-xs
+                bg-zinc-900 text-white
+                hover:bg-[var(--brand-teal)] hover:text-zinc-950
+                focus:outline-none focus:ring-2 focus:ring-[var(--brand-teal)]/20
                 disabled:opacity-50 disabled:cursor-not-allowed
-                transition-all duration-200
-                flex items-center justify-center gap-2
+                transition-all duration-300
+                flex items-center justify-center gap-2 shadow-xl shadow-zinc-900/10 active:scale-95
               "
             >
               {isSubmitting ? (
                 <>
                   <Icons.Loader />
-                  Signing in...
+                  Authenticating...
                 </>
               ) : (
-                'Sign in'
+                'Initiate Session'
               )}
             </button>
           </form>
 
           {/* Sign Up Link */}
-          <p className="mt-8 text-center text-zinc-500">
+          <p className="mt-8 text-center text-zinc-400 text-xs font-medium">
             Don't have an account?{' '}
             <Link 
               to="/signup" 
-              className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+              className="text-zinc-900 font-black uppercase tracking-widest hover:text-[var(--brand-teal)] transition-colors ml-1"
             >
               Create one
             </Link>

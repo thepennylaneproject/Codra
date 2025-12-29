@@ -34,7 +34,7 @@ export function BudgetMeter({ metrics, dailyLimit, className }: BudgetMeterProps
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                     <div className={cn("p-1.5 rounded-lg bg-opacity-10", statusColors[healthStatus as keyof typeof statusColors].split(' ')[1])}>
-                        <StatusIcon size={16} className={statusColors[healthStatus as keyof typeof statusColors].split(' ')[0]} />
+                        <StatusIcon size={16} strokeWidth={1.5} className={statusColors[healthStatus as keyof typeof statusColors].split(' ')[0]} />
                     </div>
                     <div>
                         <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-900">Budget Health</h4>
@@ -60,7 +60,7 @@ export function BudgetMeter({ metrics, dailyLimit, className }: BudgetMeterProps
                             initial={{ width: 0 }}
                             animate={{ width: `${burnPercentage}%` }}
                             transition={{ duration: 1, ease: "easeOut" }}
-                            className={cn("h-full rounded-full transition-colors", statusColors[healthStatus as keyof typeof statusColors].split(' ')[1])}
+                            className={cn("h-full rounded-full transition-colors animate-shimmer", statusColors[healthStatus as keyof typeof statusColors].split(' ')[1])}
                         />
                     </div>
                 </div>
@@ -86,7 +86,7 @@ export function BudgetMeter({ metrics, dailyLimit, className }: BudgetMeterProps
                             initial={{ width: 0 }}
                             animate={{ width: `${Math.min(100, (metrics.burnRate / metrics.projectedCost) * 100)}%` }} // Approximate spent ratio
                             transition={{ duration: 1, ease: "easeOut" }}
-                            className="h-full bg-indigo-500 rounded-l-full"
+                            className="h-full bg-indigo-500 rounded-l-full animate-shimmer"
                         />
                         {/* Projected segment */}
                         <motion.div
@@ -114,7 +114,7 @@ export function BudgetMeter({ metrics, dailyLimit, className }: BudgetMeterProps
             {/* Micro-annotation */}
             {healthStatus !== 'healthy' && (
                 <div className="mt-3 flex items-start gap-1.5 p-2 bg-rose-50 rounded-lg">
-                    <TrendingUp size={10} className="text-rose-500 mt-0.5" />
+                    <TrendingUp size={10} strokeWidth={1.5} className="text-rose-500 mt-0.5" />
                     <p className="text-[8px] leading-tight text-rose-600 font-medium">
                         Burn rate is exceeding target. Consider consolidating tasks or upgrading budget policy.
                     </p>

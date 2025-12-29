@@ -70,7 +70,7 @@ export function generateTableOfContents(sections: SpreadSection[], activeDesks: 
         });
     });
 
-    // Add Production Desks
+    // Add Task Workspaces
     activeDesks.forEach((deskId, index) => {
         const desk = PRODUCTION_DESKS.find(d => d.id === deskId);
         if (desk) {

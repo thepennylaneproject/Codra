@@ -31,7 +31,7 @@ const CATEGORY_CONFIG: Record<TOCSectionCategory, CategoryConfig> = {
     assignment: { label: 'Assignment', icon: FileText },
     editorial_direction: { label: 'Editorial Direction', icon: PenTool },
     visual_direction: { label: 'Visual Direction', icon: Palette },
-    production_desk: { label: 'Production Desks', icon: List },
+    production_desk: { label: 'Task Workspaces', icon: List },
     open_questions: { label: 'Open Questions', icon: HelpCircle },
 };
 

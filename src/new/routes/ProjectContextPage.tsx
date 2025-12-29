@@ -12,6 +12,7 @@ import html2canvas from 'html2canvas';
 import { analytics } from '../../lib/analytics';
 import { useToast } from '../components/Toast';
 import { validateProjectContext, getValidationSummary, type ProjectContextFormState } from '../../lib/validation/projectBrief';
+import { NextStepCTA } from '../../components/codra/NextStepCTA';
 import '../../styles/form-validation.css';
 
 export function ProjectContextPage() {
@@ -31,6 +32,7 @@ export function ProjectContextPage() {
     const [tempData, setTempData] = useState<any>(null);
     const [isExporting, setIsExporting] = useState(false);
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+    const [isFormValid, setIsFormValid] = useState(false);
     const exportRef = useRef<HTMLDivElement>(null);
 
     // active revision data helper
@@ -226,6 +228,39 @@ export function ProjectContextPage() {
         localStorage.setItem(`codra:spread:${projectId}:layout`, JSON.stringify(defaultLayout));
 
         navigate(`/p/${projectId}/spread`);
+    };
+
+    // Validate form whenever project data changes to track if CTA should show
+    useEffect(() => {
+        if (!project) return;
+
+        // Compute localized version of displayData for validation
+        const currentContext = (isDraft || activeRevision?.status === 'draft') ? {
+            audience: contextData?.audience || { primary: project.audience || '', context: project.audienceContext },
+            brand: contextData?.brand || project.brandConstraints || {},
+            success: contextData?.success || project.successCriteria || {},
+            guardrails: contextData?.guardrails || project.guardrails || {},
+        } : {
+            audience: { primary: project.audience || '', context: project.audienceContext },
+            brand: project.brandConstraints || {},
+            success: project.successCriteria || {},
+            guardrails: project.guardrails || {},
+        };
+
+        const formData: ProjectContextFormState = {
+            audience: currentContext.audience,
+            brand: currentContext.brand,
+            success: currentContext.success,
+            guardrails: currentContext.guardrails
+        };
+        const validation = validateProjectContext(formData);
+        setIsFormValid(validation.isValid);
+    }, [project, contextData, isDraft, activeRevision]);
+
+    // Handle workspace selection from NextStepCTA
+    const handleSelectWorkspace = (workspaceId: string) => {
+        if (!projectId) return;
+        navigate(`/p/${projectId}/desk/${workspaceId}`);
     };
 
 
@@ -674,7 +709,7 @@ export function ProjectContextPage() {
                         renderEdit={() => (
                             <div className="space-y-8">
                                 <div>
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-rose-500 block mb-3">Must Avoid<span className="required-indicator">*</span></label>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 border-b border-rose-200 block mb-3 pb-1">Must Avoid<span className="required-indicator">*</span></label>
                                     <div className="space-y-3">
                                         {(tempData.mustAvoid || []).map((item: string, i: number) => (
                                             <div key={i} className="flex gap-2">
@@ -746,11 +781,11 @@ export function ProjectContextPage() {
                     >
                         <div className="space-y-6">
                             <div>
-                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-rose-500 mb-2">Must Avoid</h4>
+                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 border-b border-rose-200 mb-3 pb-1">Must Avoid</h4>
                                 <ul className="space-y-2">
                                     {displayData.guardrails.mustAvoid?.map((item: string, i: number) => (
                                         <li key={i} className="flex gap-3 text-sm text-zinc-600">
-                                            <div className="w-1 h-1 rounded-full bg-rose-400 mt-2" />
+                                            <div className="w-1 h-1 rounded-full bg-rose-300 mt-2" />
                                             {item}
                                         </li>
                                     )) || <li className="text-sm text-zinc-400 italic">None defined</li>}
@@ -769,6 +804,11 @@ export function ProjectContextPage() {
                         </div>
                     </ContextSection>
                 </div>
+
+                {/* Next Step CTA - show when form is valid */}
+                {isFormValid && (
+                    <NextStepCTA onSelectWorkspace={handleSelectWorkspace} />
+                )}
 
                 {/* Moodboard Visualization */}
                 {displayData.moodboard.length > 0 && (

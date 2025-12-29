@@ -16,7 +16,7 @@ const SLIDES = [
     },
     {
         icon: Layers,
-        title: 'Editorial Spreads',
+        title: 'Projects',
         description: 'Every client assignment gets a "Spread" — a focused workspace with specialized desks for Art, Writing, Engineering, and more.',
         color: 'blue',
     },

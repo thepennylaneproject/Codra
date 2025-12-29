@@ -135,7 +135,7 @@ export function PromptArchitectPanel() {
                             <section className="space-y-3">
                                 <div className="flex items-center justify-between">
                                     <label className="text-[10px] font-black uppercase tracking-[0.15em] text-[#8A8A8A]">
-                                        Editorial Intent
+                                        Prompt Input
                                     </label>
                                     <div className="flex items-center gap-2 p-1 bg-[#1A1A1A]/5 rounded-lg">
                                         {(['fast', 'precise', 'production'] as const).map((m) => (

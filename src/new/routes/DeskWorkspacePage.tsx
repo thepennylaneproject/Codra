@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, LayoutTemplate, Sparkles, Box, Code, FileText } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { Sparkles } from 'lucide-react';
 import { PRODUCTION_DESKS } from '../../domain/types';
 import { useSupabaseSpread } from '../../hooks/useSupabaseSpread';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,7 +10,10 @@ import { WritingDeskCanvas } from '../components/desks/WritingDeskCanvas';
 import { WorkflowDeskCanvas } from '../components/desks/WorkflowDeskCanvas';
 import { CollabPresenceLayer } from '../components/collab/CollabPresenceLayer';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import { useToast } from '../components/Toast';
+import { WorkspaceHeader } from '../components/shell/WorkspaceHeader';
+import { useFlowStore } from '../../lib/store/useFlowStore';
+import { getProjectById } from '../../domain/projects';
+import { Project } from '../../domain/types';
 
 /**
  * DESK WORKSPACE PAGE
@@ -19,13 +22,21 @@ import { useToast } from '../components/Toast';
  */
 export const DeskWorkspacePage: React.FC = () => {
     const { projectId, deskId } = useParams<{ projectId: string; deskId: string }>();
-    const navigate = useNavigate();
-    const toast = useToast();
 
-    const [leftPanelVisible, setLeftPanelVisible] = useState(true);
-    const [rightPanelVisible, setRightPanelVisible] = useState(true);
+    const { 
+        layout, 
+        toggleDock, 
+    } = useFlowStore();
 
-    const { spread, loading } = useSupabaseSpread(projectId);
+    const [project, setProject] = useState<Project | null>(null);
+    const { loading } = useSupabaseSpread(projectId);
+    
+    // Load project data
+    React.useEffect(() => {
+        if (projectId) {
+            getProjectById(projectId).then(setProject);
+        }
+    }, [projectId]);
 
     const desk = PRODUCTION_DESKS.find(d => d.id === deskId);
 
@@ -37,7 +48,7 @@ export const DeskWorkspacePage: React.FC = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     className="flex flex-col items-center gap-4"
                 >
-                    <div className="w-12 h-12 rounded-full border-2 border-rose-500/20 border-t-rose-500 animate-spin" />
+                    <div className="w-12 h-12 rounded-full border-2 border-[var(--brand-teal)]/20 border-t-[var(--brand-teal)] animate-spin" />
                     Opening {desk?.label || deskId} Workspace...
                 </motion.div>
             </div>
@@ -45,58 +56,16 @@ export const DeskWorkspacePage: React.FC = () => {
     }
 
     return (
-        <div className="h-screen bg-[var(--desk-bg)] flex flex-col text-[var(--desk-text-primary)] selection:bg-rose-500/30 overflow-hidden">
-            {/* Desk Header */}
-            <header className="h-14 border-b border-[var(--desk-border)] flex items-center justify-between px-6 bg-[var(--desk-surface)]/50 backdrop-blur-md sticky top-0 z-50">
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => navigate(`/p/${projectId}/spread`)}
-                        className="p-2 hover:bg-[var(--desk-bg)] rounded-lg transition-colors text-[var(--desk-text-muted)] hover:text-[var(--desk-text-primary)]"
-                    >
-                        <ChevronLeft size={20} />
-                    </button>
-
-                    <div className="w-px h-6 bg-[var(--desk-border)]" />
-
-                    <div className="flex items-center gap-3">
-                        <motion.div
-                            key={deskId}
-                            initial={{ scale: 0, rotate: -45 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            className="p-2 bg-rose-500 rounded-lg shadow-lg shadow-rose-500/20"
-                        >
-                            {deskId === 'art-design' && <Box size={18} />}
-                            {deskId === 'engineering' && <Code size={18} />}
-                            {deskId === 'writing' && <FileText size={18} />}
-                            {deskId === 'workflow' && <LayoutTemplate size={18} />}
-                        </motion.div>
-                        <div>
-                            <h1 className="text-sm font-bold uppercase tracking-tight text-[var(--desk-text-primary)]">{desk?.label} Workspace</h1>
-                            <p className="text-[10px] text-[var(--desk-text-muted)] font-mono uppercase tracking-[0.2em]">{spread?.projectId || projectId}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                    <button 
-                        onClick={() => {
-                            setLeftPanelVisible(!leftPanelVisible);
-                            setRightPanelVisible(!rightPanelVisible);
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 bg-[var(--desk-surface)] hover:bg-[var(--desk-bg)] rounded-lg text-xs font-bold transition-all border border-[var(--desk-border)] text-[var(--desk-text-muted)] hover:text-[var(--desk-text-primary)]"
-                    >
-                        <LayoutTemplate size={14} />
-                        Toggle Panels
-                    </button>
-                    <button 
-                        onClick={() => toast.info('Lyra Insight Panel initializing...')}
-                        className="flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-500 rounded-lg text-xs font-bold transition-all shadow-lg shadow-rose-600/20"
-                    >
-                        <Sparkles size={14} />
-                        Launch Lyra
-                    </button>
-                </div>
-            </header>
+        <div className="h-screen bg-[var(--desk-bg)] flex flex-col text-[var(--desk-text-primary)] selection:bg-[var(--brand-teal)]/30 overflow-hidden">
+            {/* Unified Workspace Header */}
+            <WorkspaceHeader
+                projectName={project?.name || 'Loading...'}
+                projectId={projectId || ''}
+                leftDockVisible={layout.leftDockVisible}
+                rightDockVisible={layout.rightDockVisible}
+                onToggleLeftDock={() => toggleDock('left')}
+                onToggleRightDock={() => toggleDock('right')}
+            />
 
             <CollabPresenceLayer>
                 <main className="flex-1 overflow-hidden flex">
@@ -104,19 +73,20 @@ export const DeskWorkspacePage: React.FC = () => {
                     {/* I'll use a better way to replace the entire main block to avoid mistakes */}
                     {/* Left: Context / Parameters */}
                     <AnimatePresence>
-                        {leftPanelVisible && (
+                        {layout.leftDockVisible && (
                             <motion.aside
-                                initial={{ x: -20, opacity: 0 }}
+                                initial={{ x: -layout.leftDockWidth, opacity: 0 }}
                                 animate={{ x: 0, opacity: 1 }}
-                                exit={{ x: -20, opacity: 0 }}
+                                exit={{ x: -layout.leftDockWidth, opacity: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="w-80 border-r border-[var(--desk-border)] bg-[var(--desk-bg)]/30 backdrop-blur-sm shrink-0 p-6 flex flex-col gap-8"
+                                className="border-r border-[var(--desk-border)] bg-[var(--desk-bg)]/30 backdrop-blur-sm shrink-0 p-6 flex flex-col gap-8"
+                                style={{ width: layout.leftDockWidth }}
                             >
                                 <section>
                                     <h3 className="text-[10px] text-[var(--desk-text-muted)] font-bold uppercase tracking-widest mb-4">Production Context</h3>
                                     <div className="space-y-4">
                                         <div className="p-4 rounded-xl bg-[var(--desk-surface)] border border-[var(--desk-border)] space-y-2 shadow-sm">
-                                            <p className="text-[10px] font-mono text-rose-500 uppercase tracking-wider">Active Memory</p>
+                                            <p className="text-[10px] font-mono text-[var(--brand-teal)] uppercase tracking-wider">Active Memory</p>
                                             <p className="text-xs text-[var(--desk-text-primary)] leading-relaxed italic">"Editorial high-contrast mono with Bauhaus accents."</p>
                                         </div>
                                     </div>
@@ -144,9 +114,9 @@ export const DeskWorkspacePage: React.FC = () => {
                                 </ErrorBoundary>
 
                                 {!['art-design', 'engineering', 'writing', 'workflow'].includes(deskId || '') && (
-                                    <div className="max-w-4xl w-full h-full rounded-3xl border-2 border-dashed border-[var(--desk-border)] flex flex-col items-center justify-center text-center gap-4 group hover:border-[var(--desk-text-primary)]/20 transition-colors">
+                                    <div className="max-w-4xl w-full h-full rounded-xl border-2 border-dashed border-[var(--desk-border)] flex flex-col items-center justify-center text-center gap-4 group hover:border-[var(--desk-text-primary)]/20 transition-colors">
                                         <div className="p-6 rounded-full bg-[var(--desk-surface)] group-hover:bg-[var(--desk-bg)] transition-colors shadow-lg">
-                                            <Sparkles className="text-rose-500 animate-pulse" size={32} />
+                                            <Sparkles className="text-[var(--brand-teal)] animate-pulse" size={32} />
                                         </div>
                                         <div className="space-y-1">
                                             <h2 className="text-xl font-bold tracking-tight text-[var(--desk-text-primary)]">The {desk?.label} Canvas is Ready</h2>
@@ -160,15 +130,16 @@ export const DeskWorkspacePage: React.FC = () => {
 
                     {/* Right: Lyra Desk Assistant */}
                     <AnimatePresence>
-                        {rightPanelVisible && (
+                        {layout.rightDockVisible && (
                             <motion.aside 
-                                initial={{ x: 20, opacity: 0 }}
+                                initial={{ x: layout.rightDockWidth, opacity: 0 }}
                                 animate={{ x: 0, opacity: 1 }}
-                                exit={{ x: 20, opacity: 0 }}
+                                exit={{ x: layout.rightDockWidth, opacity: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="w-96 border-l border-[var(--desk-border)] bg-[var(--desk-bg)]/30 backdrop-blur-sm shrink-0 p-6"
+                                className="border-l border-[var(--desk-border)] bg-[var(--desk-bg)]/30 backdrop-blur-sm shrink-0 p-6"
+                                style={{ width: layout.rightDockWidth }}
                             >
-                                <div className="h-full flex flex-col rounded-2xl border border-[var(--desk-border)] bg-[var(--desk-surface)]/50 shadow-xl overflow-hidden">
+                                <div className="h-full flex flex-col rounded-xl border border-[var(--desk-border)] bg-[var(--desk-surface)]/50 shadow-xl overflow-hidden">
                                     <header className="p-4 border-b border-[var(--desk-border)] flex items-center justify-between bg-[var(--desk-surface)]/80">
                                         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--desk-text-muted)]">Lyra Assistant</span>
                                         <div className="flex items-center gap-1.5">
@@ -178,7 +149,7 @@ export const DeskWorkspacePage: React.FC = () => {
                                     </header>
 
                                     <div className="flex-1 p-4 flex flex-col justify-end">
-                                        <div className="p-3 bg-[var(--desk-bg)]/50 rounded-2xl rounded-bl-sm border border-[var(--desk-border)] max-w-[85%] self-start mb-4 shadow-sm">
+                                        <div className="p-3 bg-[var(--desk-bg)]/50 rounded-xl rounded-bl-sm border border-[var(--desk-border)] max-w-[85%] self-start mb-4 shadow-sm">
                                             <p className="text-xs text-[var(--desk-text-primary)] leading-relaxed">
                                                 I've prepared the {desk?.label} workspace based on your editorial brief. Ready to start generating assets or exploring code?
                                             </p>
@@ -187,7 +158,7 @@ export const DeskWorkspacePage: React.FC = () => {
                                             <input
                                                 type="text"
                                                 placeholder="Brief Lyra for this Desk..."
-                                                className="w-full bg-[var(--desk-bg)]/40 border border-[var(--desk-border)] rounded-xl px-4 py-3 text-xs placeholder:text-[var(--desk-text-muted)] focus:outline-none focus:ring-1 focus:ring-rose-500/50 transition-all font-mono text-[var(--desk-text-primary)]"
+                                                className="w-full bg-[var(--desk-bg)]/40 border border-[var(--desk-border)] rounded-xl px-4 py-3 text-xs placeholder:text-[var(--desk-text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-teal)]/50 transition-all font-mono text-[var(--desk-text-primary)]"
                                             />
                                         </div>
                                     </div>

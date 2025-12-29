@@ -181,7 +181,7 @@ export interface TaskQueueEvent {
 // ============================================
 
 /**
- * Map production desks to the types of tasks they handle.
+ * Map task workspaces to the types of tasks they handle.
  * Used for automatic desk assignment during task generation.
  */
 export const DESK_TASK_TYPES: Record<ProductionDeskId, string[]> = {

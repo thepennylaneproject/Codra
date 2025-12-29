@@ -2,7 +2,7 @@
  * DESK BRIDGE
  * Cross-desk event coordination and suggestion system
  * 
- * Enables Production Desks to notify each other of relevant events
+ * Enables Task Workspaces to notify each other of relevant events
  * and suggest cross-pollination opportunities.
  */
 
