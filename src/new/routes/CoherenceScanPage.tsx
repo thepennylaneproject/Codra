@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Rocket,
@@ -52,6 +52,8 @@ import {
     type LoopComparison,
 } from '../../lib/coherence-scan/coherence-loop-service';
 import { CoherenceLoopView } from '../components/CoherenceLoopView';
+import { getProjects } from '../../domain/projects';
+import type { Project } from '../../domain/types';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -87,14 +89,16 @@ export default function CoherenceScanPage() {
     // Get projectId from query params or fallback
     const queryParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
     const routeProjectId = queryParams.get('projectId');
-    const projectId = routeProjectId || 'project-1'; // Default if none provided
+    const [projectId, setProjectId] = useState<string | null>(routeProjectId);
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [loadingProjects, setLoadingProjects] = useState(true);
     
     // User tier from profile
     const userTier = (user?.user_metadata?.tier || 'free') as 'free' | 'pro' | 'team';
     const userId = user?.id || 'anonymous';
 
     // Supabase state for task integration
-    const { taskQueue, saveTaskQueue } = useSupabaseSpread(projectId);
+    const { taskQueue, saveTaskQueue } = useSupabaseSpread(projectId || undefined);
 
     // Page state
     const [pageState, setPageState] = useState<PageState>('select');
@@ -118,6 +122,9 @@ export default function CoherenceScanPage() {
             const scan = getScan(scanId);
             if (scan) {
                 setCurrentScan(scan);
+                if (scan.projectId) {
+                    setProjectId(scan.projectId);
+                }
                 if (scan.status === 'complete') {
                     if (scan.originalScanId) {
                         const originalScan = getScan(scan.originalScanId);
@@ -136,6 +143,41 @@ export default function CoherenceScanPage() {
             }
         }
     }, [scanId]);
+
+    // Load projects for selection
+    useEffect(() => {
+        async function loadProjects() {
+            setLoadingProjects(true);
+            try {
+                const data = await getProjects();
+                setProjects(data);
+
+                // Default to query param, else first project if none selected
+                if (!projectId && data.length > 0) {
+                    const nextId = data[0].id;
+                    setProjectId(nextId);
+                    const params = new URLSearchParams(location.search);
+                    params.set('projectId', nextId);
+                    const newQuery = params.toString();
+                    const newUrl = `${location.pathname}?${newQuery}`;
+                    window.history.replaceState({}, '', newUrl);
+                } else if (projectId && !data.some(p => p.id === projectId) && data.length > 0) {
+                    // If query param is stale, fall back to first available project
+                    const fallback = data[0].id;
+                    setProjectId(fallback);
+                    const params = new URLSearchParams(location.search);
+                    params.set('projectId', fallback);
+                    const newQuery = params.toString();
+                    const newUrl = `${location.pathname}?${newQuery}`;
+                    window.history.replaceState({}, '', newUrl);
+                    toast.info('Selected project was unavailable. Defaulted to your first workspace.');
+                }
+            } finally {
+                setLoadingProjects(false);
+            }
+        }
+        loadProjects();
+    }, [location.pathname, location.search, projectId, toast]);
 
     // Load usage stats
     useEffect(() => {
@@ -173,7 +215,25 @@ export default function CoherenceScanPage() {
         return () => clearInterval(interval);
     }, [pageState, currentScan]);
 
+    const handleProjectChange = useCallback((nextId: string) => {
+        setProjectId(nextId);
+        const params = new URLSearchParams(location.search);
+        if (nextId) {
+            params.set('projectId', nextId);
+        } else {
+            params.delete('projectId');
+        }
+        const newQuery = params.toString();
+        const newUrl = `${location.pathname}${newQuery ? `?${newQuery}` : ''}`;
+        window.history.replaceState({}, '', newUrl);
+    }, [location.pathname, location.search]);
+
     const handleSelectScanType = useCallback(async (scanType: ScanType) => {
+        if (!projectId) {
+            toast.warning('Select a workspace before running a scan.');
+            return;
+        }
+
         setSelectedScanType(scanType);
 
         // Initiate scan
@@ -181,7 +241,7 @@ export default function CoherenceScanPage() {
 
         if (!result.allowed) {
             // Show upgrade modal or message
-            alert(result.error);
+            toast.error(result.error || 'Upgrade required to run this scan.');
             return;
         }
 
@@ -230,6 +290,10 @@ export default function CoherenceScanPage() {
     };
 
     const handleAddToQueue = async () => {
+        if (!projectId) {
+            toast.warning('Pick a workspace to route findings to a task queue.');
+            return;
+        }
         if (!currentScan || !taskQueue) {
             toast.error("Task queue not loaded or scan missing.");
             return;
@@ -283,6 +347,7 @@ export default function CoherenceScanPage() {
     const isLoopSuggestible = currentScan ? shouldSuggestLoop(currentScan.id) : false;
 
     const limits = SCAN_LIMITS[userTier];
+    const activeProject = projects.find(p => p.id === projectId);
 
     return (
         <div className="min-h-screen bg-[#FFFAF0]">
@@ -320,6 +385,50 @@ export default function CoherenceScanPage() {
             </header>
 
             <main className="max-w-5xl mx-auto px-6 py-8">
+                {/* Project Context Selector */}
+                <div className="bg-white rounded-xl border border-[#1A1A1A]/10 p-4 mb-6 flex items-center justify-between gap-4">
+                    <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8A8A8A] mb-1">Project Context</p>
+                        {loadingProjects ? (
+                            <div className="w-48 h-5 rounded-full bg-[#1A1A1A]/5 animate-pulse" />
+                        ) : activeProject ? (
+                            <>
+                                <p className="text-sm font-semibold text-[#1A1A1A]">{activeProject.name}</p>
+                                <p className="text-xs text-[#8A8A8A] line-clamp-1">
+                                    Findings will be pushed to this workspace&apos;s task queue.
+                                </p>
+                            </>
+                        ) : (
+                            <p className="text-sm text-[#8A8A8A]">
+                                No workspace selected. Choose one to attach scan findings.
+                            </p>
+                        )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <select
+                            value={projectId || ''}
+                            onChange={(e) => handleProjectChange(e.target.value)}
+                            disabled={loadingProjects || projects.length === 0}
+                            className="px-3 py-2 border border-[#1A1A1A]/10 rounded-lg text-sm bg-white focus:outline-none focus:border-emerald-500 disabled:opacity-50"
+                        >
+                            <option value="" disabled>Select workspace</option>
+                            {projects.map((project) => (
+                                <option key={project.id} value={project.id}>
+                                    {project.name}
+                                </option>
+                            ))}
+                        </select>
+                        {projects.length === 0 && (
+                            <Link
+                                to="/projects"
+                                className="px-4 py-2 bg-[#1A1A1A] text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-[#1A1A1A]/90"
+                            >
+                                Go to registry
+                            </Link>
+                        )}
+                    </div>
+                </div>
+
                 <AnimatePresence mode="wait">
                     {/* STEP 1: Select Scan Type */}
                     {pageState === 'select' && (
@@ -342,7 +451,13 @@ export default function CoherenceScanPage() {
                                 {/* Quick Check */}
                                 <button
                                     onClick={() => handleSelectScanType('quick-check')}
-                                    className="group text-left p-6 bg-white rounded-xl border border-[#1A1A1A]/10 hover:border-emerald-500 hover:shadow-lg transition-all"
+                                    disabled={!projectId || loadingProjects}
+                                    className={cn(
+                                        "group text-left p-6 bg-white rounded-xl border border-[#1A1A1A]/10 transition-all",
+                                        (!projectId || loadingProjects)
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : "hover:border-emerald-500 hover:shadow-lg"
+                                    )}
                                 >
                                     <div className="w-12 h-12 rounded-lg bg-zinc-100 flex items-center justify-center mb-4 group-hover:bg-emerald-50 transition-colors">
                                         <Rocket className="w-6 h-6 text-zinc-500 group-hover:text-emerald-600" />
@@ -362,10 +477,10 @@ export default function CoherenceScanPage() {
                                 {/* Full Scan */}
                                 <button
                                     onClick={() => handleSelectScanType('full-scan')}
-                                    disabled={userTier === 'free' && limits.fullScansPerMonth === 0}
+                                    disabled={(userTier === 'free' && limits.fullScansPerMonth === 0) || !projectId || loadingProjects}
                                     className={cn(
                                         "group text-left p-6 bg-white rounded-xl border transition-all relative",
-                                        userTier === 'free'
+                                        (userTier === 'free' && limits.fullScansPerMonth === 0) || !projectId || loadingProjects
                                             ? "border-[#1A1A1A]/10 opacity-60 cursor-not-allowed"
                                             : "border-[#1A1A1A]/10 hover:border-emerald-500 hover:shadow-lg"
                                     )}
@@ -393,7 +508,7 @@ export default function CoherenceScanPage() {
                                 {/* Deep Scan */}
                                 <button
                                     onClick={() => handleSelectScanType('deep-scan')}
-                                    disabled={!limits.deepScanAvailable}
+                                    disabled={!limits.deepScanAvailable || !projectId || loadingProjects}
                                     className={cn(
                                         "group text-left p-6 rounded-xl border transition-all relative",
                                         limits.deepScanAvailable

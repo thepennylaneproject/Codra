@@ -27,10 +27,12 @@ import { ArtDeskCanvas } from './desks/ArtDeskCanvas';
 import { EngineeringDeskCanvas } from './desks/EngineeringDeskCanvas';
 import { WritingDeskCanvas } from './desks/WritingDeskCanvas';
 import { WorkflowDeskCanvas } from './desks/WorkflowDeskCanvas';
+import { MarketingDeskCanvas } from './desks/MarketingDeskCanvas';
+import { CareerAssetsDeskCanvas } from './desks/CareerAssetsDeskCanvas';
+import { DataAnalysisDeskCanvas } from './desks/DataAnalysisDeskCanvas';
 import { ErrorBoundary } from './ErrorBoundary';
 import { LyraNudgeContainer } from './LyraNudgeBubble';
 import { CrossDeskBadge } from './CrossDeskSuggestions';
-import { MissionBanner } from '../../components/codra/MissionBanner';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -42,11 +44,11 @@ interface CodraWorkspaceProps {
     activeTask: SpreadTask | null;
     pastMemories?: Array<{ title: string; memory: string }>;
     onRunTask: (taskId: string) => void;
+    onCancel?: () => void;
     onSectionUpdate: (sectionId: string, content: Record<string, any>) => void;
     deskModels: Record<string, { modelId: string; providerId: string }>;
     onSetDeskModel: (deskId: string, modelId: string, providerId: string) => void;
     globalModelId: string;
-    projectName?: string;
 }
 
 export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
@@ -55,11 +57,11 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
     activeTask,
     pastMemories,
     onRunTask,
+    onCancel,
     onSectionUpdate,
     deskModels,
     onSetDeskModel,
-    globalModelId,
-    projectName
+    globalModelId
 }) => {
     return (
         <div className="h-full flex flex-col relative overflow-hidden">
@@ -124,19 +126,18 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                     "max-w-4xl mx-auto py-24 px-8 transition-all duration-700",
                     mode === 'execute' ? "opacity-40 scale-[0.98] blur-sm pointer-events-none" : "opacity-100 scale-100 blur-0"
                 )}>
-                    {projectName === 'AI Playground' && <MissionBanner />}
                     {spread ? (
                         <div className="space-y-12">
-                            {/* Spread Header */}
+                            {/* Workspace Header */}
                             <header className="mb-20">
                                 <div className="flex items-center gap-3 mb-4">
                                     <Layout size={16} className="text-[#8A8A8A]" />
                                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#8A8A8A]">
-                                        Project v1.0
+                                        Project Workspace
                                     </span>
                                 </div>
                                 <h1 className="text-5xl font-black text-[#1A1A1A] tracking-tighter leading-[0.9] mb-6">
-                                    Project Insights
+                                    Project Overview
                                 </h1>
                                 <div className="w-20 h-1 bg-[#FF4D4D]" />
                             </header>
@@ -159,7 +160,7 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                                 Initializing Canvas
                             </h2>
                             <p className="text-[#8A8A8A] text-sm italic">
-                                Preparing the editorial environment...
+                                Preparing your workspace...
                             </p>
                         </div>
                     )}
@@ -217,11 +218,23 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                                                     onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
                                                 />
                                             )}
-                                            {!['art-design', 'engineering', 'writing', 'workflow'].includes(activeTask.deskId) && (
-                                                <div className="h-full flex flex-col items-center justify-center text-center py-20 grayscale opacity-40">
-                                                    <Sparkles size={40} className="mb-4" />
-                                                    <p className="text-xs font-mono uppercase tracking-widest">Generalized {activeTask.deskId} Canvas</p>
-                                                </div>
+                                            {activeTask.deskId === 'marketing' && (
+                                                <MarketingDeskCanvas
+                                                    selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
+                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
+                                                />
+                                            )}
+                                            {activeTask.deskId === 'career-assets' && (
+                                                <CareerAssetsDeskCanvas
+                                                    selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
+                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
+                                                />
+                                            )}
+                                            {activeTask.deskId === 'data-analysis' && (
+                                                <DataAnalysisDeskCanvas
+                                                    selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
+                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
+                                                />
                                             )}
                                         </ErrorBoundary>
                                     </div>
@@ -248,7 +261,10 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                                         Est. Resolution: ~30s
                                     </span>
                                     <div className="flex items-center gap-4">
-                                        <button className="text-[10px] font-black uppercase tracking-widest text-[var(--desk-text-muted)] hover:text-[var(--desk-text-primary)] transition-colors">
+                                        <button
+                                            onClick={onCancel}
+                                            className="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-[var(--desk-text-muted)] hover:text-[var(--desk-text-primary)] hover:bg-[var(--desk-border)]/50 rounded-full transition-colors"
+                                        >
                                             Cancel
                                         </button>
                                         <button

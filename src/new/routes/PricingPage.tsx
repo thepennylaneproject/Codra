@@ -118,7 +118,7 @@ export function PricingPage() {
             </div>
             <h3 className="text-xl font-bold tracking-tight">Context-Aware Memory</h3>
             <p className="text-sm text-[#5A5A5A] leading-relaxed">
-              Our unique Tear Sheet system ensures every AI completion remembers your brand voice and project goals.
+              Your Project Brief gives every AI task context about your brand voice and project goals.
             </p>
           </div>
         </section>
@@ -169,7 +169,7 @@ function PricingCard({
     >
       {plan.highlighted && (
         <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#FF4D4D] text-white text-[10px] font-black px-6 py-1.5 rounded-full shadow-lg shadow-[#FF4D4D]/20">
-          EDITORIAL CHOICE
+          MOST POPULAR
         </div>
       )}
 

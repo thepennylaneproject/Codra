@@ -150,9 +150,9 @@ export function ProjectContextPage() {
             });
             
             pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
-            pdf.save(`Codra_Tearsheet_${project.name.replace(/\s+/g, '_')}.pdf`);
-            
-            toast.success('Tear Sheet exported successfully.');
+            pdf.save(`Codra_ProjectBrief_${project.name.replace(/\s+/g, '_')}.pdf`);
+
+            toast.success('Project Brief exported successfully.');
         } catch (err) {
             console.error('PDF Export failed:', err);
             toast.error('Failed to export PDF.');

@@ -36,6 +36,8 @@ import { CodraWorkspace } from '../components/CodraWorkspace';
 import { PromptArchitectPanel } from '../components/panels/PromptArchitectPanel';
 import { AssetRegistryPanel } from '../components/panels/AssetRegistryPanel';
 import { useFlowStore } from '../../lib/store/useFlowStore';
+import { useToast } from '../components/Toast';
+import { LyraRecallButton } from '../components/LyraRecallButton';
 import { uploadAssets } from '../../lib/assets/upload';
 import { useProjectMemory } from '../../lib/memory/useProjectMemory';
 
@@ -58,6 +60,8 @@ export function NewSpreadPage() {
         addToSessionCost
     } = useFlowStore();
 
+    // Toast notifications
+    const toast = useToast();
     // Context Memory System
     const { usageStats } = useProjectMemory(projectId);
 
@@ -361,6 +365,7 @@ export function NewSpreadPage() {
         providers,
         persistTaskQueue,
         addToSessionCost,
+        toast,
     ]);
 
     const handleResolveEscalation = (id: string, confirmed: boolean) => {
@@ -543,6 +548,7 @@ export function NewSpreadPage() {
                                     activeTask={taskQueue?.tasks.find(t => t.id === activeTaskId) || null}
                                     pastMemories={taskQueue?.tasks.filter(t => (t.status as string) === 'complete').map(t => ({ title: t.title, memory: t.memory || '' }))}
                                     onRunTask={handleRunTask}
+                                    onCancel={() => setActiveTaskId(null)}
                                     onSectionUpdate={handleSectionUpdate}
                                     deskModels={deskModels}
                                     onSetDeskModel={(deskId, modelId, providerId) => setDeskModels(prev => ({ ...prev, [deskId]: { modelId, providerId } }))}
@@ -666,6 +672,9 @@ export function NewSpreadPage() {
                         </div>
                     )}
                 </div>
+
+                {/* Floating Lyra Recall Button */}
+                <LyraRecallButton />
             </LyraProvider>
         </ErrorBoundary>
     );

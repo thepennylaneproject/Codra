@@ -70,3 +70,10 @@ export async function updateProject(id: string, updates: Partial<Project>): Prom
     project.updatedAt = new Date().toISOString();
     return project;
 }
+
+export async function deleteProject(id: string): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    const index = MOCK_PROJECTS.findIndex(p => p.id === id);
+    if (index === -1) throw new Error('Project not found');
+    MOCK_PROJECTS.splice(index, 1);
+}

@@ -8,7 +8,7 @@ export function PrivacyPage() {
             sections={[
                 {
                     title: "1. Data Collection",
-                    content: "We collect project context, brand guidelines, and production intent to provide specialized AI assistance. This includes any 'Tear Sheet' data you provide during onboarding."
+                    content: "We collect project context, brand guidelines, and goals to provide specialized AI assistance. This includes Project Brief data you provide during setup."
                 },
                 {
                     title: "2. AI Training Policy",
@@ -16,7 +16,7 @@ export function PrivacyPage() {
                 },
                 {
                     title: "3. Security & Context",
-                    content: "Client brand identities and strategy are siloed per project Spread to ensure no cross-contamination of context between agency assignments."
+                    content: "Client brand identities and strategy are siloed per project workspace to ensure no cross-contamination of context between assignments."
                 },
                 {
                     title: "4. Third-Party API Providers",
