@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { File, Image, FileText, Search, ExternalLink, Trash2 } from 'lucide-react';
 import { UploadZone } from '../UploadZone';
 import { Asset } from '../../../domain/types';
+import { EmptyState } from '../EmptyState';
 
 interface AssetRegistryPanelProps {
     assets: Asset[];
@@ -85,10 +86,11 @@ export function AssetRegistryPanel({
                         ))}
                     </div>
                 ) : (
-                    <div className="py-20 flex flex-col items-center justify-center text-center opacity-30">
-                        <File size={32} className="mb-3" />
-                        <p className="text-xs font-bold">Registry Empty</p>
-                    </div>
+                    <EmptyState
+                        icon={File}
+                        title="No assets uploaded"
+                        description="Upload images, documents, or other files using the upload zone above."
+                    />
                 )}
             </div>
         </div>

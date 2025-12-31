@@ -16,7 +16,7 @@ import {
     Layers,
     MoreVertical,
     Trash2,
-    Upload
+    Upload,
     Zap
 } from 'lucide-react';
 import { getProjects, createProject, deleteProject } from '../../domain/projects';

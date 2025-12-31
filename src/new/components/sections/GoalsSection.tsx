@@ -4,6 +4,7 @@
  */
 
 import { Target, ChevronUp, ChevronDown, CheckCircle2, Circle } from 'lucide-react';
+import { EmptyState } from '../EmptyState';
 
 interface Goal {
     text: string;
@@ -101,10 +102,11 @@ export function GoalsSection({ content, isEditing, onUpdate }: GoalsSectionProps
                 ))}
 
                 {goals.length === 0 && (
-                    <div className="text-center py-8 border-2 border-dashed border-zinc-100 dark:border-zinc-800 rounded-xl">
-                        <Target size={24} className="mx-auto text-zinc-200 mb-2" />
-                        <p className="text-xs text-zinc-400">No project goals defined yet.</p>
-                    </div>
+                    <EmptyState
+                        icon={Target}
+                        title="No project goals defined yet"
+                        description="Add goals to guide the direction of your project."
+                    />
                 )}
             </div>
 

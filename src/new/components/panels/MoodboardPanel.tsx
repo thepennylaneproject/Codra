@@ -7,6 +7,7 @@
 import { useState } from 'react';
 import { MoodboardImage } from '../../../domain/types';
 import { Pin, RotateCcw, Plus, Image } from 'lucide-react';
+import { EmptyState } from '../EmptyState';
 
 // ============================================
 // Types
@@ -36,19 +37,15 @@ export function MoodboardPanel({
 
     if (images.length === 0) {
         return (
-            <div className="p-6 border border-dashed border-zinc-200 rounded-lg text-center">
-                <Image size={32} className="text-zinc-300 mx-auto mb-3" />
-                <p className="text-sm text-zinc-400 mb-3">No visual references yet</p>
-                {editable && onAdd && (
-                    <button
-                        onClick={onAdd}
-                        className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 text-sm rounded transition-colors inline-flex items-center gap-2"
-                    >
-                        <Plus size={14} />
-                        Add Reference
-                    </button>
-                )}
-            </div>
+            <EmptyState
+                icon={Image}
+                title="No visual references yet"
+                description="Add inspiration images to guide the visual direction of your project."
+                primaryAction={editable && onAdd ? {
+                    label: "Add Reference",
+                    onClick: onAdd
+                } : undefined}
+            />
         );
     }
 

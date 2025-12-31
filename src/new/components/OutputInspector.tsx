@@ -4,6 +4,8 @@ import { Code2, Image as ImageIcon, FileText, ChevronRight, ExternalLink, Downlo
 import { SpreadSection } from './SpreadSection';
 import { ArtifactFeedbackBar } from './ArtifactFeedbackBar';
 import { ExportModal } from './ExportModal';
+import { EmptyState } from './EmptyState';
+import { IconButton } from './Button';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -41,16 +43,23 @@ export function OutputInspector({ spread, onSectionUpdate }: OutputInspectorProp
                         Output Inspector
                     </h2>
                     <div className="flex items-center gap-2">
-                        <button
+                        <IconButton
+                            variant="ghost"
+                            size="sm"
                             onClick={() => setIsExportModalOpen(true)}
-                            className="text-zinc-400 hover:text-indigo-500 transition-colors"
                             title="Export Artifact"
+                            aria-label="Export Artifact"
                         >
                             <Download size={14} />
-                        </button>
-                        <button className="text-zinc-400 hover:text-rose-500 transition-colors">
+                        </IconButton>
+                        <IconButton 
+                            variant="ghost" 
+                            size="sm"
+                            title="Open External"
+                            aria-label="Open External"
+                        >
                             <ExternalLink size={14} />
-                        </button>
+                        </IconButton>
                     </div>
                 </div>
 
@@ -89,10 +98,11 @@ export function OutputInspector({ spread, onSectionUpdate }: OutputInspectorProp
                             </div>
                         ))}
                         {spread.sections.length === 0 && (
-                            <div className="py-20 text-center">
-                                <FileText size={32} className="mx-auto text-zinc-200 mb-4" />
-                                <p className="text-xs text-zinc-400">No preview sections yet.</p>
-                            </div>
+                            <EmptyState
+                                icon={FileText}
+                                title="No artifacts yet"
+                                description="Generate your first artifact in any workspace."
+                            />
                         )}
 
                         {/* Interactive Feedback */}
@@ -128,9 +138,13 @@ export function OutputInspector({ spread, onSectionUpdate }: OutputInspectorProp
                         {[1, 2, 3, 4].map(i => (
                             <div key={i} className="aspect-square bg-zinc-100 dark:bg-zinc-800 rounded-lg overflow-hidden group relative">
                                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20">
-                                    <button className="p-2 bg-white rounded-full shadow-lg">
-                                        <ChevronRight size={14} className="text-rose-500" />
-                                    </button>
+                                    <IconButton 
+                                        variant="secondary" 
+                                        size="sm"
+                                        aria-label="View asset"
+                                    >
+                                        <ChevronRight size={14} />
+                                    </IconButton>
                                 </div>
                                 <div className="flex items-center justify-center h-full">
                                     <ImageIcon size={24} className="text-zinc-300" />

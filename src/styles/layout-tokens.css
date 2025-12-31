@@ -1,0 +1,62 @@
+/* ========================================
+   CODRA LAYOUT TOKENS
+   Authoritative source for shell & grids
+   ======================================== */
+
+:root {
+  /* Responsive Breakpoints */
+  --bp-mobile: 640px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1024px;
+  --bp-wide: 1440px;
+  --bp-ultrawide: 1920px;
+
+  /* Z-Index Scale (Fixed Hierarchy) */
+  --z-base: 0;
+  --z-underlay: -1;
+  --z-canvas: 10;
+  --z-panel: 50;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal: 500;
+  --z-tooltip: 1000;
+
+  /* Shell Dimensions */
+  --shell-header-height: 56px; /* 14 * 4px */
+  --shell-sidebar-left: 240px;
+  --shell-sidebar-right: 320px;
+  --shell-gutter: 24px;
+  --shell-radius: 20px;
+}
+
+/* Layout Component Classes - To be moved from globals.css */
+
+.studio-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.studio-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  height: calc(100vh - var(--shell-header-height));
+}
+
+.sidebar-left {
+  width: var(--shell-sidebar-left);
+  border-right: 1px solid var(--color-border);
+}
+
+.sidebar-right {
+  width: var(--shell-sidebar-right);
+  border-left: 1px solid var(--color-border);
+}
+
+.content-canvas {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--shell-gutter);
+}

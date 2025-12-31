@@ -38,7 +38,7 @@ const FORMAT_CONFIG: Record<string, { format: ExportFormat; label: string; icon:
         { format: 'md', label: 'Markdown Documentation', icon: FileText },
     ],
     spread: [
-        { format: 'pdf', label: 'Complete Spread PDF', icon: Printer },
+        { format: 'pdf', label: 'Complete Canvas PDF', icon: Printer },
         { format: 'md', label: 'Markdown Bundle', icon: FileText },
     ],
 };

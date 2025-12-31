@@ -5,6 +5,7 @@ import { ModelSelector } from '../ModelSelector';
 import { DeskEvents } from '../../../lib/desks/DeskBridge';
 import { useImageGeneration } from '../../../hooks/useImageGeneration';
 import { STYLE_PRESETS, ImageStyle, applyStyleToPrompt, generateRandomSeed } from '../../../lib/image/seed-preservation';
+import { Button, IconButton } from '../Button';
 
 interface ArtDeskCanvasProps {
     selectedModelId?: string;
@@ -93,9 +94,12 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
                                 <img src={asset.thumbnailUrl} alt={asset.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all opacity-40 group-hover:opacity-100" />
                             </div>
                         ))}
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => document.getElementById('art-asset-upload')?.click()}
-                            className="aspect-square rounded-lg border border-dashed border-[var(--desk-border)] flex flex-col items-center justify-center gap-1 text-[var(--desk-text-muted)] hover:text-rose-500 hover:border-rose-500 hover:bg-rose-500/5 transition-all"
+                            leftIcon={<Plus size={16} />}
+                            className="aspect-square border-dashed text-[var(--desk-text-muted)] hover:text-rose-500 hover:border-rose-500 hover:bg-rose-500/5 flex flex-col"
                         >
                             <input
                                 type="file"
@@ -104,9 +108,8 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
                                 onChange={handleUpload}
                                 accept="image/*"
                             />
-                            <Plus size={16} />
                             <span className="text-[8px] font-black uppercase tracking-tighter">Add</span>
-                        </button>
+                        </Button>
                     </div>
                 </section>
 
@@ -150,24 +153,36 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
                                     <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                                         <div className="flex items-center justify-between">
                                             <div className="flex gap-2">
-                                                <button className="p-2 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-md transition-colors">
+                                                <IconButton
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    aria-label="Maximize"
+                                                    className="bg-white/10 hover:bg-white/20 backdrop-blur-md"
+                                                >
                                                     <Maximize2 size={14} className="text-white" />
-                                                </button>
-                                                <button className="p-2 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-md transition-colors">
+                                                </IconButton>
+                                                <IconButton
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    aria-label="Download"
+                                                    className="bg-white/10 hover:bg-white/20 backdrop-blur-md"
+                                                >
                                                     <Download size={14} className="text-white" />
-                                                </button>
+                                                </IconButton>
                                             </div>
-                                            <button
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
                                                 onClick={() => {
                                                     if (result && i === 0) {
                                                         DeskEvents.artifactApproved('art-design', result.url, 'Generated Image');
                                                     }
                                                 }}
-                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-500 rounded-lg text-white font-bold text-xs shadow-lg shadow-rose-500/40"
+                                                leftIcon={<Layers size={12} />}
+                                                className="bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-500/40"
                                             >
-                                                <Layers size={12} />
-                                                Promote to Spread
-                                            </button>
+                                                Promote to Canvas
+                                            </Button>
                                         </div>
                                     </div>
                                 </>
@@ -255,19 +270,26 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
                                 className="w-full bg-[var(--desk-bg)]/40 border border-[var(--desk-border)] rounded-xl px-4 py-3 text-sm min-h-[60px] resize-none focus:outline-none focus:ring-1 focus:ring-rose-500/50 transition-all placeholder:text-[var(--desk-text-muted)] font-mono text-[var(--desk-text-primary)]"
                             />
                             <div className="absolute right-3 bottom-3 flex gap-2">
-                                <button className="p-1.5 bg-[var(--desk-bg)] hover:bg-[var(--desk-border)] rounded-lg transition-colors text-[var(--desk-text-muted)]">
+                                <IconButton
+                                    variant="ghost"
+                                    size="sm"
+                                    aria-label="Refresh prompt"
+                                    className="bg-[var(--desk-bg)] hover:bg-[var(--desk-border)] text-[var(--desk-text-muted)]"
+                                >
                                     <RefreshCcw size={14} />
-                                </button>
+                                </IconButton>
                             </div>
                         </div>
 
-                        <button
+                        <Button
+                            variant="primary"
+                            size="md"
                             onClick={handleGenerate}
                             disabled={isLoading}
-                            className="px-8 bg-[var(--desk-text-primary)] hover:bg-[var(--desk-text-primary)]/90 disabled:opacity-50 text-[var(--desk-surface)] font-black uppercase tracking-widest text-sm rounded-xl transition-all shadow-xl shadow-white/5"
+                            className="px-8 bg-[var(--desk-text-primary)] hover:bg-[var(--desk-text-primary)]/90 text-[var(--desk-surface)] shadow-xl shadow-white/5"
                         >
                             {isLoading ? 'Firing...' : 'Generate'}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

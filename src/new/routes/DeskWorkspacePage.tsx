@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
-import { PRODUCTION_DESKS } from '../../domain/types';
+import { PRODUCTION_DESKS, ProductionDeskId } from '../../domain/types';
 import { useSupabaseSpread } from '../../hooks/useSupabaseSpread';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArtDeskCanvas } from '../components/desks/ArtDeskCanvas';
@@ -14,6 +14,7 @@ import { WorkspaceHeader } from '../components/shell/WorkspaceHeader';
 import { useFlowStore } from '../../lib/store/useFlowStore';
 import { getProjectById } from '../../domain/projects';
 import { Project } from '../../domain/types';
+import { LyraAssistant } from '../../components/codra/LyraAssistant';
 
 /**
  * DESK WORKSPACE PAGE
@@ -29,6 +30,7 @@ export const DeskWorkspacePage: React.FC = () => {
     } = useFlowStore();
 
     const [project, setProject] = useState<Project | null>(null);
+    const [currentPrompt, setCurrentPrompt] = useState<string>('');
     const { loading } = useSupabaseSpread(projectId);
     
     // Load project data
@@ -59,6 +61,8 @@ export const DeskWorkspacePage: React.FC = () => {
         <div className="h-screen bg-[var(--desk-bg)] flex flex-col text-[var(--desk-text-primary)] selection:bg-[var(--brand-teal)]/30 overflow-hidden">
             {/* Unified Workspace Header */}
             <WorkspaceHeader
+                mode="studio"
+                activeStudioId={deskId as ProductionDeskId}
                 projectName={project?.name || 'Loading...'}
                 projectId={projectId || ''}
                 leftDockVisible={layout.leftDockVisible}
@@ -139,30 +143,11 @@ export const DeskWorkspacePage: React.FC = () => {
                                 className="border-l border-[var(--desk-border)] bg-[var(--desk-bg)]/30 backdrop-blur-sm shrink-0 p-6"
                                 style={{ width: layout.rightDockWidth }}
                             >
-                                <div className="h-full flex flex-col rounded-xl border border-[var(--desk-border)] bg-[var(--desk-surface)]/50 shadow-xl overflow-hidden">
-                                    <header className="p-4 border-b border-[var(--desk-border)] flex items-center justify-between bg-[var(--desk-surface)]/80">
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--desk-text-muted)]">Lyra Assistant</span>
-                                        <div className="flex items-center gap-1.5">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-sm shadow-green-500/50" />
-                                            <span className="text-[8px] font-mono uppercase text-[var(--desk-text-muted)] tracking-wider">Online</span>
-                                        </div>
-                                    </header>
-
-                                    <div className="flex-1 p-4 flex flex-col justify-end">
-                                        <div className="p-3 bg-[var(--desk-bg)]/50 rounded-xl rounded-bl-sm border border-[var(--desk-border)] max-w-[85%] self-start mb-4 shadow-sm">
-                                            <p className="text-xs text-[var(--desk-text-primary)] leading-relaxed">
-                                                I've prepared the {desk?.label} workspace based on your editorial brief. Ready to start generating assets or exploring code?
-                                            </p>
-                                        </div>
-                                        <div className="relative mt-4">
-                                            <input
-                                                type="text"
-                                                placeholder="Brief Lyra for this Desk..."
-                                                className="w-full bg-[var(--desk-bg)]/40 border border-[var(--desk-border)] rounded-xl px-4 py-3 text-xs placeholder:text-[var(--desk-text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-teal)]/50 transition-all font-mono text-[var(--desk-text-primary)]"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                                <LyraAssistant
+                                    currentPrompt={currentPrompt}
+                                    project={project}
+                                    onPromptRefined={(refined) => setCurrentPrompt(refined)}
+                                />
                             </motion.aside>
                         )}
                     </AnimatePresence>

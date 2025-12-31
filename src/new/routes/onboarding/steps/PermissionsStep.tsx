@@ -15,7 +15,8 @@ import {
     DataAccessMode,
     ConflictResolution,
 } from '../../../../domain/onboarding-types';
-import { ArrowLeft, ArrowRight, Check, Shield } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
+import { Button } from '../../../components/Button';
 
 export const PermissionsStep = () => {
     const {
@@ -54,20 +55,18 @@ export const PermissionsStep = () => {
             <OnboardingProgress currentStep="permissions" />
 
             {/* Header */}
-            <header className="space-y-3">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded">
-                        <Shield size={24} className="text-zinc-500" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
-                            {stepMeta.title}
-                        </h1>
-                        <p className="text-lg text-zinc-500 font-light">
-                            {stepMeta.description}
-                        </p>
-                    </div>
+            <header className="space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-brand-coral)]" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--color-ink-muted)]">Security & Governance</span>
                 </div>
+                <h1 className="text-5xl font-black tracking-tighter text-[var(--color-ink)] leading-none">
+                    Define the <br />
+                    <span className="italic font-serif font-light text-[var(--color-brand-coral)]">Chain of Command</span>
+                </h1>
+                <p className="text-xl text-[var(--color-ink-light)] font-medium italic max-w-lg leading-relaxed">
+                    "{stepMeta.description}"
+                </p>
             </header>
 
             {/* Optional notice */}
@@ -83,24 +82,24 @@ export const PermissionsStep = () => {
 
                 {/* Q1: Default Autonomy Level */}
                 <section className="space-y-4">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400">
-                        How autonomous should the AI be by default?
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)]">
+                        Default Agent Autonomy
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {AUTONOMY_OPTIONS.map(option => (
                             <button
                                 key={option.id}
                                 onClick={() => updatePermissions({ defaultAutonomy: option.id as AutonomyLevel })}
-                                className={`p-4 text-left border rounded-sm transition-all duration-200 ${permissions.defaultAutonomy === option.id
-                                    ? 'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-900'
-                                    : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700'
+                                className={`p-6 text-left border rounded-[24px] transition-all duration-500 ${permissions.defaultAutonomy === option.id
+                                    ? 'border-[var(--color-brand-coral)] bg-[var(--color-brand-coral)]/5 shadow-2xl shadow-[var(--color-brand-coral)]/10'
+                                    : 'border-[var(--color-ink)]/5 hover:border-[var(--color-ink)]/20 bg-white'
                                     }`}
                             >
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className="font-medium text-zinc-900 dark:text-zinc-100">{option.label}</span>
-                                    {permissions.defaultAutonomy === option.id && <Check size={16} className="text-zinc-900 dark:text-zinc-100" />}
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className={`font-black text-[10px] uppercase tracking-widest ${permissions.defaultAutonomy === option.id ? 'text-[var(--color-brand-coral)]' : 'text-[var(--color-ink)]'}`}>{option.label}</span>
+                                    {permissions.defaultAutonomy === option.id && <Check size={14} strokeWidth={4} className="text-[var(--color-brand-coral)]" />}
                                 </div>
-                                <p className="text-xs text-zinc-500">{option.description}</p>
+                                <p className="text-[11px] text-[var(--color-ink-muted)] font-medium leading-relaxed">{option.description}</p>
                             </button>
                         ))}
                     </div>
@@ -108,8 +107,8 @@ export const PermissionsStep = () => {
 
                 {/* Q2: Always Require Approval */}
                 <section className="space-y-4">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400">
-                        Which actions should ALWAYS require your approval?
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)]">
+                        Strategic Gates (Required Approval)
                     </label>
                     <div className="flex flex-wrap gap-2">
                         {APPROVAL_REQUIRED_OPTIONS.map(option => {
@@ -118,9 +117,9 @@ export const PermissionsStep = () => {
                                 <button
                                     key={option.id}
                                     onClick={() => toggleApprovalRequired(option.id)}
-                                    className={`px-4 py-2 text-sm border rounded-full transition-all duration-200 ${isSelected
-                                        ? 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900'
-                                        : 'border-zinc-200 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600'
+                                    className={`px-4 py-2 text-[11px] font-bold uppercase tracking-widest border rounded-full transition-all duration-200 ${isSelected
+                                        ? 'border-[var(--color-ink)] bg-[var(--color-ink)] text-white shadow-md'
+                                        : 'border-[var(--color-ink)]/10 hover:border-[var(--color-ink)]/30'
                                         }`}
                                 >
                                     {option.label}
@@ -132,63 +131,63 @@ export const PermissionsStep = () => {
 
                 {/* Q3: Max Steps Before Pause */}
                 <section className="space-y-4">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400">
-                        How many steps can the AI take before pausing to check in?
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)]">
+                        Sequential Velocity Limit
                     </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         {MAX_STEPS_OPTIONS.map(option => (
                             <button
                                 key={option.id}
                                 onClick={() => updatePermissions({ maxStepsBeforePause: option.id as MaxStepsBeforePause })}
-                                className={`p-4 text-center border rounded-sm transition-all duration-200 ${permissions.maxStepsBeforePause === option.id
-                                    ? 'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-900'
-                                    : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700'
+                                className={`p-6 text-center border rounded-[24px] transition-all duration-500 ${permissions.maxStepsBeforePause === option.id
+                                    ? 'border-[var(--color-brand-coral)] bg-[var(--color-brand-coral)]/5 shadow-2xl shadow-[var(--color-brand-coral)]/10'
+                                    : 'border-[var(--color-ink)]/5 hover:border-[var(--color-ink)]/20 bg-white'
                                     }`}
                             >
-                                <span className="font-medium text-zinc-900 dark:text-zinc-100">{option.label}</span>
-                                <p className="text-xs text-zinc-500 mt-1">{option.description}</p>
+                                <span className={`font-black text-xs ${permissions.maxStepsBeforePause === option.id ? 'text-[var(--color-brand-coral)]' : 'text-[var(--color-ink)]'}`}>{option.label}</span>
+                                <p className="text-[10px] text-[var(--color-ink-muted)] font-medium mt-1 uppercase tracking-widest leading-tight">{option.description}</p>
                             </button>
                         ))}
                     </div>
                 </section>
 
                 {/* Q4: Risk Tolerance (1-5 slider) */}
-                <section className="space-y-4">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400">
-                        How risk-tolerant should this agent be?
+                <section className="space-y-6">
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)]">
+                        Risk Tolerance Index
                     </label>
-                    <div className="flex items-center gap-4">
-                        <span className="text-xs text-zinc-400 w-24">Conservative</span>
-                        <div className="flex-1 flex gap-2">
+                    <div className="flex items-center gap-6">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)] w-24">Conservative</span>
+                        <div className="flex-1 flex gap-3">
                             {([1, 2, 3, 4, 5] as RiskTolerance[]).map(level => (
                                 <button
                                     key={level}
                                     onClick={() => updatePermissions({ riskTolerance: level })}
-                                    className={`flex-1 h-12 rounded-sm transition-all duration-200 flex items-center justify-center ${permissions.riskTolerance === level
-                                        ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                                        : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-500'
+                                    className={`flex-1 h-14 rounded-2xl transition-all duration-500 flex items-center justify-center font-black text-sm ${permissions.riskTolerance === level
+                                        ? 'bg-[var(--color-brand-coral)] text-white shadow-xl scale-110 z-10'
+                                        : 'bg-[var(--color-ink)]/5 hover:bg-[var(--color-ink)]/10 text-[var(--color-ink-muted)]'
                                         }`}
                                 >
-                                    <span className="font-medium">{level}</span>
+                                    <span className="font-black">{level}</span>
                                 </button>
                             ))}
                         </div>
-                        <span className="text-xs text-zinc-400 w-24 text-right">Bold</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)] w-24 text-right">Bold</span>
                     </div>
-                    <p className="text-xs text-zinc-400 text-center">
+                    <p className="text-[11px] text-[var(--color-ink-muted)] font-medium italic text-center">
                         {permissions.riskTolerance <= 2
-                            ? 'Ultra-conservative: avoid any changes that might fail'
+                            ? '"Ultra-conservative: avoid any changes that might fail."'
                             : permissions.riskTolerance === 3
-                                ? 'Balanced: make safe improvements'
-                                : 'Bold: willing to propose significant changes'
+                                ? '"Balanced: make safe improvements."'
+                                : '"Bold: willing to propose significant changes."'
                         }
                     </p>
                 </section>
 
                 {/* Q5: Unacceptable Mistakes */}
                 <section className="space-y-4">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400">
-                        Which mistakes are NEVER acceptable?
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-[var(--color-brand-coral)]">
+                        Zero Tolerance Policy
                     </label>
                     <div className="flex flex-wrap gap-2">
                         {UNACCEPTABLE_MISTAKES_OPTIONS.map(option => {
@@ -197,9 +196,9 @@ export const PermissionsStep = () => {
                                 <button
                                     key={option.id}
                                     onClick={() => toggleUnacceptable(option.id)}
-                                    className={`px-4 py-2 text-sm border rounded-full transition-all duration-200 ${isSelected
-                                        ? 'border-red-500 bg-red-50 text-red-700 dark:border-red-400 dark:bg-red-900/30 dark:text-red-300'
-                                        : 'border-zinc-200 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600'
+                                    className={`px-4 py-2 text-[11px] font-bold uppercase tracking-widest border rounded-full transition-all duration-200 ${isSelected
+                                        ? 'border-[var(--color-brand-coral)] bg-[var(--color-brand-coral)]/5 text-[var(--color-brand-coral)] shadow-lg'
+                                        : 'border-[var(--color-ink)]/10 hover:border-[var(--color-ink)]/30'
                                         }`}
                                 >
                                     {option.label}
@@ -211,24 +210,24 @@ export const PermissionsStep = () => {
 
                 {/* Q6: Data Access Mode */}
                 <section className="space-y-4">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400">
-                        How should we handle your data?
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)]">
+                        Data Privacy & Access
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {DATA_ACCESS_OPTIONS.map(option => (
                             <button
                                 key={option.id}
                                 onClick={() => updatePermissions({ dataAccessMode: option.id as DataAccessMode })}
-                                className={`p-4 text-left border rounded-sm transition-all duration-200 ${permissions.dataAccessMode === option.id
-                                    ? 'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-900'
-                                    : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700'
+                                className={`p-6 text-left border rounded-[24px] transition-all duration-500 ${permissions.dataAccessMode === option.id
+                                    ? 'border-[var(--color-brand-coral)] bg-[var(--color-brand-coral)]/5 shadow-2xl shadow-[var(--color-brand-coral)]/10'
+                                    : 'border-[var(--color-ink)]/5 hover:border-[var(--color-ink)]/20 bg-white'
                                     }`}
                             >
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className="font-medium text-zinc-900 dark:text-zinc-100">{option.label}</span>
-                                    {permissions.dataAccessMode === option.id && <Check size={16} className="text-zinc-900 dark:text-zinc-100" />}
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className={`font-black text-[10px] uppercase tracking-widest ${permissions.dataAccessMode === option.id ? 'text-[var(--color-brand-coral)]' : 'text-[var(--color-ink)]'}`}>{option.label}</span>
+                                    {permissions.dataAccessMode === option.id && <Check size={14} strokeWidth={4} className="text-[var(--color-brand-coral)]" />}
                                 </div>
-                                <p className="text-xs text-zinc-500">{option.description}</p>
+                                <p className="text-[11px] text-[var(--color-ink-muted)] font-medium leading-relaxed">{option.description}</p>
                             </button>
                         ))}
                     </div>
@@ -236,24 +235,24 @@ export const PermissionsStep = () => {
 
                 {/* Q7: Conflict Resolution */}
                 <section className="space-y-4">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400">
-                        If instructions conflict, what should the AI do?
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)]">
+                        Conflict Protocol
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {CONFLICT_RESOLUTION_OPTIONS.map(option => (
                             <button
                                 key={option.id}
                                 onClick={() => updatePermissions({ conflictResolution: option.id as ConflictResolution })}
-                                className={`p-4 text-left border rounded-sm transition-all duration-200 ${permissions.conflictResolution === option.id
-                                    ? 'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-900'
-                                    : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700'
+                                className={`p-6 text-left border rounded-[24px] transition-all duration-500 ${permissions.conflictResolution === option.id
+                                    ? 'border-[var(--color-brand-coral)] bg-[var(--color-brand-coral)]/5 shadow-2xl shadow-[var(--color-brand-coral)]/10'
+                                    : 'border-[var(--color-ink)]/5 hover:border-[var(--color-ink)]/20 bg-white'
                                     }`}
                             >
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className="font-medium text-zinc-900 dark:text-zinc-100">{option.label}</span>
-                                    {permissions.conflictResolution === option.id && <Check size={16} className="text-zinc-900 dark:text-zinc-100" />}
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className={`font-black text-[10px] uppercase tracking-widest ${permissions.conflictResolution === option.id ? 'text-[var(--color-brand-coral)]' : 'text-[var(--color-ink)]'}`}>{option.label}</span>
+                                    {permissions.conflictResolution === option.id && <Check size={14} strokeWidth={4} className="text-[var(--color-brand-coral)]" />}
                                 </div>
-                                <p className="text-xs text-zinc-500">{option.description}</p>
+                                <p className="text-[11px] text-[var(--color-ink-muted)] font-medium leading-relaxed">{option.description}</p>
                             </button>
                         ))}
                     </div>
@@ -262,25 +261,27 @@ export const PermissionsStep = () => {
             </div>
 
             {/* Navigation */}
-            <div className="flex justify-between items-center pt-6 border-t border-zinc-100 dark:border-zinc-900">
-                <button
+            <div className="flex justify-between items-center pt-8 border-t border-[var(--color-ink)]/5">
+                <Button
+                    variant="ghost"
                     onClick={() => setStep('budget')}
-                    className="flex items-center gap-2 text-sm font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                    leftIcon={<ArrowLeft size={16} strokeWidth={3} />}
+                    className="text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] transition-colors"
                 >
-                    <ArrowLeft size={16} />
-                    Back
-                </button>
-                <div className="flex items-center gap-4">
-                    <span className="text-xs text-zinc-400">
+                    Financials
+                </Button>
+                <div className="flex items-center gap-6">
+                    <span className="text-[10px] font-medium italic font-serif text-[var(--color-ink-muted)]">
                         {stepMeta.helperText}
                     </span>
-                    <button
+                    <Button
+                        variant="primary"
                         onClick={() => setStep(nextStep)}
-                        className="flex items-center gap-2 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 px-6 py-3 text-sm font-medium hover:opacity-90 transition-opacity rounded-sm"
+                        rightIcon={<ArrowRight size={16} strokeWidth={3} />}
+                        className="px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl active:scale-95"
                     >
-                        Continue
-                        <ArrowRight size={16} />
-                    </button>
+                        Initiate Strategy
+                    </Button>
                 </div>
             </div>
         </div>

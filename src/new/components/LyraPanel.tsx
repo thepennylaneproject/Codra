@@ -223,7 +223,7 @@ export function LyraPanel({ onStartWithLyra, onDismissQuestion }: LyraPanelProps
                     <div className="flex items-center gap-2 mb-3">
                         <Play size={14} className="text-rose-500" />
                         <span className="text-xs font-bold uppercase tracking-widest text-zinc-500">
-                            Task Workspaces
+                            Studios
                         </span>
                     </div>
                     <div className="grid grid-cols-2 gap-2">

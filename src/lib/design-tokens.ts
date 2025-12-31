@@ -55,11 +55,14 @@ export const TEXT = {
 /**
  * Accent color tokens - soft variants
  */
-export const ACCENT = {
+export const ACCENT_SUBTLE = {
   tealSoft: 'rgba(0, 217, 217, 0.25)',     // Electric teal - subtle
   goldSoft: 'rgba(244, 208, 63, 0.25)',    // Electric gold - subtle
   magentaSoft: 'rgba(216, 17, 89, 0.25)',  // Deep magenta - subtle
 } as const;
+
+/** @deprecated Use ACCENT_SUBTLE instead */
+export const ACCENT_SOFT = ACCENT_SUBTLE;
 
 /**
  * Semantic state colors
@@ -72,16 +75,15 @@ export const STATE = {
 } as const;
 
 /**
- * Spacing tokens (pixels)
+ * Spacing tokens (8px rhythm)
  */
 export const SPACE = {
   xs: '4px',
   sm: '8px',
-  md: '12px',
-  lg: '16px',
-  xl: '24px',
-  '2xl': '32px',
-  '3xl': '48px',
+  md: '16px',
+  lg: '24px',
+  xl: '32px',
+  '2xl': '48px',
 } as const;
 
 /**
@@ -97,33 +99,22 @@ export const FONT_FAMILY = {
 } as const;
 
 /**
- * Typography - Font sizes
+ * Typography - Font sizes (LOCKED: 4 only)
  */
 export const FONT_SIZE = {
-  xs: '10px',
-  sm: '11px',
-  base: '13px',
-  md: '14px',
-  lg: '16px',
-  xl: '18px',
-  '2xl': '20px',
-  '3xl': '24px',
-  '4xl': '28px',
-  '5xl': '32px',
-  '6xl': '40px',
-  '7xl': '48px',
+  sm: '12px',    // Label/Meta
+  base: '14px',  // Body
+  lg: '16px',    // Section Heading
+  xl: '24px',    // Page Title
 } as const;
 
 /**
- * Typography - Font weights
+ * Typography - Font weights (LOCKED: 3 only)
  */
 export const FONT_WEIGHT = {
   regular: 400,
   medium: 500,
   semibold: 600,
-  bold: 700,
-  extrabold: 800,
-  black: 900,
 } as const;
 
 /**
@@ -137,108 +128,41 @@ export const LINE_HEIGHT = {
 } as const;
 
 /**
- * Typography presets for common use cases
+ * Typography presets - LOCKED to 4 roles
  */
 export const TYPOGRAPHY = {
-  // Protest poster style - bold, intentional
-  displayXl: {
-    fontFamily: FONT_FAMILY.display,
-    fontSize: FONT_SIZE['7xl'],
-    fontWeight: FONT_WEIGHT.black,
-    lineHeight: LINE_HEIGHT.tight,
-    letterSpacing: '-0.02em',
-  },
-  displayLg: {
-    fontFamily: FONT_FAMILY.display,
-    fontSize: FONT_SIZE['6xl'],
-    fontWeight: FONT_WEIGHT.bold,
-    lineHeight: LINE_HEIGHT.tight,
-    letterSpacing: '-0.01em',
-  },
-  displayMd: {
-    fontFamily: FONT_FAMILY.display,
-    fontSize: FONT_SIZE['5xl'],
-    fontWeight: FONT_WEIGHT.bold,
-    lineHeight: LINE_HEIGHT.tight,
-    letterSpacing: '0em',
-  },
-  // Headline styles
-  headingXl: {
-    fontFamily: FONT_FAMILY.display,
-    fontSize: FONT_SIZE['4xl'],
-    fontWeight: FONT_WEIGHT.bold,
-    lineHeight: LINE_HEIGHT.tight,
-  },
-  headingLg: {
+  // Page Title: 24px / semibold / 1.2
+  pageTitle: {
     fontFamily: FONT_FAMILY.base,
-    fontSize: FONT_SIZE['3xl'],
-    fontWeight: FONT_WEIGHT.bold,
-    lineHeight: LINE_HEIGHT.tight,
-  },
-  headingMd: {
-    fontFamily: FONT_FAMILY.base,
-    fontSize: FONT_SIZE['2xl'],
+    fontSize: FONT_SIZE.xl,
     fontWeight: FONT_WEIGHT.semibold,
-    lineHeight: LINE_HEIGHT.normal,
+    lineHeight: LINE_HEIGHT.tight,
   },
-  headingSm: {
+  // Section Heading: 16px / semibold / 1.4
+  sectionHeading: {
     fontFamily: FONT_FAMILY.base,
     fontSize: FONT_SIZE.lg,
     fontWeight: FONT_WEIGHT.semibold,
-    lineHeight: LINE_HEIGHT.normal,
+    lineHeight: 1.4,
   },
-  // Body text
-  bodyLg: {
+  // Body: 14px / regular / 1.5
+  body: {
     fontFamily: FONT_FAMILY.base,
     fontSize: FONT_SIZE.base,
     fontWeight: FONT_WEIGHT.regular,
-    lineHeight: LINE_HEIGHT.relaxed,
+    lineHeight: LINE_HEIGHT.normal,
   },
-  bodyMd: {
+  // Label: 12px / medium / 1.4 / uppercase
+  label: {
     fontFamily: FONT_FAMILY.base,
     fontSize: FONT_SIZE.sm,
-    fontWeight: FONT_WEIGHT.regular,
-    lineHeight: LINE_HEIGHT.relaxed,
-  },
-  bodySm: {
-    fontFamily: FONT_FAMILY.base,
-    fontSize: FONT_SIZE.xs,
-    fontWeight: FONT_WEIGHT.regular,
-    lineHeight: LINE_HEIGHT.normal,
-  },
-  // Labels and UI text
-  labelLg: {
-    fontFamily: FONT_FAMILY.base,
-    fontSize: FONT_SIZE.md,
-    fontWeight: FONT_WEIGHT.semibold,
-    lineHeight: LINE_HEIGHT.normal,
+    fontWeight: FONT_WEIGHT.medium,
+    lineHeight: 1.4,
     textTransform: 'uppercase' as const,
     letterSpacing: '0.05em',
   },
-  labelMd: {
-    fontFamily: FONT_FAMILY.base,
-    fontSize: FONT_SIZE.sm,
-    fontWeight: FONT_WEIGHT.semibold,
-    lineHeight: LINE_HEIGHT.normal,
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.05em',
-  },
-  labelSm: {
-    fontFamily: FONT_FAMILY.base,
-    fontSize: FONT_SIZE.xs,
-    fontWeight: FONT_WEIGHT.semibold,
-    lineHeight: LINE_HEIGHT.normal,
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.05em',
-  },
-  // Code text
-  code: {
-    fontFamily: FONT_FAMILY.mono,
-    fontSize: FONT_SIZE.xs,
-    fontWeight: FONT_WEIGHT.regular,
-    lineHeight: LINE_HEIGHT.normal,
-  },
-  codeLg: {
+  // Mono: 12px / regular / 1.5
+  mono: {
     fontFamily: FONT_FAMILY.mono,
     fontSize: FONT_SIZE.sm,
     fontWeight: FONT_WEIGHT.regular,
@@ -326,18 +250,18 @@ export const MOTION = {
 } as const;
 
 /**
- * Gold Accent tokens - Restrained usage only
- * Permitted: Primary CTAs, Active states, Success indicators
+ * Accent tokens - Restrained usage only
+ * ALLOWED: Primary CTA (one per screen), Critical Focus (rare)
  */
-export const GOLD_ACCENT = {
-  permitted: ['primary-cta', 'active-state', 'success-indicator'] as const,
+export const ACCENT = {
+  permitted: ['primary-cta', 'critical-focus'] as const,
   primary: '#C7A76A',
-  glow: 'rgba(199, 167, 106, 0.35)',
-  border: 'rgba(199, 167, 106, 0.25)',
-  text: '#D4AF37',
-  // Never allow solid gold backgrounds
-  solidBackground: false,
+  soft: 'rgba(199, 167, 106, 0.25)',
+  border: 'rgba(199, 167, 106, 0.35)',
 } as const;
+
+/** @deprecated Use ACCENT instead */
+export const GOLD_ACCENT = ACCENT;
 
 /**
  * Accessibility tokens - WCAG compliance
@@ -577,7 +501,7 @@ export const COMPONENTS = {
       text: SEMANTIC.badgeText,
       padding: `${SPACE.xs} ${SPACE.sm}`,
       borderRadius: RADIUS.full,
-      fontSize: FONT_SIZE.xs,
+      fontSize: FONT_SIZE.sm,
       fontWeight: FONT_WEIGHT.semibold,
     },
     success: {

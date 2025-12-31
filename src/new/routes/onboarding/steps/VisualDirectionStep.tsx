@@ -7,6 +7,7 @@ import {
     COLOR_DIRECTION_OPTIONS,
 } from '../../../../domain/onboarding-types';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
+import { Button } from '../../../components/Button';
 
 export const VisualDirectionStep = () => {
     const {
@@ -42,14 +43,14 @@ export const VisualDirectionStep = () => {
             {/* Header */}
             <header className="space-y-4">
                 <div className="flex items-center gap-2 mb-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#FF4D4D]" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#8A8A8A]">Aesthetic Alignment</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-brand-coral)]" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--color-ink-muted)]">Aesthetic Alignment</span>
                 </div>
-                <h1 className="text-5xl font-black tracking-tighter text-[#1A1A1A] leading-none">
+                <h1 className="text-5xl font-black tracking-tighter text-[var(--color-ink)] leading-none">
                     {stepMeta.title.split(' ')[0]} <br />
-                    <span className="italic font-serif font-light text-[#FF4D4D]">{stepMeta.title.split(' ').slice(1).join(' ')}</span>
+                    <span className="italic font-serif font-light text-[var(--color-brand-coral)]">{stepMeta.title.split(' ').slice(1).join(' ')}</span>
                 </h1>
-                <p className="text-xl text-[#5A5A5A] font-medium italic font-serif max-w-lg leading-relaxed">
+                <p className="text-xl text-[var(--color-ink-light)] font-medium italic font-serif max-w-lg leading-relaxed">
                     "{stepMeta.description}"
                 </p>
             </header>
@@ -60,10 +61,10 @@ export const VisualDirectionStep = () => {
                 {/* Mood Plate 1: Personality */}
                 <section className="space-y-6">
                     <div>
-                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#FF4D4D] mb-2">
+                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-brand-coral)] mb-2">
                             Mood Plate 01
                         </label>
-                        <h2 className="text-2xl font-black tracking-tight text-[#1A1A1A]">Product Personality <span className="text-[#8A8A8A] text-xs lowercase font-serif italic font-medium">(select 3)</span></h2>
+                        <h2 className="text-2xl font-black tracking-tight text-[var(--color-ink)]">Product Personality <span className="text-[var(--color-ink-muted)] text-xs lowercase font-serif italic font-medium">(select 3)</span></h2>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {PERSONALITY_OPTIONS.map(option => {
@@ -80,17 +81,17 @@ export const VisualDirectionStep = () => {
                                     )}
                                     disabled={isDisabled}
                                     className={`p-6 text-left border rounded-[20px] transition-all duration-500 ${isSelected
-                                        ? 'border-[#FF4D4D] bg-[#FF4D4D]/5 shadow-2xl shadow-[#FF4D4D]/10'
+                                        ? 'border-[var(--color-brand-coral)] bg-[var(--color-brand-coral)]/5 shadow-2xl shadow-[var(--color-brand-coral)]/10'
                                         : isDisabled
-                                            ? 'border-[#1A1A1A]/5 text-[#8A8A8A] cursor-not-allowed opacity-20'
-                                            : 'border-[#1A1A1A]/5 hover:border-[#1A1A1A]/20 bg-white'
+                                            ? 'border-[var(--color-ink)]/5 text-[var(--color-ink-muted)] cursor-not-allowed opacity-20'
+                                            : 'border-[var(--color-ink)]/5 hover:border-[var(--color-ink)]/20 bg-white'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between mb-2">
-                                        <span className={`font-black text-[10px] uppercase tracking-widest ${isSelected ? 'text-[#FF4D4D]' : 'text-[#1A1A1A]'}`}>{option.label}</span>
-                                        {isSelected && <Check size={14} strokeWidth={4} className="text-[#FF4D4D]" />}
+                                        <span className={`font-black text-[10px] uppercase tracking-widest ${isSelected ? 'text-[var(--color-brand-coral)]' : 'text-[var(--color-ink)]'}`}>{option.label}</span>
+                                        {isSelected && <Check size={14} strokeWidth={4} className="text-[var(--color-brand-coral)]" />}
                                     </div>
-                                    <p className="text-[11px] text-[#8A8A8A] font-medium leading-relaxed">{option.description}</p>
+                                    <p className="text-[11px] text-[var(--color-ink-muted)] font-medium leading-relaxed">{option.description}</p>
                                 </button>
                             );
                         })}
@@ -100,10 +101,10 @@ export const VisualDirectionStep = () => {
                 {/* Mood Plate 2: Aesthetic Style */}
                 <section className="space-y-6">
                     <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400 mb-1">
+                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-ink-muted)] mb-2">
                             Mood Plate 02
                         </label>
-                        <h2 className="text-xl font-light">Aesthetic Style <span className="text-zinc-400 text-sm">(pick 3)</span></h2>
+                        <h2 className="text-2xl font-black tracking-tight text-[var(--color-ink)]">Aesthetic Style <span className="text-[var(--color-ink-muted)] text-xs lowercase font-serif italic font-medium">(pick 3)</span></h2>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {VISUAL_STYLE_OPTIONS.map(option => {
@@ -119,18 +120,18 @@ export const VisualDirectionStep = () => {
                                         (arr) => updateVisualDirection({ visualStyles: arr })
                                     )}
                                     disabled={isDisabled}
-                                    className={`p-5 text-left border rounded-sm transition-all duration-200 ${isSelected
-                                        ? 'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-900 shadow-md'
+                                    className={`p-5 text-left border rounded-xl transition-all duration-200 ${isSelected
+                                        ? 'border-[var(--color-ink)] bg-[var(--color-ink)]/5 shadow-md'
                                         : isDisabled
-                                            ? 'border-zinc-100 text-zinc-300 cursor-not-allowed opacity-50'
-                                            : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700'
+                                            ? 'border-[var(--color-ink)]/5 text-[var(--color-ink-muted)] cursor-not-allowed opacity-50'
+                                            : 'border-[var(--color-ink)]/10 hover:border-[var(--color-ink)]/30'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between mb-1">
-                                        <span className={`font-semibold text-sm ${isSelected ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-700 dark:text-zinc-300'}`}>{option.label}</span>
-                                        {isSelected && <Check size={14} className="text-zinc-900 dark:text-zinc-100" />}
+                                        <span className={`font-semibold text-sm ${isSelected ? 'text-[var(--color-ink)]' : 'text-[var(--color-ink-light)]'}`}>{option.label}</span>
+                                        {isSelected && <Check size={14} className="text-[var(--color-ink)]" />}
                                     </div>
-                                    <p className="text-xs text-zinc-500 leading-relaxed">{option.description}</p>
+                                    <p className="text-xs text-[var(--color-ink-muted)] leading-relaxed">{option.description}</p>
                                 </button>
                             );
                         })}
@@ -140,10 +141,10 @@ export const VisualDirectionStep = () => {
                 {/* Mood Plate 3: Target Audience */}
                 <section className="space-y-6">
                     <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400 mb-1">
+                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-ink-muted)] mb-2">
                             Mood Plate 03
                         </label>
-                        <h2 className="text-xl font-light">Visual Audience</h2>
+                        <h2 className="text-2xl font-black tracking-tight text-[var(--color-ink)]">Visual Audience</h2>
                     </div>
                     <div className="flex flex-wrap gap-2">
                         {VISUAL_AUDIENCE_OPTIONS.map(option => {
@@ -163,8 +164,8 @@ export const VisualDirectionStep = () => {
                                         }
                                     }}
                                     className={`px-6 py-3 text-sm border rounded-full transition-all duration-200 ${isSelected
-                                        ? 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 shadow-lg'
-                                        : 'border-zinc-200 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600'
+                                        ? 'border-[var(--color-ink)] bg-[var(--color-ink)] text-white shadow-lg'
+                                        : 'border-[var(--color-ink)]/10 hover:border-[var(--color-ink)]/30'
                                         }`}
                                 >
                                     {option.label}
@@ -177,10 +178,10 @@ export const VisualDirectionStep = () => {
                 {/* Mood Plate 4: Color Tone */}
                 <section className="space-y-6">
                     <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400 mb-1">
+                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-ink-muted)] mb-2">
                             Mood Plate 04
                         </label>
-                        <h2 className="text-xl font-light">Color Directions <span className="text-zinc-400 text-sm">(pick 3)</span></h2>
+                        <h2 className="text-2xl font-black tracking-tight text-[var(--color-ink)]">Color Directions <span className="text-[var(--color-ink-muted)] text-xs lowercase font-serif italic font-medium">(pick 3)</span></h2>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {COLOR_DIRECTION_OPTIONS.map(option => {
@@ -196,18 +197,18 @@ export const VisualDirectionStep = () => {
                                         (arr) => updateVisualDirection({ colorDirections: arr })
                                     )}
                                     disabled={isDisabled}
-                                    className={`p-5 text-left border rounded-sm transition-all duration-200 ${isSelected
-                                        ? 'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-900 shadow-md'
+                                    className={`p-5 text-left border rounded-xl transition-all duration-200 ${isSelected
+                                        ? 'border-[var(--color-ink)] bg-[var(--color-ink)]/5 shadow-md'
                                         : isDisabled
-                                            ? 'border-zinc-100 text-zinc-300 cursor-not-allowed opacity-50'
-                                            : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700'
+                                            ? 'border-[var(--color-ink)]/5 text-[var(--color-ink-muted)] cursor-not-allowed opacity-50'
+                                            : 'border-[var(--color-ink)]/10 hover:border-[var(--color-ink)]/30'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between mb-1">
-                                        <span className={`font-semibold text-sm ${isSelected ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-700 dark:text-zinc-300'}`}>{option.label}</span>
-                                        {isSelected && <Check size={14} className="text-zinc-900 dark:text-zinc-100" />}
+                                        <span className={`font-semibold text-sm ${isSelected ? 'text-[var(--color-ink)]' : 'text-[var(--color-ink-light)]'}`}>{option.label}</span>
+                                        {isSelected && <Check size={14} className="text-[var(--color-ink)]" />}
                                     </div>
-                                    <p className="text-xs text-zinc-500 leading-relaxed">{option.description}</p>
+                                    <p className="text-xs text-[var(--color-ink-muted)] leading-relaxed">{option.description}</p>
                                 </button>
                             );
                         })}
@@ -224,26 +225,28 @@ export const VisualDirectionStep = () => {
             </div>
 
             {/* Navigation */}
-            <div className="flex justify-between items-center pt-8 border-t border-[#1A1A1A]/5">
-                <button
+            <div className="flex justify-between items-center pt-8 border-t border-[var(--color-ink)]/5">
+                <Button
+                    variant="ghost"
                     onClick={() => setStep('budget')}
-                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#8A8A8A] hover:text-[#1A1A1A] transition-colors"
+                    leftIcon={<ArrowLeft size={16} strokeWidth={3} />}
+                    className="text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] transition-colors"
                 >
-                    <ArrowLeft size={16} strokeWidth={3} />
                     Framework
-                </button>
+                </Button>
                 <div className="flex items-center gap-6">
-                    <span className="text-[10px] font-medium italic font-serif text-[#8A8A8A]">
+                    <span className="text-[10px] font-medium italic font-serif text-[var(--color-ink-muted)]">
                         {stepMeta.helperText}
                     </span>
-                    <button
+                    <Button
+                        variant="primary"
                         onClick={() => setStep('generating')}
                         disabled={!canProceed}
-                        className="flex items-center gap-3 bg-[#1A1A1A] text-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#FF4D4D] transition-all disabled:opacity-20 disabled:cursor-not-allowed rounded-2xl shadow-2xl active:scale-95"
+                        rightIcon={<ArrowRight size={16} strokeWidth={3} />}
+                        className="px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl active:scale-95"
                     >
                         Initiate Build
-                        <ArrowRight size={16} strokeWidth={3} />
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

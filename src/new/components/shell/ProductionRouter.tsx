@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { 
     PRODUCTION_DESKS, 
     ProductionDeskId 
@@ -46,9 +46,9 @@ export const ProductionRouter: React.FC<ProductionRouterProps> = ({
     projectId 
 }) => {
     return (
-        <nav className="flex items-center gap-1.5 px-4 py-2 bg-white/40 backdrop-blur-sm border-b border-[#1A1A1A]/5">
-            <div className="text-[9px] font-black uppercase tracking-[0.2em] text-[#8A8A8A] mr-2 pl-2">
-                Task Workspaces
+        <nav className="flex items-center gap-1.5 px-4 py-2 bg-white/40 backdrop-blur-sm border-b border-[var(--color-border-soft)]">
+            <div className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--color-ink-muted)] mr-2 pl-2">
+                Studios
             </div>
             
             <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
@@ -63,8 +63,8 @@ export const ProductionRouter: React.FC<ProductionRouterProps> = ({
                             className={cn(
                                 "flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all whitespace-nowrap group",
                                 isActive 
-                                    ? "bg-[#1A1A1A] text-white shadow-md shadow-[#1A1A1A]/10" 
-                                    : "text-[#5A5A5A] hover:bg-[#1A1A1A]/5 hover:text-[#1A1A1A]"
+                                    ? "bg-[var(--color-ink)] text-white shadow-md shadow-[var(--color-ink)]/10" 
+                                    : "text-[var(--color-ink-light)] hover:bg-[var(--color-border-soft)] hover:text-[var(--color-ink)]"
                             )}
                         >
                             <Icon 
@@ -72,7 +72,7 @@ export const ProductionRouter: React.FC<ProductionRouterProps> = ({
                                 strokeWidth={isActive ? 2 : 1.5} 
                                 className={cn(
                                     "transition-transform group-hover:scale-110",
-                                    isActive ? "text-[var(--brand-teal)]" : "text-[#8A8A8A]"
+                                    isActive ? "text-[var(--brand-teal)]" : "text-[var(--color-ink-muted)]"
                                 )} 
                             />
                             <span className="text-[10px] font-bold uppercase tracking-wider">

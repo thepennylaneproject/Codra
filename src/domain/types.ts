@@ -312,13 +312,13 @@ export interface ProductionDesk {
 }
 
 export const PRODUCTION_DESKS: ProductionDesk[] = [
-    { id: 'art-design', label: 'Art & Design', description: 'Visual assets, illustrations, and design systems' },
-    { id: 'engineering', label: 'Engineering', description: 'Code, architecture, and technical implementation' },
-    { id: 'writing', label: 'Writing', description: 'Copy, content, and editorial work' },
-    { id: 'workflow', label: 'Workflow', description: 'Project management, issues, and assignments' },
-    { id: 'marketing', label: 'Marketing', description: 'Campaigns, messaging, and market positioning' },
-    { id: 'career-assets', label: 'Career Assets', description: 'Resumes, portfolios, and professional materials' },
-    { id: 'data-analysis', label: 'Data & Analysis', description: 'Research, metrics, and insights' },
+    { id: 'art-design', label: 'Art Studio', description: 'Visual assets, illustrations, and design systems' },
+    { id: 'engineering', label: 'Engineering Studio', description: 'Code, architecture, and technical implementation' },
+    { id: 'writing', label: 'Writing Studio', description: 'Copy, content, and editorial work' },
+    { id: 'workflow', label: 'Workflow Studio', description: 'Project management, issues, and assignments' },
+    { id: 'marketing', label: 'Marketing Studio', description: 'Campaigns, messaging, and market positioning' },
+    { id: 'career-assets', label: 'Career Studio', description: 'Resumes, portfolios, and professional materials' },
+    { id: 'data-analysis', label: 'Data Studio', description: 'Research, metrics, and insights' },
 ];
 
 // ============================================

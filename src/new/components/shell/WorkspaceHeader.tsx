@@ -8,13 +8,16 @@ import {
     User,
     Settings,
     Brain,
-    Zap
+    Zap,
+    ChevronDown,
+    ArrowLeft
 } from 'lucide-react';
+import { Button, IconButton } from '../Button';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { ContextWindowBadge } from '../ContextWindowIndicator';
-import { ProductionRouter } from './ProductionRouter';
-import { ProductionDeskId } from '../../../domain/types';
+import { ProductionDeskId, PRODUCTION_DESKS } from '../../../domain/types';
+import { useState, useRef, useEffect } from 'react';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -31,6 +34,8 @@ interface WorkspaceHeaderProps {
         percentage: number;
         level: 'low' | 'medium' | 'high' | 'critical';
     };
+    mode?: 'canvas' | 'studio';
+    activeStudioId?: ProductionDeskId;
 }
 
 /**
@@ -45,68 +50,162 @@ export function WorkspaceHeader({
     rightDockVisible,
     onToggleLeftDock,
     onToggleRightDock,
-    contextMemory
+    contextMemory,
+    mode = 'canvas',
+    activeStudioId
 }: WorkspaceHeaderProps) {
     const location = useLocation();
     const isSpread = location.pathname.includes('/spread');
     const isContext = location.pathname.includes('/context');
+    const [isStudioDropdownOpen, setIsStudioDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsStudioDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const activeStudio = activeStudioId ? PRODUCTION_DESKS.find(d => d.id === activeStudioId) : null;
 
     return (
-        <div className="flex flex-col shrink-0 z-50 sticky top-0">
-            <header className="h-14 border-b border-[#1A1A1A]/10 bg-[#FFFAF0]/80 backdrop-blur-md flex items-center justify-between px-6">
+        <header className="h-14 border-b border-[var(--color-border)] bg-[var(--color-ivory)]/80 backdrop-blur-md flex items-center justify-between px-6 shrink-0 z-50 sticky top-0">
                 {/* Project Info & Brand */}
                 <div className="flex items-center gap-8">
                     <Link to="/projects" className="flex items-center gap-2 group">
-                        <div className="w-2 h-2 rounded-full bg-[#FF4D4D] group-hover:scale-125 transition-transform" />
+                        <div className="w-2 h-2 rounded-full bg-[var(--color-brand-coral)] group-hover:scale-125 transition-transform" />
                         <span className="font-black tracking-tighter text-sm uppercase">Codra</span>
                     </Link>
 
-                    <div className="h-4 w-px bg-[#1A1A1A]/10" />
+                    <div className="h-4 w-px bg-[var(--color-border)]" />
 
                     <div className="flex flex-col">
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#8A8A8A] leading-none mb-1">
-                            Active Workspace
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--color-ink-muted)] leading-none mb-1">
+                            Active Canvas
                         </span>
-                        <h1 className="text-xs font-bold text-[#1A1A1A] leading-none">
+                        <h1 className="text-xs font-bold text-[var(--color-ink)] leading-none">
                             {projectName}
                         </h1>
                     </div>
                 </div>
 
                 {/* Mode Navigation */}
-                <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 bg-[#1A1A1A]/5 p-1 rounded-full border border-[#1A1A1A]/5">
-                    <Link
-                        to={`/p/${projectId}/spread`}
-                        className={cn(
-                            "px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
-                            isSpread
-                                ? "bg-white text-[#1A1A1A] shadow-sm ring-1 ring-[#1A1A1A]/5"
-                                : "text-[#8A8A8A] hover:text-[#1A1A1A]"
-                        )}
-                    >
-                        <LayoutTemplate size={12} strokeWidth={1.5} className={isSpread ? "text-[#FF4D4D]" : ""} />
-                        Spread
-                    </Link>
-                    <Link
-                        to={`/p/${projectId}/context`}
-                        className={cn(
-                            "px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
-                            isContext
-                                ? "bg-white text-[#1A1A1A] shadow-sm ring-1 ring-[#1A1A1A]/5"
-                                : "text-[#8A8A8A] hover:text-[#1A1A1A]"
-                        )}
-                    >
-                        <FileText size={12} strokeWidth={1.5} className={isContext ? "text-[#FF4D4D]" : ""} />
-                        Context
-                    </Link>
+                <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 bg-[var(--color-border-soft)] p-1 rounded-full border border-[var(--color-border-soft)]">
+                    {mode === 'canvas' ? (
+                        <>
+                            <Link
+                                to={`/p/${projectId}/spread`}
+                                className={cn(
+                                    "px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
+                                    isSpread
+                                        ? "bg-white text-[var(--color-ink)] shadow-sm ring-1 ring-[var(--color-border-soft)]"
+                                        : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                                )}
+                            >
+                                <LayoutTemplate size={12} strokeWidth={1.5} className={isSpread ? "text-[var(--color-brand-coral)]" : ""} />
+                                Canvas
+                            </Link>
+                            <Link
+                                to={`/p/${projectId}/context`}
+                                className={cn(
+                                    "px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
+                                    isContext
+                                        ? "bg-white text-[var(--color-ink)] shadow-sm ring-1 ring-[var(--color-border-soft)]"
+                                        : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                                )}
+                            >
+                                <FileText size={12} strokeWidth={1.5} className={isContext ? "text-[var(--color-brand-coral)]" : ""} />
+                                Context
+                            </Link>
+
+                            {/* Studios Dropdown */}
+                            <div className="w-px h-4 bg-border mx-1" />
+                            <div className="relative" ref={dropdownRef}>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() => setIsStudioDropdownOpen(!isStudioDropdownOpen)}
+                                    className="rounded-full bg-white/50"
+                                    rightIcon={<ChevronDown size={12} strokeWidth={1.5} className={cn("transition-transform", isStudioDropdownOpen && "rotate-180")} />}
+                                >
+                                    Studios
+                                </Button>
+                                
+                                {isStudioDropdownOpen && (
+                                    <div className="absolute top-full mt-2 left-0 min-w-[200px] bg-white rounded-xl border border-[var(--color-border)] shadow-xl py-1 z-50">
+                                        {PRODUCTION_DESKS.map((desk) => (
+                                            <Link
+                                                key={desk.id}
+                                                to={`/p/${projectId}/desk/${desk.id}`}
+                                                onClick={() => setIsStudioDropdownOpen(false)}
+                                                className="block px-4 py-2 text-xs font-bold text-[var(--color-ink)] hover:bg-[var(--color-border-soft)] transition-colors"
+                                            >
+                                                {desk.label}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            {/* Studio Mode: Back to Canvas + Current Studio + Switcher */}
+                            <Link
+                                to={`/p/${projectId}/spread`}
+                                className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:bg-white/50"
+                            >
+                                <ArrowLeft size={12} strokeWidth={1.5} />
+                                Canvas
+                            </Link>
+
+                            <div className="w-px h-4 bg-[var(--color-border)] mx-1" />
+
+                            <div className="relative" ref={dropdownRef}>
+                                <Button
+                                    variant="accent"
+                                    size="sm"
+                                    onClick={() => setIsStudioDropdownOpen(!isStudioDropdownOpen)}
+                                    className="rounded-full"
+                                    rightIcon={<ChevronDown size={12} strokeWidth={1.5} className={cn("transition-transform", isStudioDropdownOpen && "rotate-180")} />}
+                                >
+                                    {activeStudio?.label || 'Studio'}
+                                </Button>
+                                
+                                {isStudioDropdownOpen && (
+                                    <div className="absolute top-full mt-2 left-0 min-w-[200px] bg-white rounded-xl border border-[var(--color-border)] shadow-xl py-1 z-50">
+                                        {PRODUCTION_DESKS.map((desk) => (
+                                            <Link
+                                                key={desk.id}
+                                                to={`/p/${projectId}/desk/${desk.id}`}
+                                                onClick={() => setIsStudioDropdownOpen(false)}
+                                                className={cn(
+                                                    "block px-4 py-2 text-xs font-bold transition-colors",
+                                                    desk.id === activeStudioId
+                                                        ? "bg-[var(--color-border-soft)] text-[var(--color-brand-coral)]"
+                                                        : "text-[var(--color-ink)] hover:bg-[var(--color-border-soft)]"
+                                                )}
+                                            >
+                                                {desk.label}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    )}
                 </nav>
 
                 {/* Actions & Docks */}
                 <div className="flex items-center gap-4">
                     {/* Context Memory Indicator */}
                     {contextMemory && (
-                        <div className="flex items-center gap-2 pr-4 border-r border-[#1A1A1A]/10">
-                            <Brain size={14} strokeWidth={1.5} className="text-[#8A8A8A]" />
+                        <div className="flex items-center gap-2 pr-4 border-r border-[var(--color-border)]">
+                            <Brain size={14} strokeWidth={1.5} className="text-[var(--color-ink-muted)]" />
                             <ContextWindowBadge 
                                 level={contextMemory.level} 
                                 percentage={contextMemory.percentage} 
@@ -122,50 +221,53 @@ export function WorkspaceHeader({
                         >
                             <Zap size={18} strokeWidth={1.5} />
                         </Link>
-                        <button className="p-2 text-[#8A8A8A] hover:text-[#1A1A1A] hover:bg-[#1A1A1A]/5 rounded-xl transition-all">
+                        <IconButton 
+                            variant="ghost" 
+                            size="md" 
+                            title="Search"
+                            aria-label="Search"
+                        >
                             <Search size={18} strokeWidth={1.5} />
-                        </button>
-                        <button className="p-2 text-[#8A8A8A] hover:text-[#1A1A1A] hover:bg-[#1A1A1A]/5 rounded-xl transition-all">
+                        </IconButton>
+                        <IconButton 
+                            variant="ghost" 
+                            size="md" 
+                            title="User Profile"
+                            aria-label="User Profile"
+                        >
                             <User size={18} strokeWidth={1.5} />
-                        </button>
-                        <button className="p-2 text-[#8A8A8A] hover:text-[#1A1A1A] hover:bg-[#1A1A1A]/5 rounded-xl transition-all">
+                        </IconButton>
+                        <IconButton 
+                            variant="ghost" 
+                            size="md" 
+                            title="Settings"
+                            aria-label="Settings"
+                        >
                             <Settings size={18} strokeWidth={1.5} />
-                        </button>
+                        </IconButton>
                     </div>
 
-                    <div className="flex items-center gap-1.5 border-l border-[#1A1A1A]/10 pl-4">
-                        <button
+                    <div className="flex items-center gap-1.5 border-l border-border pl-4">
+                        <IconButton
+                            variant={leftDockVisible ? "accent" : "ghost"}
+                            size="md"
                             onClick={onToggleLeftDock}
-                            className={cn(
-                                "p-2 rounded-xl transition-all",
-                                leftDockVisible
-                                    ? "bg-[#1A1A1A]/5 text-[#FF4D4D]"
-                                    : "text-[#8A8A8A] hover:bg-[#1A1A1A]/5"
-                            )}
                             title="Toggle Left Dock"
+                            aria-label="Toggle Left Dock"
                         >
                             <PanelLeft size={20} strokeWidth={1.5} />
-                        </button>
-                        <button
+                        </IconButton>
+                        <IconButton
+                            variant={rightDockVisible ? "accent" : "ghost"}
+                            size="md"
                             onClick={onToggleRightDock}
-                            className={cn(
-                                "p-2 rounded-xl transition-all",
-                                rightDockVisible
-                                    ? "bg-[#1A1A1A]/5 text-[#FF4D4D]"
-                                    : "text-[#8A8A8A] hover:bg-[#1A1A1A]/5"
-                            )}
                             title="Toggle Right Dock"
+                            aria-label="Toggle Right Dock"
                         >
                             <PanelRight size={20} strokeWidth={1.5} />
-                        </button>
+                        </IconButton>
                     </div>
                 </div>
-            </header>
-            
-            <ProductionRouter 
-                projectId={projectId} 
-                activeDeskId={location.pathname.split('/desk/')[1] as ProductionDeskId} 
-            />
-        </div>
+        </header>
     );
 }

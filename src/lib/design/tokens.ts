@@ -133,3 +133,21 @@ export const transitions = {
     normal: 'transition-all duration-300',
     slow: 'transition-all duration-500',
 } as const;
+
+// === SURFACES ===
+export const surfaces = {
+    page: 'bg-[var(--color-ivory)]',
+    card: 'bg-white',
+    elevated: 'bg-white shadow-md',
+    overlay: 'bg-white/80 backdrop-blur-md',
+    header: 'bg-[var(--color-ivory)]/80 backdrop-blur-md',
+} as const;
+
+// === TEXT ===
+export const text = {
+    primary: 'text-[var(--color-ink)]',
+    secondary: 'text-[var(--color-ink-light)]',
+    muted: 'text-[var(--color-ink-muted)]',
+    inverse: 'text-white',
+    brand: 'text-[var(--color-brand-coral)]',
+} as const;

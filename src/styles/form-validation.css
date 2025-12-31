@@ -20,12 +20,12 @@
 /* Error message below fields */
 .error-message {
     color: #e11d48;
-    font-size: 12px;
-    margin-top: 8px;
+    font-size: var(--font-size-sm);
+    margin-top: var(--space-sm);
     display: flex;
     align-items: center;
     gap: 6px;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
 }
 
 .error-message svg {
@@ -37,11 +37,11 @@
     background-color: #fef2f2;
     border: 1px solid #fecaca;
     border-radius: 6px;
-    padding: 12px 16px;
-    margin-bottom: 16px;
+    padding: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-md);
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--space-sm);
 }
 
 .validation-banner-icon {
@@ -57,14 +57,14 @@
 }
 
 .validation-banner-content h4 {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
     color: #991b1b;
     margin-bottom: 2px;
 }
 
 .validation-banner-content p {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     color: #b91c1c;
 }
 

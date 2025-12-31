@@ -1,6 +1,7 @@
 // src/components/codra/NextStepCTA.tsx
 import { useState } from 'react';
-import '../../styles/next-step-cta.css';
+import { Button, IconButton } from '../../new/components/Button';
+import { X } from 'lucide-react';
 
 interface NextStepCTAProps {
   onSelectWorkspace: (workspace: string) => void;
@@ -22,12 +23,13 @@ export function NextStepCTA({ onSelectWorkspace }: NextStepCTAProps) {
         <p className="success-message">
           <span className="checkmark">✓</span> Brief complete
         </p>
-        <button
-          className="btn-primary btn-lg"
+        <Button
+          variant="primary"
+          size="lg"
           onClick={() => setShowModal(true)}
         >
           Create Your First Task →
-        </button>
+        </Button>
       </div>
 
       {showModal && (
@@ -53,16 +55,19 @@ export function NextStepCTA({ onSelectWorkspace }: NextStepCTAProps) {
               ))}
             </div>
 
-            <button
-              className="close-modal"
+            <IconButton
+              variant="ghost"
+              size="sm"
               onClick={() => setShowModal(false)}
               aria-label="Close modal"
+              className="absolute top-3 right-3"
             >
-              ✕
-            </button>
+              <X size={16} />
+            </IconButton>
           </div>
         </div>
       )}
     </>
   );
 }
+

@@ -28,6 +28,7 @@ import { useFlowStore } from '../../../lib/store/useFlowStore';
 import { smartRouter, mapOutputTypeToTaskType, mapModeToQuality } from '../../../lib/ai/router/smart-router';
 import { THINKING_MODES, ThinkingMode } from '../../../lib/strategy/thinking-modes';
 import { useAuthenticity } from '../../../lib/copy/useAuthenticity';
+import { Button, IconButton } from '../Button';
 
 
 export function PromptArchitectPanel() {
@@ -109,15 +110,22 @@ export function PromptArchitectPanel() {
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button
+                    <IconButton
+                        variant="ghost"
+                        size="sm"
                         onClick={() => setIsVisible(!isVisible)}
-                        className="p-1.5 hover:bg-[#1A1A1A]/5 rounded-lg transition-colors"
+                        aria-label="Toggle visibility"
                     >
                         <ChevronDown size={14} className={isVisible ? '' : '-rotate-90'} />
-                    </button>
-                    <button className="p-1.5 hover:bg-[#1A1A1A]/5 rounded-lg transition-colors">
+                    </IconButton>
+                    <IconButton
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {}}
+                        aria-label="Close panel"
+                    >
                         <X size={14} />
-                    </button>
+                    </IconButton>
                 </div>
             </div>
 
@@ -170,21 +178,16 @@ export function PromptArchitectPanel() {
                                         >
                                             <Search size={14} />
                                         </button>
-                                        <button
+                                        <Button
+                                            variant="primary"
+                                            size="sm"
                                             onClick={handleGenerate}
                                             disabled={!intent.trim() || isGenerating}
-                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all shadow-xl active:scale-95 ${!intent.trim() || isGenerating
-                                                ? 'bg-[#1A1A1A]/10 text-[#8A8A8A] cursor-not-allowed'
-                                                : 'bg-[#1A1A1A] text-white hover:bg-[#FF4D4D] shadow-[#1A1A1A]/10'
-                                                }`}
+                                            leftIcon={isGenerating ? <Loader2 size={14} className="animate-spin" /> : <Target size={14} />}
+                                            className="shadow-xl"
                                         >
-                                            {isGenerating ? (
-                                                <Loader2 size={14} className="animate-spin" />
-                                            ) : (
-                                                <Target size={14} />
-                                            )}
                                             {status === 'needs-clarification' ? 'Re-Generate' : 'Architect'}
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
 
@@ -263,12 +266,15 @@ export function PromptArchitectPanel() {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <button
+                                                        <IconButton
+                                                            variant="ghost"
+                                                            size="sm"
                                                             onClick={() => setShowRoutingTrace(!showRoutingTrace)}
-                                                            className="p-1.5 hover:bg-[#1A1A1A]/5 rounded-lg transition-colors text-[#8A8A8A]"
+                                                            aria-label="Show routing trace"
+                                                            className="text-[#8A8A8A]"
                                                         >
                                                             <Info size={14} />
-                                                        </button>
+                                                        </IconButton>
                                                     </div>
 
                                                     <AnimatePresence>
@@ -459,10 +465,14 @@ export function PromptArchitectPanel() {
                                                         Optimized for {lastRoutingDecision ? smartRouter.getModelDisplayName(lastRoutingDecision.selected.modelId) : 'Advanced AI'}
                                                     </span>
                                                 </div>
-                                                <button className="flex items-center gap-2 px-4 py-2 bg-[#1A1A1A] text-white rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-[#FF4D4D] transition-all active:scale-95">
-                                                    <Check size={12} strokeWidth={3} />
+                                                <Button
+                                                    variant="secondary"
+                                                    size="sm"
+                                                    onClick={() => {}}
+                                                    leftIcon={<Check size={12} strokeWidth={3} />}
+                                                >
                                                     Commit
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
                                     </motion.section>

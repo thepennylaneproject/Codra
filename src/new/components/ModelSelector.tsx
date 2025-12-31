@@ -194,7 +194,7 @@ export function ModelSelector({
                                             <div className="space-y-0.5">
                                                 {models.map(model => (
                                                     <button
-                                                        key={model.id}
+                                                        key={`${model.providerId}-${model.id}`}
                                                         onClick={() => {
                                                             onSelectModel(model.id, model.providerId);
                                                             setIsOpen(false);

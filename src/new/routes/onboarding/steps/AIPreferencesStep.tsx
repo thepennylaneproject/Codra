@@ -6,7 +6,8 @@ import {
     QualityCostLatencyPriority,
     DataSensitivity,
 } from '../../../../domain/onboarding-types';
-import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Zap } from 'lucide-react';
+import { Button } from '../../../components/Button';
 
 export const AIPreferencesStep = () => {
     const {
@@ -31,12 +32,17 @@ export const AIPreferencesStep = () => {
             <OnboardingProgress currentStep="ai-preferences" />
 
             {/* Header */}
-            <header className="space-y-3">
-                <h1 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
-                    {stepMeta.title}
+            <header className="space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-brand-coral)]" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--color-ink-muted)]">Cognitive Architecture</span>
+                </div>
+                <h1 className="text-5xl font-black tracking-tighter text-[var(--color-ink)] leading-none">
+                    {stepMeta.title.split(' ')[0]} <br />
+                    <span className="italic font-serif font-light text-[var(--color-brand-coral)]">{stepMeta.title.split(' ').slice(1).join(' ')}</span>
                 </h1>
-                <p className="text-lg text-zinc-500 font-light max-w-lg">
-                    {stepMeta.description}
+                <p className="text-xl text-[var(--color-ink-light)] font-medium italic max-w-lg leading-relaxed">
+                    "{stepMeta.description}"
                 </p>
             </header>
 
@@ -44,39 +50,41 @@ export const AIPreferencesStep = () => {
             <div className="space-y-12">
 
                 {/* Smart Mode Status */}
-                <section className="bg-zinc-900 dark:bg-zinc-100 p-6 rounded-sm text-white dark:text-zinc-900 border border-transparent shadow-xl">
-                    <div className="flex items-center justify-between">
+                <section className="bg-[var(--color-ink)] p-8 rounded-[24px] text-white shadow-2xl flex items-center justify-between group hover:scale-[1.02] transition-transform duration-500">
+                    <div className="flex items-center gap-6">
+                        <div className="w-14 h-14 bg-[var(--color-brand-coral)] rounded-2xl flex items-center justify-center flex-shrink-0 -rotate-3 group-hover:rotate-0 transition-transform">
+                            <Zap size={28} strokeWidth={3} />
+                        </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h3 className="text-sm font-bold uppercase tracking-widest">Smart Mode Active</h3>
-                                <div className="px-2 py-0.5 bg-indigo-500 text-[10px] font-black uppercase rounded-full text-white">Default</div>
+                                <h3 className="text-sm font-black uppercase tracking-widest text-[var(--color-brand-coral)]">Smart Mode Active</h3>
+                                <div className="px-3 py-1 bg-white/10 text-[9px] font-black uppercase tracking-widest rounded-full backdrop-blur-sm">System Default</div>
                             </div>
-                            <p className="text-xs opacity-70 mt-1">Codra will automatically manage model selection, latency, and cost-efficiency for you.</p>
+                            <p className="text-sm opacity-70 font-medium italic mt-1 leading-tight">"Codra will automatically manage model selection and cost-efficiency for you."</p>
                         </div>
-                        <Check size={24} className="opacity-50" />
                     </div>
                 </section>
 
                 {/* Q1: Quality Priority */}
                 <section className="space-y-4">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400">
-                        What matters most for your AI outputs?
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)]">
+                        Production Priority
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {QUALITY_PRIORITY_OPTIONS.map(option => (
                             <button
                                 key={option.id}
                                 onClick={() => updateAIPreferences({ qualityPriority: option.id as QualityCostLatencyPriority })}
-                                className={`p-5 text-left border rounded-sm transition-all duration-200 ${aiPreferences.qualityPriority === option.id
-                                    ? 'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-900 shadow-sm'
-                                    : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700 text-zinc-500'
+                                className={`p-6 text-left border rounded-[24px] transition-all duration-500 ${aiPreferences.qualityPriority === option.id
+                                    ? 'border-[var(--color-brand-coral)] bg-[var(--color-brand-coral)]/5 shadow-2xl shadow-[var(--color-brand-coral)]/10'
+                                    : 'border-[var(--color-ink)]/5 hover:border-[var(--color-ink)]/20 bg-white'
                                     }`}
                             >
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className={`font-semibold text-sm ${aiPreferences.qualityPriority === option.id ? 'text-zinc-900 dark:text-zinc-100' : ''}`}>{option.label}</span>
-                                    {aiPreferences.qualityPriority === option.id && <Check size={16} className="text-zinc-900 dark:text-zinc-100" />}
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className={`font-black text-[10px] uppercase tracking-widest ${aiPreferences.qualityPriority === option.id ? 'text-[var(--color-brand-coral)]' : 'text-[var(--color-ink)]'}`}>{option.label}</span>
+                                    {aiPreferences.qualityPriority === option.id && <Check size={14} strokeWidth={4} className="text-[var(--color-brand-coral)]" />}
                                 </div>
-                                <p className="text-xs opacity-70 leading-relaxed">{option.description}</p>
+                                <p className="text-[11px] text-[var(--color-ink-muted)] font-medium leading-relaxed">{option.description}</p>
                             </button>
                         ))}
                     </div>
@@ -84,24 +92,24 @@ export const AIPreferencesStep = () => {
 
                 {/* Q4: Data Sensitivity */}
                 <section className="space-y-4">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400">
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)]">
                         Data Sensitivity Check
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {DATA_SENSITIVITY_OPTIONS.map(option => (
                             <button
                                 key={option.id}
                                 onClick={() => updateAIPreferences({ dataSensitivity: option.id as DataSensitivity })}
-                                className={`p-5 text-left border rounded-sm transition-all duration-200 ${aiPreferences.dataSensitivity === option.id
-                                    ? 'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-900 shadow-sm'
-                                    : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700 text-zinc-500'
+                                className={`p-6 text-left border rounded-[24px] transition-all duration-500 ${aiPreferences.dataSensitivity === option.id
+                                    ? 'border-[var(--color-brand-coral)] bg-[var(--color-brand-coral)]/5 shadow-2xl shadow-[var(--color-brand-coral)]/10'
+                                    : 'border-[var(--color-ink)]/5 hover:border-[var(--color-ink)]/20 bg-white'
                                     }`}
                             >
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className={`font-semibold text-sm ${aiPreferences.dataSensitivity === option.id ? 'text-zinc-900 dark:text-zinc-100' : ''}`}>{option.label}</span>
-                                    {aiPreferences.dataSensitivity === option.id && <Check size={16} className="text-zinc-900 dark:text-zinc-100" />}
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className={`font-black text-[10px] uppercase tracking-widest ${aiPreferences.dataSensitivity === option.id ? 'text-[var(--color-brand-coral)]' : 'text-[var(--color-ink)]'}`}>{option.label}</span>
+                                    {aiPreferences.dataSensitivity === option.id && <Check size={14} strokeWidth={4} className="text-[var(--color-brand-coral)]" />}
                                 </div>
-                                <p className="text-xs opacity-70 leading-relaxed">{option.description}</p>
+                                <p className="text-[11px] text-[var(--color-ink-muted)] font-medium leading-relaxed">{option.description}</p>
                             </button>
                         ))}
                     </div>
@@ -110,26 +118,28 @@ export const AIPreferencesStep = () => {
             </div>
 
             {/* Navigation */}
-            <div className="flex justify-between items-center pt-6 border-t border-zinc-100 dark:border-zinc-900">
-                <button
+            <div className="flex justify-between items-center pt-8 border-t border-[var(--color-ink)]/5">
+                <Button
+                    variant="ghost"
                     onClick={() => setStep(prevStep)}
-                    className="flex items-center gap-2 text-sm font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                    leftIcon={<ArrowLeft size={16} strokeWidth={3} />}
+                    className="text-[10px] font-black uppercase tracking-widest text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] transition-colors"
                 >
-                    <ArrowLeft size={16} />
-                    Back
-                </button>
-                <div className="flex items-center gap-4">
-                    <span className="text-xs text-zinc-400">
+                    Context
+                </Button>
+                <div className="flex items-center gap-6">
+                    <span className="text-[10px] font-medium italic font-serif text-[var(--color-ink-muted)]">
                         {stepMeta.helperText}
                     </span>
-                    <button
+                    <Button
+                        variant="primary"
                         onClick={() => setStep(nextStep)}
                         disabled={!canProceed}
-                        className="flex items-center gap-2 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 px-6 py-3 text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed rounded-sm shadow-lg"
+                        rightIcon={<ArrowRight size={16} strokeWidth={3} />}
+                        className="px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl active:scale-95"
                     >
-                        Continue
-                        <ArrowRight size={16} />
-                    </button>
+                        Define Budget
+                    </Button>
                 </div>
             </div>
         </div>

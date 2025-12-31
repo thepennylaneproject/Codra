@@ -36,7 +36,6 @@ import { CodraWorkspace } from '../components/CodraWorkspace';
 import { PromptArchitectPanel } from '../components/panels/PromptArchitectPanel';
 import { AssetRegistryPanel } from '../components/panels/AssetRegistryPanel';
 import { useFlowStore } from '../../lib/store/useFlowStore';
-import { useToast } from '../components/Toast';
 import { LyraRecallButton } from '../components/LyraRecallButton';
 import { uploadAssets } from '../../lib/assets/upload';
 import { useProjectMemory } from '../../lib/memory/useProjectMemory';
@@ -60,8 +59,6 @@ export function NewSpreadPage() {
         addToSessionCost
     } = useFlowStore();
 
-    // Toast notifications
-    const toast = useToast();
     // Context Memory System
     const { usageStats } = useProjectMemory(projectId);
 
@@ -413,7 +410,7 @@ export function NewSpreadPage() {
     }, [isResizing, onMouseMove, stopResizing]);
 
     if (!project) {
-        return <div className="h-screen bg-[#FFFAF0] text-[#1A1A1A]/40 flex items-center justify-center font-mono uppercase tracking-[0.2em] animate-pulse">Reviewing Spread...</div>;
+        return <div className="h-screen bg-[var(--color-ivory)] text-[var(--color-ink)]/40 flex items-center justify-center font-mono uppercase tracking-[0.2em] animate-pulse">Reviewing Spread...</div>;
     }
 
     const blockingEscalation = escalations.find(e => e.severity === 'blocking' && !e.resolved);
@@ -434,6 +431,7 @@ export function NewSpreadPage() {
 
                     {/* Workspace Header */}
                     <WorkspaceHeader
+                        mode="canvas"
                         projectName={project.name}
                         projectId={projectId || ''}
                         leftDockVisible={layout.leftDockVisible}
@@ -451,18 +449,18 @@ export function NewSpreadPage() {
                         {/* Left Dock: Tools & Prompts */}
                         {layout.leftDockVisible && (
                             <aside
-                                className="h-full border-r border-[#1A1A1A]/10 bg-[#FFFAF0]/30 shrink-0 relative flex flex-col"
+                                className="h-full border-r border-[var(--color-border)] bg-[var(--color-ivory)]/30 shrink-0 relative flex flex-col"
                                 style={{ width: layout.leftDockWidth }}
                             >
                                 {/* Tab Switcher */}
-                                <div className="flex border-b border-[#1A1A1A]/5 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+                                <div className="flex border-b border-[var(--color-border-soft)] bg-white/50 backdrop-blur-sm sticky top-0 z-10">
                                     <button
                                         onClick={() => setActiveLeftTab('toc')}
                                         className={cn(
                                             "flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all border-b-2",
                                             activeLeftTab === 'toc'
-                                                ? "text-[#1A1A1A] border-[#FF4D4D]"
-                                                : "text-[#8A8A8A] border-transparent hover:text-[#1A1A1A]"
+                                                ? "text-[var(--color-ink)] border-[var(--color-brand-coral)]"
+                                                : "text-[var(--color-ink-muted)] border-transparent hover:text-[var(--color-ink)]"
                                         )}
                                     >
                                         Sections
@@ -472,8 +470,8 @@ export function NewSpreadPage() {
                                         className={cn(
                                             "flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all border-b-2",
                                             activeLeftTab === 'prompts'
-                                                ? "text-[#1A1A1A] border-[#FF4D4D]"
-                                                : "text-[#8A8A8A] border-transparent hover:text-[#1A1A1A]"
+                                                ? "text-[var(--color-ink)] border-[var(--color-brand-coral)]"
+                                                : "text-[var(--color-ink-muted)] border-transparent hover:text-[var(--color-ink)]"
                                         )}
                                     >
                                         AI Tasks
@@ -506,7 +504,7 @@ export function NewSpreadPage() {
                                                 transition={{ duration: 0.2 }}
                                                 className="h-full"
                                             >
-                                                <div className="p-4 border-b border-[#1A1A1A]/5">
+                                                <div className="p-4 border-b border-[var(--color-border-soft)]">
                                                     <ModelSelector
                                                         selectedModelId={selectedModelId}
                                                         onSelectModel={(mId, pId) => {
@@ -530,21 +528,20 @@ export function NewSpreadPage() {
                                 </div>
 
                                 <div
-                                    className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-[#FF4D4D]/20 transition-colors"
+                                    className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-[var(--color-brand-coral)]/20 transition-colors"
                                     onMouseDown={startResizing('left')}
                                 />
                             </aside>
                         )}
 
                         {/* Editor Canvas */}
-                        <main ref={mainRef} className="flex-1 relative bg-[#1A1A1A]/5 overflow-hidden flex flex-col">
+                        <main ref={mainRef} className="flex-1 relative bg-[var(--color-border-soft)] overflow-hidden flex flex-col">
                             <div className="absolute inset-0 transition-all bg-white dark:bg-zinc-900" />
 
                             <div className="relative flex-1 flex flex-col overflow-hidden">
                                 <CodraWorkspace
                                     mode={activeTaskId ? 'execute' : 'consult'}
                                     spread={spread}
-                                    projectName={project.name}
                                     activeTask={taskQueue?.tasks.find(t => t.id === activeTaskId) || null}
                                     pastMemories={taskQueue?.tasks.filter(t => (t.status as string) === 'complete').map(t => ({ title: t.title, memory: t.memory || '' }))}
                                     onRunTask={handleRunTask}
@@ -560,22 +557,22 @@ export function NewSpreadPage() {
                         {/* Right Dock: Inspector & Architect */}
                         {layout.rightDockVisible && (
                             <aside
-                                className="h-full border-l border-[#1A1A1A]/10 bg-white shadow-[-10px_0_30px_rgba(0,0,0,0.02)] shrink-0 relative flex flex-col z-20"
+                                className="h-full border-l border-[var(--color-border)] bg-white shadow-[-10px_0_30px_rgba(0,0,0,0.02)] shrink-0 relative flex flex-col z-20"
                                 style={{ width: layout.rightDockWidth }}
                             >
                                 <div
-                                    className="absolute left-0 top-0 w-1 h-full cursor-col-resize hover:bg-[#FF4D4D]/20 transition-colors z-30"
+                                    className="absolute left-0 top-0 w-1 h-full cursor-col-resize hover:bg-[var(--color-brand-coral)]/20 transition-colors z-30"
                                     onMouseDown={startResizing('right')}
                                 />
 
-                                <div className="flex border-b border-[#1A1A1A]/5 bg-[#FFFAF0]/30">
+                                <div className="flex border-b border-[var(--color-border-soft)] bg-[var(--color-ivory)]/30">
                                     <button
                                         onClick={() => setActiveRightPanel('architect')}
                                         className={cn(
                                             "flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all border-b-2",
                                             activeRightPanel === 'architect'
-                                                ? "text-[#1A1A1A] border-[#FF4D4D]"
-                                                : "text-[#8A8A8A] border-transparent hover:text-[#1A1A1A]"
+                                                ? "text-[var(--color-ink)] border-[var(--color-brand-coral)]"
+                                                : "text-[var(--color-ink-muted)] border-transparent hover:text-[var(--color-ink)]"
                                         )}
                                     >
                                         Architect
@@ -585,8 +582,8 @@ export function NewSpreadPage() {
                                         className={cn(
                                             "flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all border-b-2",
                                             activeRightPanel === 'assets'
-                                                ? "text-[#1A1A1A] border-[#FF4D4D]"
-                                                : "text-[#8A8A8A] border-transparent hover:text-[#1A1A1A]"
+                                                ? "text-[var(--color-ink)] border-[var(--color-brand-coral)]"
+                                                : "text-[var(--color-ink-muted)] border-transparent hover:text-[var(--color-ink)]"
                                         )}
                                     >
                                         Assets
@@ -625,7 +622,7 @@ export function NewSpreadPage() {
                                     )}
                                 </div>
 
-                                <div className="h-1/2 border-t border-[#1A1A1A]/10 overflow-hidden flex flex-col">
+                                <div className="h-1/2 border-t border-[var(--color-border)] overflow-hidden flex flex-col">
                                     <OutputInspector
                                         spread={spread}
                                         onSectionUpdate={handleSectionUpdate}

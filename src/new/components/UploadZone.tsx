@@ -70,7 +70,7 @@ export function UploadZone({
                     transition-all duration-300 flex flex-col items-center justify-center gap-3
                     ${isDragging
                         ? "border-rose-500 bg-rose-500/5 shadow-2xl scale-[1.02]"
-                        : "border-[#1A1A1A]/10 bg-white/50 hover:border-[#1A1A1A]/30 hover:bg-white"
+                        : "border-[var(--color-border)] bg-white/50 hover:border-[var(--color-border-strong)] hover:bg-white"
                     }
                 `}
             >
