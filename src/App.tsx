@@ -37,6 +37,7 @@ import { PlacementProvider } from './lib/placement/PlacementContext';
 import { NewSpreadPage } from './new/routes/NewSpreadPage';
 import { ProjectContextPage } from './new/routes/ProjectContextPage';
 import { NewProjectOnboarding } from './new/routes/onboarding/NewProjectOnboarding';
+import { OnboardingFlow } from './new/routes/onboarding/OnboardingFlow';
 import { DeskWorkspacePage } from './new/routes/DeskWorkspacePage';
 import { ProjectsPage } from './new/routes/ProjectsPage';
 import { SettingsPage } from './new/routes/SettingsPage';
@@ -46,6 +47,7 @@ import { TermsPage } from './new/routes/TermsPage';
 import { PrivacyPage } from './new/routes/PrivacyPage';
 import { ToastContainer } from './new/components/Toast';
 import CoherenceScanPage from './new/routes/CoherenceScanPage';
+import { WorkspaceShellDemo } from './new/routes/WorkspaceShellDemo';
 
 // ============================================================
 // App Component
@@ -125,10 +127,17 @@ export function App() {
 
 
 
-                    {/* Onboarding (Legacy) */}
+                    {/* Streamlined Onboarding Flow */}
+                    <Route
+                      path="/new"
+                      element={
+                        <ProtectedRoute>
+                          <OnboardingFlow />
+                        </ProtectedRoute>
+                      }
+                    />
 
-
-                    {/* New Editorial Onboarding */}
+                    {/* Legacy Onboarding (kept for compatibility) */}
                     <Route
                       path="/onboarding/new-project"
                       element={
@@ -161,7 +170,7 @@ export function App() {
                     />
 
                     <Route
-                      path="/p/:projectId/desk/:deskId"
+                      path="/p/:projectId/production"
                       element={
                         <ProtectedRoute>
                           <DeskWorkspacePage />
@@ -183,6 +192,24 @@ export function App() {
                       element={
                         <ProtectedRoute>
                           <CoherenceScanPage />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    {/* Workspace Shell Demo */}
+                    <Route
+                      path="/workspace-shell-demo"
+                      element={
+                        <ProtectedRoute>
+                          <WorkspaceShellDemo />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/p/:projectId/workspace-shell-demo"
+                      element={
+                        <ProtectedRoute>
+                          <WorkspaceShellDemo />
                         </ProtectedRoute>
                       }
                     />

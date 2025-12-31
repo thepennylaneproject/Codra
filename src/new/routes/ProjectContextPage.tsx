@@ -856,7 +856,7 @@ export function ProjectContextPage() {
 
                         <div className="flex items-center gap-3">
                             <button
-                                onClick={() => navigate('/onboarding/new-project')}
+                                onClick={() => navigate('/new')}
                                 className="px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors"
                             >
                                 Back to intake

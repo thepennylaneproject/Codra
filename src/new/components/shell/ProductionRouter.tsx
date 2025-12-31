@@ -12,7 +12,11 @@ import {
     Megaphone, 
     Briefcase, 
     LineChart,
-    LucideIcon
+    LucideIcon,
+    PenLine,
+    Palette,
+    Code2,
+    BarChart3
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -22,13 +26,10 @@ function cn(...inputs: ClassValue[]) {
 }
 
 const DESK_ICONS: Record<ProductionDeskId, LucideIcon> = {
-    'art-design': Box,
-    'engineering': Code,
-    'writing': FileText,
-    'workflow': LayoutTemplate,
-    'marketing': Megaphone,
-    'career-assets': Briefcase,
-    'data-analysis': LineChart,
+    'write': PenLine,
+    'design': Palette,
+    'code': Code2,
+    'analyze': BarChart3,
 };
 
 interface ProductionRouterProps {
@@ -59,7 +60,7 @@ export const ProductionRouter: React.FC<ProductionRouterProps> = ({
                     return (
                         <Link
                             key={desk.id}
-                            to={`/p/${projectId}/desk/${desk.id}`}
+                            to={`/p/${projectId}/production?desk=${desk.id}`}
                             className={cn(
                                 "flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all whitespace-nowrap group",
                                 isActive 

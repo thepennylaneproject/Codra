@@ -1,4 +1,10 @@
-import React, { useState } from 'react';
+/**
+ * DESIGN CANVAS
+ * Adapted from ArtDeskCanvas
+ * Visual assets, illustrations, and design systems
+ */
+
+import React, { useState, useEffect } from 'react';
 import { Sparkles, Maximize2, RefreshCcw, Download, Layers, ShieldCheck, Plus, Lock, Unlock } from 'lucide-react';
 import { MOCK_ASSETS } from '../../../domain/integrations';
 import { ModelSelector } from '../ModelSelector';
@@ -6,22 +12,35 @@ import { DeskEvents } from '../../../lib/desks/DeskBridge';
 import { useImageGeneration } from '../../../hooks/useImageGeneration';
 import { STYLE_PRESETS, ImageStyle, applyStyleToPrompt, generateRandomSeed } from '../../../lib/image/seed-preservation';
 import { Button, IconButton } from '../Button';
+import { useDeskState } from './hooks/useDeskState';
 
-interface ArtDeskCanvasProps {
+interface DesignCanvasProps {
+    projectId: string;
     selectedModelId?: string;
     onSelectModel?: (modelId: string, providerId: string) => void;
 }
 
-export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 'flux-pro', onSelectModel }) => {
-    const [prompt, setPrompt] = useState('');
+export const DesignCanvas: React.FC<DesignCanvasProps> = ({ 
+    projectId,
+    selectedModelId = 'flux-pro', 
+    onSelectModel 
+}) => {
+    const { getDeskState, updateDeskState } = useDeskState();
+    const state = getDeskState(projectId, 'design');
+
+    const [prompt, setPrompt] = useState(state.inputContent || '');
     const [isDraggingOver, setIsDraggingOver] = useState(false);
     const { generate, isLoading, result, error } = useImageGeneration();
     const [localAssets, setLocalAssets] = useState(MOCK_ASSETS);
     
-    // P2: Seed Preservation & Anti-Slop
+    // Seed Preservation & Anti-Slop
     const [currentStyle, setCurrentStyle] = useState<ImageStyle>('organic');
     const [currentSeed, setCurrentSeed] = useState<number>(generateRandomSeed());
     const [seedLocked, setSeedLocked] = useState(false);
+
+    useEffect(() => {
+        updateDeskState(projectId, 'design', { inputContent: prompt });
+    }, [prompt, projectId, updateDeskState]);
 
     const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -30,7 +49,7 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
         const newAsset = {
             id: Math.random().toString(36).substr(2, 9),
             name: file.name,
-            url: URL.createObjectURL(file), // Real implementation would upload to Supabase/Cloudinary
+            url: URL.createObjectURL(file),
             thumbnailUrl: URL.createObjectURL(file),
             type: 'image' as const,
             source: 's3' as const,
@@ -44,10 +63,8 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
     const handleGenerate = async () => {
         if (!prompt) return;
         
-        // Apply anti-slop style to prompt
         const { prompt: styledPrompt, negativePrompt } = applyStyleToPrompt(prompt, currentStyle);
         
-        // Generate new seed if not locked
         if (!seedLocked) {
             setCurrentSeed(generateRandomSeed());
         }
@@ -62,7 +79,6 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
         });
 
         if (response?.status === 'completed' && response.result) {
-            // Emit cross-desk event
             DeskEvents.imageGenerated(response.jobId || `img-${Date.now()}`, prompt.substring(0, 30) + '...');
         }
     };
@@ -175,7 +191,7 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
                                                 size="sm"
                                                 onClick={() => {
                                                     if (result && i === 0) {
-                                                        DeskEvents.artifactApproved('art-design', result.url, 'Generated Image');
+                                                        DeskEvents.artifactApproved('design' as any, result.url, 'Generated Image');
                                                     }
                                                 }}
                                                 leftIcon={<Layers size={12} />}
@@ -214,7 +230,7 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
                             />
                             <div className="w-px h-4 bg-[var(--desk-border)]" />
                             
-                            {/* P2: Anti-Slop Style Selector */}
+                            {/* Anti-Slop Style Selector */}
                             <div className="flex items-center gap-1">
                                 {(Object.keys(STYLE_PRESETS) as ImageStyle[]).slice(0, 4).map((style) => {
                                     const preset = STYLE_PRESETS[style];
@@ -237,7 +253,7 @@ export const ArtDeskCanvas: React.FC<ArtDeskCanvasProps> = ({ selectedModelId = 
                             
                             <div className="w-px h-4 bg-[var(--desk-border)]" />
                             
-                            {/* P2: Seed Lock */}
+                            {/* Seed Lock */}
                             <button
                                 onClick={() => setSeedLocked(!seedLocked)}
                                 className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-bold transition-all ${

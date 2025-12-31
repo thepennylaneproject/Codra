@@ -297,13 +297,10 @@ export interface CodraGuardrail {
 // ============================================
 
 export type ProductionDeskId =
-    | 'art-design'
-    | 'engineering'
-    | 'writing'
-    | 'workflow'
-    | 'marketing'
-    | 'career-assets'
-    | 'data-analysis';
+    | 'write'
+    | 'design'
+    | 'code'
+    | 'analyze';
 
 export interface ProductionDesk {
     id: ProductionDeskId;
@@ -312,13 +309,10 @@ export interface ProductionDesk {
 }
 
 export const PRODUCTION_DESKS: ProductionDesk[] = [
-    { id: 'art-design', label: 'Art Studio', description: 'Visual assets, illustrations, and design systems' },
-    { id: 'engineering', label: 'Engineering Studio', description: 'Code, architecture, and technical implementation' },
-    { id: 'writing', label: 'Writing Studio', description: 'Copy, content, and editorial work' },
-    { id: 'workflow', label: 'Workflow Studio', description: 'Project management, issues, and assignments' },
-    { id: 'marketing', label: 'Marketing Studio', description: 'Campaigns, messaging, and market positioning' },
-    { id: 'career-assets', label: 'Career Studio', description: 'Resumes, portfolios, and professional materials' },
-    { id: 'data-analysis', label: 'Data Studio', description: 'Research, metrics, and insights' },
+    { id: 'write', label: 'Write', description: 'Copy, content, and marketing materials' },
+    { id: 'design', label: 'Design', description: 'Visual assets and design systems' },
+    { id: 'code', label: 'Code', description: 'Engineering and technical implementation' },
+    { id: 'analyze', label: 'Analyze', description: 'Data, research, and insights' },
 ];
 
 // ============================================

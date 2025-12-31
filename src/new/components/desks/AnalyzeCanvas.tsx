@@ -1,22 +1,24 @@
 /**
- * CAREER ASSETS DESK CANVAS
- * Placeholder implementation with clear "coming soon" messaging
+ * ANALYZE CANVAS
+ * Adapted from DataAnalysisDeskCanvas
+ * Research, metrics, and insights
  */
 
 import React from 'react';
-import { Briefcase, FileText, Award, Linkedin, Sparkles, ArrowRight } from 'lucide-react';
+import { BarChart3, Database, PieChart, TrendingUp, Sparkles, ArrowRight } from 'lucide-react';
 
-interface CareerAssetsDeskCanvasProps {
+interface AnalyzeCanvasProps {
+    projectId: string;
     selectedModelId?: string;
     onSelectModel?: (modelId: string, providerId: string) => void;
 }
 
-export const CareerAssetsDeskCanvas: React.FC<CareerAssetsDeskCanvasProps> = () => {
+export const AnalyzeCanvas: React.FC<AnalyzeCanvasProps> = ({ projectId }) => {
     const upcomingFeatures = [
-        { icon: FileText, label: 'Resume builder', description: 'AI-optimized resume generation' },
-        { icon: Linkedin, label: 'LinkedIn optimizer', description: 'Profile and post suggestions' },
-        { icon: Award, label: 'Portfolio curator', description: 'Showcase your best work' },
-        { icon: Briefcase, label: 'Cover letters', description: 'Tailored application letters' },
+        { icon: BarChart3, label: 'Data visualization', description: 'Generate charts and graphs' },
+        { icon: Database, label: 'Query builder', description: 'Natural language to SQL' },
+        { icon: PieChart, label: 'Insight extraction', description: 'AI-powered data analysis' },
+        { icon: TrendingUp, label: 'Trend detection', description: 'Identify patterns in data' },
     ];
 
     return (
@@ -24,15 +26,15 @@ export const CareerAssetsDeskCanvas: React.FC<CareerAssetsDeskCanvasProps> = () 
             {/* Header */}
             <div className="text-center mb-12">
                 <div className="w-16 h-16 rounded-2xl bg-[#FF4D4D]/10 flex items-center justify-center mx-auto mb-6">
-                    <Briefcase size={32} className="text-[#FF4D4D]" />
+                    <BarChart3 size={32} className="text-[#FF4D4D]" />
                 </div>
-                <h2 className="text-2xl font-black text-[#1A1A1A] mb-3">Career Assets Desk</h2>
+                <h2 className="text-2xl font-black text-[#1A1A1A] mb-3">Analyze Desk</h2>
                 <div className="flex items-center justify-center gap-2 mb-4">
                     <Sparkles size={14} className="text-amber-500" />
                     <span className="text-xs font-bold uppercase tracking-widest text-amber-600">Coming Soon</span>
                 </div>
                 <p className="text-[#5A5A5A] max-w-md">
-                    Professional materials that stand out. Build resumes, portfolios, and career assets that get results.
+                    Turn data into insights. Analyze datasets, generate visualizations, and discover trends with AI assistance.
                 </p>
             </div>
 
@@ -56,10 +58,10 @@ export const CareerAssetsDeskCanvas: React.FC<CareerAssetsDeskCanvasProps> = () 
             {/* CTA */}
             <div className="text-center">
                 <p className="text-sm text-[#8A8A8A] mb-4">
-                    While we build this desk, try the Writing Desk for document drafting.
+                    While we build this desk, try the Code Desk for codebase analysis.
                 </p>
                 <button className="flex items-center gap-2 px-6 py-3 bg-[#1A1A1A]/5 hover:bg-[#1A1A1A]/10 text-[#5A5A5A] rounded-xl font-bold text-xs uppercase tracking-widest transition-colors mx-auto">
-                    Explore Writing Desk
+                    Explore Code Desk
                     <ArrowRight size={14} />
                 </button>
             </div>

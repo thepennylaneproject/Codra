@@ -38,6 +38,12 @@
   --desk-border: rgba(26, 26, 26, 0.1);
   --desk-panel-bg: rgba(255, 255, 255, 0.8);
 
+  /* Desk-specific subtle background tints (optional) */
+  --desk-write-tint: rgba(255, 107, 107, 0.02);    /* Coral tint */
+  --desk-design-tint: rgba(168, 85, 247, 0.02);    /* Purple tint */
+  --desk-code-tint: rgba(34, 197, 94, 0.02);       /* Green tint */
+  --desk-analyze-tint: rgba(59, 130, 246, 0.02);   /* Blue tint */
+
   /* ===============================
      NEW COMPONENT COLORS (Ivory/Ink System)
      For WorkspaceHeader and production components
@@ -202,6 +208,22 @@
   --accent: #c7a76a;
   --accent-soft: rgba(199, 167, 106, 0.25);
   --accent-border: rgba(199, 167, 106, 0.35);
+
+  /* ===============================
+     WORKSPACE SHELL TOKENS
+     Neutral chrome for panel system
+     =============================== */
+  --shell-surface-0: #0A0A0F;        /* Deepest background */
+  --shell-surface-1: #12121A;        /* Panel backgrounds */
+  --shell-surface-2: #1A1A24;        /* Elevated elements */
+  --shell-border: #2A2A36;           /* Dividers, borders */
+  --shell-text-primary: #F5F5F7;     /* Primary text */
+  --shell-text-secondary: #8A8A9A;   /* Secondary text */
+  
+  /* Resize handles */
+  --shell-resize-handle-bg: transparent;
+  --shell-resize-handle-hover: rgba(255, 107, 107, 0.1);
+  --shell-resize-handle-active: rgba(255, 107, 107, 0.2);
 
   /* ===============================
      GLASS DENSITY TOKENS

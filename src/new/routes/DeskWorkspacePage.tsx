@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
-import { PRODUCTION_DESKS, ProductionDeskId } from '../../domain/types';
+import { ProductionDeskId } from '../../domain/types';
 import { useSupabaseSpread } from '../../hooks/useSupabaseSpread';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArtDeskCanvas } from '../components/desks/ArtDeskCanvas';
-import { EngineeringDeskCanvas } from '../components/desks/EngineeringDeskCanvas';
-import { WritingDeskCanvas } from '../components/desks/WritingDeskCanvas';
-import { WorkflowDeskCanvas } from '../components/desks/WorkflowDeskCanvas';
 import { CollabPresenceLayer } from '../components/collab/CollabPresenceLayer';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { WorkspaceHeader } from '../components/shell/WorkspaceHeader';
@@ -15,14 +11,19 @@ import { useFlowStore } from '../../lib/store/useFlowStore';
 import { getProjectById } from '../../domain/projects';
 import { Project } from '../../domain/types';
 import { LyraAssistant } from '../../components/codra/LyraAssistant';
+import { DeskSwitcher } from '../components/desks/DeskSwitcher';
+import { DeskCanvas } from '../components/desks/DeskCanvas';
+import { useDeskSwitching } from '../components/desks/hooks/useDeskSwitching';
 
 /**
  * DESK WORKSPACE PAGE
  * A specialized route for deep production work.
  * Higher fidelity than the general Spread view.
+ * Now unified into a single route with view switching via query params.
  */
 export const DeskWorkspacePage: React.FC = () => {
-    const { projectId, deskId } = useParams<{ projectId: string; deskId: string }>();
+    const { projectId } = useParams<{ projectId: string }>();
+    const { activeDesk, switchDesk } = useDeskSwitching(projectId!);
 
     const { 
         layout, 
@@ -40,7 +41,7 @@ export const DeskWorkspacePage: React.FC = () => {
         }
     }, [projectId]);
 
-    const desk = PRODUCTION_DESKS.find(d => d.id === deskId);
+    const activeDeskTint = `var(--desk-${activeDesk}-tint)`;
 
     if (loading) {
         return (
@@ -51,18 +52,21 @@ export const DeskWorkspacePage: React.FC = () => {
                     className="flex flex-col items-center gap-4"
                 >
                     <div className="w-12 h-12 rounded-full border-2 border-[var(--brand-teal)]/20 border-t-[var(--brand-teal)] animate-spin" />
-                    Opening {desk?.label || deskId} Workspace...
+                    Opening Workspace...
                 </motion.div>
             </div>
         );
     }
 
     return (
-        <div className="h-screen bg-[var(--desk-bg)] flex flex-col text-[var(--desk-text-primary)] selection:bg-[var(--brand-teal)]/30 overflow-hidden">
+        <div 
+            className="h-screen bg-[var(--desk-bg)] flex flex-col text-[var(--desk-text-primary)] selection:bg-[var(--brand-teal)]/30 overflow-hidden transition-colors duration-500"
+            style={{ backgroundColor: activeDeskTint ? `color-mix(in srgb, var(--desk-bg), ${activeDeskTint} 10%)` : 'var(--desk-bg)' }}
+        >
             {/* Unified Workspace Header */}
             <WorkspaceHeader
                 mode="studio"
-                activeStudioId={deskId as ProductionDeskId}
+                activeStudioId={activeDesk}
                 projectName={project?.name || 'Loading...'}
                 projectId={projectId || ''}
                 leftDockVisible={layout.leftDockVisible}
@@ -71,11 +75,12 @@ export const DeskWorkspacePage: React.FC = () => {
                 onToggleRightDock={() => toggleDock('right')}
             />
 
+            {/* Desk Switcher Tabs */}
+            <DeskSwitcher activeDesk={activeDesk} onSwitch={switchDesk} />
+
             <CollabPresenceLayer>
                 <main className="flex-1 overflow-hidden flex">
-                    {/* ... rest of the main content ... */}
-                    {/* I'll use a better way to replace the entire main block to avoid mistakes */}
-                    {/* Left: Context / Parameters */}
+                    {/* Left: Project Context */}
                     <AnimatePresence>
                         {layout.leftDockVisible && (
                             <motion.aside
@@ -100,36 +105,10 @@ export const DeskWorkspacePage: React.FC = () => {
                     </AnimatePresence>
 
                     {/* Center: Desk Specific Canvas */}
-                    <div className="flex-1 bg-[var(--desk-bg)] relative overflow-hidden p-12 flex items-center justify-center">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={deskId}
-                                initial={{ opacity: 0, scale: 0.98, y: 10 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 1.02, y: -10 }}
-                                transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-                                className="w-full h-full flex items-center justify-center"
-                            >
-                                <ErrorBoundary name={desk?.label || deskId}>
-                                    {deskId === 'art-design' && <ArtDeskCanvas />}
-                                    {deskId === 'engineering' && <EngineeringDeskCanvas />}
-                                    {deskId === 'writing' && <WritingDeskCanvas />}
-                                    {deskId === 'workflow' && <WorkflowDeskCanvas />}
-                                </ErrorBoundary>
-
-                                {!['art-design', 'engineering', 'writing', 'workflow'].includes(deskId || '') && (
-                                    <div className="max-w-4xl w-full h-full rounded-xl border-2 border-dashed border-[var(--desk-border)] flex flex-col items-center justify-center text-center gap-4 group hover:border-[var(--desk-text-primary)]/20 transition-colors">
-                                        <div className="p-6 rounded-full bg-[var(--desk-surface)] group-hover:bg-[var(--desk-bg)] transition-colors shadow-lg">
-                                            <Sparkles className="text-[var(--brand-teal)] animate-pulse" size={32} />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <h2 className="text-xl font-bold tracking-tight text-[var(--desk-text-primary)]">The {desk?.label} Canvas is Ready</h2>
-                                            <p className="text-sm text-[var(--desk-text-muted)] max-w-sm">Deep work tools for {deskId} are initializing. Lyra is scanning your project memories to prepare the environment.</p>
-                                        </div>
-                                    </div>
-                                )}
-                            </motion.div>
-                        </AnimatePresence>
+                    <div className="flex-1 bg-transparent relative overflow-hidden flex items-center justify-center">
+                        <ErrorBoundary name={activeDesk}>
+                            <DeskCanvas activeDesk={activeDesk} projectId={projectId!} />
+                        </ErrorBoundary>
                     </div>
 
                     {/* Right: Lyra Desk Assistant */}

@@ -236,7 +236,7 @@ export function ProjectsPage() {
 
                             {/* New Workspace - Hero CTA */}
                             <button
-                                onClick={() => navigate('/onboarding/new-project')}
+                                onClick={() => navigate('/new')}
                                 className="px-8 py-3 bg-[#1A1A1A] text-white rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-[#FF4D4D] transition-all flex items-center gap-2 shadow-lg shadow-[#1A1A1A]/10 active:scale-95"
                             >
                                 <Plus size={14} strokeWidth={3} />
@@ -337,7 +337,7 @@ export function ProjectsPage() {
                             <p className="text-[#5A5A5A] mb-8 max-w-sm">Start your first project to experience AI-powered creative production.</p>
                             <div className="flex items-center gap-4">
                                 <button
-                                    onClick={() => navigate('/onboarding/new-project')}
+                                    onClick={() => navigate('/new')}
                                     className="flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#FF4D4D] text-white rounded-xl font-black uppercase tracking-widest text-xs transition-all shadow-xl"
                                 >
                                     <Plus size={16} />
