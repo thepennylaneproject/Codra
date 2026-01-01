@@ -19,7 +19,6 @@ import {
     Settings,
 } from 'lucide-react';
 import { LyraAvatar } from './LyraAvatar';
-import { LyraCustomizer } from './LyraCustomizer';
 
 // ============================================
 // Desk Icon Mapping
@@ -104,7 +103,6 @@ interface LyraPanelProps {
 
 export function LyraPanel({ onStartWithLyra, onDismissQuestion }: LyraPanelProps) {
     const lyra = useLyraOptional();
-    const [isCustomizing, setIsCustomizing] = useState(false);
 
     const handleDismiss = useCallback((qid: string) => {
         if (lyra) {
@@ -134,21 +132,12 @@ export function LyraPanel({ onStartWithLyra, onDismissQuestion }: LyraPanelProps
         return null;
     }
 
-    if (isCustomizing) {
-        return <LyraCustomizer onClose={() => setIsCustomizing(false)} />;
-    }
-
     return (
         <div className="h-full flex flex-col bg-white">
             {/* Header */}
             <div className={`px-4 py-3 bg-white border-b border-zinc-100 flex items-center justify-between sticky top-0 z-10`}>
                 <div className="flex items-center gap-3">
-                    <div className="relative cursor-pointer group" onClick={() => setIsCustomizing(true)}>
-                        <LyraAvatar appearance={state.appearance} size={32} showGlow={false} />
-                        <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Settings size={12} className="text-white" />
-                        </div>
-                    </div>
+                    <LyraAvatar appearance={state.appearance} size={32} showGlow={false} />
                     <div>
                         <div className="flex items-center gap-1.5">
                             <span className="text-sm font-bold tracking-tight text-zinc-900">Lyra</span>
@@ -158,13 +147,6 @@ export function LyraPanel({ onStartWithLyra, onDismissQuestion }: LyraPanelProps
                     </div>
                 </div>
                 <div className="flex items-center gap-1">
-                    <button
-                        onClick={() => setIsCustomizing(true)}
-                        className="p-1.5 rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-rose-500 transition-colors"
-                        title="Lyra Closet"
-                    >
-                        <Settings size={14} />
-                    </button>
                     <button
                         onClick={hide}
                         className="p-1.5 rounded-full hover:bg-zinc-100 text-zinc-400 transition-colors"

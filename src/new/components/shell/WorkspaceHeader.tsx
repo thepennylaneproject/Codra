@@ -7,7 +7,6 @@ import {
     Search,
     User,
     Settings,
-    Brain,
     Zap,
     ChevronDown,
     ArrowLeft
@@ -15,7 +14,6 @@ import {
 import { Button, IconButton } from '../Button';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { ContextWindowBadge } from '../ContextWindowIndicator';
 import { ProductionDeskId, PRODUCTION_DESKS } from '../../../domain/types';
 import { useState, useRef, useEffect } from 'react';
 
@@ -30,10 +28,6 @@ interface WorkspaceHeaderProps {
     rightDockVisible: boolean;
     onToggleLeftDock: () => void;
     onToggleRightDock: () => void;
-    contextMemory?: {
-        percentage: number;
-        level: 'low' | 'medium' | 'high' | 'critical';
-    };
     mode?: 'canvas' | 'studio';
     activeStudioId?: ProductionDeskId;
 }
@@ -50,7 +44,6 @@ export function WorkspaceHeader({
     rightDockVisible,
     onToggleLeftDock,
     onToggleRightDock,
-    contextMemory,
     mode = 'canvas',
     activeStudioId
 }: WorkspaceHeaderProps) {
@@ -202,17 +195,6 @@ export function WorkspaceHeader({
 
                 {/* Actions & Docks */}
                 <div className="flex items-center gap-4">
-                    {/* Context Memory Indicator */}
-                    {contextMemory && (
-                        <div className="flex items-center gap-2 pr-4 border-r border-[var(--color-border)]">
-                            <Brain size={14} strokeWidth={1.5} className="text-[var(--color-ink-muted)]" />
-                            <ContextWindowBadge 
-                                level={contextMemory.level} 
-                                percentage={contextMemory.percentage} 
-                            />
-                        </div>
-                    )}
-                    
                     <div className="flex items-center gap-1 mr-4">
                         <Link 
                             to={`/coherence-scan?projectId=${projectId}`}
