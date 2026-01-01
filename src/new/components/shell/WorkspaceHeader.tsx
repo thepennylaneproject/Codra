@@ -202,17 +202,8 @@ export function WorkspaceHeader({
 
                 {/* Actions & Docks */}
                 <div className="flex items-center gap-4">
-                    {/* Context Memory Indicator */}
-                    {contextMemory && (
-                        <div className="flex items-center gap-2 pr-4 border-r border-[var(--color-border)]">
-                            <Brain size={14} strokeWidth={1.5} className="text-[var(--color-ink-muted)]" />
-                            <ContextWindowBadge 
-                                level={contextMemory.level} 
-                                percentage={contextMemory.percentage} 
-                            />
-                        </div>
-                    )}
-                    
+                    {/* Context Window Indicator moved to Activity Strip */}
+
                     <div className="flex items-center gap-1 mr-4">
                         <Link 
                             to={`/coherence-scan?projectId=${projectId}`}

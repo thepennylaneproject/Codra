@@ -31,8 +31,8 @@ import { MarketingDeskCanvas } from './desks/MarketingDeskCanvas';
 import { CareerAssetsDeskCanvas } from './desks/CareerAssetsDeskCanvas';
 import { DataAnalysisDeskCanvas } from './desks/DataAnalysisDeskCanvas';
 import { ErrorBoundary } from './ErrorBoundary';
-import { LyraNudgeContainer } from './LyraNudgeBubble';
 import { CrossDeskBadge } from './CrossDeskSuggestions';
+import { ActivityStrip } from './activity';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -280,9 +280,10 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                     )}
                 </AnimatePresence>
 
-                {/* Proactive Nudges */}
-                <LyraNudgeContainer className="absolute bottom-6 right-6 z-50 pointer-events-auto" />
             </div>
+
+            {/* Activity Strip - Consolidated status bar */}
+            <ActivityStrip />
         </div>
     );
 };
