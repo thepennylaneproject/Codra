@@ -77,10 +77,6 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
             height: 1024,
             seed: currentSeed,
         });
-
-        if (response?.status === 'completed' && response.result) {
-            DeskEvents.imageGenerated(response.jobId || `img-${Date.now()}`, prompt.substring(0, 30) + '...');
-        }
     };
 
     const onAssetDragStart = (e: React.DragEvent, assetName: string) => {
@@ -189,11 +185,6 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                                             <Button
                                                 variant="secondary"
                                                 size="sm"
-                                                onClick={() => {
-                                                    if (result && i === 0) {
-                                                        DeskEvents.artifactApproved('design' as any, result.url, 'Generated Image');
-                                                    }
-                                                }}
                                                 leftIcon={<Layers size={12} />}
                                                 className="bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-500/40"
                                             >
@@ -221,15 +212,6 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                 >
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <ModelSelector
-                                selectedModelId={selectedModelId}
-                                onSelectModel={onSelectModel || (() => { })}
-                                filterTag="visual"
-                                variant="minimal"
-                                className="w-auto"
-                            />
-                            <div className="w-px h-4 bg-[var(--desk-border)]" />
-                            
                             {/* Anti-Slop Style Selector */}
                             <div className="flex items-center gap-1">
                                 {(Object.keys(STYLE_PRESETS) as ImageStyle[]).slice(0, 4).map((style) => {

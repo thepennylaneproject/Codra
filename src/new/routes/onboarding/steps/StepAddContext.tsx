@@ -199,7 +199,7 @@ export const StepAddContext = () => {
                 {/* Continue Button */}
                 <Button
                     onClick={handleContinue}
-                    className="bg-[#FF6B6B] hover:bg-[#FF5555] text-white"
+                    variant="primary"
                     size="lg"
                     rightIcon={<ArrowRight size={20} />}
                 >

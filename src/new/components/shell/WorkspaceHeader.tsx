@@ -7,7 +7,6 @@ import {
     Search,
     User,
     Settings,
-    Brain,
     Zap,
     ChevronDown,
     ArrowLeft
@@ -15,7 +14,6 @@ import {
 import { Button, IconButton } from '../Button';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { ContextWindowBadge } from '../ContextWindowIndicator';
 import { ProductionDeskId, PRODUCTION_DESKS } from '../../../domain/types';
 import { useState, useRef, useEffect } from 'react';
 
@@ -30,10 +28,6 @@ interface WorkspaceHeaderProps {
     rightDockVisible: boolean;
     onToggleLeftDock: () => void;
     onToggleRightDock: () => void;
-    contextMemory?: {
-        percentage: number;
-        level: 'low' | 'medium' | 'high' | 'critical';
-    };
     mode?: 'canvas' | 'studio';
     activeStudioId?: ProductionDeskId;
 }
@@ -50,7 +44,6 @@ export function WorkspaceHeader({
     rightDockVisible,
     onToggleLeftDock,
     onToggleRightDock,
-    contextMemory,
     mode = 'canvas',
     activeStudioId
 }: WorkspaceHeaderProps) {

@@ -47,12 +47,11 @@ export const OnboardingFlow = () => {
     };
     
     return (
-        <div className="min-h-screen bg-[#FFFAF0] text-[#1A1A1A] flex items-center justify-center p-6 md:p-12 font-sans selection:bg-[#FF6B6B]/20">
+        <div className="min-h-screen bg-[#FFFAF0] text-[#1A1A1A] flex items-center justify-center p-6 md:p-12 font-sans selection:bg-[#1A1A1A]/10">
             <div className="w-full max-w-2xl">
-                {/* Header - Editorial branding */}
+                {/* Header - Editorial branding (ACCENT GOVERNANCE: brand dot removed per prohibited uses) */}
                 <div className="mb-12 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-[#8A8A8A]">
                     <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#FF6B6B]" />
                         <span className="text-[#1A1A1A]">Codra</span>
                     </div>
                     <span>New Spread</span>

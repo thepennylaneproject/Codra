@@ -5,7 +5,6 @@ import { ContextIntentStep } from './steps/ContextIntentStep';
 import { ProjectImportStep } from './steps/ProjectImportStep';
 import { AIPreferencesStep } from './steps/AIPreferencesStep';
 import { BudgetPreferencesStep } from './steps/BudgetPreferencesStep';
-import { PermissionsStep } from './steps/PermissionsStep';
 import { VisualDirectionStep } from './steps/VisualDirectionStep';
 import { GeneratingStep } from './steps/GeneratingStep';
 
@@ -49,8 +48,6 @@ export const NewProjectOnboarding = () => {
                 return <AIPreferencesStep />;
             case 'budget':
                 return <BudgetPreferencesStep />;
-            case 'permissions':
-                return <PermissionsStep />;
             case 'visual':
                 return <VisualDirectionStep />;
             case 'generating':

@@ -10,7 +10,7 @@
 export const BRAND = {
   ink: '#1A1A1A',           // Deep Ink - primary dark / text
   ivory: '#FFFAF0',         // Warm Ivory - primary background
-  coral: '#FF4D4D',         // Vibrant Coral - Codra accent
+  coral: '#FF6B6B',         // Vibrant Coral - Codra accent (GOVERNED - see ACCENT_CORAL)
   gold: '#C7A76A',          // Muted Gold Foil
   charcoal: '#2D2D2D',      // Sub-ink for depth
 } as const;
@@ -49,7 +49,7 @@ export const TEXT = {
   primary: '#1A1A1A',       // Ink
   muted: '#5A5A5A',         // Muted ink
   soft: '#8A8A8A',          // Lighter gray
-  accent: '#FF4D4D',        // Coral accent
+  accent: '#FF6B6B',        // Coral accent (GOVERNED - use semantic tokens instead)
 } as const;
 
 /**
@@ -264,6 +264,117 @@ export const ACCENT = {
 export const GOLD_ACCENT = ACCENT;
 
 /**
+ * CORAL ACCENT GOVERNANCE
+ * ===================================================
+ * Strict governance for coral (#FF6B6B) accent color.
+ *
+ * PHILOSOPHY: Accent means "do this next" or "success achieved"
+ * - If something is always accented, nothing is primary
+ * - Chrome (navigation, tabs, headers) should NEVER use accent
+ * - Accent moves with the user through a flow
+ *
+ * PERMITTED USES ONLY:
+ * 1. Primary CTA - Button background fill
+ * 2. Active Progress - Dot/spinner fill color
+ * 3. Success State - Checkmark, toast fill or border
+ * 4. Active Tab Indicator - 2px bottom border underline
+ * 5. Selected Output - Inspector item left border (2px)
+ *
+ * PROHIBITED USES (use neutral alternatives):
+ * - Brand dot in header (decorative)
+ * - Tab underline on hover (chrome state)
+ * - Settings selection (configuration is neutral)
+ * - Avatar ring (feature removed)
+ * - Upgrade badge (monetization shouldn't scream)
+ * - Model Selector badge (feature hidden)
+ * - Sparkle particles (feature removed)
+ */
+export const ACCENT_CORAL = {
+  /** Base coral color - DO NOT USE DIRECTLY */
+  base: BRAND.coral,                    // #FF6B6B
+
+  /** Hover state for interactive coral elements */
+  hover: '#FF5252',                     // Darker coral on hover
+
+  /** Active/pressed state */
+  active: '#E64848',                    // Even darker when active
+
+  /** Muted background variant */
+  muted: 'rgba(255, 107, 107, 0.1)',   // 10% opacity for subtle backgrounds
+
+  /** Border variant for selected states */
+  border: 'rgba(255, 107, 107, 0.3)',  // 30% opacity for borders
+
+  /**
+   * PERMITTED USE TOKENS
+   * Use these semantic tokens instead of the base color
+   */
+  permitted: {
+    /** PRIMARY CTA - Button background fill */
+    primaryCta: {
+      bg: BRAND.coral,                  // #FF6B6B
+      bgHover: '#FF5252',
+      bgActive: '#E64848',
+      text: BRAND.ivory,                // High contrast text
+      border: 'transparent',
+    },
+
+    /** ACTIVE PROGRESS - Dot/spinner fill */
+    activeProgress: {
+      fill: BRAND.coral,                // #FF6B6B
+      bg: 'rgba(255, 107, 107, 0.1)',  // Subtle background
+    },
+
+    /** SUCCESS STATE - Checkmark, toast */
+    success: {
+      fill: BRAND.coral,                // #FF6B6B for icons
+      border: 'rgba(255, 107, 107, 0.3)', // For bordered toasts
+      bg: 'rgba(255, 107, 107, 0.1)',   // For background fills
+    },
+
+    /** ACTIVE TAB INDICATOR - 2px bottom border */
+    activeTab: {
+      borderBottom: `2px solid ${BRAND.coral}`,
+      borderColor: BRAND.coral,
+    },
+
+    /** SELECTED OUTPUT - Inspector item left border */
+    selectedOutput: {
+      borderLeft: `2px solid ${BRAND.coral}`,
+      borderColor: BRAND.coral,
+    },
+  },
+
+  /**
+   * PROHIBITED REPLACEMENTS
+   * Use these neutral alternatives instead of coral
+   */
+  prohibited: {
+    /** Instead of coral brand dot - use white or remove */
+    brandDot: TEXT.soft,                // #8A8A8A or 'transparent'
+
+    /** Instead of coral tab hover - use opacity */
+    tabHover: 'rgba(255, 255, 255, 0.05)',
+
+    /** Instead of coral settings selection - use border */
+    settingsSelection: BORDER.strong,   // Neutral border
+
+    /** Instead of coral upgrade badge - use subtle variant */
+    upgradeBadge: TEXT.muted,           // #5A5A5A
+  },
+} as const;
+
+/**
+ * Permitted accent usage types for type safety
+ */
+export type AccentCoralUsage =
+  | 'primary-cta'
+  | 'active-progress'
+  | 'success-state'
+  | 'active-tab'
+  | 'selected-output';
+
+/**
  * Accessibility tokens - WCAG compliance
  */
 export const A11Y = {
@@ -311,11 +422,11 @@ export const GRADIENT = {
  * Semantic color aliases for component states
  */
 export const SEMANTIC = {
-  /* Primary action states - Coral */
-  primary: BRAND.coral,             // #FF4D4D
-  primaryHover: '#E64545',          // Darker coral on hover
-  primaryActive: '#CC3D3D',         // Even darker on active
-  primaryDisabled: 'rgba(255, 77, 77, 0.4)',
+  /* Primary action states - Coral (GOVERNED - use ACCENT_CORAL.permitted.primaryCta) */
+  primary: ACCENT_CORAL.base,           // #FF6B6B
+  primaryHover: ACCENT_CORAL.hover,     // #FF5252
+  primaryActive: ACCENT_CORAL.active,   // #E64848
+  primaryDisabled: 'rgba(255, 107, 107, 0.4)',
 
   /* Danger/error states */
   danger: STATE.error,
@@ -435,6 +546,7 @@ export const PALETTE = {
   border: BORDER,
   text: TEXT,
   accent: ACCENT,
+  accentCoral: ACCENT_CORAL,
   state: STATE,
   semantic: SEMANTIC,
 } as const;
@@ -445,10 +557,10 @@ export const PALETTE = {
 export const COMPONENTS = {
   button: {
     primary: {
-      bg: SEMANTIC.primary,
-      bgHover: SEMANTIC.primaryHover,
-      bgActive: SEMANTIC.primaryActive,
-      text: BACKGROUND.elevated,
+      bg: ACCENT_CORAL.permitted.primaryCta.bg,
+      bgHover: ACCENT_CORAL.permitted.primaryCta.bgHover,
+      bgActive: ACCENT_CORAL.permitted.primaryCta.bgActive,
+      text: ACCENT_CORAL.permitted.primaryCta.text,
       padding: `${SPACE.sm} ${SPACE.md}`,
       borderRadius: RADIUS.full,
       fontSize: FONT_SIZE.sm,
@@ -534,6 +646,7 @@ export default {
   BORDER,
   TEXT,
   ACCENT,
+  ACCENT_CORAL,
   STATE,
   SPACE,
   FONT_FAMILY,

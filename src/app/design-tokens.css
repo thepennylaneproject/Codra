@@ -53,7 +53,7 @@
   --color-ink: #1A1A1A;
   --color-ink-light: #5A5A5A;
   --color-ink-muted: #8A8A8A;
-  --color-brand-coral: #FF4D4D;
+  --color-brand-coral: #FF6B6B;
   
   /* Semantic borders for new components */
   --color-border: rgba(26, 26, 26, 0.1);
@@ -210,6 +210,47 @@
   --accent-border: rgba(199, 167, 106, 0.35);
 
   /* ===============================
+     CORAL ACCENT GOVERNANCE
+     Strict governance for coral (#FF6B6B)
+     PERMITTED USES ONLY:
+     1. Primary CTA - Button background
+     2. Active Progress - Dot/spinner fill
+     3. Success State - Checkmark, toast
+     4. Active Tab - 2px bottom border
+     5. Selected Output - 2px left border
+     =============================== */
+  --color-accent: #FF6B6B;
+  --color-accent-hover: #FF5252;
+  --color-accent-active: #E64848;
+  --color-accent-muted: rgba(255, 107, 107, 0.1);
+  --color-accent-border: rgba(255, 107, 107, 0.3);
+
+  /* Permitted use tokens */
+  --button-primary-bg: var(--color-accent);
+  --button-primary-bg-hover: var(--color-accent-hover);
+  --button-primary-bg-active: var(--color-accent-active);
+  --button-primary-text: var(--color-ivory);
+
+  --progress-active: var(--color-accent);
+  --progress-active-bg: var(--color-accent-muted);
+
+  --success-icon: var(--color-accent);
+  --success-border: var(--color-accent-border);
+  --success-bg: var(--color-accent-muted);
+
+  --tab-active-border: var(--color-accent);
+  --tab-active-border-width: 2px;
+
+  --output-selected-border: var(--color-accent);
+  --output-selected-border-width: 2px;
+
+  /* Prohibited use replacements (use these instead of coral) */
+  --header-brand-dot: var(--color-ink-muted);
+  --tab-hover-bg: rgba(255, 255, 255, 0.05);
+  --settings-selection: var(--color-border);
+  --upgrade-badge: var(--color-ink-light);
+
+  /* ===============================
      WORKSPACE SHELL TOKENS
      Neutral chrome for panel system
      =============================== */
@@ -296,11 +337,11 @@
    ======================================== */
 
 :root {
-  /* Primary action states */
-  --color-primary: var(--brand-teal);
-  --color-primary-hover: #5ca5b4;
-  --color-primary-active: #458494;
-  --color-primary-disabled: rgba(78, 128, 141, 0.4);
+  /* Primary action states - Coral (GOVERNED) */
+  --color-primary: var(--color-accent);
+  --color-primary-hover: var(--color-accent-hover);
+  --color-primary-active: var(--color-accent-active);
+  --color-primary-disabled: rgba(255, 107, 107, 0.4);
 
   /* Secondary action states */
   --color-secondary: var(--accent-violet-soft);

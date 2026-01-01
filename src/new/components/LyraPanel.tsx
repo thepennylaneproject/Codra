@@ -17,6 +17,78 @@ import {
 } from './lyra';
 
 // ============================================
+// Desk Icon Mapping
+// ============================================
+
+const DESK_ICONS: Record<ProductionDeskId, typeof Palette> = {
+    'art-design': Palette,
+    'engineering': Code,
+    'writing': PenTool,
+    'workflow': LayoutTemplate,
+    'marketing': Megaphone,
+    'career-assets': Briefcase,
+    'data-analysis': BarChart3,
+};
+
+// ============================================
+// Sub-components
+// ============================================
+
+// Memoized Question Item
+const QuestionItem = React.memo(({ q, onDismiss }: { q: ClarifyingQuestion, onDismiss: (id: string) => void }) => (
+    <div className="p-3 bg-zinc-50 rounded-lg group">
+        <div className="flex items-start justify-between gap-2">
+            <p className="text-sm text-zinc-700">{q.question}</p>
+            <button
+                onClick={() => onDismiss(q.id)}
+                className="p-1 rounded-full opacity-0 group-hover:opacity-100 hover:bg-zinc-200 transition-all"
+                title="Dismiss"
+            >
+                <X size={12} className="text-zinc-400" />
+            </button>
+        </div>
+        <p className="text-xs text-zinc-400 mt-1">{q.context}</p>
+    </div>
+));
+
+// Memoized Suggestion Item
+const SuggestionItem = React.memo(({ s, onStart }: { s: ArtifactSuggestion, onStart: (id: ProductionDeskId) => void }) => {
+    const DeskIcon = DESK_ICONS[s.deskId] || Sparkles;
+    const desk = PRODUCTION_DESKS.find(d => d.id === s.deskId);
+
+    return (
+        <motion.button
+            variants={{
+                hidden: { opacity: 0, x: -10 },
+                visible: { opacity: 1, x: 0 }
+            }}
+            onClick={() => onStart(s.deskId)}
+            className="w-full p-3 bg-zinc-50 hover:bg-zinc-100 rounded-lg text-left transition-colors group relative overflow-hidden"
+        >
+            <div className="flex items-center gap-3">
+                <DeskIcon size={16} className="text-zinc-400 group-hover:text-zinc-600" />
+                <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-zinc-700">{s.title}</p>
+                        {s.integrationSource && (
+                            <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-tighter ${s.integrationSource === 'sentry' ? 'bg-rose-500/10 text-rose-600' :
+                                s.integrationSource === 'linear' ? 'bg-blue-500/10 text-blue-600' :
+                                    s.integrationSource === 'sanity' ? 'bg-orange-500/10 text-orange-600' :
+                                        'bg-zinc-500/10 text-zinc-600'
+                                }`}>
+                                {s.integrationSource}
+                            </span>
+                        )}
+                    </div>
+                    <p className="text-xs text-zinc-400">{desk?.label}</p>
+                </div>
+                <ChevronRight size={14} className="text-zinc-300 group-hover:text-zinc-500" />
+            </div>
+        </motion.button>
+    );
+});
+
+// ============================================
 // Main Component
 // ============================================
 
@@ -41,6 +113,11 @@ export function LyraPanel({ spreadId, deskId }: LyraPanelProps) {
             setIsDismissed(false);
         } else {
             console.error('Execution failed:', result.error);
+
+    const handleDismiss = useCallback((qid: string) => {
+        if (lyra) {
+            lyra.dismissQuestion(qid);
+            onDismissQuestion?.(qid);
         }
     }, [execute, refresh]);
 
@@ -97,6 +174,26 @@ export function LyraPanel({ spreadId, deskId }: LyraPanelProps) {
                 >
                     <X size={14} />
                 </button>
+            <div className={`px-4 py-3 bg-white border-b border-zinc-100 flex items-center justify-between sticky top-0 z-10`}>
+                <div className="flex items-center gap-3">
+                    <LyraAvatar appearance={state.appearance} size={32} showGlow={false} />
+                    <div>
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-bold tracking-tight text-zinc-900">Lyra</span>
+                            <div className="w-1 h-1 rounded-full bg-rose-500 animate-pulse" />
+                        </div>
+                        <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold">Creative AI</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-1">
+                    <button
+                        onClick={hide}
+                        className="p-1.5 rounded-full hover:bg-zinc-100 text-zinc-400 transition-colors"
+                        title="Hide Lyra"
+                    >
+                        <X size={14} />
+                    </button>
+                </div>
             </div>
 
             {/* Content */}
