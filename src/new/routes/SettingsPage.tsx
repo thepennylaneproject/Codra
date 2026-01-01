@@ -48,7 +48,7 @@ export function SettingsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#FFFAF0] text-[#1A1A1A] font-sans selection:bg-[#FF4D4D]/20">
+        <div className="min-h-screen bg-[#FFFAF0] text-[#1A1A1A] font-sans selection:bg-[#1A1A1A]/10">
             {/* Header */}
             <header className="sticky top-0 z-50 bg-[#FFFAF0]/80 backdrop-blur-xl border-b border-[#1A1A1A]/5 px-8 h-20 flex items-center justify-between">
                 <div className="flex items-center gap-6">
@@ -64,7 +64,7 @@ export function SettingsPage() {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#FF4D4D] bg-[#FF4D4D]/5 px-3 py-1.5 rounded-full border border-[#FF4D4D]/10">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#5A5A5A] bg-[#1A1A1A]/5 px-3 py-1.5 rounded-full border border-[#1A1A1A]/10">
                         System v2.5
                     </span>
                 </div>
@@ -76,7 +76,7 @@ export function SettingsPage() {
                     {/* Subscription & Plan */}
                     <section>
                         <div className="flex items-center gap-3 mb-8">
-                            <div className="w-10 h-10 rounded-xl bg-[#FF4D4D]/10 flex items-center justify-center text-[#FF4D4D]">
+                            <div className="w-10 h-10 rounded-xl bg-[#1A1A1A]/10 flex items-center justify-center text-[#1A1A1A]">
                                 <CreditCard size={20} />
                             </div>
                             <div>
@@ -86,19 +86,19 @@ export function SettingsPage() {
                         </div>
 
                         <div className="p-8 bg-[#1A1A1A] rounded-[32px] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl shadow-[#1A1A1A]/20 relative overflow-hidden group">
-                           <div className="absolute top-0 right-0 w-64 h-64 bg-[#FF4D4D]/10 blur-[100px] rounded-full -mr-32 -mt-32" />
-                           
+                           {/* Decorative glow removed per accent governance (prohibited: decorative usage) */}
+
                            <div className="relative z-10">
                                <div className="flex items-center gap-3 mb-4">
-                                   <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FF4D4D] bg-[#FF4D4D]/10 px-3 py-1 rounded-full border border-[#FF4D4D]/20">Active Plan</span>
+                                   <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 bg-zinc-800 px-3 py-1 rounded-full border border-zinc-700">Active Plan</span>
                                </div>
                                <h3 className="text-4xl font-black tracking-tighter mb-2 italic font-serif opacity-90">Free Tier</h3>
                                <p className="text-xs text-zinc-400 font-medium">Precision intake for solo exploration • 25 AI completions left</p>
                            </div>
 
-                           <button 
+                           <button
                                 onClick={() => navigate('/pricing')}
-                                className="relative z-10 px-10 py-5 bg-white text-[#1A1A1A] rounded-2xl font-black uppercase tracking-widest text-[11px] flex items-center gap-3 hover:bg-[#FF4D4D] hover:text-white transition-all transform hover:scale-105 active:scale-95 shadow-xl"
+                                className="relative z-10 px-10 py-5 bg-white text-[#1A1A1A] rounded-2xl font-black uppercase tracking-widest text-[11px] flex items-center gap-3 hover:bg-zinc-100 transition-all transform hover:scale-105 active:scale-95 shadow-xl"
                            >
                                 Upgrade to Pro
                                 <ArrowUpRight size={16} strokeWidth={3} />
@@ -127,13 +127,13 @@ export function SettingsPage() {
                                             key={opt.id}
                                             onClick={() => handleAIUpdate({ qualityPriority: opt.id })}
                                             className={`p-4 rounded-xl border transition-all text-left group ${aiDefaults.qualityPriority === opt.id
-                                                ? 'border-[#FF4D4D] bg-[#FF4D4D]/5'
+                                                ? 'border-[#1A1A1A] bg-[#1A1A1A]/5'
                                                 : 'border-zinc-100 hover:border-zinc-200'
                                                 }`}
                                         >
                                             <div className="flex justify-between items-start mb-2">
-                                                <span className={`text-[10px] font-black uppercase tracking-tight ${aiDefaults.qualityPriority === opt.id ? 'text-[#FF4D4D]' : 'text-zinc-600'}`}>{opt.label}</span>
-                                                {aiDefaults.qualityPriority === opt.id && <Check size={12} className="text-[#FF4D4D]" />}
+                                                <span className={`text-[10px] font-black uppercase tracking-tight ${aiDefaults.qualityPriority === opt.id ? 'text-[#1A1A1A]' : 'text-zinc-600'}`}>{opt.label}</span>
+                                                {aiDefaults.qualityPriority === opt.id && <Check size={12} className="text-[#1A1A1A]" />}
                                             </div>
                                             <p className="text-[9px] text-zinc-400 leading-tight">{opt.description}</p>
                                         </button>
@@ -154,7 +154,7 @@ export function SettingsPage() {
                                     </div>
                                     <button
                                         onClick={() => updateAIDefaults({ showModelPerStep: !aiDefaults.showModelPerStep })}
-                                        className={`w-12 h-6 rounded-full transition-colors relative ${aiDefaults.showModelPerStep ? 'bg-[#FF4D4D]' : 'bg-zinc-200'}`}
+                                        className={`w-12 h-6 rounded-full transition-colors relative ${aiDefaults.showModelPerStep ? 'bg-[#1A1A1A]' : 'bg-zinc-200'}`}
                                     >
                                         <motion.div
                                             animate={{ x: aiDefaults.showModelPerStep ? 26 : 4 }}

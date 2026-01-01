@@ -129,7 +129,8 @@ export const StepProjectInfo = () => {
                 <Button
                     onClick={handleContinue}
                     disabled={!canProceedFromProjectInfo()}
-                    className="w-full bg-[#FF6B6B] hover:bg-[#FF5555] text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                    variant="primary"
+                    className="w-full"
                     size="lg"
                     rightIcon={<ArrowRight size={20} />}
                 >
