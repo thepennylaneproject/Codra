@@ -7,6 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Maximize2, RefreshCcw, Download, Layers, ShieldCheck, Plus, Lock, Unlock } from 'lucide-react';
 import { MOCK_ASSETS } from '../../../domain/integrations';
+import { ModelSelector } from '../ModelSelector';
 import { DeskEvents } from '../../../lib/desks/DeskBridge';
 import { useImageGeneration } from '../../../hooks/useImageGeneration';
 import { STYLE_PRESETS, ImageStyle, applyStyleToPrompt, generateRandomSeed } from '../../../lib/image/seed-preservation';
@@ -76,10 +77,6 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
             height: 1024,
             seed: currentSeed,
         });
-
-        if (response?.status === 'completed' && response.result) {
-            DeskEvents.imageGenerated(response.jobId || `img-${Date.now()}`, prompt.substring(0, 30) + '...');
-        }
     };
 
     const onAssetDragStart = (e: React.DragEvent, assetName: string) => {
@@ -188,11 +185,6 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                                             <Button
                                                 variant="secondary"
                                                 size="sm"
-                                                onClick={() => {
-                                                    if (result && i === 0) {
-                                                        DeskEvents.artifactApproved('design' as any, result.url, 'Generated Image');
-                                                    }
-                                                }}
                                                 leftIcon={<Layers size={12} />}
                                                 className="bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-500/40"
                                             >

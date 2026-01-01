@@ -21,9 +21,8 @@ export type OnboardingStep =
     | 'import'            // Step 1b: Project Import (import flow)
     | 'ai-preferences'    // Step 2: AI Preferences
     | 'budget'            // Step 3: Budget Preferences
-    | 'permissions'       // Step 4: Permissions (optional)
-    | 'visual'            // Step 5: Visual Direction (new project only)
-    | 'tear-sheet-intent' // Step 6: Tear Sheet Intent (new project only)
+    | 'visual'            // Step 4: Visual Direction (new project only)
+    | 'tear-sheet-intent' // Step 5: Tear Sheet Intent (new project only)
     | 'generating'        // Generation Step (automatic)
     | 'complete';         // Done - redirect to tear sheet
 
@@ -68,12 +67,6 @@ export const STEP_METADATA: Record<OnboardingStep, {
         description: 'How should we manage spending?',
         helperText: 'You\'re always in control—we\'ll never surprise you.',
         progressLabel: 'Budget',
-    },
-    permissions: {
-        title: 'Permissions & Guardrails',
-        description: 'What can the AI do automatically?',
-        helperText: 'Set limits on autonomy and risk.',
-        progressLabel: 'Permissions',
     },
     visual: {
         title: 'Visual Direction',
@@ -449,10 +442,6 @@ export function canProceedFromStep(step: OnboardingStep, state: OnboardingState)
             return !!(
                 budget.budgetMode
             );
-
-        case 'permissions':
-            // Permissions is optional - always can proceed
-            return true;
 
         case 'visual':
             const vis = state.profile.visualDirection;

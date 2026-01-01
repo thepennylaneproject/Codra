@@ -32,7 +32,6 @@ import { CareerAssetsDeskCanvas } from './desks/CareerAssetsDeskCanvas';
 import { DataAnalysisDeskCanvas } from './desks/DataAnalysisDeskCanvas';
 import { ErrorBoundary } from './ErrorBoundary';
 import { LyraNudgeContainer } from './LyraNudgeBubble';
-import { CrossDeskBadge } from './CrossDeskSuggestions';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -88,7 +87,6 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                                             <div className="w-1 h-1 rounded-full bg-[#FF4D4D] animate-pulse" />
                                             <span className="text-[9px] font-black uppercase tracking-widest">In Production</span>
                                         </div>
-                                        <CrossDeskBadge currentDesk={activeTask.deskId} />
                                     </div>
                                     <div className="flex items-center gap-2 text-[10px] text-[#8A8A8A] font-bold uppercase tracking-wider">
                                         <span>{activeTask.deskId}</span>
