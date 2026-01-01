@@ -10,7 +10,11 @@
     "typecheck": "tsc --noEmit && tsc -p tsconfig.node.json --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "vitest",
-    "test:auth": "vitest run --grep auth"
+    "test:auth": "vitest run --grep auth",
+    "audit:decisions": "tsx scripts/audit-decisions.ts",
+    "audit:accent": "tsx scripts/audit-accent.ts",
+    "audit:bundle": "npm run build && tsx scripts/analyze-bundle.ts",
+    "audit:all": "npm run audit:decisions && npm run audit:accent"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
@@ -64,6 +68,8 @@
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "glob": "^11.0.0",
+    "tsx": "^4.19.2",
     "vitest": "^2.0.5"
   },
   "engines": {
