@@ -166,7 +166,8 @@ export function PromptExecutionZone({ activeTask, spread, extendedProfile, pastM
                     <section className="relative min-h-[500px] border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-white dark:bg-zinc-900 shadow-xl">
                         <LyraProvider initialSpread={spread || undefined} initialProfile={extendedProfile}>
                             <LyraPanel
-                                onStartWithLyra={() => { }}
+                                spreadId={spread?.id}
+                                deskId={activeTask.deskId}
                             />
                         </LyraProvider>
 

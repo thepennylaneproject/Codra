@@ -195,6 +195,8 @@ export function WorkspaceHeader({
 
                 {/* Actions & Docks */}
                 <div className="flex items-center gap-4">
+                    {/* Context Window Indicator moved to Activity Strip */}
+
                     <div className="flex items-center gap-1 mr-4">
                         <Link 
                             to={`/coherence-scan?projectId=${projectId}`}
