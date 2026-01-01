@@ -1,13 +1,19 @@
 /**
  * SHARED BUTTON COMPONENT
  * Consistent button styling across the application
+ *
+ * ACCENT GOVERNANCE:
+ * - 'primary' variant uses coral accent (#FF6B6B) - PERMITTED USE: primary-cta
+ * - Only ONE primary button should be visible per screen
+ * - Use 'secondary' or 'ghost' for all other actions
  */
 
 import { forwardRef } from 'react';
 import { Loader2 } from 'lucide-react';
 import { radii, transitions } from '../../lib/design/tokens';
+import { ACCENT_CORAL, COMPONENTS } from '../../lib/design-tokens';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'accent';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -18,12 +24,28 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     rightIcon?: React.ReactNode;
 }
 
-const VARIANT_STYLES: Record<ButtonVariant, string> = {
-    primary: 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200',
-    secondary: 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700',
-    ghost: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800',
-    danger: 'bg-red-500 text-white hover:bg-red-600',
-    accent: 'bg-amber-500 text-white hover:bg-amber-600 shadow-lg shadow-amber-500/20',
+/**
+ * Variant styles using design tokens
+ * PRIMARY uses coral accent (GOVERNED) - marks it with data-accent-usage attribute
+ */
+const VARIANT_STYLES: Record<ButtonVariant, { classes: string; dataAttr?: string }> = {
+    // PRIMARY CTA - Coral accent (GOVERNED)
+    primary: {
+        classes: 'bg-[var(--button-primary-bg)] text-[var(--button-primary-text)] hover:bg-[var(--button-primary-bg-hover)] active:bg-[var(--button-primary-bg-active)]',
+        dataAttr: 'primary-cta',
+    },
+    // SECONDARY - Neutral ghost style
+    secondary: {
+        classes: 'bg-transparent text-[var(--color-ink)] border border-[var(--color-border)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-border-soft)]',
+    },
+    // GHOST - Minimal style
+    ghost: {
+        classes: 'text-[var(--color-ink-light)] hover:bg-[var(--color-border-soft)] hover:text-[var(--color-ink)]',
+    },
+    // DANGER - Red for destructive actions
+    danger: {
+        classes: 'bg-red-500 text-white hover:bg-red-600',
+    },
 };
 
 const SIZE_STYLES: Record<ButtonSize, string> = {
@@ -35,7 +57,7 @@ const SIZE_STYLES: Record<ButtonSize, string> = {
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
         {
-            variant = 'primary',
+            variant = 'secondary', // Changed default to 'secondary' to avoid accidental accent usage
             size = 'md',
             isLoading = false,
             leftIcon,
@@ -47,15 +69,30 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         },
         ref
     ) => {
+        const variantConfig = VARIANT_STYLES[variant];
+
+        // Warn in development if className overrides color
+        if (process.env.NODE_ENV === 'development' && className) {
+            const hasColorOverride = /bg-\[|text-\[|border-\[/.test(className);
+            if (hasColorOverride && variant === 'primary') {
+                console.warn(
+                    '[Button] Overriding primary button colors violates accent governance. ' +
+                    'Use variant="secondary" or variant="ghost" instead.'
+                );
+            }
+        }
+
         return (
             <button
                 ref={ref}
                 disabled={disabled || isLoading}
+                data-component="Button"
+                data-accent-usage={variantConfig.dataAttr}
                 className={`
                     inline-flex items-center justify-center font-semibold
                     ${radii.md}
                     ${transitions.fast}
-                    ${VARIANT_STYLES[variant]}
+                    ${variantConfig.classes}
                     ${SIZE_STYLES[size]}
                     disabled:opacity-50 disabled:cursor-not-allowed
                     active:scale-[0.98]
@@ -92,14 +129,18 @@ const ICON_SIZE_STYLES: Record<ButtonSize, string> = {
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
     ({ variant = 'ghost', size = 'md', className = '', children, ...props }, ref) => {
+        const variantConfig = VARIANT_STYLES[variant];
+
         return (
             <button
                 ref={ref}
+                data-component="IconButton"
+                data-accent-usage={variantConfig.dataAttr}
                 className={`
                     inline-flex items-center justify-center
                     ${radii.md}
                     ${transitions.fast}
-                    ${VARIANT_STYLES[variant]}
+                    ${variantConfig.classes}
                     ${ICON_SIZE_STYLES[size]}
                     disabled:opacity-50 disabled:cursor-not-allowed
                     active:scale-[0.95]

@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { useSpreadGeneration } from '../hooks/useSpreadGeneration';
-import { Loader2 } from 'lucide-react';
 import { Button } from '../../../components/Button';
+import { ProgressSpinner, ProgressBar } from '../../../components/ProgressDot';
 
 export const StepGenerating = () => {
     const { data } = useOnboarding();
@@ -35,7 +35,7 @@ export const StepGenerating = () => {
                 </div>
                 <Button
                     onClick={handleRetry}
-                    className="bg-[#FF6B6B] hover:bg-[#FF5555] text-white"
+                    variant="primary"
                     size="lg"
                 >
                     Try Again
@@ -48,16 +48,12 @@ export const StepGenerating = () => {
         <div className="min-h-[500px] flex flex-col items-center justify-center text-center space-y-8">
             {/* Loading Animation */}
             <div className="relative">
-                {/* Outer glow ring */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#FF6B6B]/20 to-[#FF6B6B]/10 blur-xl animate-pulse" />
-                
-                {/* Main spinner */}
+                {/* Outer glow ring - neutral (ACCENT GOVERNANCE: removed coral decoration) */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#1A1A1A]/10 to-[#1A1A1A]/5 blur-xl animate-pulse" />
+
+                {/* Main spinner - coral accent (PERMITTED: active-progress) */}
                 <div className="relative p-8 bg-white rounded-full border-2 border-[#1A1A1A]/5">
-                    <Loader2 
-                        size={48} 
-                        className="text-[#FF6B6B] animate-spin" 
-                        strokeWidth={2.5}
-                    />
+                    <ProgressSpinner size="lg" />
                 </div>
             </div>
             
@@ -71,17 +67,9 @@ export const StepGenerating = () => {
                 </p>
             </div>
             
-            {/* Progress Bar */}
+            {/* Progress Bar - coral accent (PERMITTED: active-progress) */}
             <div className="w-full max-w-xs">
-                <div className="h-1.5 bg-[#1A1A1A]/5 rounded-full overflow-hidden">
-                    <div 
-                        className="h-full bg-[#FF6B6B] transition-all duration-300 ease-out rounded-full"
-                        style={{ width: `${progress}%` }}
-                    />
-                </div>
-                <p className="text-xs text-[#8A8A8A] mt-2">
-                    {progress}% complete
-                </p>
+                <ProgressBar value={progress} size="sm" showLabel />
             </div>
             
             {/* Helper Text */}
