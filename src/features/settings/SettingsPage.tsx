@@ -4,14 +4,16 @@
  * No configuration before first Spread
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Zap, CircleDollarSign, Shield, Palette, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Zap, CircleDollarSign, Palette, RotateCcw } from 'lucide-react';
 import { SettingRow } from './SettingRow';
 import { SettingEditor } from './SettingEditor';
 import { useAccountSettings } from '../../lib/smart-defaults/hooks/useAccountSettings';
 import { SETTINGS_LABELS, SETTINGS_DESCRIPTIONS } from '../../domain/smart-defaults-types';
 import type { QualityPriority, SpendingStrategy, AutonomyLevel, ThemePreference } from '../../domain/smart-defaults-types';
+import { behaviorTracker } from '../../lib/smart-defaults/inference-engine';
+import { supabase } from '../../lib/supabase';
 
 type EditorType = 'qualityPriority' | 'autonomyLevel' | 'maxSteps' | 'riskTolerance' | 'dailyLimit' | 'strategy' | 'theme' | null;
 
@@ -26,9 +28,32 @@ export function SettingsPage() {
     } = useAccountSettings();
 
     const [editorOpen, setEditorOpen] = useState<EditorType>(null);
+    const [userId, setUserId] = useState<string | null>(null);
+
+    // Get current user ID for behavior tracking
+    useEffect(() => {
+        supabase.auth.getUser().then(({ data }) => {
+            if (data.user) {
+                setUserId(data.user.id);
+            }
+        });
+    }, []);
 
     const handleSave = (type: EditorType, value: string) => {
         if (!type) return;
+
+        // Track setting change for behavior learning
+        if (userId) {
+            behaviorTracker.track({
+                userId,
+                timestamp: new Date(),
+                event: 'setting_changed',
+                metadata: {
+                    setting: type,
+                    value,
+                },
+            });
+        }
 
         switch (type) {
             case 'qualityPriority':

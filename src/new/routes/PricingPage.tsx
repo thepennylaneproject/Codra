@@ -4,7 +4,7 @@ import { Check, ArrowRight, Sparkles, Zap, Shield, Globe } from 'lucide-react';
 import { PRICING_PLANS, PricingPlan } from '../../domain/pricing';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { analytics } from '../../lib/analytics';
+import { analytics } from '@/lib/analytics';
 
 /**
  * Utility for Tailwind class merging
@@ -25,7 +25,7 @@ export function PricingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FFFAF0] text-[#1A1A1A] font-sans selection:bg-[#FF4D4D]/20 pb-32">
+    <div className="min-h-screen bg-[#FFFAF0] text-[#1A1A1A] font-sans pb-32">
       {/* Header Section */}
       <header className="pt-32 pb-24 px-8 text-center max-w-4xl mx-auto">
         <motion.div
@@ -34,14 +34,13 @@ export function PricingPage() {
           transition={{ duration: 0.6 }}
         >
           <div className="flex items-center justify-center gap-2 mb-6">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#FF4D4D]" />
             <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#8A8A8A]">
               Monetization Strategy
             </span>
           </div>
           <h1 className="text-[80px] font-black tracking-tighter leading-[0.85] mb-8">
             The Production <br />
-            <span className="italic font-serif font-light text-[#FF4D4D]">Tiers</span>
+            <span className="italic font-serif font-light text-[#8A8A8A]">Tiers</span>
           </h1>
           <p className="text-xl text-[#5A5A5A] max-w-xl mx-auto font-medium leading-relaxed italic">
             "Professional-grade AI execution, scaled to your production throughput."
@@ -72,8 +71,8 @@ export function PricingPage() {
             )}
           >
             Yearly
-            <span className="absolute -top-3 -right-2 bg-[#FF4D4D] text-white text-[8px] font-black px-2 py-0.5 rounded-full">
-              -17%
+            <span className="absolute -top-3 -right-2 bg-[#10B981] text-white text-[8px] font-black px-2 py-0.5 rounded-full">
+              Save 17%
             </span>
           </button>
         </motion.div>
@@ -96,7 +95,7 @@ export function PricingPage() {
         <section className="mt-40 grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-[#1A1A1A]/5 pt-24">
           <div className="space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-white border border-[#1A1A1A]/5 flex items-center justify-center shadow-sm">
-              <Zap size={24} className="text-[#FF4D4D]" />
+              <Zap size={24} className="text-[#1A1A1A]/60" />
             </div>
             <h3 className="text-xl font-bold tracking-tight">Real-Time Execution</h3>
             <p className="text-sm text-[#5A5A5A] leading-relaxed">
@@ -105,7 +104,7 @@ export function PricingPage() {
           </div>
           <div className="space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-white border border-[#1A1A1A]/5 flex items-center justify-center shadow-sm">
-              <Shield size={24} className="text-[#FF4D4D]" />
+              <Shield size={24} className="text-[#1A1A1A]/60" />
             </div>
             <h3 className="text-xl font-bold tracking-tight">Enterprise Guardrails</h3>
             <p className="text-sm text-[#5A5A5A] leading-relaxed">
@@ -114,7 +113,7 @@ export function PricingPage() {
           </div>
           <div className="space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-white border border-[#1A1A1A]/5 flex items-center justify-center shadow-sm">
-              <Globe size={24} className="text-[#FF4D4D]" />
+              <Globe size={24} className="text-[#1A1A1A]/60" />
             </div>
             <h3 className="text-xl font-bold tracking-tight">Context-Aware Memory</h3>
             <p className="text-sm text-[#5A5A5A] leading-relaxed">
@@ -168,13 +167,13 @@ function PricingCard({
       )}
     >
       {plan.highlighted && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#FF4D4D] text-white text-[10px] font-black px-6 py-1.5 rounded-full shadow-lg shadow-[#FF4D4D]/20">
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 border border-white/20 bg-white/5 text-[#1A1A1A]/80 text-[10px] font-black px-6 py-1.5 rounded-full">
           MOST POPULAR
         </div>
       )}
 
       {/* Icon/Visual */}
-      <div className="mb-10 text-[#FF4D4D]">
+      <div className="mb-10 text-[#1A1A1A]/60">
         {plan.id === 'free' && <Globe size={28} strokeWidth={2.5} className="opacity-40" />}
         {plan.id === 'starter' && <Zap size={28} strokeWidth={2.5} />}
         {plan.id === 'pro' && <Sparkles size={28} strokeWidth={2.5} />}
@@ -182,7 +181,7 @@ function PricingCard({
       </div>
 
       <div className="mb-8">
-        <h3 className="text-2xl font-black tracking-tight mb-2 group-hover:text-[#FF4D4D] transition-colors">
+        <h3 className="text-2xl font-black tracking-tight mb-2">
           {plan.name}
         </h3>
         <p className="text-xs text-[#8A8A8A] font-bold uppercase tracking-widest leading-relaxed">
@@ -196,7 +195,7 @@ function PricingCard({
           <span className="text-[11px] font-bold uppercase tracking-widest text-[#8A8A8A]">/mo</span>
         </div>
         {billingCycle === 'yearly' && plan.yearlyPrice && (
-          <p className="text-[10px] text-[#FF4D4D] font-black mt-2 uppercase tracking-widest">
+          <p className="text-[10px] text-[#8A8A8A] font-black mt-2 uppercase tracking-widest">
             Billed ${plan.yearlyPrice}/year
           </p>
         )}
@@ -210,7 +209,7 @@ function PricingCard({
           "w-full py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] transition-all transform active:scale-95 mb-10",
           plan.highlighted
             ? "bg-[#FF4D4D] text-white hover:bg-[#1A1A1A] shadow-xl shadow-[#FF4D4D]/20"
-            : "bg-[#1A1A1A] text-white hover:bg-[#FF4D4D]"
+            : "bg-[#1A1A1A] text-white hover:opacity-90"
         )}
       >
         {plan.cta}
@@ -221,8 +220,8 @@ function PricingCard({
         <ul className="space-y-4">
           {plan.features.map((feature, i) => (
             <li key={i} className="flex items-start gap-3">
-              <div className="p-0.5 rounded-full bg-[#FF4D4D]/10 mt-0.5">
-                <Check size={12} strokeWidth={4} className="text-[#FF4D4D]" />
+              <div className="p-0.5 rounded-full bg-[#10B981]/10 mt-0.5">
+                <Check size={12} strokeWidth={4} className="text-[#10B981]" />
               </div>
               <span className="text-[13px] text-[#5A5A5A] font-medium leading-tight">
                 {feature}

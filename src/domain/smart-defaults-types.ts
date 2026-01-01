@@ -10,8 +10,9 @@ export type SpendingStrategy = 'budget' | 'smart-balance' | 'performance';
 export type AutonomyLevel = 'full-auto' | 'apply-with-approval' | 'always-ask';
 export type VisualDirection = 'modern-professional' | 'minimal-refined' | 'bold-confident' | 'warm-approachable';
 export type ThemePreference = 'dark' | 'light' | 'system';
-export type DeskId = 'write' | 'design' | 'code' | 'research';
+export type DeskId = 'write' | 'design' | 'code' | 'analyze';
 export type ExportFormat = 'pdf' | 'png' | 'svg' | 'docx' | 'html';
+export type AccountTier = 'free' | 'pro' | 'team' | 'enterprise';
 
 /**
  * Account-level settings (global defaults)
@@ -76,6 +77,7 @@ export interface ProjectContext {
     lastUsedDesk?: DeskId;
     industry?: string;
     contentType?: string;
+    userHistory?: UserHistory;
 }
 
 /**
@@ -179,3 +181,70 @@ export const SETTINGS_DESCRIPTIONS = {
     showModelPerStep: 'Show which AI model is being used',
     autoSave: 'Automatically save changes',
 };
+
+/**
+ * User history for inference
+ */
+export interface UserHistory {
+    qualityPreference?: 'high' | 'balanced' | 'low';
+    lastUsedDesk?: DeskId;
+    preferredExportFormat?: ExportFormat;
+    settingOverrides?: Record<string, unknown>;
+}
+
+/**
+ * Behavior event types for tracking
+ */
+export type BehaviorEventType =
+    | 'setting_changed'      // User changed a default
+    | 'desk_switched'        // User switched desks
+    | 'quality_feedback'     // User indicated quality preference
+    | 'task_rerun'           // User reran a task (implies dissatisfaction)
+    | 'export_format_chosen'; // User chose non-default format
+
+/**
+ * Behavior event for tracking
+ */
+export interface BehaviorEvent {
+    userId: string;
+    timestamp: Date;
+    event: BehaviorEventType;
+    metadata: Record<string, unknown>;
+}
+
+/**
+ * Task pattern for "Remember for similar tasks"
+ */
+export interface TaskPattern {
+    deskId: DeskId;
+    taskType: string;  // e.g., "headline", "code-review"
+    overrides: TaskOverrideSettings;
+}
+
+/**
+ * Task override settings
+ */
+export interface TaskOverrideSettings {
+    qualityPriority?: QualityPriority;
+    maxSteps?: number;
+    modelOverride?: string;  // From Advanced panel
+}
+
+/**
+ * Task override with persistence option
+ */
+export interface TaskOverride {
+    taskId: string;
+    overrides: TaskOverrideSettings;
+    persistent: boolean;  // "Remember for similar tasks"
+}
+
+/**
+ * Tier-specific defaults
+ */
+export interface TierDefaults {
+    dailyBudget: number;
+    maxSteps: number;
+    qualityPriority: QualityPriority;
+    availableModels: string[];
+}

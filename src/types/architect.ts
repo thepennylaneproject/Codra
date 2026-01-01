@@ -291,7 +291,7 @@ export interface ArtifactVersion {
 // NAMING SYSTEM - Consistency Registry
 // ============================================================================
 
-export type NamingScope = 'code' | 'product' | 'marketing' | 'internal';
+export type NamingScope = 'code' | 'product' | 'write' | 'internal';
 export type NamingTargetType =
     | 'component'
     | 'file'

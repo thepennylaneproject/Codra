@@ -363,33 +363,33 @@ export function severityToPriority(severity: FindingSeverity): TaskPriority {
 export function categoryToDesk(category: FindingCategory): ProductionDeskId {
     const mapping: Record<FindingCategory, ProductionDeskId> = {
         // UX/UI issues → Art & Design
-        'workflow-completeness': 'workflow',
-        'feature-visibility': 'art-design',
-        'cognitive-load': 'art-design',
-        'visual-consistency': 'art-design',
-        'copy-voice': 'writing',
-        'information-architecture': 'workflow',
-        'state-feedback-trust': 'engineering',
-        'onboarding': 'art-design',
-        'launch-polish': 'art-design',
+        'workflow-completeness': 'code',
+        'feature-visibility': 'design',
+        'cognitive-load': 'design',
+        'visual-consistency': 'design',
+        'copy-voice': 'write',
+        'information-architecture': 'code',
+        'state-feedback-trust': 'code',
+        'onboarding': 'design',
+        'launch-polish': 'design',
         // Strategic issues → Workflow
-        'user-assumption': 'workflow',
-        'builder-bias': 'workflow',
-        'success-definition': 'workflow',
-        'risk-avoidance': 'workflow',
-        'narrative-blindspot': 'writing',
+        'user-assumption': 'code',
+        'builder-bias': 'code',
+        'success-definition': 'code',
+        'risk-avoidance': 'code',
+        'narrative-blindspot': 'write',
         // Technical/Feature issues
-        'feature-value-cost': 'engineering',
-        'redundancy': 'engineering',
-        'ux-drag': 'art-design',
-        'timing': 'workflow',
-        'conceptual-integrity': 'workflow',
+        'feature-value-cost': 'code',
+        'redundancy': 'code',
+        'ux-drag': 'design',
+        'timing': 'code',
+        'conceptual-integrity': 'code',
         // Opportunity issues
-        'missed-opportunity': 'marketing',
-        'underutilized-feature': 'marketing',
-        'hidden-win': 'marketing',
+        'missed-opportunity': 'write',
+        'underutilized-feature': 'write',
+        'hidden-win': 'write',
     };
-    return mapping[category] ?? 'workflow';
+    return mapping[category] ?? 'code';
 }
 
 /**

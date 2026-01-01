@@ -1,6 +1,13 @@
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { SpreadTask } from '../../domain/task-queue';
-import { Play, CheckCircle2, Circle, Clock, AlertCircle, Loader2, Sparkles } from 'lucide-react';
+import { Play, CheckCircle2, Circle, Clock, AlertCircle, Loader2, Sparkles, Settings } from 'lucide-react';
 import { TaskCostBadge } from './TaskCostBadge';
+import { TaskOverridePanel } from '@/components/tasks/TaskOverridePanel';
+import { analytics } from '@/lib/analytics';
+import { useEffectiveSettings } from '../../lib/smart-defaults/hooks/useEffectiveSettings';
+import { applyTaskOverrides, saveTaskPattern } from '../../lib/settings/TaskOverrides';
+import { useAuth } from '../../lib/auth/AuthProvider';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -17,8 +24,38 @@ interface PromptCardProps {
 }
 
 export function PromptCard({ task, isActive, onSelect, onRun, className }: PromptCardProps) {
+    const { projectId } = useParams<{ projectId: string }>();
+    const { user } = useAuth();
+    const [showOverridePanel, setShowOverridePanel] = useState(false);
+    
+    // Get effective settings for this project/task
+    const settings = useEffectiveSettings(projectId);
+    
     const isRunning = task.status === 'in-progress';
     const isComplete = task.status === 'complete';
+
+    const handleApplyOverrides = async (overrides: any, remember: boolean) => {
+        analytics.track('flow_task_overrides_applied', {
+            taskId: task.id,
+            taskType: task.title,
+            deskId: task.deskId,
+            remember
+        });
+
+        // Apply to current task instance
+        applyTaskOverrides(task.id, overrides);
+        
+        // Save as pattern if requested
+        if (remember && user) {
+            await saveTaskPattern(user.id, {
+                deskId: task.deskId as any, // Cast to avoid union mismatch
+                taskType: task.title, // Using title as task type for pattern matching
+                overrides
+            });
+        }
+        
+        setShowOverridePanel(false);
+    };
 
     const statusIcons = {
         pending: Circle,
@@ -99,33 +136,71 @@ export function PromptCard({ task, isActive, onSelect, onRun, className }: Promp
                         </div>
                     </div>
 
-                    <button
-                        disabled={isRunning || isComplete}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onRun(task.id);
-                        }}
-                        className={cn(
-                            "p-2 rounded-xl transition-all duration-500",
-                            isComplete
-                                ? "bg-emerald-50 text-emerald-500"
-                                : isRunning
-                                    ? "bg-amber-50 text-amber-500"
-                                    : isActive
-                                        ? "bg-[#1A1A1A] text-white shadow-2xl hover:bg-[#FF4D4D] active:scale-90"
-                                        : "bg-[#1A1A1A]/5 text-[#8A8A8A] hover:text-[#1A1A1A] hover:bg-[#1A1A1A]/10"
-                        )}
-                    >
-                        {isComplete ? (
-                            <CheckCircle2 size={16} strokeWidth={3} />
-                        ) : isRunning ? (
-                            <Loader2 size={16} className="animate-spin" strokeWidth={3} />
-                        ) : (
-                            <Play size={16} fill={isActive ? "currentColor" : "none"} strokeWidth={3} />
-                        )}
-                    </button>
+                    <div className="flex items-center gap-2">
+                        {/* Adjust Settings Button */}
+                        <button
+                            disabled={isRunning || isComplete}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowOverridePanel(true);
+                            }}
+                            className={cn(
+                                "p-2 rounded-xl transition-all duration-300",
+                                isActive 
+                                    ? "bg-[#1A1A1A]/10 text-[#1A1A1A] hover:bg-[#1A1A1A]/20" 
+                                    : "bg-[#1A1A1A]/5 text-[#8A8A8A] hover:text-[#1A1A1A] hover:bg-[#1A1A1A]/10"
+                            )}
+                            title="Adjust AI Settings"
+                        >
+                            <Settings size={14} strokeWidth={isActive ? 3 : 2} />
+                        </button>
+
+                        <button
+                            disabled={isRunning || isComplete}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                analytics.track('flow_task_rerun_triggered', {
+                                    taskId: task.id,
+                                    taskType: task.title,
+                                    deskId: task.deskId
+                                });
+                                onRun(task.id);
+                            }}
+                            className={cn(
+                                "p-2 rounded-xl transition-all duration-500",
+                                isComplete
+                                    ? "bg-emerald-50 text-emerald-500"
+                                    : isRunning
+                                        ? "bg-amber-50 text-amber-500"
+                                        : isActive
+                                            ? "bg-[#1A1A1A] text-white shadow-2xl hover:bg-[#FF4D4D] active:scale-90"
+                                            : "bg-[#1A1A1A]/5 text-[#8A8A8A] hover:text-[#1A1A1A] hover:bg-[#1A1A1A]/10"
+                            )}
+                        >
+                            {isComplete ? (
+                                <CheckCircle2 size={16} strokeWidth={3} />
+                            ) : isRunning ? (
+                                <Loader2 size={16} className="animate-spin" strokeWidth={3} />
+                            ) : (
+                                <Play size={16} fill={isActive ? "currentColor" : "none"} strokeWidth={3} />
+                            )}
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            {/* Override Panel Modal */}
+            {showOverridePanel && (
+                <TaskOverridePanel
+                    taskType={task.title}
+                    currentSettings={{
+                        qualityPriority: settings.ai.qualityPriority,
+                        maxSteps: settings.ai.maxSteps,
+                    }}
+                    onApply={handleApplyOverrides}
+                    onCancel={() => setShowOverridePanel(false)}
+                />
+            )}
 
             {/* Selection indicator dots */}
             {isActive && !isRunning && !isComplete && (

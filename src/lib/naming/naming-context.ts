@@ -45,7 +45,7 @@ export const DEFAULT_RULES: Record<NamingScope, Record<NamingTargetType, Partial
         flow: { caseStyle: 'pascal', maxLength: 30 },
         icon: { caseStyle: 'kebab', maxLength: 25 },
     },
-    marketing: {
+    write: {
         component: { caseStyle: 'pascal', maxLength: 40 },
         file: { caseStyle: 'kebab', maxLength: 50 },
         route: { caseStyle: 'kebab', maxLength: 30 },

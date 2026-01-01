@@ -58,7 +58,7 @@ const MOCK_PROMPTS: Prompt[] = [
             { name: 'subject', type: 'text', label: 'Email Subject', required: true },
             { name: 'points', type: 'text', label: 'Key Points', required: true }
         ],
-        tags: ['email', 'writing', 'business'],
+        tags: ['email', 'write', 'business'],
         category: 'Productivity',
         isPublic: false,
         createdAt: new Date('2023-11-12'),

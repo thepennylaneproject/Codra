@@ -1,4 +1,4 @@
-// Register custom Codra ESLint plugin
+// Register custom Codra ESLint plugin using CommonJS require
 const codraPlugin = require('./eslint-rules');
 
 module.exports = {
@@ -26,6 +26,7 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'plugin:react/recommended',
         'plugin:react-hooks/recommended',
+        'plugin:storybook/recommended',
     ],
     settings: {
         react: {
@@ -33,15 +34,19 @@ module.exports = {
         },
     },
     rules: {
-        // Codra design system governance
-        // Note: Custom rules are enforced via the codraPlugin.rules defined above
-        // Violations will be caught during linting once the codebase is cleaned up
+        // React
+        'react/react-in-jsx-scope': 'off',
+        
+        // TypeScript - keep as warnings for now
+        '@typescript-eslint/no-explicit-any': 'warn',
+        '@typescript-eslint/no-unused-vars': 'warn',
 
-        // Add any project-specific rule overrides here
+        // NOTE: Codra accent governance rule requires ES module conversion
+        // The custom plugin is currently in ES modules format which conflicts with .cjs config
+        // For now, violations have been manually fixed. To enforce via ESLint:
+        // 1. Either convert eslint-rules/ back to CommonJS
+        // 2. Or migrate entire project to ESLint flat config (eslint.config.js)
+        // Uncomment below when ready:
+        // 'codra/no-hardcoded-accent': 'error',
     },
-
-    // Register custom plugin rules
-    // This makes 'codra/no-hardcoded-accent' available (currently disabled until violations are fixed)
-    // To enable: Uncomment the line below after fixing all violations
-    // 'codra/no-hardcoded-accent': 'error',
 };

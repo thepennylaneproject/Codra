@@ -9,7 +9,7 @@ import { CodraSignature } from '../components/CodraSignature';
 import { cn } from '../../lib/utils';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { analytics } from '../../lib/analytics';
+import { analytics } from '@/lib/analytics';
 import { useToast } from '../components/Toast';
 import { validateProjectContext, getValidationSummary, type ProjectContextFormState } from '../../lib/validation/projectBrief';
 import { NextStepCTA } from '../../components/codra/NextStepCTA';
@@ -260,7 +260,7 @@ export function ProjectContextPage() {
     // Handle workspace selection from NextStepCTA
     const handleSelectWorkspace = (workspaceId: string) => {
         if (!projectId) return;
-        navigate(`/p/${projectId}/desk/${workspaceId}`);
+        navigate(`/p/${projectId}/production?desk=${workspaceId}`);
     };
 
 

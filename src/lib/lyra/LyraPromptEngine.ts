@@ -125,7 +125,7 @@ export function suggestNextArtifacts(
         if (!desk) continue;
 
         switch (deskId) {
-            case 'art-design':
+            case 'design':
                 suggestions.push({
                     id: `${deskId} -moodboard`,
                     title: 'Refine Moodboard',
@@ -142,7 +142,7 @@ export function suggestNextArtifacts(
                 });
                 break;
 
-            case 'writing':
+            case 'write':
                 suggestions.push({
                     id: `${deskId} -brief`,
                     title: 'Content Brief',
@@ -157,19 +157,6 @@ export function suggestNextArtifacts(
                     deskId,
                     priority: 'medium',
                 });
-                break;
-
-            case 'engineering':
-                suggestions.push({
-                    id: `${deskId} -architecture`,
-                    title: 'Technical Scope',
-                    description: 'Outline technical requirements',
-                    deskId,
-                    priority: 'high',
-                });
-                break;
-
-            case 'marketing':
                 suggestions.push({
                     id: `${deskId} -positioning`,
                     title: 'Positioning Statement',
@@ -177,9 +164,6 @@ export function suggestNextArtifacts(
                     deskId,
                     priority: 'high',
                 });
-                break;
-
-            case 'career-assets':
                 suggestions.push({
                     id: `${deskId} -resume`,
                     title: 'Resume Draft',
@@ -189,7 +173,17 @@ export function suggestNextArtifacts(
                 });
                 break;
 
-            case 'data-analysis':
+            case 'code':
+                suggestions.push({
+                    id: `${deskId} -architecture`,
+                    title: 'Technical Scope',
+                    description: 'Outline technical requirements',
+                    deskId,
+                    priority: 'high',
+                });
+                break;
+
+            case 'analyze':
                 suggestions.push({
                     id: `${deskId}-research`,
                     title: 'Research Plan',
@@ -452,7 +446,7 @@ export function generatePromptForTask(
 
     // Add visual direction if relevant
     if (projectContext.visualDirection &&
-        (task.deskId === 'art-design' || task.deskId === 'marketing')) {
+        (task.deskId === 'design' || task.deskId === 'write')) {
         systemParts.push('');
         systemParts.push('## Visual Direction');
 
@@ -503,13 +497,10 @@ export function generatePromptForTask(
  */
 function getDeskFraming(deskId: ProductionDeskId): string {
     const framings: Record<ProductionDeskId, string> = {
-        'art-design': 'You are a senior art director with expertise in visual design, brand identity, and creative direction.',
-        'engineering': 'You are a principal software engineer with expertise in architecture, clean code, and scalable systems.',
-        'writing': 'You are a senior copywriter with expertise in compelling narratives, clear communication, and brand voice.',
-        'marketing': 'You are a marketing strategist with expertise in positioning, messaging, and campaign development.',
-        'career-assets': 'You are a career coach with expertise in resumes, personal branding, and professional development.',
-        'data-analysis': 'You are a research analyst with expertise in data synthesis, market analysis, and strategic insights.',
-        'workflow': 'You are a project manager with expertise in workflow optimization, task prioritization, and team coordination.',
+        'design': 'You are a senior art director with expertise in visual design, brand identity, and creative direction.',
+        'code': 'You are a principal software engineer with expertise in architecture, clean code, and scalable systems.',
+        'write': 'You are a senior copywriter with expertise in compelling narratives, clear communication, and brand voice.',
+        'analyze': 'You are a research analyst with expertise in data synthesis, market analysis, and strategic insights.',
     };
 
     return framings[deskId] || 'You are a creative professional.';
@@ -520,13 +511,10 @@ function getDeskFraming(deskId: ProductionDeskId): string {
  */
 function getTaskTypeForDesk(deskId: ProductionDeskId): TaskPromptResult['suggestedTaskType'] {
     const mapping: Record<ProductionDeskId, TaskPromptResult['suggestedTaskType']> = {
-        'art-design': 'image',
-        'engineering': 'code',
-        'writing': 'summary',
-        'marketing': 'summary',
-        'career-assets': 'summary',
-        'data-analysis': 'reasoning',
-        'workflow': 'summary',
+        'design': 'image',
+        'code': 'code',
+        'write': 'summary',
+        'analyze': 'reasoning',
     };
 
     return mapping[deskId] || 'chat';

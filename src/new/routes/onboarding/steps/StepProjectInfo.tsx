@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { Button } from '../../../components/Button';
 import { ArrowRight } from 'lucide-react';
+import { analytics } from '@/lib/analytics';
 
 const PROJECT_TYPE_OPTIONS = [
     { id: 'campaign' as const, label: 'Campaign', description: 'Full-funnel campaign production', icon: '🚀' },
@@ -13,16 +14,26 @@ const PROJECT_TYPE_OPTIONS = [
 
 export const StepProjectInfo = () => {
     const navigate = useNavigate();
-    const { data, updateData, canProceedFromProjectInfo } = useOnboarding();
+    const { data, updateData, canProceedFromProjectInfo, startSession } = useOnboarding();
     const nameInputRef = useRef<HTMLInputElement>(null);
+    const [startTime] = useState(Date.now());
     
-    // Auto-focus project name input on mount
+    // Auto-focus project name input on mount and track view
     useEffect(() => {
         nameInputRef.current?.focus();
+        startSession();
+        analytics.track('onboarding_step_viewed', { step: 1, stepName: 'project-info' });
     }, []);
     
     const handleContinue = () => {
         if (canProceedFromProjectInfo()) {
+            analytics.track('onboarding_step_completed', {
+                step: 1,
+                stepName: 'project-info',
+                durationMs: Date.now() - startTime,
+                projectType: data.projectType || undefined,
+                hasDescription: !!data.description.trim(),
+            });
             navigate('/new?step=context');
         }
     };

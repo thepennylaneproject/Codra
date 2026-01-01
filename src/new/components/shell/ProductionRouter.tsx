@@ -5,13 +5,7 @@ import {
     ProductionDeskId 
 } from '../../../domain/types';
 import { 
-    Box, 
-    Code, 
-    FileText, 
-    LayoutTemplate, 
-    Megaphone, 
-    Briefcase, 
-    LineChart,
+    Box,
     LucideIcon,
     PenLine,
     Palette,

@@ -4,7 +4,7 @@
  * Rich text editor with AI commands for copy, content, and marketing materials
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Type, AlignLeft, Bold, Italic, Hash, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useDeskState } from './hooks/useDeskState';
@@ -20,6 +20,8 @@ export const WriteCanvas: React.FC<WriteCanvasProps> = ({
   selectedModelId = 'claude-3-5-sonnet-20241022', 
   onSelectModel 
 }) => {
+  void selectedModelId;
+  void onSelectModel;
   const { getDeskState, updateDeskState } = useDeskState();
   const state = getDeskState(projectId, 'write');
   

@@ -1,58 +1,39 @@
 /**
  * USE EFFECTIVE SETTINGS HOOK
- * Merges account settings with project overrides
+ * Merges account settings with project overrides and optional task overrides
+ * Priority: task > project > account > tier
  */
 
 import { useMemo } from 'react';
 import { useAccountSettings } from './useAccountSettings';
 import { useProjectSettings } from './useProjectSettings';
-import type { EffectiveSettings } from '../../../domain/smart-defaults-types';
+import { useUserTier } from './useUserTier';
+import type { EffectiveSettings, TaskOverrideSettings } from '../../../domain/smart-defaults-types';
+import { getEffectiveSettings } from '../../settings/EffectiveSettings';
 
 /**
- * Get effective settings for a project
- * Merges account defaults with project-specific overrides
+ * Get effective settings for a project with optional task overrides
+ * Merges tier defaults → account → project → task in priority order
+ * 
+ * @param projectId - Optional project ID for project-level overrides
+ * @param taskOverrides - Optional task-specific overrides
  */
-export function useEffectiveSettings(projectId?: string): EffectiveSettings {
+export function useEffectiveSettings(
+    projectId?: string,
+    taskOverrides?: TaskOverrideSettings
+): EffectiveSettings {
     const { settings: accountSettings } = useAccountSettings();
-    const { getProjectSettings, hasOverrides, getOverrideCount } = useProjectSettings();
+    const { getProjectSettings } = useProjectSettings();
+    const tier = useUserTier(); // Automatically get user's tier from profile
 
     return useMemo(() => {
-        if (!projectId) {
-            return {
-                ...accountSettings,
-                hasOverrides: false,
-                overrideCount: 0,
-            };
-        }
-
-        const projectOverrides = getProjectSettings(projectId);
-
-        if (!projectOverrides) {
-            return {
-                ...accountSettings,
-                hasOverrides: false,
-                overrideCount: 0,
-            };
-        }
-
-        // Merge account settings with project overrides
-        return {
-            ai: {
-                ...accountSettings.ai,
-                ...(projectOverrides.qualityPriority && { qualityPriority: projectOverrides.qualityPriority }),
-                ...(projectOverrides.autonomyLevel && { autonomyLevel: projectOverrides.autonomyLevel }),
-                ...(projectOverrides.dataSensitivity && { dataSensitivity: projectOverrides.dataSensitivity }),
-                ...(projectOverrides.maxSteps !== undefined && { maxSteps: projectOverrides.maxSteps }),
-                ...(projectOverrides.riskTolerance !== undefined && { riskTolerance: projectOverrides.riskTolerance }),
-            },
-            budget: {
-                ...accountSettings.budget,
-                ...(projectOverrides.dailyBudget !== undefined && { dailyLimit: projectOverrides.dailyBudget }),
-            },
-            visual: accountSettings.visual,
-            preferences: accountSettings.preferences,
-            hasOverrides: hasOverrides(projectId),
-            overrideCount: getOverrideCount(projectId),
-        };
-    }, [accountSettings, projectId, getProjectSettings, hasOverrides, getOverrideCount]);
+        const projectOverrides = projectId ? getProjectSettings(projectId) : undefined;
+        
+        return getEffectiveSettings(
+            tier,
+            accountSettings,
+            projectOverrides,
+            taskOverrides
+        );
+    }, [tier, accountSettings, projectId, getProjectSettings, taskOverrides]);
 }

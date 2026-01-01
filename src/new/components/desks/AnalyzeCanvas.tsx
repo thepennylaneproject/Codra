@@ -4,7 +4,6 @@
  * Research, metrics, and insights
  */
 
-import React from 'react';
 import { BarChart3, Database, PieChart, TrendingUp, Sparkles, ArrowRight } from 'lucide-react';
 
 interface AnalyzeCanvasProps {
@@ -14,6 +13,7 @@ interface AnalyzeCanvasProps {
 }
 
 export const AnalyzeCanvas: React.FC<AnalyzeCanvasProps> = ({ projectId }) => {
+    void projectId;
     const upcomingFeatures = [
         { icon: BarChart3, label: 'Data visualization', description: 'Generate charts and graphs' },
         { icon: Database, label: 'Query builder', description: 'Natural language to SQL' },

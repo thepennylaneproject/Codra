@@ -28,7 +28,7 @@ export const ArtifactExporter = {
                 case 'image':
                     return await this.exportImage(content, options);
                 case 'copy':
-                case 'writing':
+                case 'write':
                     return await this.exportText(content, options);
                 case 'code':
                     return await this.exportCode(content, options);

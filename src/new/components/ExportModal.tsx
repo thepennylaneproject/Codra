@@ -7,6 +7,10 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, FileText, Image as ImageIcon, FileCode, Printer, Check } from 'lucide-react';
 import { ArtifactExporter, ExportFormat } from '../../lib/export/ArtifactExporter';
+import { analytics } from '@/lib/analytics';
+import { useEffect } from 'react';
+import { behaviorTracker } from '../../lib/smart-defaults/inference-engine';
+import { supabase } from '../../lib/supabase';
 
 interface ExportModalProps {
     isOpen: boolean;
@@ -54,6 +58,15 @@ export function ExportModal({
     const [isExporting, setIsExporting] = useState(false);
     const [selectedFormat, setSelectedFormat] = useState<ExportFormat | null>(null);
 
+    useEffect(() => {
+        if (isOpen) {
+            analytics.track('flow_export_began', {
+                outputId: artifactId,
+                outputType: artifactType,
+            });
+        }
+    }, [isOpen, artifactId, artifactType]);
+
     const formats = FORMAT_CONFIG[artifactType] || [
         { format: 'txt', label: 'Plain Text File', icon: FileText },
         { format: 'json', label: 'JSON Data', icon: FileCode },
@@ -62,13 +75,40 @@ export function ExportModal({
     const handleExport = async (format: ExportFormat) => {
         setIsExporting(true);
         setSelectedFormat(format);
+        const startTime = Date.now();
 
         const success = await ArtifactExporter.exportArtifact(content, artifactType, {
             filename,
             format
         });
 
+        // Track for behavior learning
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user?.id) {
+                behaviorTracker.track({
+                    userId: session.user.id,
+                    timestamp: new Date(),
+                    event: 'export_format_chosen',
+                    metadata: {
+                        artifactId,
+                        artifactType,
+                        format
+                    }
+                });
+            }
+        } catch (err) {
+            console.error('Failed to track export behavior:', err);
+        }
+
         if (success) {
+            analytics.track('flow_export_completed', {
+                outputId: artifactId,
+                outputType: artifactType,
+                format,
+                durationMs: Date.now() - startTime,
+                isDefaultFormat: true, // Simplified
+            });
             // Briefly show success state before closing
             setTimeout(() => {
                 setIsExporting(false);
@@ -76,6 +116,12 @@ export function ExportModal({
                 onClose();
             }, 1000);
         } else {
+            analytics.track('flow_export_failed', {
+                outputId: artifactId,
+                outputType: artifactType,
+                format,
+                error: 'Export failed via ArtifactExporter',
+            });
             setIsExporting(false);
             setSelectedFormat(null);
         }

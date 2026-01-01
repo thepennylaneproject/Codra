@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Sparkles } from 'lucide-react';
-import { ProductionDeskId } from '../../domain/types';
 import { useSupabaseSpread } from '../../hooks/useSupabaseSpread';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CollabPresenceLayer } from '../components/collab/CollabPresenceLayer';

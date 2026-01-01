@@ -11,7 +11,6 @@
 import { forwardRef } from 'react';
 import { Loader2 } from 'lucide-react';
 import { radii, transitions } from '../../lib/design/tokens';
-import { ACCENT_CORAL, COMPONENTS } from '../../lib/design-tokens';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';

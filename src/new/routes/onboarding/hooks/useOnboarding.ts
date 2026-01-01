@@ -24,6 +24,7 @@ export interface StreamlinedOnboardingData {
 interface OnboardingFlowState {
     currentStep: OnboardingStep;
     data: StreamlinedOnboardingData;
+    sessionStartTime: number | null;
     
     // Actions
     setStep: (step: OnboardingStep) => void;
@@ -31,6 +32,7 @@ interface OnboardingFlowState {
     addFile: (file: FileUpload) => void;
     removeFile: (fileId: string) => void;
     reset: () => void;
+    startSession: () => void;
     
     // Validation
     canProceedFromProjectInfo: () => boolean;
@@ -48,6 +50,7 @@ export const useOnboarding = create<OnboardingFlowState>()(
         (set, get) => ({
             currentStep: 'project-info',
             data: INITIAL_DATA,
+            sessionStartTime: null,
             
             setStep: (step) => set({ currentStep: step }),
             
@@ -71,8 +74,15 @@ export const useOnboarding = create<OnboardingFlowState>()(
             
             reset: () => set({
                 currentStep: 'project-info',
-                data: INITIAL_DATA
+                data: INITIAL_DATA,
+                sessionStartTime: null
             }),
+
+            startSession: () => {
+                if (!get().sessionStartTime) {
+                    set({ sessionStartTime: Date.now() });
+                }
+            },
             
             canProceedFromProjectInfo: () => {
                 const { data } = get();

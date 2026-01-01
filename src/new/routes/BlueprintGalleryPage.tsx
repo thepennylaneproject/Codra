@@ -14,7 +14,7 @@ import {
 import { PROJECT_BLUEPRINTS, ProjectBlueprint } from '../../domain/templates';
 import { createProject } from '../../domain/projects';
 import { useToast } from '../components/Toast';
-import { analytics } from '../../lib/analytics';
+import { analytics } from '@/lib/analytics';
 
 /**
  * BLUEPRINT GALLERY
@@ -59,13 +59,13 @@ export function BlueprintGalleryPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#FFFAF0] text-[#1A1A1A] font-sans selection:bg-[#FF4D4D]/20 pb-32">
+        <div className="min-h-screen bg-[#FFFAF0] text-[#1A1A1A] font-sans pb-32">
             {/* Header */}
             <header className="px-8 py-20 text-center max-w-4xl mx-auto">
                 <div className="flex justify-center mb-12">
                      <button
                         onClick={() => navigate('/projects')}
-                        className="p-3 bg-white border border-[#1A1A1A]/5 rounded-2xl hover:bg-[#FF4D4D] hover:text-white transition-all group"
+                        className="p-3 bg-white border border-[#1A1A1A]/5 rounded-2xl hover:opacity-70 transition-opacity group"
                     >
                         <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     </button>
@@ -77,14 +77,13 @@ export function BlueprintGalleryPage() {
                     transition={{ duration: 0.6 }}
                 >
                     <div className="flex items-center justify-center gap-2 mb-6">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#FF4D4D]" />
                         <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#8A8A8A]">
                             Starter Blueprints
                         </span>
                     </div>
                     <h1 className="text-7xl font-black tracking-tighter leading-none mb-8">
                         The Gallery <br />
-                        <span className="italic font-serif font-light text-[#FF4D4D]">Blueprints</span>
+                        <span className="italic font-serif font-light text-[#8A8A8A]">Blueprints</span>
                     </h1>
                     <p className="text-xl text-[#5A5A5A] max-w-xl mx-auto font-medium leading-relaxed italic">
                         "Accelerate the production cycle with proven strategic frameworks."
@@ -154,7 +153,7 @@ function BlueprintCard({ blueprint, onUse, delay }: { blueprint: ProjectBlueprin
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ delay, duration: 0.4 }}
-            className="group bg-white border border-[#1A1A1A]/5 rounded-[32px] overflow-hidden flex flex-col hover:border-[#FF4D4D]/20 hover:shadow-2xl hover:shadow-[#FF4D4D]/10 transition-all p-8 relative"
+            className="group bg-white border border-[#1A1A1A]/5 rounded-[32px] overflow-hidden flex flex-col hover:border-[#1A1A1A]/20 hover:shadow-2xl transition-all p-8 relative"
         >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
                 {blueprint.category === 'Marketing' && <Zap size={80} strokeWidth={1} />}
@@ -176,7 +175,7 @@ function BlueprintCard({ blueprint, onUse, delay }: { blueprint: ProjectBlueprin
                 </span>
             </div>
 
-            <h3 className="text-3xl font-black tracking-tighter mb-4 group-hover:text-[#FF4D4D] transition-colors leading-tight">
+            <h3 className="text-3xl font-black tracking-tighter mb-4 leading-tight">
                 {blueprint.name}
             </h3>
             <p className="text-sm text-[#5A5A5A] leading-relaxed mb-10 font-medium">
@@ -195,7 +194,7 @@ function BlueprintCard({ blueprint, onUse, delay }: { blueprint: ProjectBlueprin
 
                 <button
                     onClick={onUse}
-                    className="w-full py-4 bg-[#1A1A1A] text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-[#FF4D4D] transition-all transform group-hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-xl"
+                    className="w-full py-4 bg-[#1A1A1A] text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:opacity-90 transition-all transform group-hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-xl"
                 >
                     Initiate Blueprint
                     <ArrowRight size={14} strokeWidth={3} />

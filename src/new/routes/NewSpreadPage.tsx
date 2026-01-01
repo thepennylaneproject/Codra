@@ -14,6 +14,8 @@ import { TOCSidebar } from '../components/TOCSidebar';
 import { selectModelForTask } from '../../domain/model-selector';
 import { LyraProvider } from '../../lib/lyra';
 import { TaskExecutor } from '../../lib/ai/execution/task-executor';
+import { behaviorTracker } from '../../lib/smart-defaults/inference-engine';
+import { supabase } from '../../lib/supabase';
 
 // Task Queue imports
 import { SpreadTask, TaskQueue } from '../../domain/task-queue';
@@ -89,6 +91,8 @@ export function NewSpreadPage() {
     const { providers } = useProviderRegistry();
     const [selectedModelId, setSelectedModelId] = useState('gpt-4o');
     const [selectedProviderId, setSelectedProviderId] = useState('openai');
+    void setSelectedModelId;
+    void setSelectedProviderId;
 
     // Task Executor
     const [taskExecutor] = useState(() => new TaskExecutor());
@@ -161,7 +165,7 @@ export function NewSpreadPage() {
         // Handle Production Desk navigation
         if (sectionId.startsWith('desk-')) {
             const deskId = sectionId.replace('desk-', '');
-            navigate(`/p/${projectId}/desk/${deskId}`);
+            navigate(`/p/${projectId}/production?desk=${deskId}`);
             return;
         }
 
@@ -264,6 +268,28 @@ export function NewSpreadPage() {
         }
 
         setExecutingTaskId(taskId);
+
+        // Track task rerun for behavior learning
+        if (task.status === 'complete') {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.user?.id) {
+                    behaviorTracker.track({
+                        userId: session.user.id,
+                        timestamp: new Date(),
+                        event: 'task_rerun',
+                        metadata: {
+                            taskId,
+                            taskTitle: task.title,
+                            deskId: task.deskId,
+                            projectId: project.id
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to track task rerun:', err);
+            }
+        }
 
         // Set to in-progress
         let updatedQueue = updateTaskStatus(taskQueue, taskId, 'in-progress');
@@ -477,7 +503,7 @@ export function NewSpreadPage() {
                                                 : "text-[var(--color-ink-muted)] border-transparent hover:text-[var(--color-ink)]"
                                         )}
                                     >
-                                        Sections
+                                        Index
                                     </button>
                                     <button
                                         onClick={() => setActiveLeftTab('prompts')}

@@ -336,7 +336,7 @@ export const useOnboardingStore = create<OnboardingState>()(
                         id: `deliv-${i}`,
                         name: goal.replace(/-/g, ' '),
                         type: goal.includes('website') ? 'website' :
-                            goal.includes('marketing') ? 'campaign' :
+                            goal.includes('write') ? 'campaign' :
                                 goal.includes('content') ? 'copy' : 'design',
                         status: 'planned',
                     })),

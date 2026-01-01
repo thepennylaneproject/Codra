@@ -4,11 +4,9 @@
  * Visual assets, illustrations, and design systems
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Sparkles, Maximize2, RefreshCcw, Download, Layers, ShieldCheck, Plus, Lock, Unlock } from 'lucide-react';
 import { MOCK_ASSETS } from '../../../domain/integrations';
-import { ModelSelector } from '../ModelSelector';
-import { DeskEvents } from '../../../lib/desks/DeskBridge';
 import { useImageGeneration } from '../../../hooks/useImageGeneration';
 import { STYLE_PRESETS, ImageStyle, applyStyleToPrompt, generateRandomSeed } from '../../../lib/image/seed-preservation';
 import { Button, IconButton } from '../Button';
@@ -25,6 +23,7 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
     selectedModelId = 'flux-pro', 
     onSelectModel 
 }) => {
+    void onSelectModel;
     const { getDeskState, updateDeskState } = useDeskState();
     const state = getDeskState(projectId, 'design');
 
@@ -69,7 +68,7 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
             setCurrentSeed(generateRandomSeed());
         }
         
-        const response = await generate({
+        await generate({
             prompt: styledPrompt,
             negativePrompt,
             model: selectedModelId,

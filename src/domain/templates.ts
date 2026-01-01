@@ -33,7 +33,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'Personal showcase for creatives, developers, and designers.',
         type: 'landing-page',
         goals: ['website-app', 'brand-identity'],
-        desks: ['art-design', 'engineering', 'writing'],
+        desks: ['design', 'code', 'write'],
         category: 'Product',
         difficulty: 'Entry',
         defaultBrief: {
@@ -49,7 +49,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'High-conversion single page for product launches or lead gen.',
         type: 'marketing-site',
         goals: ['marketing-campaign', 'website-app'],
-        desks: ['art-design', 'writing', 'engineering'],
+        desks: ['design', 'write', 'code'],
         category: 'Marketing',
         difficulty: 'Entry',
         defaultBrief: {
@@ -65,7 +65,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'Modernize an existing brand with updated visuals and messaging.',
         type: 'other',
         goals: ['brand-identity', 'print-materials'],
-        desks: ['art-design', 'writing'],
+        desks: ['design', 'write'],
         category: 'Branding',
         difficulty: 'Intermediate',
         defaultBrief: {
@@ -81,7 +81,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'A comprehensive branding and marketing system for new product rollouts.',
         type: 'marketing-site',
         goals: ['brand-identity', 'marketing-campaign', 'social-content'],
-        desks: ['art-design', 'writing', 'marketing'],
+        desks: ['design', 'write', 'write'],
         category: 'Marketing',
         difficulty: 'Intermediate',
         defaultBrief: {
@@ -96,7 +96,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'Focused investor materials and executive summaries for pre-seed and seed rounds.',
         type: 'other',
         goals: ['pitch-deck', 'print-materials'],
-        desks: ['writing', 'art-design'],
+        desks: ['write', 'design'],
         category: 'Strategy',
         difficulty: 'Entry',
         defaultBrief: {
@@ -111,7 +111,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'Scalable visual identity and core UI components for software products.',
         type: 'web-app',
         goals: ['brand-identity', 'website-app'],
-        desks: ['art-design', 'engineering'],
+        desks: ['design', 'code'],
         category: 'Branding',
         difficulty: 'Advanced',
         defaultBrief: {
@@ -126,7 +126,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'Social-first ad creatives and landing page optimization for retail brands.',
         type: 'marketing-site',
         goals: ['social-content', 'marketing-campaign'],
-        desks: ['art-design', 'writing'],
+        desks: ['design', 'write'],
         category: 'Marketing',
         difficulty: 'Intermediate'
     },
@@ -136,7 +136,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'Whitepapers, case studies, and leadership positioning for B2B enterprises.',
         type: 'other',
         goals: ['print-materials', 'pitch-deck'],
-        desks: ['writing', 'marketing'],
+        desks: ['write', 'write'],
         category: 'Strategy',
         difficulty: 'Intermediate'
     }

@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { useProviderRegistry } from '../../lib/ai/registry/useProviderRegistry';
-import { ModelRegistryEntry, ProviderRegistryEntry } from '../../lib/ai/registry/types';
-import { TaskCostBadge } from './TaskCostBadge';
+import { useProviderRegistry } from '../../../lib/ai/registry/useProviderRegistry';
+import { ModelRegistryEntry, ProviderRegistryEntry } from '../../../lib/ai/registry/types';
+import { TaskCostBadge } from '../TaskCostBadge';
 import { Search, ChevronDown, Check, Zap, Brain, Sparkles, Cpu, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
@@ -21,6 +21,11 @@ interface ModelSelectorProps {
     isSmartMode?: boolean;
 }
 
+type ModelOption = ModelRegistryEntry & {
+    providerId: string;
+    providerName: string;
+};
+
 export function ModelSelector({
     selectedModelId,
     onSelectModel,
@@ -30,11 +35,15 @@ export function ModelSelector({
     label,
     isSmartMode
 }: ModelSelectorProps) {
-    const { providers, isLoading, error } = useProviderRegistry();
+    const { providers, isLoading, error } = useProviderRegistry() as {
+        providers: ProviderRegistryEntry[];
+        isLoading: boolean;
+        error: unknown;
+    };
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const triggerRef = useRef<HTMLButtonElement>(null);
-    const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
+    const [coords, setCoords] = useState({ top: 0, left: 0, width: 0, anchor: 'top' as 'top' | 'bottom' });
 
     useEffect(() => {
         if (isOpen && triggerRef.current) {
@@ -48,11 +57,11 @@ export function ModelSelector({
                 left: rect.left,
                 width: Math.max(rect.width, 320),
                 anchor: openUpwards ? 'bottom' : 'top'
-            } as any);
+            });
         }
     }, [isOpen]);
 
-    const allModels = useMemo(() => {
+    const allModels = useMemo<ModelOption[]>(() => {
         const models = providers.flatMap((p: ProviderRegistryEntry) =>
             p.models.map((m: ModelRegistryEntry) => ({
                 ...m,
@@ -151,13 +160,13 @@ export function ModelSelector({
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: (coords as any).anchor === 'bottom' ? 10 : -10, scale: 0.95 }}
+                        initial={{ opacity: 0, y: coords.anchor === 'bottom' ? 10 : -10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         className="fixed z-[9999] bg-white border border-[#1A1A1A]/10 rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.2)] overflow-hidden flex flex-col max-h-[400px]"
                         style={{
-                            top: (coords as any).anchor === 'bottom' ? 'auto' : coords.top,
-                            bottom: (coords as any).anchor === 'bottom' ? window.innerHeight - (coords.top + 8) : 'auto',
+                            top: coords.anchor === 'bottom' ? 'auto' : coords.top,
+                            bottom: coords.anchor === 'bottom' ? window.innerHeight - (coords.top + 8) : 'auto',
                             left: coords.left,
                             width: coords.width,
                         }}

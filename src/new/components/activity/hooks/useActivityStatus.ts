@@ -3,7 +3,7 @@
  * Hook for aggregating status from various sources
  */
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import { Alert } from './useAlerts';
 
 export interface ProgressStatus {

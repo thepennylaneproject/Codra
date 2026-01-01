@@ -8,6 +8,7 @@ import { PromptContext } from '../../lyra/LyraPromptEngine';
 import { getProviderById, getModelWithProvider } from '../registry/provider-registry';
 import { ModelRegistryEntry } from '../registry/types';
 import { AIProvider, AICompletionOptions } from '../types';
+import { analytics } from '@/lib/analytics';
 
 export interface TaskExecutionResult {
   taskId: string;
@@ -36,6 +37,12 @@ export class TaskExecutor {
   async executeTask(options: TaskExecutionOptions): Promise<TaskExecutionResult> {
     const { task, prompt, context, modelId, providerId } = options;
     const startTime = Date.now();
+
+    analytics.track('flow_task_began', {
+      taskId: task.id,
+      taskType: task.title, // or determine type from task
+      deskId: task.deskId,
+    });
 
     try {
       // Get provider from registry
@@ -98,10 +105,26 @@ export class TaskExecutor {
         durationMs: Date.now() - startTime,
       };
 
+      analytics.track('flow_task_completed', {
+        taskId: task.id,
+        taskType: task.title,
+        deskId: task.deskId,
+        durationMs: executionResult.durationMs,
+        modelUsed: executionResult.modelUsed,
+        cost: executionResult.cost,
+      });
+
       console.log(`[TaskExecutor] Task completed: ${result.usage?.totalTokens || 0} tokens, $${cost.toFixed(4)}, ${executionResult.durationMs}ms`);
 
       return executionResult;
     } catch (error) {
+      analytics.track('flow_task_failed', {
+        taskId: task.id,
+        taskType: task.title,
+        deskId: task.deskId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        durationMs: Date.now() - startTime,
+      });
       console.error('[TaskExecutor] Execution failed:', error);
       throw new Error(`AI execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -113,6 +136,12 @@ export class TaskExecutor {
   async executeTaskStreaming(options: TaskExecutionOptions): Promise<TaskExecutionResult> {
     const { task, prompt, context, modelId, providerId, onChunk } = options;
     const startTime = Date.now();
+
+    analytics.track('flow_task_began', {
+      taskId: task.id,
+      taskType: task.title,
+      deskId: task.deskId,
+    });
 
     try {
       // Get provider from registry
@@ -169,7 +198,7 @@ export class TaskExecutor {
       const memory = this.extractMemory(fullOutput, task);
       const cost = this.calculateCost({ totalTokens }, modelId, model);
 
-      return {
+      const executionResult: TaskExecutionResult = {
         taskId: task.id,
         output: fullOutput,
         memory,
@@ -179,7 +208,25 @@ export class TaskExecutor {
         providerUsed: providerId,
         durationMs: Date.now() - startTime,
       };
+
+      analytics.track('flow_task_completed', {
+        taskId: task.id,
+        taskType: task.title,
+        deskId: task.deskId,
+        durationMs: executionResult.durationMs,
+        modelUsed: executionResult.modelUsed,
+        cost: executionResult.cost,
+      });
+
+      return executionResult;
     } catch (error) {
+      analytics.track('flow_task_failed', {
+        taskId: task.id,
+        taskType: task.title,
+        deskId: task.deskId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        durationMs: Date.now() - startTime,
+      });
       console.error('[TaskExecutor] Streaming execution failed:', error);
       throw new Error(`Streaming execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -221,8 +268,8 @@ Generate the deliverable now.`;
    * Determine optimal temperature for task type
    */
   private getTemperatureForTask(task: SpreadTask): number {
-    const creativeTasks = ['art-design', 'writing', 'marketing'];
-    const technicalTasks = ['engineering', 'data-analysis'];
+    const creativeTasks = ['design', 'write'];
+    const technicalTasks = ['code', 'analyze'];
     
     if (creativeTasks.includes(task.deskId)) {
       return 0.8; // Higher temperature for creative tasks

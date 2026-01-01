@@ -55,7 +55,7 @@ function generateTaskTemplates(
 
         // Generate desk-specific tasks based on the desk type
         switch (deskId) {
-            case 'art-design':
+            case 'design':
                 templates.push(
                     {
                         title: 'Create visual direction moodboard',
@@ -87,7 +87,7 @@ function generateTaskTemplates(
                 );
                 break;
 
-            case 'engineering':
+            case 'code':
                 templates.push(
                     {
                         title: 'Define technical architecture',
@@ -110,7 +110,7 @@ function generateTaskTemplates(
                 );
                 break;
 
-            case 'writing':
+            case 'write':
                 templates.push(
                     {
                         title: 'Craft headline and tagline',
@@ -138,12 +138,7 @@ function generateTaskTemplates(
                         dependencies: [],
                         tearSheetAnchor: 'goals',
                         routerTaskType: 'summary',
-                    }
-                );
-                break;
-
-            case 'marketing':
-                templates.push(
+                    },
                     {
                         title: 'Create campaign brief',
                         description: 'Outline the marketing strategy and key messages',
@@ -161,12 +156,7 @@ function generateTaskTemplates(
                         dependencies: [],
                         tearSheetAnchor: 'audience',
                         routerTaskType: 'summary',
-                    }
-                );
-                break;
-
-            case 'career-assets':
-                templates.push(
+                    },
                     {
                         title: 'Draft resume content',
                         description: 'Create compelling resume content based on profile',
@@ -197,7 +187,7 @@ function generateTaskTemplates(
                 );
                 break;
 
-            case 'data-analysis':
+            case 'analyze':
                 templates.push(
                     {
                         title: 'Compile research summary',
@@ -245,13 +235,29 @@ function inferDeskFromGoal(goal: string, activeDesks: ProductionDeskId[]): Produ
     const lowerGoal = goal.toLowerCase();
 
     const deskKeywords: Record<ProductionDeskId, string[]> = {
-        'art-design': ['visual', 'design', 'image', 'logo', 'brand', 'color', 'aesthetic'],
-        'engineering': ['build', 'code', 'develop', 'implement', 'technical', 'system', 'api'],
-        'writing': ['write', 'content', 'copy', 'story', 'narrative', 'message'],
-        'marketing': ['market', 'campaign', 'promote', 'reach', 'audience', 'grow'],
-        'career-assets': ['resume', 'job', 'career', 'hire', 'interview', 'portfolio'],
-        'data-analysis': ['research', 'analyze', 'data', 'metrics', 'insights', 'trends'],
-        'workflow': ['task', 'workflow', 'management', 'issue', 'ticket', 'sprint'],
+        'design': ['visual', 'design', 'image', 'logo', 'brand', 'color', 'aesthetic'],
+        'code': ['build', 'code', 'develop', 'implement', 'technical', 'system', 'api', 'task', 'management', 'issue', 'ticket', 'sprint'],
+        'write': [
+            'write',
+            'content',
+            'copy',
+            'story',
+            'narrative',
+            'message',
+            'market',
+            'campaign',
+            'promote',
+            'reach',
+            'audience',
+            'grow',
+            'resume',
+            'job',
+            'career',
+            'hire',
+            'interview',
+            'portfolio',
+        ],
+        'analyze': ['research', 'analyze', 'data', 'metrics', 'insights', 'trends'],
     };
 
     // Find best matching desk
@@ -264,7 +270,7 @@ function inferDeskFromGoal(goal: string, activeDesks: ProductionDeskId[]): Produ
     }
 
     // Default to first active desk
-    return activeDesks[0] || 'writing';
+    return activeDesks[0] || 'write';
 }
 
 // ============================================

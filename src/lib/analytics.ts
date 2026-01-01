@@ -1,7 +1,9 @@
 import posthog from 'posthog-js';
+import type { AnalyticsEvent } from './analytics/events';
 
 const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY || '';
 const POSTHOG_HOST = import.meta.env.VITE_POSTHOG_HOST || 'https://app.posthog.com';
+const DEBUG = import.meta.env.VITE_ANALYTICS_DEBUG === 'true';
 
 /**
  * CORE ANALYTICS WRAPPER
@@ -17,14 +19,15 @@ class Analytics {
         if (POSTHOG_KEY) {
             posthog.init(POSTHOG_KEY, {
                 api_host: POSTHOG_HOST,
-                autocapture: true,
+                autocapture: false, // We'll be explicit about what we track
                 capture_pageview: true,
+                capture_pageleave: true,
                 persistence: 'localStorage'
             });
             this.initialized = true;
-            console.log('[Analytics] PostHog initialized');
+            if (DEBUG) console.log('[Analytics] PostHog initialized');
         } else {
-            console.log('[Analytics] PostHog key missing. Running in mock mode.');
+            if (DEBUG) console.log('[Analytics) PostHog key missing. Running in mock mode.');
         }
     }
 
@@ -32,14 +35,17 @@ class Analytics {
         if (POSTHOG_KEY) {
             posthog.identify(userId, properties);
         }
-        console.log(`[Analytics] Identify: ${userId}`, properties);
+        if (DEBUG) console.log(`[Analytics] Identify: ${userId}`, properties);
     }
 
-    track(event: string, properties?: any) {
+    /**
+     * Track a typed event with properties
+     */
+    track<T extends AnalyticsEvent>(event: T['name'], properties?: T['properties']) {
         if (POSTHOG_KEY) {
             posthog.capture(event, properties);
         }
-        console.log(`[Analytics] Track: ${event}`, properties);
+        if (DEBUG) console.log(`[Analytics] Track: ${event}`, properties);
     }
 
     trackPageview() {

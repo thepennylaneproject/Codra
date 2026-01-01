@@ -16,8 +16,8 @@ export function selectModelForTask(
     taskTitle: string,
     isSmartModeEnabled: boolean = true
 ): ModelMatch {
-    const highCreativityDesks: ProductionDeskId[] = ['art-design', 'writing', 'marketing', 'career-assets'];
-    const technicalDesks: ProductionDeskId[] = ['engineering', 'data-analysis'];
+    const highCreativityDesks: ProductionDeskId[] = ['design', 'write'];
+    const technicalDesks: ProductionDeskId[] = ['code', 'analyze'];
     
     const isCreative = highCreativityDesks.includes(deskId);
     const isTechnical = technicalDesks.includes(deskId);

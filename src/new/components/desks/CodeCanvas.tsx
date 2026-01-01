@@ -4,7 +4,7 @@
  * Code, architecture, and technical implementation
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Terminal, FileCode, Folder, ChevronRight, Play, CheckCircle2, AlertCircle, ShieldAlert, Activity, Sparkles } from 'lucide-react';
 import { MOCK_ERRORS } from '../../../domain/integrations';
 import { SourceImportOverlay } from './engineering/SourceImportOverlay';
@@ -20,6 +20,9 @@ export const CodeCanvas: React.FC<CodeCanvasProps> = ({
     selectedModelId = 'deepseek-coder', 
     onSelectModel 
 }) => {
+    void projectId;
+    void selectedModelId;
+    void onSelectModel;
     const [selectedFile, setSelectedFile] = useState<string | null>(null);
     const [isImported, setIsImported] = useState(false);
     const [files, setFiles] = useState<{ name: string; status: string }[]>([]);

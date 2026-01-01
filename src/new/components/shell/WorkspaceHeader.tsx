@@ -9,7 +9,8 @@ import {
     Settings,
     Zap,
     ChevronDown,
-    ArrowLeft
+    ArrowLeft,
+    Wallet
 } from 'lucide-react';
 import { Button, IconButton } from '../Button';
 import { clsx, type ClassValue } from 'clsx';
@@ -28,6 +29,10 @@ interface WorkspaceHeaderProps {
     rightDockVisible: boolean;
     onToggleLeftDock: () => void;
     onToggleRightDock: () => void;
+    contextMemory?: {
+        percentage: number;
+        level: 'low' | 'medium' | 'high' | 'critical';
+    };
     mode?: 'canvas' | 'studio';
     activeStudioId?: ProductionDeskId;
 }
@@ -44,9 +49,11 @@ export function WorkspaceHeader({
     rightDockVisible,
     onToggleLeftDock,
     onToggleRightDock,
+    contextMemory,
     mode = 'canvas',
     activeStudioId
 }: WorkspaceHeaderProps) {
+    void contextMemory;
     const location = useLocation();
     const isSpread = location.pathname.includes('/spread');
     const isContext = location.pathname.includes('/context');
@@ -134,7 +141,7 @@ export function WorkspaceHeader({
                                         {PRODUCTION_DESKS.map((desk) => (
                                             <Link
                                                 key={desk.id}
-                                                to={`/p/${projectId}/desk/${desk.id}`}
+                                                to={`/p/${projectId}/production?desk=${desk.id}`}
                                                 onClick={() => setIsStudioDropdownOpen(false)}
                                                 className="block px-4 py-2 text-xs font-bold text-[var(--color-ink)] hover:bg-[var(--color-border-soft)] transition-colors"
                                             >
@@ -160,7 +167,7 @@ export function WorkspaceHeader({
 
                             <div className="relative" ref={dropdownRef}>
                                 <Button
-                                    variant="accent"
+                                    variant="secondary"
                                     size="sm"
                                     onClick={() => setIsStudioDropdownOpen(!isStudioDropdownOpen)}
                                     className="rounded-full"
@@ -174,7 +181,7 @@ export function WorkspaceHeader({
                                         {PRODUCTION_DESKS.map((desk) => (
                                             <Link
                                                 key={desk.id}
-                                                to={`/p/${projectId}/desk/${desk.id}`}
+                                                to={`/p/${projectId}/production?desk=${desk.id}`}
                                                 onClick={() => setIsStudioDropdownOpen(false)}
                                                 className={cn(
                                                     "block px-4 py-2 text-xs font-bold transition-colors",
@@ -198,6 +205,19 @@ export function WorkspaceHeader({
                     {/* Context Window Indicator moved to Activity Strip */}
 
                     <div className="flex items-center gap-1 mr-4">
+                        {/* Compact Budget Indicator - key differentiator surfaced */}
+                        <div 
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 rounded-lg border border-emerald-100 cursor-pointer hover:bg-emerald-100 transition-colors group"
+                            title="Daily Budget Usage - Click to manage"
+                        >
+                            <Wallet size={14} strokeWidth={1.5} className="text-emerald-600" />
+                            <span className="text-[10px] font-bold text-emerald-700">$12</span>
+                            <span className="text-[9px] text-emerald-500">/</span>
+                            <span className="text-[10px] font-mono text-emerald-600">$50</span>
+                        </div>
+
+                        <div className="w-px h-4 bg-[var(--color-border)] mx-1" />
+
                         <Link 
                             to={`/coherence-scan?projectId=${projectId}`}
                             className="p-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition-all"
@@ -233,7 +253,7 @@ export function WorkspaceHeader({
 
                     <div className="flex items-center gap-1.5 border-l border-border pl-4">
                         <IconButton
-                            variant={leftDockVisible ? "accent" : "ghost"}
+                            variant={leftDockVisible ? "secondary" : "ghost"}
                             size="md"
                             onClick={onToggleLeftDock}
                             title="Toggle Left Dock"
@@ -242,7 +262,7 @@ export function WorkspaceHeader({
                             <PanelLeft size={20} strokeWidth={1.5} />
                         </IconButton>
                         <IconButton
-                            variant={rightDockVisible ? "accent" : "ghost"}
+                            variant={rightDockVisible ? "secondary" : "ghost"}
                             size="md"
                             onClick={onToggleRightDock}
                             title="Toggle Right Dock"

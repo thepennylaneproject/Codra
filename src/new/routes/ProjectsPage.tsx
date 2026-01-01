@@ -59,7 +59,7 @@ export function ProjectsPage() {
                             goals: ['Explore the workspace', 'Try AI generation', 'Customize your first project'],
                             boundaries: ['This is a sandbox — experiment freely!'],
                             budgetPolicy: { maxCostPerRun: 25, dailyLimit: 100, approvalRequired: false },
-                            selectedDesks: ['art-design', 'writing', 'engineering'] as ProductionDeskId[],
+                            selectedDesks: ['design', 'write', 'code'] as ProductionDeskId[],
                             moodboard: []
                         });
 
@@ -180,7 +180,7 @@ export function ProjectsPage() {
             goals: ['Code Review', 'Refactoring', 'Documentation'],
             boundaries: [],
             budgetPolicy: { maxCostPerRun: 10, dailyLimit: 100, approvalRequired: false },
-            selectedDesks: ['engineering'] as ProductionDeskId[],
+            selectedDesks: ['code'] as ProductionDeskId[],
             moodboard: []
         });
         setCodebaseUrl('');
@@ -199,14 +199,14 @@ export function ProjectsPage() {
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-2 h-2 rounded-full bg-[#FF4D4D] animate-pulse" />
                          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8A8A8A]">
-                                Studio Registry
+                                Project Dashboard
                             </span>
                         </div>
                         <h1 className="text-6xl font-black tracking-tighter leading-none mb-4">
-                            Studio Workspaces
+                            Your Projects
                         </h1>
-                        <p className="text-lg text-[#5A5A5A] max-w-md font-medium leading-relaxed italic">
-                            Select a project to continue, or start a new one.
+                        <p className="text-lg text-[#5A5A5A] max-w-lg font-medium leading-relaxed">
+                            AI-powered creative production. Build assets, write content, and ship code — with specialists who remember your goals.
                         </p>
                     </div>
 

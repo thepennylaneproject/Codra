@@ -1,11 +1,12 @@
 /**
- * Codra Custom ESLint Rules
- * ==========================
- * Design system governance and code quality rules
+ * Codra ESLint Plugin
+ * Custom rules for design system governance
  */
 
-module.exports = {
+import noHardcodedAccent from './no-hardcoded-accent.js';
+
+export default {
     rules: {
-        'no-hardcoded-accent': require('./no-hardcoded-accent'),
+        'no-hardcoded-accent': noHardcodedAccent,
     },
 };

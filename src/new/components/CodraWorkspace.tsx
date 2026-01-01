@@ -23,17 +23,12 @@ import { SpreadTask } from '../../domain/task-queue';
 import { SpreadSection } from './SpreadSection';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { ArtDeskCanvas } from './desks/ArtDeskCanvas';
-import { EngineeringDeskCanvas } from './desks/EngineeringDeskCanvas';
-import { WritingDeskCanvas } from './desks/WritingDeskCanvas';
-import { WorkflowDeskCanvas } from './desks/WorkflowDeskCanvas';
-import { MarketingDeskCanvas } from './desks/MarketingDeskCanvas';
-import { CareerAssetsDeskCanvas } from './desks/CareerAssetsDeskCanvas';
-import { DataAnalysisDeskCanvas } from './desks/DataAnalysisDeskCanvas';
+import { DesignCanvas } from './desks/DesignCanvas';
+import { CodeCanvas } from './desks/CodeCanvas';
+import { WriteCanvas } from './desks/WriteCanvas';
+import { AnalyzeCanvas } from './desks/AnalyzeCanvas';
 import { ErrorBoundary } from './ErrorBoundary';
-import { CrossDeskBadge } from './CrossDeskSuggestions';
 import { ActivityStrip } from './activity';
-import { LyraNudgeContainer } from './LyraNudgeBubble';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -194,46 +189,32 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
                                     {/* Desk Specific Canvas Injection */}
                                     <div className="flex-1 min-h-[500px] border-t border-b border-[var(--desk-border)] bg-[var(--desk-bg)]/5 -mx-10 px-10 py-8 overflow-y-auto custom-scrollbar">
                                         <ErrorBoundary name={activeTask.deskId}>
-                                            {activeTask.deskId === 'art-design' && (
-                                                <ArtDeskCanvas
+                                            {activeTask.deskId === 'design' && (
+                                                <DesignCanvas
+                                                    projectId={spread?.projectId || ''}
                                                     selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
-                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
+                                                    onSelectModel={(m: string, p: string) => onSetDeskModel(activeTask.deskId, m, p)}
                                                 />
                                             )}
-                                            {activeTask.deskId === 'engineering' && (
-                                                <EngineeringDeskCanvas
+                                            {activeTask.deskId === 'code' && (
+                                                <CodeCanvas
+                                                    projectId={spread?.projectId || ''}
                                                     selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
-                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
+                                                    onSelectModel={(m: string, p: string) => onSetDeskModel(activeTask.deskId, m, p)}
                                                 />
                                             )}
-                                            {activeTask.deskId === 'writing' && (
-                                                <WritingDeskCanvas
+                                            {activeTask.deskId === 'write' && (
+                                                <WriteCanvas
+                                                    projectId={spread?.projectId || ''}
                                                     selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
-                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
+                                                    onSelectModel={(m: string, p: string) => onSetDeskModel(activeTask.deskId, m, p)}
                                                 />
                                             )}
-                                            {activeTask.deskId === 'workflow' && (
-                                                <WorkflowDeskCanvas
+                                            {activeTask.deskId === 'analyze' && (
+                                                <AnalyzeCanvas
+                                                    projectId={spread?.projectId || ''}
                                                     selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
-                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
-                                                />
-                                            )}
-                                            {activeTask.deskId === 'marketing' && (
-                                                <MarketingDeskCanvas
-                                                    selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
-                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
-                                                />
-                                            )}
-                                            {activeTask.deskId === 'career-assets' && (
-                                                <CareerAssetsDeskCanvas
-                                                    selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
-                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
-                                                />
-                                            )}
-                                            {activeTask.deskId === 'data-analysis' && (
-                                                <DataAnalysisDeskCanvas
-                                                    selectedModelId={deskModels[activeTask.deskId]?.modelId || globalModelId}
-                                                    onSelectModel={(m, p) => onSetDeskModel(activeTask.deskId, m, p)}
+                                                    onSelectModel={(m: string, p: string) => onSetDeskModel(activeTask.deskId, m, p)}
                                                 />
                                             )}
                                         </ErrorBoundary>

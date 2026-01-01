@@ -8,10 +8,10 @@ interface NextStepCTAProps {
 }
 
 const workspaces = [
-  { id: 'art-design', name: 'Art & Design', icon: '🎨', desc: 'Generate images, mood boards, visual assets' },
-  { id: 'engineering', name: 'Engineering', icon: '⚙️', desc: 'Generate code, architecture, APIs' },
-  { id: 'writing', name: 'Copywriting', icon: '✍️', desc: 'Generate copy, messaging, docs' },
-  { id: 'workflow', name: 'Workflow', icon: '⚡', desc: 'Orchestrate tasks, manage automation' }
+  { id: 'design', name: 'Art & Design', icon: '🎨', desc: 'Generate images, mood boards, visual assets' },
+  { id: 'code', name: 'Engineering', icon: '⚙️', desc: 'Generate code, architecture, APIs' },
+  { id: 'write', name: 'Copywriting', icon: '✍️', desc: 'Generate copy, messaging, docs' },
+  { id: 'analyze', name: 'Analyze', icon: '📊', desc: 'Turn data into insights and research summaries' }
 ];
 
 export function NextStepCTA({ onSelectWorkspace }: NextStepCTAProps) {
@@ -70,4 +70,3 @@ export function NextStepCTA({ onSelectWorkspace }: NextStepCTAProps) {
     </>
   );
 }
-

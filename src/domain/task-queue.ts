@@ -185,7 +185,7 @@ export interface TaskQueueEvent {
  * Used for automatic desk assignment during task generation.
  */
 export const DESK_TASK_TYPES: Record<ProductionDeskId, string[]> = {
-    'art-design': [
+    'design': [
         'hero-image',
         'illustration',
         'color-palette',
@@ -194,44 +194,38 @@ export const DESK_TASK_TYPES: Record<ProductionDeskId, string[]> = {
         'moodboard',
         'layout-mockup',
     ],
-    'engineering': [
+    'code': [
         'component',
         'api-integration',
         'database-schema',
         'algorithm',
         'architecture-diagram',
         'code-review',
-    ],
-    'workflow': [
         'editorial-assignment',
         'task-prioritization',
         'status-update',
         'blocker-identification',
         'workflow-optimization',
     ],
-    'writing': [
+    'write': [
         'headline',
         'body-copy',
         'tagline',
         'script',
         'documentation',
         'blog-post',
-    ],
-    'marketing': [
         'campaign-brief',
         'social-content',
         'ad-copy',
         'email-sequence',
         'landing-page',
-    ],
-    'career-assets': [
         'resume',
         'cover-letter',
         'portfolio-piece',
         'linkedin-summary',
         'interview-prep',
     ],
-    'data-analysis': [
+    'analyze': [
         'research-summary',
         'competitive-analysis',
         'metrics-dashboard',

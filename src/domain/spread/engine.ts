@@ -159,14 +159,13 @@ export function generateSpreadFromProfile(
     // Healing: Inferred desks if missing but goals are present
     if (activeDesks.length === 0 && project.goals) {
         const goalsStr = project.goals.join(' ').toLowerCase();
-        if (goalsStr.includes('brand') || goalsStr.includes('identity')) activeDesks.push('art-design');
-        if (goalsStr.includes('website') || goalsStr.includes('app') || goalsStr.includes('engineering')) {
-            if (!activeDesks.includes('art-design')) activeDesks.push('art-design');
-            if (!activeDesks.includes('engineering')) activeDesks.push('engineering');
+        if (goalsStr.includes('brand') || goalsStr.includes('identity')) activeDesks.push('design');
+        if (goalsStr.includes('website') || goalsStr.includes('app') || goalsStr.includes('code')) {
+            if (!activeDesks.includes('design')) activeDesks.push('design');
+            if (!activeDesks.includes('code')) activeDesks.push('code');
         }
         if (goalsStr.includes('content') || goalsStr.includes('write') || goalsStr.includes('marketing')) {
-            if (!activeDesks.includes('writing')) activeDesks.push('writing');
-            if (!activeDesks.includes('marketing')) activeDesks.push('marketing');
+            if (!activeDesks.includes('write')) activeDesks.push('write');
         }
     }
 

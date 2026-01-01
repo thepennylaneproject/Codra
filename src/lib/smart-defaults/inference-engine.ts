@@ -55,7 +55,6 @@ export class StaticInferenceEngine implements InferenceEngine {
     inferVisualDirection(context: ProjectContext): VisualDirection {
         // Future: Analyze project type and industry
         // For now: Return modern-professional as default
-        const projectType = context.projectType?.toLowerCase() || '';
         const industry = context.industry?.toLowerCase() || '';
 
         if (industry.includes('luxury') || industry.includes('premium')) {
@@ -83,7 +82,7 @@ export class StaticInferenceEngine implements InferenceEngine {
             return 'design';
         }
         if (projectType.includes('research') || projectType.includes('analysis')) {
-            return 'research';
+            return 'analyze';
         }
 
         return context.lastUsedDesk || 'write';
@@ -104,7 +103,7 @@ export class StaticInferenceEngine implements InferenceEngine {
         return 50;
     }
 
-    inferSpendingStrategy(context: ProjectContext): SpendingStrategy {
+    inferSpendingStrategy(_context: ProjectContext): SpendingStrategy {
         // Future: Analyze user preferences over time
         // For now: Always default to smart-balance
         return 'smart-balance';
@@ -136,3 +135,42 @@ export class StaticInferenceEngine implements InferenceEngine {
  * Singleton instance
  */
 export const inferenceEngine = new StaticInferenceEngine();
+
+/**
+ * RULE-BASED INFERENCE ENGINE (NEW)
+ */
+export { RuleBasedInferenceEngine, ruleBasedInferenceEngine } from './RuleBasedInferenceEngine';
+export { behaviorTracker } from '../tracking/BehaviorTracker';
+
+/**
+ * Get inferred settings with user history integration
+ */
+export async function getInferredSettings(
+    context: ProjectContext,
+    userId: string
+): Promise<{
+    qualityPriority: QualityPriority;
+    dataSensitivity: DataSensitivity;
+    visualDirection: VisualDirection;
+    defaultDesk: DeskId;
+    dailyBudget: number;
+    spendingStrategy: SpendingStrategy;
+    exportFormat: ExportFormat;
+}> {
+    const { behaviorTracker } = await import('../tracking/BehaviorTracker');
+    const { ruleBasedInferenceEngine } = await import('./RuleBasedInferenceEngine');
+    
+    const userHistory = await behaviorTracker.getUserHistory(userId);
+    const contextWithHistory = { ...context, userHistory };
+
+    return {
+        qualityPriority: ruleBasedInferenceEngine.inferQualityPriority(contextWithHistory),
+        dataSensitivity: ruleBasedInferenceEngine.inferDataSensitivity(contextWithHistory),
+        visualDirection: ruleBasedInferenceEngine.inferVisualDirection(contextWithHistory),
+        defaultDesk: ruleBasedInferenceEngine.inferDefaultDesk(contextWithHistory),
+        dailyBudget: ruleBasedInferenceEngine.inferDailyBudget(contextWithHistory),
+        spendingStrategy: ruleBasedInferenceEngine.inferSpendingStrategy(contextWithHistory),
+        exportFormat: ruleBasedInferenceEngine.inferExportFormat(contextWithHistory),
+    };
+}
+

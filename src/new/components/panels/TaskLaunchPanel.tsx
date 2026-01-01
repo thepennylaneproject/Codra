@@ -8,12 +8,9 @@ import {
     Palette,
     Code,
     PenTool,
-    Megaphone,
-    Briefcase,
     BarChart3,
     Sparkles,
     ChevronRight,
-    LayoutTemplate,
 } from 'lucide-react';
 
 // ============================================
@@ -21,13 +18,10 @@ import {
 // ============================================
 
 const DESK_ICONS: Record<ProductionDeskId, typeof Palette> = {
-    'art-design': Palette,
-    'engineering': Code,
-    'writing': PenTool,
-    'marketing': Megaphone,
-    'career-assets': Briefcase,
-    'data-analysis': BarChart3,
-    'workflow': LayoutTemplate,
+    'design': Palette,
+    'code': Code,
+    'write': PenTool,
+    'analyze': BarChart3,
 };
 
 // ============================================

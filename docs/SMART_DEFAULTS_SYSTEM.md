@@ -61,64 +61,64 @@ src/
 
 ## Default Values
 
-| Setting | Default | Inference Source (Future) |
-|---------|---------|---------------------------|
-| AI Quality Priority | Balanced | Task type, deadline language |
-| Data Sensitivity | Internal | Project name, file contents |
-| Daily Budget | $50 | Account tier, historical spend |
-| Spending Strategy | Smart Balance | N/A (always default) |
-| Autonomy Level | Apply with Approval | N/A (safety default) |
-| Max Steps Before Pause | 10 | Task complexity |
-| Risk Tolerance | 3/5 | Project type |
-| Visual Direction | Modern, Professional | Project type, industry |
-| Theme | System (dark) | OS preference |
-| Default Desk | Write | Last used, project type |
+| Setting                | Default              | Inference Source (Future)      |
+| ---------------------- | -------------------- | ------------------------------ |
+| AI Quality Priority    | Balanced             | Task type, deadline language   |
+| Data Sensitivity       | Internal             | Project name, file contents    |
+| Daily Budget           | $50                  | Account tier, historical spend |
+| Spending Strategy      | Smart Balance        | N/A (always default)           |
+| Autonomy Level         | Apply with Approval  | N/A (safety default)           |
+| Max Steps Before Pause | 10                   | Task complexity                |
+| Risk Tolerance         | 3/5                  | Project type                   |
+| Visual Direction       | Modern, Professional | Project type, industry         |
+| Theme                  | System (dark)        | OS preference                  |
+| Default Desk           | Write                | Last used, project type        |
 
 ## Usage
 
 ### Reading Account Settings
 
 ```typescript
-import { useAccountSettings } from '@/lib/smart-defaults';
+import { useAccountSettings } from "@/lib/smart-defaults";
 
 function MyComponent() {
   const { settings, updateAISettings } = useAccountSettings();
 
   // Access settings
   console.log(settings.ai.qualityPriority); // 'balanced'
-  console.log(settings.budget.dailyLimit);   // 50
+  console.log(settings.budget.dailyLimit); // 50
 
   // Update settings
-  updateAISettings({ qualityPriority: 'quality' });
+  updateAISettings({ qualityPriority: "quality" });
 }
 ```
 
 ### Reading Effective Settings (with Project Overrides)
 
 ```typescript
-import { useEffectiveSettings } from '@/lib/smart-defaults';
+import { useEffectiveSettings } from "@/lib/smart-defaults";
 
 function ProjectComponent({ projectId }) {
   const settings = useEffectiveSettings(projectId);
 
   // These are merged account + project settings
   console.log(settings.ai.qualityPriority);
-  console.log(settings.hasOverrides);      // true if project has overrides
-  console.log(settings.overrideCount);     // number of overrides
+  console.log(settings.hasOverrides); // true if project has overrides
+  console.log(settings.overrideCount); // number of overrides
 }
 ```
 
 ### Setting Project Overrides
 
 ```typescript
-import { useProjectSettings } from '@/lib/smart-defaults';
+import { useProjectSettings } from "@/lib/smart-defaults";
 
 function ProjectSettings({ projectId }) {
   const { updateProjectSettings, clearProjectSettings } = useProjectSettings();
 
   // Override a specific setting
   updateProjectSettings(projectId, {
-    qualityPriority: 'quality',
+    qualityPriority: "quality",
     dailyBudget: 100,
   });
 
@@ -149,12 +149,12 @@ import { ProjectSettingsIndicator } from '@/features/settings';
 The inference engine is currently a static implementation that returns sensible defaults. In the future, it will be replaced with an ML-based system that learns from user behavior.
 
 ```typescript
-import { inferenceEngine } from '@/lib/smart-defaults';
+import { inferenceEngine } from "@/lib/smart-defaults";
 
 const context = {
-  projectName: 'My Startup Landing Page',
-  projectType: 'marketing-site',
-  industry: 'tech',
+  projectName: "My Startup Landing Page",
+  projectType: "marketing-site",
+  industry: "tech",
 };
 
 const quality = inferenceEngine.inferQualityPriority(context);
@@ -199,6 +199,7 @@ The Settings page follows a "review and override" pattern:
 ```
 
 Key UI principles:
+
 - **Values shown as read-only text** by default
 - **"Change" button** opens inline editor or modal
 - **No accent color** in Settings (neutral zone)
@@ -210,16 +211,17 @@ Projects can override account defaults on a per-setting basis:
 
 ```typescript
 interface ProjectSettings {
-  qualityPriority?: 'quality' | 'balanced' | 'fast' | 'cheap';
-  autonomyLevel?: 'full-auto' | 'apply-with-approval' | 'always-ask';
+  qualityPriority?: "quality" | "balanced" | "fast" | "cheap";
+  autonomyLevel?: "full-auto" | "apply-with-approval" | "always-ask";
   dailyBudget?: number;
-  dataSensitivity?: 'public' | 'internal' | 'confidential' | 'regulated';
+  dataSensitivity?: "public" | "internal" | "confidential" | "regulated";
   maxSteps?: number;
   riskTolerance?: number; // 1-5
 }
 ```
 
 Override indicator in project header:
+
 ```
 Project: Campaign Q1  [Using custom settings]
 ```
@@ -231,11 +233,13 @@ Project: Campaign Q1  [Using custom settings]
 If you're migrating from the old onboarding system:
 
 1. **Install the new settings system**:
+
    ```typescript
-   import { useAccountSettings } from '@/lib/smart-defaults';
+   import { useAccountSettings } from "@/lib/smart-defaults";
    ```
 
 2. **Initialize with smart defaults**:
+
    - New users automatically get `SMART_DEFAULTS`
    - Existing users' settings are preserved
 
@@ -250,10 +254,10 @@ The old `useSettingsStore` is still available for backward compatibility:
 
 ```typescript
 // Old (deprecated)
-import { useSettingsStore } from '@/lib/store/useSettingsStore';
+import { useSettingsStore } from "@/lib/store/useSettingsStore";
 
 // New (recommended)
-import { useAccountSettings } from '@/lib/smart-defaults';
+import { useAccountSettings } from "@/lib/smart-defaults";
 ```
 
 ## Testing
@@ -261,30 +265,30 @@ import { useAccountSettings } from '@/lib/smart-defaults';
 ### Unit Tests
 
 ```typescript
-import { useAccountSettings } from '@/lib/smart-defaults';
-import { SMART_DEFAULTS } from '@/domain/smart-defaults-types';
+import { useAccountSettings } from "@/lib/smart-defaults";
+import { SMART_DEFAULTS } from "@/domain/smart-defaults-types";
 
-test('should initialize with smart defaults', () => {
+test("should initialize with smart defaults", () => {
   const { settings } = useAccountSettings();
   expect(settings).toEqual(SMART_DEFAULTS);
 });
 
-test('should update AI settings', () => {
+test("should update AI settings", () => {
   const { updateAISettings, settings } = useAccountSettings();
-  updateAISettings({ qualityPriority: 'quality' });
-  expect(settings.ai.qualityPriority).toBe('quality');
+  updateAISettings({ qualityPriority: "quality" });
+  expect(settings.ai.qualityPriority).toBe("quality");
 });
 ```
 
 ### Integration Tests
 
 ```typescript
-test('project overrides should take precedence', () => {
+test("project overrides should take precedence", () => {
   const { updateProjectSettings } = useProjectSettings();
-  updateProjectSettings('project-1', { qualityPriority: 'quality' });
+  updateProjectSettings("project-1", { qualityPriority: "quality" });
 
-  const settings = useEffectiveSettings('project-1');
-  expect(settings.ai.qualityPriority).toBe('quality');
+  const settings = useEffectiveSettings("project-1");
+  expect(settings.ai.qualityPriority).toBe("quality");
   expect(settings.hasOverrides).toBe(true);
 });
 ```
@@ -301,11 +305,160 @@ test('project overrides should take precedence', () => {
 
 ## What This Does NOT Cover
 
-- Inference engine ML implementation
-- User behavior tracking for learning
-- Account tier differences
-- Per-task setting overrides (future)
-- Settings export/import (future)
+- Full ML-based inference (rule-based system implemented as stepping stone)
+- Complete UI integration for task overrides (TaskOverridePanel created but needs integration into task display locations)
+- Tier data fetching from user profiles (tier defaults implemented, needs profile integration)
+- Export format tracking (infrastructure ready, needs export flow integration)
+
+## Enhancements (Prompt 5B) - IMPLEMENTED
+
+### Rule-Based Inference Engine
+
+The inference engine now uses rules instead of static defaults:
+
+```typescript
+import {
+  ruleBasedInferenceEngine,
+  behaviorTracker,
+} from "@/lib/smart-defaults";
+
+const context = {
+  projectName: "Confidential Q1 Report",
+  description: "Urgent client deliverable",
+  projectType: "product",
+  industry: "finance",
+};
+
+const userHistory = await behaviorTracker.getUserHistory(userId);
+const contextWithHistory = { ...context, userHistory };
+
+// Infers 'confidential' from sensitive keywords
+const dataSensitivity =
+  ruleBasedInferenceEngine.inferDataSensitivity(contextWithHistory);
+
+// Infers 'fast' from urgency words
+const qualityPriority =
+  ruleBasedInferenceEngine.inferQualityPriority(contextWithHistory);
+```
+
+**Inference Rules:**
+
+- **Quality Priority**: Urgency words → fast; product/client → quality quality; user history preference
+- **Data Sensitivity**: Keyword detection for public, internal, confidential, regulated
+- **Visual Direction**: Project type mapping (campaign → bold, product → professional, etc.)
+- **Default Desk**: User history > last used > project type mapping
+- **Daily Budget**: Tier-based with historical spend adjustment
+- **Spending Strategy**: Tier-based with performance escalation
+- **Export Format**: User preference > content type inference
+
+### User Behavior Tracking
+
+Track user actions to learn preferences:
+
+```typescript
+import { behaviorTracker } from "@/lib/smart-defaults";
+
+// Track setting change
+await behaviorTracker.track({
+  userId,
+  timestamp: new Date(),
+  event: "setting_changed",
+  metadata: { setting: "qualityPriority", value: "quality" },
+});
+
+// Get user history
+const history = await behaviorTracker.getUserHistory(userId);
+// Returns: { qualityPreference: 'high', lastUsedDesk: 'design', ... }
+```
+
+**Tracked Events:**
+
+- `setting_changed` - User changes a setting
+- `desk_switched` - User switches desks
+- `quality_feedback` - User indicates quality preference
+- `task_rerun` - User reruns a task (implies dissatisfaction)
+- `export_format_chosen` - User chooses export format
+
+### Account Tier Differences
+
+Settings now vary by account tier:
+
+```typescript
+import { getDefaultsForTier, TIER_DEFAULTS } from "@/lib/smart-defaults";
+
+const tierDefaults = getDefaultsForTier("enterprise");
+// {
+//   dailyBudget: 1000,
+//   maxSteps: 50,
+//   qualityPriority: 'quality',
+//   availableModels: ['claude-haiku', 'claude-sonnet', 'claude-opus', 'gpt-4']
+// }
+```
+
+**Tier Mapping:**
+
+- **Free**: $5/day, 5 steps, fast priority, haiku only
+- **Pro**: $50/day, 10 steps, balanced, haiku + sonnet
+- **Team**: $200/day, 20 steps, balanced, haiku + sonnet + opus
+- **Enterprise**: $1000/day, 50 steps, quality priority, all models
+
+### Effective Settings Hierarchy
+
+Settings merge in priority order: **task > project > account > tier**
+
+```typescript
+import { useEffectiveSettings } from "@/lib/smart-defaults";
+
+const settings = useEffectiveSettings(
+  projectId,
+  "pro", // account tier
+  taskOverrides // optional task overrides
+);
+
+// Returns merged settings showing which level provided each value
+```
+
+### Per-Task Setting Overrides
+
+Override settings for individual tasks:
+
+```typescript
+import { applyTaskOverrides, saveTaskPattern } from "@/lib/smart-defaults";
+import { TaskOverridePanel } from "@/components/tasks";
+
+// Apply one-time override
+applyTaskOverrides("task-123", {
+  qualityPriority: "fast",
+  maxSteps: 3,
+});
+
+// Save pattern for "Remember for similar tasks"
+await saveTaskPattern(userId, {
+  deskId: "write",
+  taskType: "headline",
+  overrides: { qualityPriority: "quality" },
+});
+
+// UI Component
+<TaskOverridePanel
+  taskType="headline"
+  currentSettings={currentSettings}
+  onApply={(overrides, persistent) => {
+    applyTaskOverrides(taskId, overrides);
+    if (persistent) {
+      saveTaskPattern(userId, { deskId, taskType, overrides });
+    }
+  }}
+  onCancel={() => setShowPanel(false)}
+/>;
+```
+
+**Database Schema (Supabase):**
+
+- `behavior_events`: Tracks all user actions
+- `task_patterns`: Stores saved task override patterns
+
+See migration: `supabase/migrations/20260102_behavior_tracking.sql`
 
 ## API Reference
 
@@ -314,5 +467,6 @@ See [API.md](./API.md) for complete API documentation.
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: https://github.com/thepennylaneproject/Codra/issues
 - Documentation: https://docs.codra.io/smart-defaults

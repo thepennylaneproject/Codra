@@ -4,7 +4,7 @@
  * Only accessible via Cmd/Ctrl+Shift+M keyboard shortcut.
  */
 
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { X, Cpu, Zap, AlertCircle, Info } from 'lucide-react';
 import { useFlowStore } from '../../../lib/store/useFlowStore';
 import { smartRouter } from '../../../lib/ai/router/smart-router';

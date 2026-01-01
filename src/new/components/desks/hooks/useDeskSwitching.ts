@@ -8,10 +8,13 @@ import { useSearchParams } from 'react-router-dom';
 import { ProductionDeskId } from '../../../../domain/types';
 import { useDeskState } from './useDeskState';
 import { useFlowStore } from '../../../../lib/store/useFlowStore';
+import { behaviorTracker } from '../../../../lib/smart-defaults/inference-engine';
+import { supabase } from '../../../../lib/supabase';
+import { analytics } from '@/lib/analytics';
 
 interface UseDeskSwitchingReturn {
   activeDesk: ProductionDeskId;
-  switchDesk: (deskId: ProductionDeskId) => void;
+  switchDesk: (deskId: ProductionDeskId, method?: 'click' | 'keyboard') => void;
 }
 
 export function useDeskSwitching(projectId: string): UseDeskSwitchingReturn {
@@ -22,8 +25,34 @@ export function useDeskSwitching(projectId: string): UseDeskSwitchingReturn {
   // Get active desk from URL query param, default to 'write'
   const activeDesk = (searchParams.get('desk') as ProductionDeskId) || 'write';
   
-  const switchDesk = useCallback((deskId: ProductionDeskId) => {
+  const switchDesk = useCallback(async (deskId: ProductionDeskId, method: 'click' | 'keyboard' = 'click') => {
     if (deskId === activeDesk) return;
+
+    analytics.track('desk_switched', {
+      fromDesk: activeDesk,
+      toDesk: deskId,
+      method,
+    });
+
+    // Track desk switch for behavior learning
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const userId = session?.user?.id;
+      if (userId) {
+        behaviorTracker.track({
+          userId,
+          timestamp: new Date(),
+          event: 'desk_switched',
+          metadata: {
+            deskId,
+            previousDesk: activeDesk,
+            projectId
+          }
+        });
+      }
+    } catch (err) {
+      console.error('Failed to track desk switch:', err);
+    }
 
     // Save current desk state before switching
     // We'll save the current scroll position
@@ -64,7 +93,7 @@ export function useDeskSwitching(projectId: string): UseDeskSwitchingReturn {
         
         if (deskMap[e.key]) {
           e.preventDefault();
-          switchDesk(deskMap[e.key]);
+          switchDesk(deskMap[e.key], 'keyboard');
         }
       }
     };

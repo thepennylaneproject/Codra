@@ -100,7 +100,7 @@ function isApprovedComponent(node, context) {
     return false;
 }
 
-module.exports = {
+export default {
     meta: {
         type: 'problem',
         docs: {

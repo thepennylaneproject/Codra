@@ -48,7 +48,7 @@ import { PrivacyPage } from './new/routes/PrivacyPage';
 import { ToastContainer } from './new/components/Toast';
 import CoherenceScanPage from './new/routes/CoherenceScanPage';
 import { WorkspaceShellDemo } from './new/routes/WorkspaceShellDemo';
-import { MetricsDashboard } from './components/admin/MetricsDashboard';
+import { MetricsDashboard } from './pages/Admin/MetricsDashboard';
 
 // ============================================================
 // App Component
@@ -212,6 +212,16 @@ export function App() {
                       element={
                         <ProtectedRoute>
                           <WorkspaceShellDemo />
+                        </ProtectedRoute>
+                      }
+                    />
+                    
+                    {/* Admin Routes */}
+                    <Route
+                      path="/admin/metrics"
+                      element={
+                        <ProtectedRoute>
+                          <MetricsDashboard />
                         </ProtectedRoute>
                       }
                     />

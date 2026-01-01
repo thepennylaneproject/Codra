@@ -126,12 +126,12 @@ export function TOCSidebar({
                 <div className="flex items-center gap-2">
                     <List size={14} className="text-[#1A1A1A]" />
                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#1A1A1A]">
-                        Table of Contents
+                        Sector Index
                     </span>
                 </div>
                 {enableKeyboard && (
                     <span className="text-[9px] font-bold text-[#8A8A8A] uppercase tracking-tighter">
-                        1-9 to jump
+                        1-9 to navigate
                     </span>
                 )}
                 {hasInsights && (

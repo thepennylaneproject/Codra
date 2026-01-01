@@ -1,24 +1,42 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding, FileUpload } from '../hooks/useOnboarding';
 import { Button } from '../../../components/Button';
 import { ArrowLeft, ArrowRight, Upload, X, FileText, Image as ImageIcon } from 'lucide-react';
+import { analytics } from '@/lib/analytics';
 
 export const StepAddContext = () => {
     const navigate = useNavigate();
     const { data, addFile, removeFile } = useOnboarding();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [startTime] = useState(Date.now());
+
+    useEffect(() => {
+        analytics.track('onboarding_step_viewed', { step: 2, stepName: 'context' });
+    }, []);
     
     const handleBack = () => {
         navigate('/new');
     };
     
     const handleSkip = () => {
+        analytics.track('onboarding_step_skipped', {
+            step: 2,
+            stepName: 'context',
+            durationMs: Date.now() - startTime,
+        });
         navigate('/new?step=generating');
     };
     
     const handleContinue = () => {
+        analytics.track('onboarding_step_completed', {
+            step: 2,
+            stepName: 'context',
+            durationMs: Date.now() - startTime,
+            fileCount: data.contextFiles.length,
+            fileTypes: data.contextFiles.map(f => f.type),
+        });
         navigate('/new?step=generating');
     };
     

@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { useLyraOptional } from '../../../lib/lyra';
+import { useLyraOptional } from '../../../../lib/lyra';
 
 export interface LyraSuggestionResponse {
     type: 'suggestion' | 'clarification' | 'idle' | 'thinking';
