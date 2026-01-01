@@ -1,0 +1,303 @@
+/**
+ * SETTINGS PAGE
+ * Smart Defaults System - Review and override page
+ * No configuration before first Spread
+ */
+
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Zap, CircleDollarSign, Shield, Palette, RotateCcw } from 'lucide-react';
+import { SettingRow } from './SettingRow';
+import { SettingEditor } from './SettingEditor';
+import { useAccountSettings } from '../../lib/smart-defaults/hooks/useAccountSettings';
+import { SETTINGS_LABELS, SETTINGS_DESCRIPTIONS } from '../../domain/smart-defaults-types';
+import type { QualityPriority, SpendingStrategy, AutonomyLevel, ThemePreference } from '../../domain/smart-defaults-types';
+
+type EditorType = 'qualityPriority' | 'autonomyLevel' | 'maxSteps' | 'riskTolerance' | 'dailyLimit' | 'strategy' | 'theme' | null;
+
+export function SettingsPage() {
+    const navigate = useNavigate();
+    const {
+        settings,
+        updateAISettings,
+        updateBudgetSettings,
+        updateVisualSettings,
+        resetToDefaults,
+    } = useAccountSettings();
+
+    const [editorOpen, setEditorOpen] = useState<EditorType>(null);
+
+    const handleSave = (type: EditorType, value: string) => {
+        if (!type) return;
+
+        switch (type) {
+            case 'qualityPriority':
+                updateAISettings({ qualityPriority: value as QualityPriority });
+                break;
+            case 'autonomyLevel':
+                updateAISettings({ autonomyLevel: value as AutonomyLevel });
+                break;
+            case 'maxSteps':
+                updateAISettings({ maxSteps: parseInt(value) });
+                break;
+            case 'riskTolerance':
+                updateAISettings({ riskTolerance: parseInt(value) });
+                break;
+            case 'dailyLimit':
+                updateBudgetSettings({ dailyLimit: parseInt(value) });
+                break;
+            case 'strategy':
+                updateBudgetSettings({ strategy: value as SpendingStrategy });
+                break;
+            case 'theme':
+                updateVisualSettings({ theme: value as ThemePreference });
+                break;
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-[#FFFAF0] text-[#1A1A1A] font-sans selection:bg-[#1A1A1A]/10">
+            {/* Header */}
+            <header className="sticky top-0 z-50 bg-[#FFFAF0]/80 backdrop-blur-xl border-b border-[#1A1A1A]/5 px-8 h-20 flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                    <button
+                        onClick={() => navigate('/projects')}
+                        className="p-2 hover:bg-zinc-100 rounded-xl transition-colors group"
+                    >
+                        <ArrowLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
+                    </button>
+                    <div>
+                        <h1 className="text-xl font-black uppercase tracking-tight">Settings</h1>
+                        <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
+                            Account Defaults
+                        </p>
+                    </div>
+                </div>
+            </header>
+
+            <main className="max-w-4xl mx-auto py-16 px-8">
+                {/* Intro */}
+                <div className="mb-12 p-8 bg-white border border-[#1A1A1A]/5 rounded-3xl">
+                    <h2 className="text-sm font-black uppercase tracking-widest mb-3">Smart Defaults</h2>
+                    <p className="text-sm text-zinc-600 leading-relaxed">
+                        These are your account-level defaults. They're designed to be right 80% of the time.
+                        You can override them per-project in the project settings.
+                    </p>
+                </div>
+
+                <div className="space-y-16">
+                    {/* AI Behavior */}
+                    <section>
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
+                                <Zap size={20} />
+                            </div>
+                            <div>
+                                <h2 className="text-sm font-black uppercase tracking-widest">AI Behavior</h2>
+                                <p className="text-[10px] text-zinc-400">
+                                    How AI models work for you
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <SettingRow
+                                label="Quality Priority"
+                                value={SETTINGS_LABELS.qualityPriority[settings.ai.qualityPriority]}
+                                description={SETTINGS_DESCRIPTIONS.qualityPriority}
+                                onChange={() => setEditorOpen('qualityPriority')}
+                            />
+                            <SettingRow
+                                label="Autonomy Level"
+                                value={SETTINGS_LABELS.autonomyLevel[settings.ai.autonomyLevel]}
+                                description={SETTINGS_DESCRIPTIONS.autonomyLevel}
+                                onChange={() => setEditorOpen('autonomyLevel')}
+                            />
+                            <SettingRow
+                                label="Max Steps"
+                                value={settings.ai.maxSteps.toString()}
+                                description={SETTINGS_DESCRIPTIONS.maxSteps}
+                                onChange={() => setEditorOpen('maxSteps')}
+                            />
+                            <SettingRow
+                                label="Risk Tolerance"
+                                value={`${settings.ai.riskTolerance}/5`}
+                                description={SETTINGS_DESCRIPTIONS.riskTolerance}
+                                onChange={() => setEditorOpen('riskTolerance')}
+                            />
+                        </div>
+                    </section>
+
+                    {/* Budget */}
+                    <section>
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                                <CircleDollarSign size={20} />
+                            </div>
+                            <div>
+                                <h2 className="text-sm font-black uppercase tracking-widest">Budget</h2>
+                                <p className="text-[10px] text-zinc-400">
+                                    Spending limits and strategy
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <SettingRow
+                                label="Daily Limit"
+                                value={`$${settings.budget.dailyLimit}`}
+                                description={SETTINGS_DESCRIPTIONS.dailyLimit}
+                                onChange={() => setEditorOpen('dailyLimit')}
+                            />
+                            <SettingRow
+                                label="Strategy"
+                                value={SETTINGS_LABELS.spendingStrategy[settings.budget.strategy]}
+                                description={SETTINGS_DESCRIPTIONS.strategy}
+                                onChange={() => setEditorOpen('strategy')}
+                            />
+                        </div>
+                    </section>
+
+                    {/* Visual */}
+                    <section>
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500">
+                                <Palette size={20} />
+                            </div>
+                            <div>
+                                <h2 className="text-sm font-black uppercase tracking-widest">Visual</h2>
+                                <p className="text-[10px] text-zinc-400">
+                                    Interface preferences
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <SettingRow
+                                label="Theme"
+                                value={SETTINGS_LABELS.theme[settings.visual.theme]}
+                                description={SETTINGS_DESCRIPTIONS.theme}
+                                onChange={() => setEditorOpen('theme')}
+                            />
+                        </div>
+                    </section>
+
+                    {/* Reset */}
+                    <section className="pt-8 border-t border-[#1A1A1A]/5">
+                        <button
+                            onClick={resetToDefaults}
+                            className="w-full p-6 bg-zinc-50 hover:bg-zinc-100 rounded-2xl text-[11px] font-black uppercase tracking-widest text-zinc-600 transition-all flex items-center justify-center gap-3"
+                        >
+                            <RotateCcw size={16} />
+                            Reset All to Defaults
+                        </button>
+                    </section>
+                </div>
+            </main>
+
+            {/* Editors */}
+            <SettingEditor
+                isOpen={editorOpen === 'qualityPriority'}
+                onClose={() => setEditorOpen(null)}
+                title="Quality Priority"
+                description="Balance quality, speed, and cost for AI tasks"
+                currentValue={settings.ai.qualityPriority}
+                options={[
+                    { value: 'quality', label: 'Quality First', description: 'Best results, regardless of time or cost' },
+                    { value: 'balanced', label: 'Balanced', description: 'Good quality with reasonable speed and cost' },
+                    { value: 'fast', label: 'Speed First', description: 'Fast responses, quality can be good enough' },
+                    { value: 'cheap', label: 'Budget First', description: 'Minimize spending, results can be basic' },
+                ]}
+                onSave={(value) => handleSave('qualityPriority', value)}
+            />
+
+            <SettingEditor
+                isOpen={editorOpen === 'autonomyLevel'}
+                onClose={() => setEditorOpen(null)}
+                title="Autonomy Level"
+                description="How much can AI do without your approval"
+                currentValue={settings.ai.autonomyLevel}
+                options={[
+                    { value: 'full-auto', label: 'Full Auto', description: 'Make and save changes automatically' },
+                    { value: 'apply-with-approval', label: 'Apply with Approval', description: 'Make changes, you review before saving' },
+                    { value: 'always-ask', label: 'Always Ask', description: 'Show options, you apply them' },
+                ]}
+                onSave={(value) => handleSave('autonomyLevel', value)}
+            />
+
+            <SettingEditor
+                isOpen={editorOpen === 'maxSteps'}
+                onClose={() => setEditorOpen(null)}
+                title="Max Steps"
+                description="Maximum steps before pausing for approval"
+                currentValue={settings.ai.maxSteps.toString()}
+                type="number"
+                min={1}
+                max={100}
+                options={[]}
+                onSave={(value) => handleSave('maxSteps', value)}
+            />
+
+            <SettingEditor
+                isOpen={editorOpen === 'riskTolerance'}
+                onClose={() => setEditorOpen(null)}
+                title="Risk Tolerance"
+                description="How much risk you're comfortable with (1 = very cautious, 5 = aggressive)"
+                currentValue={settings.ai.riskTolerance.toString()}
+                type="range"
+                min={1}
+                max={5}
+                options={[]}
+                onSave={(value) => handleSave('riskTolerance', value)}
+            />
+
+            <SettingEditor
+                isOpen={editorOpen === 'dailyLimit'}
+                onClose={() => setEditorOpen(null)}
+                title="Daily Budget Limit"
+                description="Maximum daily spending on AI tasks"
+                currentValue={settings.budget.dailyLimit.toString()}
+                type="number"
+                min={1}
+                max={10000}
+                options={[]}
+                onSave={(value) => handleSave('dailyLimit', value)}
+            />
+
+            <SettingEditor
+                isOpen={editorOpen === 'strategy'}
+                onClose={() => setEditorOpen(null)}
+                title="Spending Strategy"
+                description="How to balance budget and quality"
+                currentValue={settings.budget.strategy}
+                options={[
+                    { value: 'budget', label: 'Budget Mode', description: 'Use cheaper options where possible' },
+                    { value: 'smart-balance', label: 'Smart Balance', description: 'Mix cheaper and premium when it matters' },
+                    { value: 'performance', label: 'Performance Mode', description: 'Prioritize quality, even if it costs more' },
+                ]}
+                onSave={(value) => handleSave('strategy', value)}
+            />
+
+            <SettingEditor
+                isOpen={editorOpen === 'theme'}
+                onClose={() => setEditorOpen(null)}
+                title="Theme"
+                description="Interface color scheme"
+                currentValue={settings.visual.theme}
+                options={[
+                    { value: 'dark', label: 'Dark', description: 'Dark color scheme' },
+                    { value: 'light', label: 'Light', description: 'Light color scheme' },
+                    { value: 'system', label: 'System', description: 'Follow system preference' },
+                ]}
+                onSave={(value) => handleSave('theme', value)}
+            />
+
+            {/* Footer */}
+            <footer className="mt-20 py-12 border-t border-[#1A1A1A]/5 bg-white/50 text-center">
+                <p className="text-[10px] font-mono text-zinc-300 uppercase tracking-[0.3em]">
+                    Codra Smart Defaults System
+                </p>
+            </footer>
+        </div>
+    );
+}

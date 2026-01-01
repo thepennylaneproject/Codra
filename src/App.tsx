@@ -40,7 +40,7 @@ import { NewProjectOnboarding } from './new/routes/onboarding/NewProjectOnboardi
 import { OnboardingFlow } from './new/routes/onboarding/OnboardingFlow';
 import { DeskWorkspacePage } from './new/routes/DeskWorkspacePage';
 import { ProjectsPage } from './new/routes/ProjectsPage';
-import { SettingsPage } from './new/routes/SettingsPage';
+import { SettingsPage } from './features/settings';
 import { PricingPage } from './new/routes/PricingPage';
 import { BlueprintGalleryPage } from './new/routes/BlueprintGalleryPage';
 import { TermsPage } from './new/routes/TermsPage';
