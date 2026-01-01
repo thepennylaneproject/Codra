@@ -7,7 +7,6 @@
 import React, { useState } from 'react';
 import { Terminal, FileCode, Folder, ChevronRight, Play, CheckCircle2, AlertCircle, ShieldAlert, Activity, Sparkles } from 'lucide-react';
 import { MOCK_ERRORS } from '../../../domain/integrations';
-import { ModelSelector } from '../ModelSelector';
 import { SourceImportOverlay } from './engineering/SourceImportOverlay';
 
 interface CodeCanvasProps {
@@ -127,28 +126,15 @@ export const CodeCanvas: React.FC<CodeCanvasProps> = ({
 
                 <section>
                     <h3 className="text-[10px] text-[var(--desk-text-muted)] font-bold uppercase tracking-widest mb-4">Operations</h3>
-                    <div className="space-y-4">
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-[var(--desk-text-muted)]/80 uppercase tracking-widest block ml-1">AI Architect</label>
-                            <ModelSelector
-                                selectedModelId={selectedModelId}
-                                onSelectModel={onSelectModel || (() => { })}
-                                filterTag="code"
-                                variant="default"
-                                className="w-full"
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <button className="w-full flex items-center gap-2 px-3 py-2 bg-[var(--desk-bg)] hover:bg-[var(--desk-surface)] border border-[var(--desk-border)] rounded-lg text-[10px] font-bold uppercase tracking-wider text-[var(--desk-text-muted)] transition-colors">
-                                <Play size={10} className="text-green-500" />
-                                Run Dev Server
-                            </button>
-                            <button className="w-full flex items-center gap-2 px-3 py-2 bg-[var(--desk-bg)] hover:bg-[var(--desk-surface)] border border-[var(--desk-border)] rounded-lg text-[10px] font-bold uppercase tracking-wider text-[var(--desk-text-muted)] transition-colors">
-                                <Terminal size={10} className="text-rose-500" />
-                                Open Logs
-                            </button>
-                        </div>
+                    <div className="space-y-2">
+                        <button className="w-full flex items-center gap-2 px-3 py-2 bg-[var(--desk-bg)] hover:bg-[var(--desk-surface)] border border-[var(--desk-border)] rounded-lg text-[10px] font-bold uppercase tracking-wider text-[var(--desk-text-muted)] transition-colors">
+                            <Play size={10} className="text-green-500" />
+                            Run Dev Server
+                        </button>
+                        <button className="w-full flex items-center gap-2 px-3 py-2 bg-[var(--desk-bg)] hover:bg-[var(--desk-surface)] border border-[var(--desk-border)] rounded-lg text-[10px] font-bold uppercase tracking-wider text-[var(--desk-text-muted)] transition-colors">
+                            <Terminal size={10} className="text-rose-500" />
+                            Open Logs
+                        </button>
                     </div>
                 </section>
             </aside>

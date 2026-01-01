@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Project, Spread, CodraEscalation, Asset } from '../../domain/types';
 import { generateSpreadFromProfile } from '../../domain/spread/engine';
-import { ModelSelector } from '../components/ModelSelector';
 import { useProviderRegistry } from '../../lib/ai/registry/useProviderRegistry';
 import { ExtendedOnboardingProfile } from '../../domain/onboarding-types';
 import { getProjectById } from '../../domain/projects';
@@ -39,6 +38,7 @@ import { useFlowStore } from '../../lib/store/useFlowStore';
 import { LyraRecallButton } from '../components/LyraRecallButton';
 import { uploadAssets } from '../../lib/assets/upload';
 import { useProjectMemory } from '../../lib/memory/useProjectMemory';
+import { ModelDiagnostics } from '../components/advanced/ModelDiagnostics';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -83,6 +83,7 @@ export function NewSpreadPage() {
     const [activeLeftTab, setActiveLeftTab] = useState<'toc' | 'prompts'>('toc');
     const [activeRightPanel, setActiveRightPanel] = useState<'architect' | 'assets'>('architect');
     const [assets, setAssets] = useState<Asset[]>([]);
+    const [showModelDiagnostics, setShowModelDiagnostics] = useState(false);
 
     // AI Model Selection
     const { providers } = useProviderRegistry();
@@ -141,6 +142,19 @@ export function NewSpreadPage() {
             }
         }
     }, [projectId]);
+
+    // Keyboard shortcut for Model Diagnostics (Cmd/Ctrl+Shift+M)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'M') {
+                e.preventDefault();
+                setShowModelDiagnostics(prev => !prev);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     // Handle TOC navigation
     const handleNavigateToSection = (sectionId: string) => {
@@ -504,16 +518,6 @@ export function NewSpreadPage() {
                                                 transition={{ duration: 0.2 }}
                                                 className="h-full"
                                             >
-                                                <div className="p-4 border-b border-[var(--color-border-soft)]">
-                                                    <ModelSelector
-                                                        selectedModelId={selectedModelId}
-                                                        onSelectModel={(mId, pId) => {
-                                                            setSelectedModelId(mId);
-                                                            setSelectedProviderId(pId);
-                                                        }}
-                                                        isSmartMode={project?.aiPreferences?.smartMode !== false}
-                                                    />
-                                                </div>
                                                 {taskQueue && (
                                                     <PromptBacklog
                                                         taskQueue={taskQueue}
@@ -672,6 +676,13 @@ export function NewSpreadPage() {
 
                 {/* Floating Lyra Recall Button */}
                 <LyraRecallButton />
+
+                {/* Model Diagnostics Panel (Cmd/Ctrl+Shift+M) */}
+                <ModelDiagnostics
+                    isOpen={showModelDiagnostics}
+                    onClose={() => setShowModelDiagnostics(false)}
+                    currentTask={activeTaskId ? taskQueue?.tasks.find(t => t.id === activeTaskId)?.title : undefined}
+                />
             </LyraProvider>
         </ErrorBoundary>
     );

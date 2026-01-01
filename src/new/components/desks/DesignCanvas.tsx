@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, Maximize2, RefreshCcw, Download, Layers, ShieldCheck, Plus, Lock, Unlock } from 'lucide-react';
 import { MOCK_ASSETS } from '../../../domain/integrations';
 import { ModelSelector } from '../ModelSelector';
+import { DeskEvents } from '../../../lib/desks/DeskBridge';
 import { useImageGeneration } from '../../../hooks/useImageGeneration';
 import { STYLE_PRESETS, ImageStyle, applyStyleToPrompt, generateRandomSeed } from '../../../lib/image/seed-preservation';
 import { Button, IconButton } from '../Button';
@@ -211,15 +212,6 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                 >
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <ModelSelector
-                                selectedModelId={selectedModelId}
-                                onSelectModel={onSelectModel || (() => { })}
-                                filterTag="visual"
-                                variant="minimal"
-                                className="w-auto"
-                            />
-                            <div className="w-px h-4 bg-[var(--desk-border)]" />
-                            
                             {/* Anti-Slop Style Selector */}
                             <div className="flex items-center gap-1">
                                 {(Object.keys(STYLE_PRESETS) as ImageStyle[]).slice(0, 4).map((style) => {
