@@ -7,7 +7,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Type, AlignLeft, Bold, Italic, Hash, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { ModelSelector } from '../ModelSelector';
 import { useDeskState } from './hooks/useDeskState';
 
 interface WriteCanvasProps {
@@ -98,17 +97,6 @@ export const WriteCanvas: React.FC<WriteCanvasProps> = ({
             <button className="p-2 hover:bg-[var(--desk-bg)] rounded-lg text-[var(--desk-text-muted)] hover:text-[var(--desk-text-primary)] transition-all">
               <AlignLeft size={16} />
             </button>
-          </div>
-          <div className="w-px h-6 bg-[var(--desk-border)]" />
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-bold text-[var(--desk-text-muted)] uppercase tracking-widest ml-2">Voice</span>
-            <ModelSelector
-              selectedModelId={selectedModelId}
-              onSelectModel={onSelectModel || (() => { })}
-              filterTag="reasoning"
-              variant="minimal"
-              className="w-auto"
-            />
           </div>
           <div className="w-px h-6 bg-[var(--desk-border)]" />
           <button className="flex items-center gap-2 px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 rounded-lg text-rose-400 text-xs font-bold transition-all border border-rose-500/20">
