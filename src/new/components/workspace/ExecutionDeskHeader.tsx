@@ -29,37 +29,31 @@ export function ExecutionDeskHeader({
   statusLabel,
 }: ExecutionDeskHeaderProps) {
   return (
-    <header className="h-full flex items-center justify-between px-6 bg-[var(--ui-bg)]/80 border-b border-[var(--ui-border)]">
-      {/* Left: Brand & Project */}
-      <div className="flex items-center gap-4">
-        <Link to="/projects" className="flex items-center gap-2 group">
-          <div className="w-1.5 h-1.5 rounded-full bg-zinc-600 group-hover:scale-125 transition-transform" />
-          <span className="font-semibold tracking-tighter text-xs">Codra</span>
+    <header className="h-full flex items-center justify-between px-6 bg-transparent">
+      {/* Left: Project name only */}
+      <div className="flex items-center gap-3">
+        <Link to="/projects" className="text-text-soft/40 hover:text-text-soft transition-colors">
+          <span className="text-[10px] tracking-wide">←</span>
         </Link>
-
-        <div className="h-4 w-px bg-[var(--ui-border)]" />
-
-        <div className="flex items-center gap-2">
-          <h1 className="text-sm font-medium text-text-primary">{projectName}</h1>
-          {statusLabel && (
-            <span className="text-xs text-text-soft px-2 py-0.5 bg-zinc-100 rounded-full">
-              {statusLabel}
-            </span>
-          )}
-        </div>
+        <h1 className="text-[13px] font-normal text-text-primary/70">{projectName}</h1>
+        {statusLabel && (
+          <span className="text-[10px] text-text-soft/40">
+            {statusLabel}
+          </span>
+        )}
       </div>
 
-      {/* Right: Actions */}
-      <div className="flex items-center gap-2">
+      {/* Right: Actions - subdued */}
+      <div className="flex items-center gap-1 opacity-40 hover:opacity-100 transition-opacity">
         <IconButton
-          variant={lyraVisible ? 'secondary' : 'ghost'}
+          variant="ghost"
           size="sm"
           onClick={onToggleLyra}
           title="Toggle Lyra (Cmd+\)"
           aria-label="Toggle Lyra panel"
-          className="text-text-soft hover:text-text-primary"
+          className="text-text-soft/60 hover:text-text-soft"
         >
-          <PanelLeft size={16} />
+          <PanelLeft size={14} />
         </IconButton>
 
         {onOpenSettings && (
@@ -69,9 +63,9 @@ export function ExecutionDeskHeader({
             onClick={onOpenSettings}
             title="Settings (Cmd+,)"
             aria-label="Open settings"
-            className="text-text-soft hover:text-text-primary"
+            className="text-text-soft/60 hover:text-text-soft"
           >
-            <Settings size={16} />
+            <Settings size={14} />
           </IconButton>
         )}
       </div>

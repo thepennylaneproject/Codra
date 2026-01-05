@@ -97,13 +97,10 @@ export function LyraConversationColumn({
   if (!lyra) {
     return (
       <div className="h-full flex flex-col">
-        <div className="flex-1 flex items-center justify-center p-4 text-center">
-          <div className="space-y-3">
-            <Sparkles size={24} className="mx-auto text-zinc-300" />
-            <p className="text-xs text-text-soft">
-              Lyra available after project setup.
-            </p>
-          </div>
+        <div className="flex-1 flex items-center justify-center p-4">
+          <p className="text-[11px] text-text-soft/40">
+            Unavailable
+          </p>
         </div>
       </div>
     );
@@ -113,44 +110,32 @@ export function LyraConversationColumn({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header - Minimal */}
-      <div className="px-4 py-3 border-b border-[var(--ui-border)]/40">
-        <div className="flex items-center gap-2">
-          <LyraAvatar appearance={state.appearance} size={20} showGlow={false} />
-          <span className="text-[10px] font-semibold text-text-soft uppercase tracking-wider">
-            Lyra
-          </span>
-        </div>
+      {/* Header - receded */}
+      <div className="px-4 py-2 border-b border-[var(--ui-border)]/20">
+        <span className="text-[9px] text-text-soft/40 uppercase tracking-widest">
+          Lyra
+        </span>
       </div>
 
-      {/* Conversation Thread - No bubbles, clean lines */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
+      {/* Conversation Thread - margin notes feel */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5">
         {messages.length === 0 ? (
-          <div className="py-8 text-center">
-            <p className="text-xs text-text-soft/60 italic">
-              Discuss scope, negotiate changes, confirm direction.
-            </p>
-          </div>
+          <div className="py-12" />
         ) : (
           <AnimatePresence initial={false}>
             {messages.map((msg) => (
               <motion.div
                 key={msg.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                className={`text-[13px] leading-relaxed ${
+                transition={{ duration: 0.1 }}
+                className={`text-[12px] leading-relaxed ${
                   msg.role === 'user'
-                    ? 'text-text-primary'
-                    : 'text-text-soft'
+                    ? 'text-text-primary/80'
+                    : 'text-text-soft/70'
                 }`}
               >
-                {/* Role indicator - subtle */}
-                <span className="block text-[9px] uppercase tracking-wider text-text-soft/50 mb-1">
-                  {msg.role === 'user' ? 'You' : 'Lyra'}
-                </span>
-                {/* Message content - no bubble wrapper */}
                 <p className="whitespace-pre-wrap">{msg.content}</p>
               </motion.div>
             ))}
@@ -162,54 +147,49 @@ export function LyraConversationColumn({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex items-center gap-2 text-text-soft/60"
+            transition={{ duration: 0.1 }}
+            className="text-text-soft/40"
           >
-            <div className="w-1 h-1 rounded-full bg-zinc-400 animate-pulse" />
-            <span className="text-[11px]">Thinking...</span>
+            <span className="text-[11px]">...</span>
           </motion.div>
         )}
 
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Context Summary - Grounding info */}
+      {/* Context Summary - quiet */}
       {contextSummary && (
-        <div className="px-4 py-3 border-t border-[var(--ui-border)]/40 bg-[var(--color-ivory)]/30">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[9px] uppercase tracking-wider text-text-soft/50">
-              Context
-            </span>
-            {onEditContext && (
-              <button
-                onClick={onEditContext}
-                className="text-[10px] text-text-soft hover:text-text-primary transition-colors"
-              >
-                Edit
-              </button>
-            )}
-          </div>
-          <p className="text-[12px] text-text-soft leading-relaxed line-clamp-2">
+        <div className="px-4 py-3 border-t border-[var(--ui-border)]/20">
+          <p className="text-[11px] text-text-soft/50 leading-relaxed line-clamp-2">
             {contextSummary}
           </p>
+          {onEditContext && (
+            <button
+              onClick={onEditContext}
+              className="text-[10px] text-text-soft/30 hover:text-text-soft mt-1 transition-colors"
+            >
+              Edit
+            </button>
+          )}
         </div>
       )}
 
-      {/* Input - Clean, minimal */}
-      <div className="px-4 py-3 border-t border-[var(--ui-border)]/40">
+      {/* Input - borderless, minimal */}
+      <div className="px-4 py-3 border-t border-[var(--ui-border)]/20">
         <form onSubmit={handleSubmit} className="relative">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask Lyra..."
-            className="w-full px-3 py-2 pr-10 bg-transparent border border-[var(--ui-border)]/60 rounded-lg text-[13px] text-text-primary placeholder:text-text-soft/40 focus:outline-none focus:border-zinc-400 transition-colors"
+            placeholder="..."
+            className="w-full px-0 py-1 bg-transparent border-0 text-[12px] text-text-primary placeholder:text-text-soft/30 focus:outline-none"
           />
           <Button
             type="submit"
             disabled={!input.trim()}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-text-soft hover:text-text-primary disabled:opacity-30 transition-colors"
+            className="absolute right-0 top-1/2 -translate-y-1/2 p-1 text-text-soft/40 hover:text-text-soft disabled:opacity-20 transition-colors"
           >
-            <Send size={14} />
+            <Send size={12} />
           </Button>
         </form>
       </div>

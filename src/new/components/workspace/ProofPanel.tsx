@@ -70,148 +70,85 @@ export function ProofPanel({
 
   return (
     <div className="h-full flex flex-col bg-white">
-      {/* Header */}
-      <div className="h-10 px-4 flex items-center justify-between border-b border-[var(--ui-border)]/40 shrink-0">
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-semibold text-text-soft uppercase tracking-wider">
-            Verification
-          </span>
-          {hasVerificationIssues && (
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-          )}
-          {hasConflicts && (
-            <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-          )}
-        </div>
+      {/* Header - minimal */}
+      <div className="h-8 px-4 flex items-center justify-between border-b border-[var(--ui-border)]/20 shrink-0">
+        <span className="text-[9px] text-text-soft/40 uppercase tracking-widest">
+          Checks
+        </span>
         {onClose && (
           <button
             onClick={onClose}
-            className="p-1 hover:bg-zinc-100 rounded text-text-soft hover:text-text-primary transition-colors"
+            className="p-0.5 text-text-soft/30 hover:text-text-soft transition-colors"
             aria-label="Close"
           >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M2 2l8 8M10 2l-8 8" />
             </svg>
           </button>
         )}
       </div>
 
-      {/* Content - Minimal, no narration */}
-      <div className="flex-1 overflow-y-auto">
-        {/* Verification Results */}
+      {/* Content - technical appendix */}
+      <div className="flex-1 overflow-y-auto p-4">
         {verificationResults.length > 0 && (
-          <section className="p-4 border-b border-[var(--ui-border)]/20">
-            <h3 className="text-[9px] uppercase tracking-wider text-text-soft/50 mb-3">
-              Results
-            </h3>
-            <div className="space-y-2">
-              {verificationResults.map((result) => (
-                <VerificationItem key={result.id} result={result} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Conflicts */}
-        {conflicts.length > 0 && (
-          <section className="p-4 border-b border-[var(--ui-border)]/20">
-            <h3 className="text-[9px] uppercase tracking-wider text-text-soft/50 mb-3">
-              Conflicts
-            </h3>
-            <div className="space-y-2">
-              {conflicts.map((conflict) => (
-                <ConflictItem key={conflict.id} conflict={conflict} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Synthesis Notes */}
-        {synthesisNotes.length > 0 && (
-          <section className="p-4">
-            <h3 className="text-[9px] uppercase tracking-wider text-text-soft/50 mb-3">
-              Synthesis
-            </h3>
-            <div className="space-y-2">
-              {synthesisNotes.map((note) => (
-                <SynthesisItem key={note.id} note={note} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Empty state */}
-        {verificationResults.length === 0 && conflicts.length === 0 && synthesisNotes.length === 0 && (
-          <div className="p-4 text-center text-xs text-text-soft/60">
-            No verification data.
+          <div className="space-y-2 mb-4">
+            {verificationResults.map((result) => (
+              <VerificationItem key={result.id} result={result} />
+            ))}
           </div>
+        )}
+
+        {conflicts.length > 0 && (
+          <div className="space-y-2 mb-4 pt-4 border-t border-[var(--ui-border)]/10">
+            {conflicts.map((conflict) => (
+              <ConflictItem key={conflict.id} conflict={conflict} />
+            ))}
+          </div>
+        )}
+
+        {synthesisNotes.length > 0 && (
+          <div className="space-y-2 pt-4 border-t border-[var(--ui-border)]/10">
+            {synthesisNotes.map((note) => (
+              <SynthesisItem key={note.id} note={note} />
+            ))}
+          </div>
+        )}
+
+        {verificationResults.length === 0 && conflicts.length === 0 && synthesisNotes.length === 0 && (
+          <p className="text-[11px] text-text-soft/30">
+            No data
+          </p>
         )}
       </div>
     </div>
   );
 }
 
-/**
- * Individual verification result - minimal display
- */
 function VerificationItem({ result }: { result: VerificationResult }) {
-  const StatusIcon = getStatusIcon(result.status);
   const statusColor = getStatusColor(result.status);
 
   return (
-    <div className="flex items-start gap-2 text-[12px]">
-      <StatusIcon size={14} className={statusColor} />
-      <div className="flex-1 min-w-0">
-        <p className="text-text-primary truncate">{result.message}</p>
-        {result.details && (
-          <p className="text-text-soft/60 text-[11px] mt-0.5 truncate">
-            {result.details}
-          </p>
-        )}
-      </div>
+    <div className="flex items-start gap-2 text-[11px]">
+      <span className={`w-1 h-1 mt-1.5 rounded-full shrink-0 ${statusColor.replace('text-', 'bg-')}`} />
+      <p className="text-text-soft/70 truncate">{result.message}</p>
     </div>
   );
 }
 
-/**
- * Individual conflict item - minimal display
- */
 function ConflictItem({ conflict }: { conflict: Conflict }) {
-  const severityColor = {
-    low: 'text-zinc-400',
-    medium: 'text-amber-500',
-    high: 'text-red-500',
-  }[conflict.severity];
-
   return (
-    <div className="flex items-start gap-2 text-[12px]">
-      <AlertTriangle size={14} className={severityColor} />
-      <div className="flex-1 min-w-0">
-        <p className="text-text-primary truncate">{conflict.description}</p>
-        <p className="text-text-soft/60 text-[11px] mt-0.5">
-          {conflict.source} → {conflict.target}
-        </p>
-      </div>
+    <div className="flex items-start gap-2 text-[11px]">
+      <span className="w-1 h-1 mt-1.5 rounded-full shrink-0 bg-amber-400" />
+      <p className="text-text-soft/70 truncate">{conflict.description}</p>
     </div>
   );
 }
 
-/**
- * Individual synthesis note - minimal display
- */
 function SynthesisItem({ note }: { note: SynthesisNote }) {
   return (
-    <div className="flex items-start gap-2 text-[12px]">
-      <Info size={14} className="text-zinc-400 shrink-0 mt-0.5" />
-      <div className="flex-1 min-w-0">
-        <p className="text-text-soft leading-relaxed">{note.content}</p>
-        {note.source && (
-          <p className="text-text-soft/40 text-[10px] mt-1">
-            Source: {note.source}
-          </p>
-        )}
-      </div>
-    </div>
+    <p className="text-[11px] text-text-soft/50 leading-relaxed">
+      {note.content}
+    </p>
   );
 }
 

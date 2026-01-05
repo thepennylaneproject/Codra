@@ -26,40 +26,28 @@ export function ExecutionDeskFooter({
   const progressPercent = hasProgress ? (completedTasks / totalTasks) * 100 : 0;
 
   return (
-    <footer className="h-full flex items-center justify-between px-6 bg-[var(--ui-bg)]/60 border-t border-[var(--ui-border)]">
-      {/* Left: Progress */}
-      <div className="flex items-center gap-4">
+    <footer className="h-full flex items-center justify-between px-6 bg-transparent">
+      {/* Left: Progress - factual */}
+      <div className="flex items-center">
         {hasProgress && (
-          <div className="flex items-center gap-2">
-            <div className="w-24 h-1 bg-zinc-200 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-zinc-600 rounded-full transition-all duration-300"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-            <span className="text-[10px] text-text-soft tabular-nums">
-              {completedTasks}/{totalTasks}
-            </span>
-          </div>
+          <span className="text-[10px] text-text-soft/40 tabular-nums">
+            {completedTasks} of {totalTasks}
+          </span>
         )}
       </div>
 
-      {/* Right: Cost & Lock status */}
+      {/* Right: Cost & Lock - factual */}
       <div className="flex items-center gap-4">
-        {/* Session cost - explicit when non-zero */}
         {sessionCost > 0 && (
-          <div className="flex items-center gap-1 text-[10px] text-text-soft">
-            <DollarSign size={10} />
-            <span className="tabular-nums">{sessionCost.toFixed(4)}</span>
-          </div>
+          <span className="text-[10px] text-text-soft/40 tabular-nums">
+            ${sessionCost.toFixed(4)}
+          </span>
         )}
 
-        {/* Lock indicator - explicit when locked */}
         {isLocked && (
-          <div className="flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-600 rounded text-[10px] font-medium">
-            <Lock size={10} />
-            <span>Locked</span>
-          </div>
+          <span className="text-[10px] text-text-soft/60">
+            Locked
+          </span>
         )}
       </div>
     </footer>
