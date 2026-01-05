@@ -1,13 +1,22 @@
 import { useState } from 'react';
-import { Spread } from '../../domain/types';
+import { Spread, ProductionDeskId, PRODUCTION_DESKS } from '../../domain/types';
 import { Code2, Image as ImageIcon, FileText, ChevronRight, ExternalLink, Download } from 'lucide-react';
 import { SpreadSection } from './SpreadSection';
 import { ArtifactFeedbackBar } from './ArtifactFeedbackBar';
-import { ExportModal } from './ExportModal';
+import { ExportModal } from '@/components/export/ExportModal';
+import type { ExportItem } from '@/lib/export/generators';
 import { EmptyState } from './EmptyState';
-import { IconButton } from './Button';
+import { Button, IconButton } from '@/components/ui/Button';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { SpreadTask } from '../../domain/task-queue';
+import { ExecutionMode } from '@/lib/ai/execution/task-executor';
+import { ApprovalButtons } from '@/components/inspector/ApprovalButtons';
+import { SuggestionsModal } from '@/components/inspector/SuggestionsModal';
+import { DeskSuggestion } from '@/lib/desk-suggestions';
+import { useArtifactVersions } from '@/hooks/useArtifactVersions';
+import { useFeatureFlag } from '@/hooks/useFeatureFlag';
+import { FEATURE_FLAGS } from '@/lib/feature-flags';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -16,32 +25,73 @@ function cn(...inputs: ClassValue[]) {
 interface OutputInspectorProps {
     spread: Spread | null;
     onSectionUpdate?: (sectionId: string, content: Record<string, unknown>) => void;
+    taskComplete?: boolean;
+    suggestedDeskId?: ProductionDeskId | null;
+    activeTask?: SpreadTask | null;
+    runMode?: ExecutionMode;
+    runState?: 'running' | 'complete' | 'failed';
+    onBatchCreateTasks?: (suggestions: DeskSuggestion[]) => Promise<void>;
+    hasOutputs?: boolean;
 }
 
 type Tab = 'preview' | 'code' | 'assets';
 
-export function OutputInspector({ spread, onSectionUpdate }: OutputInspectorProps) {
+export function OutputInspector({
+    spread,
+    onSectionUpdate,
+    taskComplete,
+    suggestedDeskId,
+    activeTask,
+    onBatchCreateTasks,
+    hasOutputs
+}: OutputInspectorProps) {
     const [activeTab, setActiveTab] = useState<Tab>('preview');
     const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+    const [isSuggestionsModalOpen, setIsSuggestionsModalOpen] = useState(false);
+    
+    // Manage versions for approval
+    const { versions, refresh: refreshVersions } = useArtifactVersions(activeTask?.artifactId || '');
+    const latestVersion = versions[versions.length - 1];
 
-    if (!spread) {
+    const showApproval = useFeatureFlag(FEATURE_FLAGS.ARTIFACT_APPROVAL_WORKFLOW);
+
+    const showOutputs = Boolean(hasOutputs);
+
+    if (!spread || !showOutputs) {
         return (
-            <div className="h-full flex items-center justify-center p-8 text-center bg-white dark:bg-zinc-950">
-                <p className="text-sm text-zinc-400 font-mono uppercase tracking-widest">
-                    Waiting for output...
-                </p>
+            <div className="h-full flex items-center justify-center p-8 text-center bg-transparent">
+                <p className="text-xs text-text-soft tracking-wide">No outputs yet.</p>
             </div>
         );
     }
 
+    const exportItems: ExportItem[] = spread.sections.map((section) => ({
+        id: section.id,
+        title: section.title,
+        type: section.type,
+        content: section.content,
+    }));
+
+    const currentOutput: ExportItem = {
+        id: `output-${activeTab}`,
+        title: `Output · ${activeTab}`,
+        type: activeTab,
+        content:
+            activeTab === 'code'
+                ? `export default function App() {\n  return (\n    <div className="p-8">\n      <h1 className="text-xl font-semibold">Hello Codra</h1>\n      <p>This is your AI-generated output.</p>\n    </div>\n  );\n}`
+                : spread.sections,
+    };
+
+    void suggestedDeskId;
+
     return (
-        <div className="flex flex-col h-full bg-white dark:bg-zinc-950 border-l border-zinc-200 dark:border-zinc-800">
+        <div className="flex flex-col h-full bg-white border-l border-[var(--ui-border)]">
             {/* Header */}
-            <header className="px-4 pt-4 pb-2 border-b border-zinc-100 dark:border-zinc-900 space-y-4">
+            <header className="px-[var(--space-md)] pt-[var(--space-md)] pb-[var(--space-sm)] border-b border-[var(--ui-border)]/60 space-y-[var(--space-md)]">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xs font-bold tracking-widest text-zinc-400 uppercase">
-                        Output Inspector
-                    </h2>
+                    <div className="flex items-center gap-2">
+                        <h2 className="text-xs font-semibold text-text-soft uppercase tracking-wider">Proof</h2>
+                    </div>
                     <div className="flex items-center gap-2">
                         <IconButton
                             variant="ghost"
@@ -63,30 +113,45 @@ export function OutputInspector({ spread, onSectionUpdate }: OutputInspectorProp
                     </div>
                 </div>
 
+                {/* Approval Controls */}
+                {showApproval && activeTask && latestVersion && (
+                    <div className="pt-2">
+                        <ApprovalButtons 
+                            version={latestVersion}
+                            onStatusChange={(status) => {
+                                refreshVersions();
+                                if (status === 'approved') {
+                                    setIsSuggestionsModalOpen(true);
+                                }
+                            }}
+                        />
+                    </div>
+                )}
+
                 {/* Tabs */}
                 <div className="flex gap-4 border-b border-transparent">
                     {(['preview', 'code', 'assets'] as Tab[]).map((tab) => (
-                        <button
+                        <Button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
                             className={cn(
-                                "pb-2 text-[10px] font-bold uppercase tracking-wider transition-all relative",
+                                "pb-2 text-xs font-semibold transition-all relative",
                                 activeTab === tab
-                                    ? "text-rose-500"
-                                    : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                                    ? "text-text-primary"
+                                    : "text-text-soft hover:text-text-primary"
                             )}
                         >
                             {tab}
                             {activeTab === tab && (
-                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-rose-500 rounded-full" />
+                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--ui-border)] rounded-full" />
                             )}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </header>
 
             {/* Content Area */}
-            <div className="flex-1 overflow-y-auto bg-zinc-50/30 dark:bg-zinc-900/10">
+            <div className="flex-1 overflow-y-auto bg-[var(--color-border-soft)]/40">
                 {activeTab === 'preview' && (
                     <div className="p-4 space-y-8 max-w-full overflow-x-hidden">
                         {spread.sections.map((section) => (
@@ -126,7 +191,7 @@ export function OutputInspector({ spread, onSectionUpdate }: OutputInspectorProp
                                 <span>main.tsx</span>
                             </div>
                             <pre>
-                                {`export default function App() {\n  return (\n    <div className="p-8">\n      <h1 className="text-3xl font-bold">Hello Codra</h1>\n      <p>This is your AI-generated output.</p>\n    </div>\n  );\n}`}
+                                {`export default function App() {\n  return (\n    <div className="p-8">\n      <h1 className="text-xl font-semibold">Hello Codra</h1>\n      <p>This is your AI-generated output.</p>\n    </div>\n  );\n}`}
                             </pre>
                         </div>
                     </div>
@@ -153,24 +218,42 @@ export function OutputInspector({ spread, onSectionUpdate }: OutputInspectorProp
                         ))}
                     </div>
                 )}
+
+                {taskComplete && null}
             </div>
 
             {/* Context Stats */}
-            <footer className="p-4 border-t border-zinc-100 dark:border-zinc-900 bg-white dark:bg-zinc-950">
-                <div className="flex items-center justify-between text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
-                    <span>Artifacts Generated</span>
-                    <span className="text-zinc-600 dark:text-zinc-300">{spread.sections.length}</span>
+            <footer className="p-4 border-t border-[var(--ui-border)]/60 bg-white">
+                <div className="flex items-center justify-between text-xs text-text-soft font-semibold">
+                    <span>Sections</span>
+                    <span className="text-text-primary/70">{spread.sections.length}</span>
                 </div>
             </footer>
+
+            {/* Suggestions Modal */}
+            {activeTask && (
+                <SuggestionsModal
+                    isOpen={isSuggestionsModalOpen}
+                    onClose={() => setIsSuggestionsModalOpen(false)}
+                    sourceDesk={activeTask.deskId}
+                    artifactType={activeTask.title} // Or artifact.type if available
+                    artifactContent={latestVersion?.content || ''}
+                    onBatchCreate={async (suggestions) => {
+                        if (onBatchCreateTasks) {
+                            await onBatchCreateTasks(suggestions);
+                        }
+                    }}
+                />
+            )}
 
             {/* Export Modal */}
             <ExportModal
                 isOpen={isExportModalOpen}
                 onClose={() => setIsExportModalOpen(false)}
-                artifactId={spread.id}
-                artifactType="spread"
-                content={JSON.stringify(spread, null, 2)}
-                filename={`codra-spread-${spread.id.slice(0, 8)}`}
+                defaultScope="output"
+                currentOutput={currentOutput}
+                items={exportItems}
+                projectName={spread.projectId}
             />
         </div>
     );

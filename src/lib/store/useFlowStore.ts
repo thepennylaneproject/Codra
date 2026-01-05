@@ -8,6 +8,8 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { ProductionDeskId } from '../../domain/types';
+import type { AIPreferencesData } from '../../domain/types';
+import type { BudgetPreferencesData } from '../../domain/onboarding-types';
 
 import { SmartRouterResult, SmartRouterQuality } from '../ai/router/smart-router';
 
@@ -32,10 +34,20 @@ interface InteractionEvent {
     metadata: Record<string, any>;
 }
 
+interface TaskScopedSettings {
+    ai: Partial<AIPreferencesData>;
+    budget: Partial<BudgetPreferencesData>;
+    model?: {
+        modelId: string;
+        providerId: string;
+    };
+}
+
 interface FlowState {
     // Current Context
     activeDeskId: ProductionDeskId | null;
     activeSectionId: string | null;
+    studioEnabled: boolean;
 
     // UI Layout
     layout: LayoutState;
@@ -45,12 +57,16 @@ interface FlowState {
     lastRoutingDecision: SmartRouterResult | null;
     sessionCost: number;
 
+    // Task Settings
+    taskSettings: Record<string, TaskScopedSettings>;
+
     // History
     history: InteractionEvent[];
 
     // Actions
     setActiveDesk: (deskId: ProductionDeskId | null) => void;
     setActiveSection: (sectionId: string | null) => void;
+    setStudioEnabled: (enabled: boolean) => void;
 
     updateLayout: (updates: Partial<LayoutState>) => void;
     toggleDock: (side: 'left' | 'right') => void;
@@ -58,6 +74,8 @@ interface FlowState {
     updateRoutingPreferences: (updates: Partial<RoutingPreferences>) => void;
     setLastRoutingDecision: (decision: SmartRouterResult | null) => void;
     addToSessionCost: (amount: number) => void;
+
+    setTaskSettings: (taskId: string, updates: Partial<TaskScopedSettings>) => void;
 
     pushHistory: (event: Omit<InteractionEvent, 'id' | 'timestamp'>) => void;
     clearHistory: () => void;
@@ -68,7 +86,7 @@ interface FlowState {
 const DEFAULT_LAYOUT: LayoutState = {
     leftDockVisible: true,
     leftDockWidth: 320,
-    rightDockVisible: true,
+    rightDockVisible: false,
     rightDockWidth: 400,
     showActivityStrip: true,
 };
@@ -85,10 +103,12 @@ export const useFlowStore = create<FlowState>()(
             // Initial State
             activeDeskId: null,
             activeSectionId: null,
+            studioEnabled: false,
             layout: { ...DEFAULT_LAYOUT },
             routingPreferences: { ...DEFAULT_ROUTING },
             lastRoutingDecision: null,
             sessionCost: 0,
+            taskSettings: {},
             history: [],
 
             // Context Actions
@@ -117,6 +137,12 @@ export const useFlowStore = create<FlowState>()(
                             metadata: { sectionId },
                         });
                     }
+                });
+            },
+
+            setStudioEnabled: (enabled) => {
+                set((state) => {
+                    state.studioEnabled = enabled;
                 });
             },
 
@@ -162,6 +188,19 @@ export const useFlowStore = create<FlowState>()(
                 });
             },
 
+            setTaskSettings: (taskId, updates) => {
+                set((state) => {
+                    const existing = state.taskSettings[taskId] || { ai: {}, budget: {} };
+                    state.taskSettings[taskId] = {
+                        ...existing,
+                        ...updates,
+                        ai: { ...existing.ai, ...(updates.ai || {}) },
+                        budget: { ...existing.budget, ...(updates.budget || {}) },
+                        model: updates.model ?? existing.model,
+                    };
+                });
+            },
+
             // History Actions
             pushHistory: (event) => {
                 set((state) => {
@@ -187,6 +226,7 @@ export const useFlowStore = create<FlowState>()(
                 set((state) => {
                     state.activeDeskId = null;
                     state.activeSectionId = null;
+                    state.studioEnabled = false;
                     state.layout = { ...DEFAULT_LAYOUT };
                     state.routingPreferences = { ...DEFAULT_ROUTING };
                     state.lastRoutingDecision = null;

@@ -1,8 +1,3 @@
-/**
- * LYRA PANEL - SIMPLIFIED
- * Single-purpose suggestion panel showing ONE recommended action at a time
- */
-
 import { AnimatePresence } from 'framer-motion';
 import { useCallback, useState } from 'react';
 import { useLyraOptional } from '../../lib/lyra';
@@ -15,6 +10,8 @@ import {
     useLyraSuggestion,
     useLyraExecution,
 } from './lyra';
+import { Heading, Text, Label } from './index';
+import { Button } from '@/components/ui/Button';
 
 // ============================================
 // Main Component
@@ -67,9 +64,9 @@ export function LyraPanel({ spreadId, deskId }: LyraPanelProps) {
     // If Lyra context isn't available, show a minimal placeholder
     if (!lyra) {
         return (
-            <div className="h-full flex flex-col items-center justify-center p-6 text-center bg-[#12121A]">
-                <Sparkles size={32} className="text-zinc-600 mb-4" />
-                <p className="text-sm text-zinc-500">Lyra will appear once your project is set up.</p>
+            <div className="h-full flex flex-col items-center justify-center p-6 text-center bg-transparent">
+                <Sparkles size={32} className="text-shell-text-secondary mb-4" />
+                <Text variant="muted" size="sm">Lyra module available after project setup.</Text>
             </div>
         );
     }
@@ -86,27 +83,29 @@ export function LyraPanel({ spreadId, deskId }: LyraPanelProps) {
     const shouldShowThinking = isLoading && !suggestion;
 
     return (
-        <div className="h-full flex flex-col bg-[#12121A]">
+        <div className="h-full flex flex-col bg-transparent">
             {/* Header */}
-            <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
-                <span className="text-sm font-bold tracking-tight text-zinc-200">Lyra</span>
-                <button
+            <div className="px-4 py-3 flex items-center justify-between">
+                <Heading size="sm" className="tracking-tight text-text-soft uppercase text-[11px]">Lyra</Heading>
+                <Button
+                    variant="ghost"
                     onClick={hide}
-                    className="p-1.5 rounded-full hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 transition-colors"
-                    title="Hide Lyra"
+                    size="sm"
+                    className="p-1"
+                    aria-label="Hide Lyra module"
                 >
                     <X size={14} />
-                </button>
+                </Button>
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto px-4 pb-6 text-[13px] text-text-soft">
                 <div className="flex flex-col items-center gap-6">
                     {/* Static Avatar */}
-                    <div className={`relative ${suggestion?.type === 'suggestion' ? 'ring-1 ring-[#FF6B6B]' : ''} rounded-full`}>
+                    <div className={`relative ${suggestion?.type === 'suggestion' ? 'ring-1 ring-zinc-300' : ''} rounded-full`}>
                         <LyraAvatar
                             appearance={state.appearance}
-                            size={48}
+                            size={40}
                             showGlow={false}
                         />
                     </div>
@@ -117,8 +116,8 @@ export function LyraPanel({ spreadId, deskId }: LyraPanelProps) {
                             {/* Thinking State */}
                             {shouldShowThinking && (
                                 <div key="thinking" className="flex flex-col items-center gap-2">
-                                    <div className="w-6 h-6 border-2 border-zinc-700 border-t-[#FF6B6B] rounded-full animate-spin" />
-                                    <p className="text-xs text-zinc-500">Thinking...</p>
+                                    <div className="w-6 h-6 border-2 border-[var(--shell-border)] border-t-zinc-500 rounded-full animate-spin" />
+                                    <Label variant="muted">Thinking...</Label>
                                 </div>
                             )}
 
