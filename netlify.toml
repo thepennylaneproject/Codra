@@ -7,6 +7,10 @@
   NODE_VERSION = "20"
   SECRETS_SCAN_ENABLED = "false"
 
+# Build plugins
+[[plugins]]
+  package = "./netlify/plugins/metrics-audit"
+
 # Headers for security
 [[headers]]
   for = "/*"

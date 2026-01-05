@@ -48,6 +48,7 @@ import { PrivacyPage } from './new/routes/PrivacyPage';
 import { ToastContainer } from './new/components/Toast';
 import CoherenceScanPage from './new/routes/CoherenceScanPage';
 import { WorkspaceShellDemo } from './new/routes/WorkspaceShellDemo';
+import { MetricsDashboard } from './components/admin/MetricsDashboard';
 
 // ============================================================
 // App Component
@@ -123,6 +124,7 @@ export function App() {
                       <Route path="/projects" element={<ProjectsPage />} />
                       <Route path="/settings" element={<SettingsPage />} />
                       <Route path="/dashboard" element={<Navigate to="/projects" replace />} />
+                      <Route path="/admin/metrics" element={<MetricsDashboard />} />
                     </Route>
 
 
