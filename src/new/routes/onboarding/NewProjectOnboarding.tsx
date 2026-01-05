@@ -63,13 +63,13 @@ export const NewProjectOnboarding = () => {
     const headerLabel = profile.isImportFlow ? 'Import Project' : 'New Project';
 
     return (
-        <div className="min-h-screen bg-[#FFFAF0] text-[#1A1A1A] flex items-center justify-center p-6 md:p-12 font-sans selection:bg-[#FF4D4D]/20">
+        <div className="min-h-screen bg-[#FFFAF0] text-text-primary flex items-center justify-center p-6 md:p-12 font-sans selection:bg-zinc-300/40">
             <div className="w-full max-w-3xl">
                 {/* Header - Editorial branding */}
-                <div className="mb-8 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-[#8A8A8A]">
+                <div className="mb-8 flex items-center justify-between text-xs font-semibold text-text-soft">
                     <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#FF4D4D]" />
-                        <span className="text-[#1A1A1A]">Codra</span>
+                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
+                        <span className="text-text-primary">Codra</span>
                     </div>
                     <span>{headerLabel}</span>
                 </div>

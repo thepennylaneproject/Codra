@@ -14,6 +14,10 @@ interface SettingsState {
     aiDefaults: AIPreferencesData;
     budgetDefaults: BudgetPreferencesData;
     permissionsDefaults: PermissionsData;
+    modelDefaults: {
+        modelId: string;
+        providerId: string;
+    };
 
     // Editorial Defaults
     defaultTone: string;
@@ -24,6 +28,7 @@ interface SettingsState {
     updateBudgetDefaults: (updates: Partial<BudgetPreferencesData>) => void;
     updatePermissionsDefaults: (updates: Partial<PermissionsData>) => void;
     updateEditorialDefaults: (updates: { tone?: string; pacing?: string }) => void;
+    updateModelDefaults: (updates: Partial<SettingsState['modelDefaults']>) => void;
 
     resetToDefaults: () => void;
 }
@@ -34,6 +39,10 @@ export const useSettingsStore = create<SettingsState>()(
             aiDefaults: DEFAULT_AI_PREFERENCES,
             budgetDefaults: DEFAULT_BUDGET_PREFERENCES,
             permissionsDefaults: DEFAULT_PERMISSIONS,
+            modelDefaults: {
+                modelId: 'gpt-4o',
+                providerId: 'openai',
+            },
             defaultTone: 'neutral',
             defaultPacing: 'steady',
 
@@ -54,10 +63,18 @@ export const useSettingsStore = create<SettingsState>()(
                 ...updates
             })),
 
+            updateModelDefaults: (updates) => set((state) => ({
+                modelDefaults: { ...state.modelDefaults, ...updates }
+            })),
+
             resetToDefaults: () => set({
                 aiDefaults: DEFAULT_AI_PREFERENCES,
                 budgetDefaults: DEFAULT_BUDGET_PREFERENCES,
                 permissionsDefaults: DEFAULT_PERMISSIONS,
+                modelDefaults: {
+                    modelId: 'gpt-4o',
+                    providerId: 'openai',
+                },
                 defaultTone: 'neutral',
                 defaultPacing: 'steady',
             }),

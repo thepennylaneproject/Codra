@@ -51,6 +51,9 @@ export interface ProjectSettings {
     dataSensitivity?: DataSensitivity;
     maxSteps?: number;
     riskTolerance?: number;
+    modelId?: string;
+    providerId?: string;
+    smartMode?: boolean;
 }
 
 /**

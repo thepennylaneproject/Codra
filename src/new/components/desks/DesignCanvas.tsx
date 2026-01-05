@@ -5,11 +5,11 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Sparkles, Maximize2, RefreshCcw, Download, Layers, ShieldCheck, Plus, Lock, Unlock } from 'lucide-react';
+import { Sparkles, Maximize2, RefreshCcw, Download, Layers, Plus, Lock, Unlock } from 'lucide-react';
 import { MOCK_ASSETS } from '../../../domain/integrations';
 import { useImageGeneration } from '../../../hooks/useImageGeneration';
 import { STYLE_PRESETS, ImageStyle, applyStyleToPrompt, generateRandomSeed } from '../../../lib/image/seed-preservation';
-import { Button, IconButton } from '../Button';
+import { Button, IconButton } from '@/components/ui/Button';
 import { useDeskState } from './hooks/useDeskState';
 
 interface DesignCanvasProps {
@@ -88,10 +88,8 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
             <aside className="w-64 flex flex-col gap-6 shrink-0">
                 <section>
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-[10px] text-[var(--desk-text-muted)] font-bold uppercase tracking-widest">Resource Library</h3>
-                        <span className="flex items-center gap-1 text-[8px] font-bold text-rose-500 uppercase tracking-wider">
-                            Cloudinary
-                        </span>
+                        <h3 className="text-xs text-desk-text-muted font-semibold">Resource Library</h3>
+                        <span className="flex items-center gap-1 text-xs font-semibold text-zinc-500">Cloudinary</span>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                         {localAssets.map(asset => (
@@ -110,7 +108,7 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                             size="sm"
                             onClick={() => document.getElementById('art-asset-upload')?.click()}
                             leftIcon={<Plus size={16} />}
-                            className="aspect-square border-dashed text-[var(--desk-text-muted)] hover:text-rose-500 hover:border-rose-500 hover:bg-rose-500/5 flex flex-col"
+                            className="aspect-square border-dashed text-desk-text-muted hover:text-rose-500 hover:border-rose-500 hover:bg-rose-500/5 flex flex-col"
                         >
                             <input
                                 type="file"
@@ -119,14 +117,14 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                                 onChange={handleUpload}
                                 accept="image/*"
                             />
-                            <span className="text-[8px] font-black uppercase tracking-tighter">Add</span>
+                            <span className="text-xs font-semibold">Add</span>
                         </Button>
                     </div>
                 </section>
 
                 <section className="mt-auto">
                     <div className="p-4 rounded-xl bg-[var(--desk-bg)]/10 border border-[var(--desk-border)] border-dashed">
-                        <p className="text-[10px] font-mono text-[var(--desk-text-muted)] uppercase tracking-widest text-center">Drag assets to prompt</p>
+                        <p className="text-xs font-mono text-desk-text-muted text-center">Drag assets to prompt</p>
                     </div>
                 </section>
             </aside>
@@ -142,7 +140,7 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                             {isLoading ? (
                                 <div className="flex flex-col items-center gap-3">
                                     <RefreshCcw size={24} className="text-rose-500 animate-spin" />
-                                    <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--desk-text-muted)]">Iterating {i + 1}...</p>
+                                    <p className="text-xs font-mono text-desk-text-muted">Iterating {i + 1}...</p>
                                 </div>
                             ) : (
                                 <>
@@ -150,7 +148,7 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                                         {result && i === 0 ? (
                                             <img src={result.url} alt="Generated" className="w-full h-full object-cover" />
                                         ) : (
-                                            <Sparkles size={48} className="text-[var(--desk-bg)]" />
+                                            <Sparkles size={48} className="text-desk-bg" />
                                         )}
                                     </div>
                                     
@@ -168,7 +166,7 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                                                     variant="ghost"
                                                     size="sm"
                                                     aria-label="Maximize"
-                                                    className="bg-white/10 hover:bg-white/20 backdrop-blur-md"
+                                                    className="glass-panel border-0 bg-white/10 hover:bg-white/20"
                                                 >
                                                     <Maximize2 size={14} className="text-white" />
                                                 </IconButton>
@@ -176,7 +174,7 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                                                     variant="ghost"
                                                     size="sm"
                                                     aria-label="Download"
-                                                    className="bg-white/10 hover:bg-white/20 backdrop-blur-md"
+                                                    className="glass-panel border-0 bg-white/10 hover:bg-white/20"
                                                 >
                                                     <Download size={14} className="text-white" />
                                                 </IconButton>
@@ -187,7 +185,7 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                                                 leftIcon={<Layers size={12} />}
                                                 className="bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-500/40"
                                             >
-                                                Promote to Canvas
+                                                Promote to workspace
                                             </Button>
                                         </div>
                                     </div>
@@ -207,7 +205,7 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                         const assetContext = e.dataTransfer.getData('text/plain');
                         setPrompt(prev => prev + (prev ? ' ' : '') + assetContext);
                     }}
-                    className={`bg-[var(--desk-surface)]/80 backdrop-blur-2xl border transition-all duration-300 rounded-2xl p-4 flex flex-col gap-4 shadow-2xl ${isDraggingOver ? 'border-rose-500 bg-rose-500/5 scale-[1.01]' : 'border-[var(--desk-border)]'}`}
+                    className={`glass-panel-light bg-[var(--desk-surface)]/80 transition-all duration-300 rounded-2xl p-4 flex flex-col gap-4 shadow-2xl ${isDraggingOver ? 'border-rose-500 bg-rose-500/5 scale-[1.01]' : 'border-[var(--desk-border)]'}`}
                 >
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -216,62 +214,62 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                                 {(Object.keys(STYLE_PRESETS) as ImageStyle[]).slice(0, 4).map((style) => {
                                     const preset = STYLE_PRESETS[style];
                                     return (
-                                        <button
+                                        <Button
                                             key={style}
                                             onClick={() => setCurrentStyle(style)}
-                                            className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all ${
+                                            className={`px-2 py-1 rounded-lg text-xs font-semibold transition-all ${
                                                 currentStyle === style
                                                     ? 'bg-rose-500 text-white'
-                                                    : 'bg-[var(--desk-bg)]/50 text-[var(--desk-text-muted)] hover:bg-rose-500/20'
+                                                    : 'bg-[var(--desk-bg)]/50 text-desk-text-muted hover:bg-rose-500/20'
                                             }`}
                                             title={preset.description}
                                         >
                                             {preset.icon}
-                                        </button>
+                                        </Button>
                                     );
                                 })}
                             </div>
-                            
+
                             <div className="w-px h-4 bg-[var(--desk-border)]" />
-                            
+
                             {/* Seed Lock */}
-                            <button
+                            <Button
                                 onClick={() => setSeedLocked(!seedLocked)}
-                                className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-bold transition-all ${
+                                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${
                                     seedLocked
                                         ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30'
-                                        : 'bg-[var(--desk-bg)]/50 text-[var(--desk-text-muted)] hover:bg-[var(--desk-border)]'
+                                        : 'bg-[var(--desk-bg)]/50 text-desk-text-muted hover:bg-[var(--desk-border)]'
                                 }`}
                                 title={seedLocked ? `Seed locked: ${currentSeed}` : 'Lock seed for variations'}
                             >
                                 {seedLocked ? <Lock size={10} /> : <Unlock size={10} />}
                                 {seedLocked ? 'Locked' : 'Seed'}
-                            </button>
-                            
+                            </Button>
+
                             <div className="w-px h-4 bg-[var(--desk-border)]" />
-                            <div className="flex items-center gap-2 text-[10px] font-bold text-[var(--desk-text-muted)] uppercase tracking-widest">
-                                <ShieldCheck size={12} className="text-green-500" />
+
+                            <div className="flex items-center gap-2 text-xs font-semibold text-desk-text-muted">
                                 <span>Safe Search: On</span>
                             </div>
                         </div>
 
-                        <span className="text-[10px] font-mono text-[var(--desk-text-muted)] uppercase tracking-tight">Est. Cost: $0.12</span>
+                        <span className="text-xs font-mono text-desk-text-muted tracking-tight">Est. Cost: $0.12</span>
                     </div>
 
-                    <div className="flex gap-3">
+                    <div className="flex items-end gap-4">
                         <div className="flex-1 relative group">
                             <textarea
                                 value={prompt}
                                 onChange={(e) => setPrompt(e.target.value)}
                                 placeholder="Describe your visual intent or drag assets here..."
-                                className="w-full bg-[var(--desk-bg)]/40 border border-[var(--desk-border)] rounded-xl px-4 py-3 text-sm min-h-[60px] resize-none focus:outline-none focus:ring-1 focus:ring-rose-500/50 transition-all placeholder:text-[var(--desk-text-muted)] font-mono text-[var(--desk-text-primary)]"
+                                className="w-full bg-[var(--desk-bg)]/40 border border-[var(--desk-border)] rounded-xl px-4 py-3 text-sm min-h-[60px] resize-none focus:outline-none focus:ring-1 focus:ring-rose-500/50 transition-all placeholder:text-desk-text-muted font-mono text-desk-text-primary"
                             />
                             <div className="absolute right-3 bottom-3 flex gap-2">
                                 <IconButton
                                     variant="ghost"
                                     size="sm"
                                     aria-label="Refresh prompt"
-                                    className="bg-[var(--desk-bg)] hover:bg-[var(--desk-border)] text-[var(--desk-text-muted)]"
+                                    className="bg-[var(--desk-bg)] hover:bg-[var(--desk-border)] text-desk-text-muted"
                                 >
                                     <RefreshCcw size={14} />
                                 </IconButton>
@@ -283,7 +281,7 @@ export const DesignCanvas: React.FC<DesignCanvasProps> = ({
                             size="md"
                             onClick={handleGenerate}
                             disabled={isLoading}
-                            className="px-8 bg-[var(--desk-text-primary)] hover:bg-[var(--desk-text-primary)]/90 text-[var(--desk-surface)] shadow-xl shadow-white/5"
+                            className="px-8 bg-[var(--desk-text-primary)] hover:bg-[var(--desk-text-primary)]/90 text-desk-surface shadow-xl shadow-white/5"
                         >
                             {isLoading ? 'Firing...' : 'Generate'}
                         </Button>

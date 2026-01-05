@@ -14,7 +14,7 @@ export function ProgressSegment({ progress }: ProgressSegmentProps) {
 
     // Determine dot color and animation
     const dotClass =
-        status === 'executing' ? 'bg-[#FF6B6B] animate-pulse' :
+        status === 'executing' ? 'bg-zinc-600 animate-pulse' :
         status === 'complete' ? 'bg-[#22C55E]' :
         status === 'error' ? 'bg-[#EF4444]' :
         'bg-[#8A8A9A]'; // idle

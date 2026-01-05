@@ -80,7 +80,7 @@ export function CollabPresenceLayer({ children, enabled = true }: CollabPresence
 
             {/* Indicator - Only show if there are collaborators and it is enabled */}
             {showCollaborators && collaborators.length > 0 && (
-                <div className="absolute bottom-10 left-6 flex items-center gap-2 px-3 py-1.5 bg-zinc-900/80 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-widest text-white shadow-lg z-50">
+                <div className="absolute bottom-8 left-6 flex items-center gap-2 px-3 py-1 glass-panel border-0 bg-zinc-900/80 rounded-full text-xs font-semibold text-white shadow-lg z-50">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                     {collaborators.length} Live
                 </div>

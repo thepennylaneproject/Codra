@@ -18,9 +18,9 @@ export function ProjectSettingsIndicator({ projectId }: ProjectSettingsIndicator
     }
 
     return (
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#FF4D4D]/5 border border-[#FF4D4D]/10 rounded-full">
-            <Settings size={12} className="text-[#FF4D4D]" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-[#FF4D4D]">
+        <div className="flex items-center gap-2 px-3 py-1 bg-zinc-200/40 border border-zinc-300/60 rounded-full">
+            <Settings size={12} className="text-zinc-500" />
+            <span className="text-xs font-semibold text-zinc-500">
                 Using custom settings
             </span>
         </div>

@@ -60,7 +60,7 @@ function containsCoralColor(str) {
 /**
  * Check if component is approved for accent usage
  */
-function isApprovedComponent(node, context) {
+function isApprovedComponent(node) {
     // Check if parent is an approved component
     let current = node.parent;
     while (current) {
@@ -119,8 +119,9 @@ export default {
 
     create(context) {
         return {
-            // Check JSX className attribute
+            // Check JSX attributes (className and style)
             JSXAttribute(node) {
+                // Check className attribute
                 if (node.name.name === 'className') {
                     let classValue = '';
 
@@ -138,7 +139,7 @@ export default {
                     }
 
                     if (containsCoralColor(classValue)) {
-                        const isApproved = isApprovedComponent(node, context);
+                        const isApproved = isApprovedComponent(node);
 
                         if (!isApproved) {
                             context.report({
@@ -151,10 +152,8 @@ export default {
                         }
                     }
                 }
-            },
 
-            // Check style attribute (inline styles)
-            JSXAttribute(node) {
+                // Check style attribute (inline styles)
                 if (node.name.name === 'style' && node.value) {
                     if (node.value.type === 'JSXExpressionContainer') {
                         const expr = node.value.expression;
@@ -165,7 +164,7 @@ export default {
                                     const value = String(prop.value.value);
 
                                     if (containsCoralColor(value)) {
-                                        const isApproved = isApprovedComponent(node, context);
+                                        const isApproved = isApprovedComponent(node);
 
                                         if (!isApproved) {
                                             context.report({

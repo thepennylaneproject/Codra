@@ -9,7 +9,7 @@ import { AimlApiProvider } from '../../../../src/lib/ai/providers/aimlapi';
 import { DeepSeekProvider } from '../../../../src/lib/ai/providers/deepseek';
 import { GeminiProvider } from '../../../../src/lib/ai/providers/gemini';
 import { AIRouter } from '../../../../src/lib/ai/router';
-import type { AICompletionResponse } from '../../../../src/lib/ai/types';
+import type { AICompletionResponse, AIMessage } from '../../../../src/lib/ai/types';
 
 // Initialize Supabase
 const supabase = createClient(
@@ -110,7 +110,7 @@ Return ONLY a JSON array of objects with the following format:
 Ensure names follow standard conventions for ${scope} ${kind}.
 Do not include any markdown or extra text.`;
 
-        const messages = [
+        const messages: AIMessage[] = [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: `Suggest ${count} names for ${description || kind}` }
         ];

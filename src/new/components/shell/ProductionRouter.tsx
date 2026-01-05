@@ -41,9 +41,9 @@ export const ProductionRouter: React.FC<ProductionRouterProps> = ({
     projectId 
 }) => {
     return (
-        <nav className="flex items-center gap-1.5 px-4 py-2 bg-white/40 backdrop-blur-sm border-b border-[var(--color-border-soft)]">
-            <div className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--color-ink-muted)] mr-2 pl-2">
-                Studios
+        <nav className="flex items-center gap-1 px-4 py-2 glass-panel-light border-0 border-b border-[var(--ui-border-soft)] rounded-none bg-[var(--ui-bg)]/40">
+            <div className="text-xs font-semibold text-text-soft mr-2 pl-2">
+                Studio workspaces
             </div>
             
             <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
@@ -56,10 +56,10 @@ export const ProductionRouter: React.FC<ProductionRouterProps> = ({
                             key={desk.id}
                             to={`/p/${projectId}/production?desk=${desk.id}`}
                             className={cn(
-                                "flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all whitespace-nowrap group",
+                                "flex items-center gap-2 px-3 py-1 rounded-lg transition-all whitespace-nowrap group",
                                 isActive 
-                                    ? "bg-[var(--color-ink)] text-white shadow-md shadow-[var(--color-ink)]/10" 
-                                    : "text-[var(--color-ink-light)] hover:bg-[var(--color-border-soft)] hover:text-[var(--color-ink)]"
+                                    ? "bg-[var(--ui-text)] text-background-default shadow-md shadow-[var(--ui-text)]/10" 
+                                    : "text-text-soft hover:bg-[var(--ui-border-soft)] hover:text-text-primary"
                             )}
                         >
                             <Icon 
@@ -67,12 +67,10 @@ export const ProductionRouter: React.FC<ProductionRouterProps> = ({
                                 strokeWidth={isActive ? 2 : 1.5} 
                                 className={cn(
                                     "transition-transform group-hover:scale-110",
-                                    isActive ? "text-[var(--brand-teal)]" : "text-[var(--color-ink-muted)]"
+                                    isActive ? "text-brand-teal" : "text-text-soft"
                                 )} 
                             />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">
-                                {desk.label}
-                            </span>
+                            <span className="text-xs font-semibold">{desk.label}</span>
                         </Link>
                     );
                 })}

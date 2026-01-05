@@ -1,7 +1,7 @@
 import type { Handler } from '@netlify/functions';
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-const BASE_URL = process.env.URL || 'http://localhost:8888';
+const BASE_URL = process.env.URL || 'http://localhost:5173';
 
 export const handler: Handler = async (event) => {
     if (!GITHUB_CLIENT_ID) {

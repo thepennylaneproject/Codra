@@ -11,6 +11,7 @@
 
 import { CodraEscalation } from '../../domain/types';
 import { AlertTriangle, ShieldAlert, Trash2, X, Check } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 // ============================================
 // Icon Mapping
@@ -57,7 +58,7 @@ export function CodraEscalationBanner({ escalation, onResolve, onDismiss }: Codr
         <div className={`${colors.bg} ${colors.border} border rounded-sm p-4`}>
             <div className="flex items-start gap-3">
                 {/* Icon */}
-                <div className={`${colors.icon} mt-0.5`}>
+                <div className={`${colors.icon} mt-0`}>
                     <Icon size={18} />
                 </div>
 
@@ -74,21 +75,21 @@ export function CodraEscalationBanner({ escalation, onResolve, onDismiss }: Codr
                 {/* Actions */}
                 <div className="flex items-center gap-2">
                     {escalation.severity === 'blocking' ? (
-                        <button
+                        <Button
                             onClick={() => onResolve(escalation.id)}
-                            className="px-3 py-1.5 bg-zinc-900 text-white text-xs font-medium rounded-sm hover:bg-zinc-800 transition-colors flex items-center gap-1.5"
+                            className="px-3 py-1 bg-zinc-900 text-white text-xs font-medium rounded-sm hover:bg-zinc-800 transition-colors flex items-center gap-1"
                         >
                             <Check size={12} />
                             Approve
-                        </button>
+                        </Button>
                     ) : (
-                        <button
+                        <Button
                             onClick={() => onDismiss?.(escalation.id)}
-                            className="p-1.5 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 rounded-sm transition-colors"
-                            title="Dismiss"
+                            className="p-1 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 rounded-sm transition-colors"
+                            title="Close"
                         >
                             <X size={14} />
-                        </button>
+                        </Button>
                     )}
                 </div>
             </div>
@@ -125,7 +126,7 @@ export function CodraEscalationModal({ escalation, onConfirm, onCancel }: CodraE
                         <Icon size={20} />
                     </div>
                     <div>
-                        <p className="text-sm font-bold text-zinc-900 uppercase tracking-wide">
+                        <p className="text-sm font-semibold text-zinc-900 tracking-wide">
                             Codra
                         </p>
                         <p className="text-xs text-zinc-500">
@@ -141,18 +142,18 @@ export function CodraEscalationModal({ escalation, onConfirm, onCancel }: CodraE
 
                 {/* Actions */}
                 <div className="flex items-center justify-end gap-3">
-                    <button
+                    <Button
                         onClick={onCancel}
                         className="px-4 py-2 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
                     >
                         Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={onConfirm}
                         className="px-4 py-2 bg-zinc-900 text-white text-sm font-medium rounded-sm hover:bg-zinc-800 transition-colors"
                     >
                         Proceed Anyway
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

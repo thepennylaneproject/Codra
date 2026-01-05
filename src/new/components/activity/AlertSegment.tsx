@@ -5,6 +5,7 @@
 
 import { AlertTriangle, Info, XCircle } from 'lucide-react';
 import { Alert } from './hooks';
+import { Button } from '@/components/ui/Button';
 
 interface AlertSegmentProps {
     alert: Alert;
@@ -26,9 +27,9 @@ export function AlertSegment({ alert, onDetailsClick }: AlertSegmentProps) {
         'bg-[#3B82F6]/10';
 
     const iconColor =
-        type === 'error' ? 'text-[#EF4444]' :
-        type === 'warning' ? 'text-[#F59E0B]' :
-        'text-[#3B82F6]';
+        type === 'error' ? 'text-state-error' :
+        type === 'warning' ? 'text-state-warning' :
+        'text-state-info';
 
     return (
         <div className={`flex items-center gap-2 px-4 ${bgClass}`}>
@@ -37,12 +38,12 @@ export function AlertSegment({ alert, onDetailsClick }: AlertSegmentProps) {
                 {message}
             </span>
             {alert.details && (
-                <button
+                <Button
                     onClick={onDetailsClick}
                     className="text-xs text-zinc-400 hover:text-zinc-200 underline transition-colors"
                 >
                     Details
-                </button>
+                </Button>
             )}
         </div>
     );

@@ -6,6 +6,9 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { analytics } from '@/lib/analytics';
 
+import { Heading, Text, Label } from '../../new/components';
+import { Button } from '@/components/ui/Button';
+
 /**
  * Utility for Tailwind class merging
  */
@@ -25,56 +28,54 @@ export function PricingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FFFAF0] text-[#1A1A1A] font-sans pb-32">
+    <div className="min-h-screen bg-[var(--ui-bg)] text-text-primary font-sans pb-12">
       {/* Header Section */}
-      <header className="pt-32 pb-24 px-8 text-center max-w-4xl mx-auto">
+      <header className="pt-12 pb-12 px-8 text-center max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           <div className="flex items-center justify-center gap-2 mb-6">
-            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#8A8A8A]">
+            <Label variant="muted" className="">
               Monetization Strategy
-            </span>
+            </Label>
           </div>
-          <h1 className="text-[80px] font-black tracking-tighter leading-[0.85] mb-8">
+          <Heading size="xl" className="leading-[0.85] mb-8">
             The Production <br />
-            <span className="italic font-serif font-light text-[#8A8A8A]">Tiers</span>
-          </h1>
-          <p className="text-xl text-[#5A5A5A] max-w-xl mx-auto font-medium leading-relaxed italic">
-            "Professional-grade AI execution, scaled to your production throughput."
+            <span className="italic font-serif font-normal text-text-soft">Tiers</span>
+          </Heading>
+          <p className="text-xl text-text-secondary max-w-xl mx-auto font-medium leading-relaxed italic">
+            &quot;Professional-grade AI execution, scaled to your production throughput.&quot;
           </p>
         </motion.div>
 
         {/* Billing Toggle */}
         <motion.div 
-          className="mt-16 inline-flex items-center p-1 bg-white border border-[#1A1A1A]/5 rounded-2xl shadow-sm"
+          className="mt-12 inline-flex items-center p-1 bg-white border border-[var(--ui-border)] rounded-2xl shadow-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <button
+          <Button
+            variant={billingCycle === 'monthly' ? "primary" : "ghost"}
             onClick={() => setBillingCycle('monthly')}
-            className={cn(
-              "px-8 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all",
-              billingCycle === 'monthly' ? "bg-[#1A1A1A] text-white shadow-xl" : "text-[#8A8A8A] hover:text-[#1A1A1A]"
-            )}
+            className="px-8"
+            size="lg"
           >
             Monthly
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={billingCycle === 'yearly' ? "primary" : "ghost"}
             onClick={() => setBillingCycle('yearly')}
-            className={cn(
-              "px-8 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all relative",
-              billingCycle === 'yearly' ? "bg-[#1A1A1A] text-white shadow-xl" : "text-[#8A8A8A] hover:text-[#1A1A1A]"
-            )}
+            className="px-8 relative"
+            size="lg"
           >
             Yearly
-            <span className="absolute -top-3 -right-2 bg-[#10B981] text-white text-[8px] font-black px-2 py-0.5 rounded-full">
+            <span className="absolute -top-3 -right-2 bg-emerald-500 text-white text-xs font-semibold px-2 py-0 rounded-full">
               Save 17%
             </span>
-          </button>
+          </Button>
         </motion.div>
       </header>
 
@@ -92,49 +93,54 @@ export function PricingPage() {
         </div>
 
         {/* Value Props Section */}
-        <section className="mt-40 grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-[#1A1A1A]/5 pt-24">
+        <section className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-[var(--ui-border)] pt-12">
           <div className="space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-white border border-[#1A1A1A]/5 flex items-center justify-center shadow-sm">
-              <Zap size={24} className="text-[#1A1A1A]/60" />
+            <div className="w-12 h-12 rounded-2xl bg-white border border-[var(--ui-border)] flex items-center justify-center shadow-sm">
+              <Zap size={24} className="text-text-soft" />
             </div>
-            <h3 className="text-xl font-bold tracking-tight">Real-Time Execution</h3>
-            <p className="text-sm text-[#5A5A5A] leading-relaxed">
+            <Heading size="lg" className="tracking-tight">Real-Time Execution</Heading>
+            <Text variant="muted" size="sm">
               No more mocked delays. Experience true streaming AI output across 50+ specialized desks.
-            </p>
+            </Text>
           </div>
           <div className="space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-white border border-[#1A1A1A]/5 flex items-center justify-center shadow-sm">
-              <Shield size={24} className="text-[#1A1A1A]/60" />
+            <div className="w-12 h-12 rounded-2xl bg-white border border-[var(--ui-border)] flex items-center justify-center shadow-sm">
+              <Shield size={24} className="text-text-soft" />
             </div>
-            <h3 className="text-xl font-bold tracking-tight">Enterprise Guardrails</h3>
-            <p className="text-sm text-[#5A5A5A] leading-relaxed">
+            <Heading size="lg" className="tracking-tight">Enterprise Guardrails</Heading>
+            <Text variant="muted" size="sm">
               Integrated budget management and role-based permissions to prevent AI hallucination and overspend.
-            </p>
+            </Text>
           </div>
           <div className="space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-white border border-[#1A1A1A]/5 flex items-center justify-center shadow-sm">
-              <Globe size={24} className="text-[#1A1A1A]/60" />
+            <div className="w-12 h-12 rounded-2xl bg-white border border-[var(--ui-border)] flex items-center justify-center shadow-sm">
+              <Globe size={24} className="text-text-soft" />
             </div>
-            <h3 className="text-xl font-bold tracking-tight">Context-Aware Memory</h3>
-            <p className="text-sm text-[#5A5A5A] leading-relaxed">
+            <Heading size="lg" className="tracking-tight">Context-Aware Memory</Heading>
+            <Text variant="muted" size="sm">
               Your Project Brief gives every AI task context about your brand voice and project goals.
-            </p>
+            </Text>
           </div>
         </section>
       </main>
 
       {/* Final CTA */}
-      <section className="mt-32 px-8">
-        <div className="max-w-5xl mx-auto bg-[#1A1A1A] rounded-[40px] p-16 text-center relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#FF4D4D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-          <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-8 relative z-10">
-            Ready to initiate <br />
-            full-scale production?
-          </h2>
-          <button className="px-12 py-5 bg-white text-[#1A1A1A] rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#FF4D4D] hover:text-white transition-all transform hover:scale-105 active:scale-95 relative z-10 flex items-center gap-4 mx-auto shadow-2xl">
-            Start Your Journey
-            <ArrowRight size={16} strokeWidth={3} />
-          </button>
+      <section className="mt-12 px-8">
+        <div className="max-w-5xl mx-auto bg-[var(--brand-ink)] rounded-[40px] p-12 text-center relative overflow-hidden group">
+          <div className="absolute top-0 left-0 w-full h-full bg-zinc-300/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <Heading size="xl" className="text-white tracking-tighter mb-8 relative z-10">
+            Full-scale production initiation<br />
+          </Heading>
+          <Button
+            variant="secondary"
+            className="px-12 py-8 relative z-10 flex items-center gap-4 mx-auto shadow-2xl hover:scale-105 active:scale-95"
+            disabled
+          >
+            <div className="flex items-center gap-4">
+              Unavailable
+              <ArrowRight size={16} strokeWidth={3} />
+            </div>
+          </Button>
         </div>
       </section>
     </div>
@@ -162,18 +168,18 @@ function PricingCard({
       className={cn(
         "relative flex flex-col p-8 bg-white border transition-all duration-500 rounded-[32px] group",
         plan.highlighted 
-          ? "border-[#FF4D4D] shadow-[0_32px_64px_-16px_rgba(255,77,77,0.15)] z-10 scale-105 hover:scale-[1.07]" 
-          : "border-[#1A1A1A]/5 hover:border-[#1A1A1A]/20 hover:shadow-2xl hover:shadow-[#1A1A1A]/5"
+          ? "border-zinc-400 shadow-[0_32px_64px_-16px_rgba(255,107,107,0.15)] z-10 scale-105 hover:scale-[1.07]" 
+          : "border-[var(--ui-border)] hover:border-[var(--brand-ink)]/20 hover:shadow-2xl hover:shadow-[var(--brand-ink)]/5"
       )}
     >
       {plan.highlighted && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 border border-white/20 bg-white/5 text-[#1A1A1A]/80 text-[10px] font-black px-6 py-1.5 rounded-full">
-          MOST POPULAR
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 border border-white/20 bg-white/5 text-text-soft text-xs font-semibold px-6 py-1 rounded-full">
+          Most popular
         </div>
       )}
 
       {/* Icon/Visual */}
-      <div className="mb-10 text-[#1A1A1A]/60">
+      <div className="mb-8 text-brand-ink/60">
         {plan.id === 'free' && <Globe size={28} strokeWidth={2.5} className="opacity-40" />}
         {plan.id === 'starter' && <Zap size={28} strokeWidth={2.5} />}
         {plan.id === 'pro' && <Sparkles size={28} strokeWidth={2.5} />}
@@ -181,61 +187,55 @@ function PricingCard({
       </div>
 
       <div className="mb-8">
-        <h3 className="text-2xl font-black tracking-tight mb-2">
+        <Heading size="lg" className="tracking-tight mb-2">
           {plan.name}
-        </h3>
-        <p className="text-xs text-[#8A8A8A] font-bold uppercase tracking-widest leading-relaxed">
-          {plan.tagline}
-        </p>
+        </Heading>
+        <Label className="leading-relaxed">{plan.tagline}</Label>
       </div>
-
-      <div className="mb-10">
+      <div className="mb-8">
         <div className="flex items-baseline gap-1">
-          <span className="text-[56px] font-black tracking-tighter leading-none">${price}</span>
-          <span className="text-[11px] font-bold uppercase tracking-widest text-[#8A8A8A]">/mo</span>
+          <span className="text-xl font-semibold tracking-tighter leading-none">${price}</span>
+          <Label variant="muted">/mo</Label>
         </div>
         {billingCycle === 'yearly' && plan.yearlyPrice && (
-          <p className="text-[10px] text-[#8A8A8A] font-black mt-2 uppercase tracking-widest">
+          <Label variant="muted" className="mt-2 block font-semibold">
             Billed ${plan.yearlyPrice}/year
-          </p>
+          </Label>
         )}
       </div>
 
-      <button
+      <Button
+        variant={plan.highlighted ? "primary" : "secondary"}
         onClick={() => {
           analytics.track('plan_cta_clicked', { planId: plan.id, billingCycle });
         }}
-        className={cn(
-          "w-full py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] transition-all transform active:scale-95 mb-10",
-          plan.highlighted
-            ? "bg-[#FF4D4D] text-white hover:bg-[#1A1A1A] shadow-xl shadow-[#FF4D4D]/20"
-            : "bg-[#1A1A1A] text-white hover:opacity-90"
-        )}
+        className="w-full py-6 mb-8"
+        size="lg"
       >
         {plan.cta}
-      </button>
+      </Button>
 
       <div className="flex-1 space-y-6">
-        <div className="h-[1px] bg-[#1A1A1A]/5 px-0" />
+        <div className="h-[1px] bg-[var(--ui-border)] px-0" />
         <ul className="space-y-4">
           {plan.features.map((feature, i) => (
             <li key={i} className="flex items-start gap-3">
-              <div className="p-0.5 rounded-full bg-[#10B981]/10 mt-0.5">
-                <Check size={12} strokeWidth={4} className="text-[#10B981]" />
+              <div className="p-0 rounded-full bg-emerald-500/10 mt-0">
+                <Check size={12} strokeWidth={4} className="text-emerald-500" />
               </div>
-              <span className="text-[13px] text-[#5A5A5A] font-medium leading-tight">
+              <Text variant="muted" size="sm" className="font-medium leading-tight">
                 {feature}
-              </span>
+              </Text>
             </li>
           ))}
         </ul>
       </div>
 
       {/* Subtle Bottom Accent */}
-      <div className="mt-10 pt-6 border-t border-[#1A1A1A]/5">
-        <p className="text-[9px] font-bold text-[#8A8A8A] uppercase tracking-widest">
+      <div className="mt-8 pt-6 border-t border-[var(--ui-border)]">
+        <Label variant="muted" className="font-semibold">
           {plan.limits.projects === 'unlimited' ? 'Unlimited' : `${plan.limits.projects} active`} Projects
-        </p>
+        </Label>
       </div>
     </motion.div>
   );

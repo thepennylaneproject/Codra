@@ -6,6 +6,7 @@ import { Search, ChevronDown, Check, Zap, Brain, Sparkles, Cpu, Info } from 'luc
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Button } from '@/components/ui/Button';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -92,20 +93,20 @@ export function ModelSelector({
         allModels.find(m => m.id === selectedModelId) || allModels[0],
         [allModels, selectedModelId]);
 
-    if (error) return <div className="text-[10px] text-rose-500 p-2">Failed to load models.</div>;
+    if (error) return <div className="text-xs text-rose-500 p-2">Failed to load models.</div>;
 
     const getModelIcon = (tags: string[] = []) => {
         if (tags.includes('reasoning')) return <Brain size={12} className="text-purple-500" />;
         if (tags.includes('fast')) return <Zap size={12} className="text-amber-500" />;
         if (tags.includes('multimodal')) return <Sparkles size={12} className="text-rose-500" />;
-        if (tags.includes('visual')) return <div className="w-3 h-3 rounded-sm bg-gradient-to-br from-rose-400 to-amber-400" />;
+        if (tags.includes('visual')) return <div className="w-3 h-3 rounded-sm bg-zinc-400" />;
         return <Cpu size={12} className="text-zinc-400" />;
     };
 
     return (
         <div className={cn("relative z-20", className)}>
             {/* Trigger */}
-            <button
+            <Button
                 ref={triggerRef}
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
@@ -113,7 +114,7 @@ export function ModelSelector({
                     variant === 'default'
                         ? "w-full justify-between px-3 py-2 rounded-xl border bg-white border-[#1A1A1A]/10 hover:border-[#1A1A1A]/30 shadow-sm"
                         : "py-1 px-2 rounded hover:bg-[#1A1A1A]/5",
-                    isOpen && variant === 'default' && "ring-1 ring-[#FF4D4D]/20 border-[#FF4D4D]/50 shadow-xl"
+                    isOpen && variant === 'default' && "ring-1 ring-zinc-400/30 border-zinc-400/50 shadow-xl"
                 )}
             >
                 <div className="flex items-center gap-2 overflow-hidden">
@@ -124,28 +125,30 @@ export function ModelSelector({
                     )}
                     <div className="flex flex-col items-start overflow-hidden">
                         {(label || (variant === 'default' && selectedModel?.creator)) && (
-                            <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest leading-none mb-0.5">
+                            <span className="text-xs font-semibold text-zinc-400 leading-none mb-0">
                                 {label || selectedModel?.creator}
                             </span>
                         )}
-                        <div className="flex items-center gap-1.5 overflow-hidden">
+                        <div className="flex items-center gap-1 overflow-hidden">
                             <span className={cn(
-                                "font-black truncate",
-                                variant === 'default' ? "text-xs text-[#1A1A1A]" : "text-[11px] text-[#FF4D4D] uppercase tracking-[0.1em] group-hover/trigger:text-[#FF4D4D] transition-colors"
+                                "font-semibold truncate",
+                                variant === 'default'
+                                    ? "text-xs text-text-primary"
+                                    : "text-xs text-zinc-500 group-hover/trigger:text-zinc-500 transition-colors"
                             )}>
                                 {selectedModel?.displayName || 'Select Model...'}
                             </span>
                             {isSmartMode && variant === 'default' && (
-                                <div className="flex items-center gap-1 bg-[#FF4D4D]/10 text-[#FF4D4D] px-2 py-0.5 rounded-full scale-90">
+                                <div className="flex items-center gap-1 bg-zinc-200/50 text-zinc-500 px-2 py-0 rounded-full scale-90">
                                     <Sparkles size={8} fill="currentColor" />
-                                    <span className="text-[8px] font-black uppercase tracking-[0.1em]">Smart</span>
+                                    <span className="text-xs font-semibold">Smart</span>
                                 </div>
                             )}
                         </div>
                     </div>
                 </div>
                 <ChevronDown size={14} className={cn("text-zinc-400 transition-transform", isOpen && "rotate-180")} />
-            </button>
+            </Button>
 
             {/* Dropdown Popover - Using fixed to avoid clipping by parent masks/overflows */}
             <AnimatePresence>
@@ -172,7 +175,7 @@ export function ModelSelector({
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Search creators or models..."
-                                    className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg pl-8 pr-3 py-1.5 text-xs outline-none focus:ring-1 focus:ring-rose-500/20 focus:border-rose-500/50 transition-all"
+                                    className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg pl-8 pr-3 py-1 text-xs outline-none focus:ring-1 focus:ring-rose-500/20 focus:border-rose-500/50 transition-all"
                                 />
                             </div>
                         </div>
@@ -181,19 +184,19 @@ export function ModelSelector({
                         <div className="flex-1 overflow-y-auto p-1 custom-scrollbar">
                             {Object.entries(groupedModels).length === 0 ? (
                                 <div className="p-4 text-center text-xs text-zinc-500">
-                                    No models found matching "{searchQuery}"
+                                    No models found matching &quot;{searchQuery}&quot;
                                 </div>
                             ) : (
                                 Object.entries(groupedModels)
                                     .sort(([a], [b]) => a.localeCompare(b))
                                     .map(([creatorName, models]) => (
                                         <div key={creatorName} className="mb-2 last:mb-0">
-                                            <label className="px-3 py-1.5 text-[9px] font-black text-rose-500/60 uppercase tracking-[0.15em] block border-b border-zinc-50 dark:border-zinc-800/50 mb-1">
+                                            <label className="px-3 py-1 text-xs font-semibold text-zinc-500 block border-b border-zinc-50 dark:border-zinc-800/50 mb-1">
                                                 {creatorName}
                                             </label>
-                                            <div className="space-y-0.5">
+                                            <div className="space-y-0">
                                                 {models.map(model => (
-                                                    <button
+                                                    <Button
                                                         key={`${model.providerId}-${model.id}`}
                                                         onClick={() => {
                                                             onSelectModel(model.id, model.providerId);
@@ -206,7 +209,7 @@ export function ModelSelector({
                                                                 : "hover:bg-zinc-50 dark:hover:bg-zinc-800/50 text-zinc-600 dark:text-zinc-300"
                                                         )}
                                                     >
-                                                        <div className="flex items-center gap-2.5">
+                                                        <div className="flex items-center gap-2">
                                                             <div className="w-5 flex justify-center">
                                                                 {selectedModelId === model.id ? (
                                                                     <Check size={14} />
@@ -216,7 +219,7 @@ export function ModelSelector({
                                                             </div>
                                                             <div className="flex flex-col">
                                                                 <span className="text-xs">{model.displayName}</span>
-                                                                <span className="text-[10px] text-zinc-400 dark:text-zinc-500 capitalize">
+                                                                <span className="text-xs text-zinc-400 dark:text-zinc-500 capitalize">
                                                                     {model.modalities.join(', ')} • {model.contextWindow.toLocaleString()} tokens
                                                                 </span>
                                                             </div>
@@ -231,7 +234,7 @@ export function ModelSelector({
                                                                 />
                                                             </div>
                                                         )}
-                                                    </button>
+                                                    </Button>
                                                 ))}
                                             </div>
                                         </div>
@@ -240,7 +243,7 @@ export function ModelSelector({
                         </div>
 
                         {/* Footer Info */}
-                        <div className="p-3 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 flex items-center gap-2 text-[10px] text-zinc-400">
+                        <div className="p-3 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 flex items-center gap-2 text-xs text-zinc-400">
                             <Info size={12} />
                             <span>Changes apply to next execution</span>
                         </div>

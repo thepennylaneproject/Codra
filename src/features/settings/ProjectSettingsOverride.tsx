@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { Settings, X, RotateCcw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Heading, Text, Label } from '../../new/components';
 import { SettingRow } from './SettingRow';
 import { SettingEditor } from './SettingEditor';
 import { useAccountSettings } from '../../lib/smart-defaults/hooks/useAccountSettings';
@@ -13,6 +14,7 @@ import { useProjectSettings } from '../../lib/smart-defaults/hooks/useProjectSet
 import { useEffectiveSettings } from '../../lib/smart-defaults/hooks/useEffectiveSettings';
 import { SETTINGS_LABELS } from '../../domain/smart-defaults-types';
 import type { QualityPriority, AutonomyLevel } from '../../domain/smart-defaults-types';
+import { Button } from '@/components/ui/Button';
 
 interface ProjectSettingsOverrideProps {
     projectId: string;
@@ -64,16 +66,18 @@ export function ProjectSettingsOverride({ projectId, projectName }: ProjectSetti
     return (
         <>
             {/* Trigger Button */}
-            <button
+            <Button
+                variant="ghost"
                 onClick={() => setIsOpen(true)}
-                className="p-2 hover:bg-zinc-100 rounded-xl transition-colors group relative"
+                size="sm"
+                className="p-2 relative group"
                 title="Project Settings"
             >
-                <Settings size={18} className="text-zinc-400 group-hover:text-zinc-600 transition-colors" />
+                <Settings size={18} />
                 {effectiveSettings.hasOverrides && (
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#FF4D4D] rounded-full border-2 border-white" />
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-zinc-600 rounded-full border-2 border-white" />
                 )}
-            </button>
+            </Button>
 
             {/* Modal */}
             <AnimatePresence>
@@ -85,7 +89,7 @@ export function ProjectSettingsOverride({ projectId, projectName }: ProjectSetti
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsOpen(false)}
-                            className="fixed inset-0 bg-[#1A1A1A]/40 backdrop-blur-sm z-50"
+                            className="fixed inset-0 glass-panel border-0 rounded-none bg-[var(--brand-ink)]/40 z-[var(--z-overlay)]"
                         />
 
                         {/* Panel */}
@@ -93,45 +97,45 @@ export function ProjectSettingsOverride({ projectId, projectName }: ProjectSetti
                             initial={{ opacity: 0, x: 400 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 400 }}
-                            className="fixed right-0 top-0 bottom-0 w-full max-w-2xl bg-[#FFFAF0] shadow-2xl z-50 overflow-y-auto"
+                            className="fixed right-0 top-0 bottom-0 w-full max-w-2xl bg-[var(--ui-bg)] shadow-2xl z-[var(--z-modal)] overflow-y-auto border-l border-[var(--ui-border)]"
                         >
                             {/* Header */}
-                            <div className="sticky top-0 bg-[#FFFAF0] border-b border-[#1A1A1A]/5 p-8 z-10">
+                            <div className="sticky top-0 glass-panel-light border-0 border-b border-[var(--ui-border)] rounded-none bg-[var(--ui-bg)]/80 p-8 z-10">
                                 <div className="flex items-start justify-between">
                                     <div>
-                                        <h2 className="text-lg font-black uppercase tracking-tight">
+                                        <Heading size="lg" className="tracking-tight">
                                             Project Settings
-                                        </h2>
-                                        <p className="text-sm text-zinc-600 mt-1">{projectName}</p>
+                                        </Heading>
+                                        <Text variant="muted" size="sm" className="mt-1">{projectName}</Text>
                                         {effectiveSettings.hasOverrides && (
-                                            <p className="text-[10px] text-[#FF4D4D] mt-2 font-mono uppercase tracking-widest">
+                                            <Label className="text-zinc-500 mt-2 block font-mono">
                                                 {effectiveSettings.overrideCount} override{effectiveSettings.overrideCount !== 1 ? 's' : ''} active
-                                            </p>
+                                            </Label>
                                         )}
                                     </div>
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         onClick={() => setIsOpen(false)}
-                                        className="p-2 hover:bg-zinc-100 rounded-xl transition-colors"
+                                        size="sm"
+                                        className="p-2"
                                     >
                                         <X size={20} />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
                             {/* Content */}
                             <div className="p-8 space-y-8">
                                 {/* Info */}
-                                <div className="p-6 bg-white border border-[#1A1A1A]/5 rounded-2xl">
-                                    <p className="text-sm text-zinc-600 leading-relaxed">
+                                <div className="p-6 bg-white border border-[var(--ui-border)] rounded-2xl">
+                                    <Text variant="muted" size="sm" className="leading-relaxed">
                                         Override account defaults for this project. Unset values will use your account defaults.
-                                    </p>
+                                    </Text>
                                 </div>
 
                                 {/* AI Settings */}
                                 <section>
-                                    <h3 className="text-[11px] font-black uppercase tracking-widest text-zinc-400 mb-4">
-                                        AI Behavior
-                                    </h3>
+                                    <Label variant="muted" className="mb-4 block">AI Behavior</Label>
                                     <div className="space-y-3">
                                         <SettingRow
                                             label="Quality Priority"
@@ -162,9 +166,7 @@ export function ProjectSettingsOverride({ projectId, projectName }: ProjectSetti
 
                                 {/* Budget Settings */}
                                 <section>
-                                    <h3 className="text-[11px] font-black uppercase tracking-widest text-zinc-400 mb-4">
-                                        Budget
-                                    </h3>
+                                    <Label variant="muted" className="mb-4 block">Budget</Label>
                                     <div className="space-y-3">
                                         <SettingRow
                                             label="Daily Budget"
@@ -177,13 +179,15 @@ export function ProjectSettingsOverride({ projectId, projectName }: ProjectSetti
 
                                 {/* Reset */}
                                 {effectiveSettings.hasOverrides && (
-                                    <button
+                                    <Button
+                                        variant="secondary"
                                         onClick={handleReset}
-                                        className="w-full p-6 bg-zinc-50 hover:bg-zinc-100 rounded-2xl text-[11px] font-black uppercase tracking-widest text-zinc-600 transition-all flex items-center justify-center gap-3"
+                                        className="w-full p-8 flex items-center justify-center gap-3"
+                                        size="lg"
                                     >
                                         <RotateCcw size={16} />
                                         Reset to Account Defaults
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                         </motion.div>

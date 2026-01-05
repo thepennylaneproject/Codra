@@ -6,6 +6,7 @@
 
 import { useEffect, useCallback } from 'react';
 import { TOCEntry, EnhancedTOCEntry, TOCSectionCategory } from '../../domain/types';
+import { Button } from '@/components/ui/Button';
 import {
     List,
     ChevronRight,
@@ -31,7 +32,7 @@ const CATEGORY_CONFIG: Record<TOCSectionCategory, CategoryConfig> = {
     assignment: { label: 'Assignment', icon: FileText },
     editorial_direction: { label: 'Editorial Direction', icon: PenTool },
     visual_direction: { label: 'Visual Direction', icon: Palette },
-    production_desk: { label: 'Studios', icon: List },
+    production_desk: { label: 'Studio workspaces', icon: List },
     open_questions: { label: 'Open Questions', icon: HelpCircle },
 };
 
@@ -124,20 +125,18 @@ export function TOCSidebar({
             {/* Header */}
             <div className="px-6 py-4 border-b border-[#1A1A1A]/10 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <List size={14} className="text-[#1A1A1A]" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#1A1A1A]">
+                    <List size={14} className="text-text-primary" />
+                    <span className="text-xs font-semibold text-text-primary">
                         Sector Index
                     </span>
                 </div>
                 {enableKeyboard && (
-                    <span className="text-[9px] font-bold text-[#8A8A8A] uppercase tracking-tighter">
-                        1-9 to navigate
-                    </span>
+                    <span className="text-xs font-semibold text-text-soft">1-9 to navigate</span>
                 )}
                 {hasInsights && (
                     <div className="flex items-center gap-1 px-1.5 py-0.5 bg-indigo-500/10 text-indigo-500 rounded-full animate-pulse">
                         <List size={10} className="hidden" /> {/* Spacer */}
-                        <span className="text-[8px] font-black uppercase tracking-wider">New Insights</span>
+                        <span className="text-xs font-semibold">New Insights</span>
                     </div>
                 )}
             </div>
@@ -158,14 +157,14 @@ export function TOCSidebar({
                                 <div key={category} className="px-2">
                                     {/* Category Header */}
                                     <div className="px-4 py-2 flex items-center gap-2 mb-1 border-b border-[#1A1A1A]/5">
-                                        <CategoryIcon size={12} className="text-[#FF4D4D]" />
-                                        <span className="text-[9px] font-black uppercase tracking-[0.25em] text-[#8A8A8A]">
+                                        <CategoryIcon size={12} className="text-zinc-500" />
+                                        <span className="text-xs font-semibold text-text-soft">
                                             {config.label}
                                         </span>
                                     </div>
 
                                     {/* Category Entries */}
-                                    <ul className="space-y-0.5">
+                                    <ul className="space-y-0">
                                         {categoryEntries.map((entry) => (
                                             <TOCEntryItem
                                                 key={entry.id}
@@ -182,7 +181,7 @@ export function TOCSidebar({
                     </div>
                 ) : (
                     // Flat view
-                    <ul className="space-y-0.5 px-2">
+                    <ul className="space-y-0 px-2">
                         {entries.map((entry, index) => (
                             <TOCEntryItem
                                 key={entry.id}
@@ -198,8 +197,8 @@ export function TOCSidebar({
 
             {/* Footer */}
             <div className="px-6 py-4 border-t border-[#1A1A1A]/10 bg-[#1A1A1A]/5">
-                <p className="text-[9px] font-black text-[#8A8A8A] uppercase tracking-[0.2em]">
-                    Resolution Context: {entries.length} Sectors
+                <p className="text-xs font-semibold text-text-soft">
+                    No additional sections configured
                 </p>
             </div>
         </div>
@@ -224,24 +223,24 @@ function TOCEntryItem({ entry, index, isActive, onNavigate }: TOCEntryItemProps)
 
     return (
         <li>
-            <button
+            <Button
                 onClick={() => onNavigate(entry.sectionId)}
                 className={`
-                    w-full px-4 py-2.5 text-left flex items-center gap-3 group
+                    w-full px-4 py-2 text-left flex items-center gap-3 group
                     transition-all duration-200 rounded-lg
                     ${isActive
                         ? 'bg-[#1A1A1A] text-white shadow-md'
-                        : 'text-[#1A1A1A]/60 hover:text-[#1A1A1A] hover:bg-[#1A1A1A]/5'
+                        : 'text-text-primary/60 hover:text-text-primary hover:bg-[#1A1A1A]/5'
                     }
                 `}
             >
                 {/* Order Number / Status */}
                 {StatusIcon ? (
-                    <StatusIcon size={12} className={`flex-shrink-0 ${isActive ? 'text-[#FF4D4D]' : statusColor}`} />
+                    <StatusIcon size={12} className={`flex-shrink-0 ${isActive ? 'text-zinc-500' : statusColor}`} />
                 ) : (
                     <span className={`
-                        font-mono text-[10px] w-4 flex-shrink-0
-                        ${isActive ? 'text-[#FF4D4D]' : 'text-[#8A8A8A]'}
+                        font-mono text-xs w-4 flex-shrink-0
+                        ${isActive ? 'text-zinc-500' : 'text-text-soft'}
                     `}>
                         {String(index + 1).padStart(2, '0')}
                     </span>
@@ -249,15 +248,15 @@ function TOCEntryItem({ entry, index, isActive, onNavigate }: TOCEntryItemProps)
 
                 {/* Title */}
                 <span className={`
-                    text-xs flex-1 truncate uppercase tracking-wide
-                    ${isActive ? 'font-black' : 'font-bold'}
+                    text-xs flex-1 truncate
+                    ${isActive ? 'font-semibold' : 'font-semibold'}
                 `}>
                     {entry.title}
                 </span>
 
                 {/* Keyboard Shortcut */}
                 {enhanced && entry.keyboardShortcut && (
-                    <span className={`text-[9px] font-black opacity-0 group-hover:opacity-100 transition-opacity ${isActive ? 'text-white/40' : 'text-[#8A8A8A]'}`}>
+                    <span className={`text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity ${isActive ? 'text-white/40' : 'text-text-soft'}`}>
                         {entry.keyboardShortcut}
                     </span>
                 )}
@@ -267,10 +266,10 @@ function TOCEntryItem({ entry, index, isActive, onNavigate }: TOCEntryItemProps)
                     size={14}
                     className={`
                         flex-shrink-0 transition-all duration-300
-                        ${isActive ? 'opacity-100 text-[#FF4D4D] translate-x-0' : 'opacity-0 -translate-x-2 group-hover:opacity-50 group-hover:translate-x-0'}
+                        ${isActive ? 'opacity-100 text-zinc-500 translate-x-0' : 'opacity-0 -translate-x-2 group-hover:opacity-50 group-hover:translate-x-0'}
                     `}
                 />
-            </button>
+            </Button>
         </li>
     );
 }

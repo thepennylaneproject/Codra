@@ -3,6 +3,11 @@
  * Receive webhooks from async image providers
  */
 
+import { Handler } from '@netlify/functions';
+import { ImageGeneratorQueue } from '../../src/lib/ai/queue/generator-queue';
+
+const queue = new ImageGeneratorQueue(new Map());
+
 interface WebhookPayload {
     task_id?: string;
     job_id?: string;
@@ -15,7 +20,7 @@ interface WebhookPayload {
     error?: string;
 }
 
-const webhookHandler: Handler = async (event, context) => {
+const webhookHandler: Handler = async (event) => {
     try {
         if (event.httpMethod !== 'POST') {
             return {
@@ -85,4 +90,4 @@ const webhookHandler: Handler = async (event, context) => {
     }
 };
 
-export { statusHandler, listHandler, webhookHandler };
+export const handler = webhookHandler;

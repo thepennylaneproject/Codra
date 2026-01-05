@@ -83,7 +83,11 @@ export const handler: Handler = async (event) => {
             case 'customer.subscription.created':
             case 'customer.subscription.updated':
             case 'customer.subscription.deleted': {
-                const subscription = stripeEvent.data.object as Stripe.Subscription;
+                const subscription = stripeEvent.data.object as Stripe.Subscription & {
+                    current_period_end: number;
+                    cancel_at_period_end?: boolean;
+                    metadata?: Record<string, string>;
+                };
                 const status = subscription.status;
                 const customerId = subscription.customer as string;
                 const priceId = subscription.items.data[0].price.id;
@@ -119,7 +123,9 @@ export const handler: Handler = async (event) => {
 
             case 'invoice.payment_failed': {
                 // Handle failed payment (e.g. email user, handled by Stripe usually but we can update status)
-                const invoice = stripeEvent.data.object as Stripe.Invoice;
+                const invoice = stripeEvent.data.object as Stripe.Invoice & {
+                    subscription?: string | Stripe.Subscription | null;
+                };
                 const subscriptionId = typeof invoice.subscription === 'string' ? invoice.subscription : (invoice.subscription as Stripe.Subscription)?.id;
                 if (subscriptionId) {
                     await supabase.from('subscriptions').update({ status: 'past_due' }).eq('stripe_subscription_id', subscriptionId);

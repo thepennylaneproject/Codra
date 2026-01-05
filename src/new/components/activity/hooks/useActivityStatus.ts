@@ -29,7 +29,7 @@ export interface ActivityState {
 export function useActivityStatus() {
     const [progress, setProgress] = useState<ProgressStatus>({
         status: 'idle',
-        message: 'Ready',
+        message: 'Idle',
     });
 
     const [contextUsage, setContextUsage] = useState<number>(0);
@@ -53,14 +53,14 @@ export function useActivityStatus() {
     const completeTask = useCallback(() => {
         setProgress({
             status: 'complete',
-            message: 'Complete',
+            message: 'Execution complete',
         });
 
         // Reset to idle after 2 seconds
         setTimeout(() => {
             setProgress({
                 status: 'idle',
-                message: 'Ready',
+                message: 'Idle',
             });
         }, 2000);
     }, []);

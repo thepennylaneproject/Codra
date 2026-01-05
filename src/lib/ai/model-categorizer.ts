@@ -89,7 +89,7 @@ export function categorizeModel(model: ModelInfo): EnhancedModelInfo {
         tags = ['fast', 'efficient'];
     }
     // GPT-3.5 - fast and cost-effective
-    else if (modelId.includes('gpt-3.5')) {
+    else if (modelId.includes('gpt-3')) {
         taskCategories = [TaskCategory.GENERAL_PURPOSE, TaskCategory.CONTENT_GENERATION];
         bestForTasks = ['Quick responses', 'Simple tasks', 'Chat', 'Summaries'];
         strengths = ['Very fast', 'Very cost-effective', 'Good for simple tasks'];

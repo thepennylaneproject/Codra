@@ -102,6 +102,22 @@ export const STATUS_META: Record<ArtifactStatus, {
         icon: '✓',
         description: 'Accepted and ready to use',
     },
+    changes_requested: {
+        label: 'Changes Requested',
+        color: 'text-brand-gold',
+        bgColor: 'bg-brand-gold/10',
+        borderColor: 'border-brand-gold/30',
+        icon: '🔄',
+        description: 'Revisions requested by reviewer',
+    },
+    rejected: {
+        label: 'Rejected',
+        color: 'text-rose-600',
+        bgColor: 'bg-rose-50',
+        borderColor: 'border-rose-200',
+        icon: '✗',
+        description: 'Artifact rejected, will not be used',
+    },
     archived: {
         label: 'Archived',
         color: 'text-text-soft',

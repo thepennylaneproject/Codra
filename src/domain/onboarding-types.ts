@@ -536,10 +536,10 @@ export const AI_FAMILIARITY_OPTIONS: { id: AIFamiliarity; label: string; descrip
 ];
 
 export const AI_WORKSTYLE_OPTIONS: { id: AIWorkStyle; label: string; description: string }[] = [
-    { id: 'full-automation', label: 'Handle it for me', description: 'Generate results, I will review at the end' },
-    { id: 'suggest-then-approve', label: 'Suggest then I approve', description: 'Show me options before proceeding' },
-    { id: 'collaborate-back-forth', label: 'Collaborate with me', description: 'Work together iteratively' },
-    { id: 'manual-plus-assist', label: 'I lead, you assist', description: 'I make decisions, you help execute' },
+    { id: 'full-automation', label: 'Automated execution', description: 'Generate results; review at completion' },
+    { id: 'suggest-then-approve', label: 'Propose then require approval', description: 'Present options before execution' },
+    { id: 'collaborate-back-forth', label: 'Interactive execution', description: 'Iterative execution with review checkpoints' },
+    { id: 'manual-plus-assist', label: 'Manual execution with assist', description: 'Operator decisions with assisted execution' },
 ];
 
 export const TOP_PRIORITY_OPTIONS: { id: TopPriorityOutcome; label: string }[] = [
@@ -567,7 +567,7 @@ export const PERSONALITY_OPTIONS: { id: ProductPersonality; label: string; descr
     { id: 'technical-precise', label: 'Technical & Precise', description: 'Accurate, detailed, and professional' },
     { id: 'organic-natural', label: 'Organic & Natural', description: 'Soft, earthy, and human' },
     { id: 'edgy-provocative', label: 'Edgy & Provocative', description: 'Daring, unconventional, and sharp' },
-    { id: 'not-sure', label: "I'm not sure", description: "Let the AI explore and suggest" },
+    { id: 'not-sure', label: 'Undecided', description: 'Auto-select and propose options' },
 ];
 
 export const VISUAL_AUDIENCE_OPTIONS: { id: VisualAudience; label: string }[] = [
@@ -590,7 +590,7 @@ export const VISUAL_STYLE_OPTIONS: { id: VisualStyle; label: string; description
     { id: 'geometric-structured', label: 'Geometric & Structured', description: 'Precise and mathematically balanced' },
     { id: 'photographic-realistic', label: 'Photographic & Realistic', description: 'Real-world imagery and depth' },
     { id: 'illustrated-artistic', label: 'Illustrated & Artistic', description: 'Stylized and hand-crafted' },
-    { id: 'not-sure', label: "I'm not sure", description: "Still finding the look" },
+    { id: 'not-sure', label: 'Undecided', description: 'Style to be determined' },
 ];
 
 export const LAYOUT_OPTIONS: { id: LayoutPreference; label: string; description: string }[] = [
@@ -599,7 +599,7 @@ export const LAYOUT_OPTIONS: { id: LayoutPreference; label: string; description:
     { id: 'centered-minimal', label: 'Centered & Minimal', description: 'Simple, focused layouts' },
     { id: 'magazine-editorial', label: 'Magazine Editorial', description: 'Rich, story-driven layouts' },
     { id: 'immersive-full-bleed', label: 'Immersive Full-Bleed', description: 'Edge-to-edge visual impact' },
-    { id: 'not-sure', label: "I'm not sure", description: "Decide based on content" },
+    { id: 'not-sure', label: 'Undecided', description: 'Decide based on content' },
 ];
 
 export const COLOR_DIRECTION_OPTIONS: { id: ColorDirection; label: string; description: string }[] = [
@@ -610,7 +610,7 @@ export const COLOR_DIRECTION_OPTIONS: { id: ColorDirection; label: string; descr
     { id: 'pastel-soft', label: 'Pastel & Soft', description: 'Gentle and low-contrast' },
     { id: 'dark-moody', label: 'Dark & Moody', description: 'Deep, atmospheric tones' },
     { id: 'brand-specific', label: 'Match My Brand', description: 'I already have a palette' },
-    { id: 'not-sure', label: "I'm not sure", description: "Explore possibilities" },
+    { id: 'not-sure', label: 'Undecided', description: 'Review options' },
 ];
 
 export const TYPOGRAPHY_OPTIONS: { id: TypographyVibe; label: string; description: string }[] = [
@@ -620,7 +620,7 @@ export const TYPOGRAPHY_OPTIONS: { id: TypographyVibe; label: string; descriptio
     { id: 'handwritten-organic', label: 'Handwritten / Organic', description: 'Personal, approachable' },
     { id: 'technical-mono', label: 'Technical / Mono', description: 'Precise, code-like' },
     { id: 'mixed-eclectic', label: 'Mixed / Eclectic', description: 'Varied type pairing' },
-    { id: 'not-sure', label: "I'm not sure", description: "Follow the feeling" },
+    { id: 'not-sure', label: 'Undecided', description: 'Select based on content' },
 ];
 
 export const IMAGERY_TYPE_OPTIONS: { id: ImageryType; label: string; description: string }[] = [
@@ -632,7 +632,7 @@ export const IMAGERY_TYPE_OPTIONS: { id: ImageryType; label: string; description
     { id: 'abstract-textures', label: 'Abstract / Textures', description: 'Atmospheric patterns' },
     { id: 'icons-graphics', label: 'Icons & Graphics', description: 'Functional visual elements' },
     { id: 'data-visualization', label: 'Data Visualization', description: 'Charts and evidence' },
-    { id: 'not-sure', label: "I'm not sure", description: "Select what fits best" },
+    { id: 'not-sure', label: 'Undecided', description: 'Select based on content' },
 ];
 
 export const EXISTING_ASSETS_OPTIONS: { id: ExistingBrandAssets; label: string; description: string }[] = [
@@ -678,15 +678,15 @@ export const DATA_SENSITIVITY_OPTIONS: { id: DataSensitivity; label: string; des
 ];
 
 export const MULTI_MODEL_STRATEGY_OPTIONS: { id: MultiModelStrategy; label: string; description: string }[] = [
-    { id: 'cheap-explore-quality-final', label: 'Explore cheap, finish strong', description: 'Fast models for drafts, best for final passes' },
+    { id: 'cheap-explore-quality-final', label: 'Draft low-cost, finalize high-quality', description: 'Fast models for drafts, best for final passes' },
     { id: 'always-best', label: 'Always use the best', description: 'Top-tier models for every step' },
     { id: 'always-cheapest', label: 'Always use the cheapest', description: 'Most cost-efficient models only' },
-    { id: 'system-decides', label: 'Let the system decide', description: 'Auto-select based on task' },
+    { id: 'system-decides', label: 'System selected', description: 'Auto-select based on task' },
 ];
 
 export const LOW_CONFIDENCE_OPTIONS: { id: LowConfidenceBehavior; label: string; description: string }[] = [
-    { id: 'ask-clarifying', label: 'Ask me questions', description: 'Clarify before proceeding' },
-    { id: 'try-stronger-model', label: 'Try a stronger model', description: 'Automatically upgrade for hard tasks' },
+    { id: 'ask-clarifying', label: 'Require clarification', description: 'Clarify before proceeding' },
+    { id: 'try-stronger-model', label: 'Auto-upgrade model', description: 'Automatically upgrade for hard tasks' },
     { id: 'flag-low-confidence', label: 'Flag low confidence', description: 'Show results but warn me' },
     { id: 'decline-conservative', label: 'Be conservative', description: 'Decline rather than guess' },
 ];

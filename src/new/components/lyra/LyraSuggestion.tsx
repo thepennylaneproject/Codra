@@ -4,6 +4,7 @@
  */
 
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/Button';
 
 export interface LyraSuggestionProps {
     text: string;
@@ -36,10 +37,10 @@ export function LyraSuggestion({
             </p>
 
             {/* Primary CTA */}
-            <button
+            <Button
                 onClick={() => onExecute(action.taskId)}
                 disabled={isExecuting}
-                className="w-full px-4 py-3 bg-[#FF6B6B] hover:bg-[#FF5252] disabled:bg-zinc-700 disabled:cursor-not-allowed text-white font-medium text-sm rounded-lg transition-colors"
+                className="w-full px-4 py-3 bg-zinc-600 hover:bg-[#FF5252] disabled:bg-zinc-700 disabled:cursor-not-allowed text-white font-medium text-sm rounded-lg transition-colors"
             >
                 {isExecuting ? (
                     <span className="flex items-center justify-center gap-2">
@@ -49,16 +50,16 @@ export function LyraSuggestion({
                 ) : (
                     action.label
                 )}
-            </button>
+            </Button>
 
             {/* Dismiss Button */}
-            <button
+            <Button
                 onClick={onDismiss}
                 disabled={isExecuting}
                 className="w-full px-4 py-2 border border-zinc-700 hover:border-zinc-600 disabled:opacity-50 disabled:cursor-not-allowed text-zinc-400 hover:text-zinc-300 text-sm rounded-lg transition-colors"
             >
-                Dismiss
-            </button>
+                Close
+            </Button>
         </motion.div>
     );
 }

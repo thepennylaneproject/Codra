@@ -139,13 +139,13 @@ export const namingRegistry = {
         // Case style check
         if (!matchesCaseStyle(name, rules.caseStyle)) {
             errors.push(`Name should be in ${rules.caseStyle} case`);
-            suggestions.push(`Try: ${convertToCase(name, rules.caseStyle)}`);
+            suggestions.push(`Apply: ${convertToCase(name, rules.caseStyle)}`);
         }
 
         // Prefix/suffix check
         if (rules.prefix && !name.startsWith(rules.prefix)) {
             warnings.push(`Names of this type usually start with "${rules.prefix}"`);
-            suggestions.push(`Try: ${rules.prefix}${name}`);
+            suggestions.push(`Apply: ${rules.prefix}${name}`);
         }
         if (rules.suffix && !name.endsWith(rules.suffix)) {
             warnings.push(`Names of this type usually end with "${rules.suffix}"`);

@@ -26,7 +26,7 @@ export function TaskCostBadge({ cost, label = 'Est.', variant = 'default', class
 
     return (
         <div className={cn(
-            "flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider transition-all",
+            "flex items-center gap-1 px-2 py-0 rounded-full border text-xs font-semibold transition-all",
             getBadgeStyles(),
             className
         )}>

@@ -1,11 +1,8 @@
-/**
- * SETTING EDITOR COMPONENT
- * Modal for editing a setting value
- */
-
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { Heading, Text, Label } from '../../new/components';
+import { Button } from '@/components/ui/Button';
 
 interface SettingOption {
     value: string;
@@ -55,7 +52,7 @@ export function SettingEditor({
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-[#1A1A1A]/40 backdrop-blur-sm z-50"
+                        className="fixed inset-0 glass-panel border-0 rounded-none bg-[var(--brand-ink)]/40 z-50"
                     />
 
                     {/* Modal */}
@@ -65,24 +62,26 @@ export function SettingEditor({
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         className="fixed inset-0 z-50 flex items-center justify-center p-4"
                     >
-                        <div className="bg-[#FFFAF0] rounded-3xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+                        <div className="bg-[var(--ui-bg)] rounded-3xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden border border-[var(--ui-border)]">
                             {/* Header */}
-                            <div className="p-8 border-b border-[#1A1A1A]/5">
+                            <div className="p-8 border-b border-[var(--ui-border)]">
                                 <div className="flex items-start justify-between">
                                     <div>
-                                        <h2 className="text-lg font-black uppercase tracking-tight text-[#1A1A1A]">
+                                        <Heading size="lg" className="tracking-tight">
                                             {title}
-                                        </h2>
+                                        </Heading>
                                         {description && (
-                                            <p className="text-xs text-zinc-400 mt-2">{description}</p>
+                                            <Label variant="muted" className="mt-2 block">{description}</Label>
                                         )}
                                     </div>
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         onClick={onClose}
-                                        className="p-2 hover:bg-zinc-100 rounded-xl transition-colors"
+                                        size="sm"
+                                        className="p-2"
                                     >
                                         <X size={20} />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
@@ -91,33 +90,33 @@ export function SettingEditor({
                                 {type === 'select' && (
                                     <div className="space-y-3">
                                         {options.map((option) => (
-                                            <button
+                                            <Button
                                                 key={option.value}
                                                 onClick={() => setSelectedValue(option.value)}
-                                                className={`w-full p-5 rounded-2xl border text-left transition-all ${
+                                                className={`w-full p-4 rounded-2xl border text-left transition-all ${
                                                     selectedValue === option.value
-                                                        ? 'border-[#1A1A1A] bg-[#1A1A1A]/5 shadow-sm'
-                                                        : 'border-zinc-200 hover:border-zinc-300'
+                                                        ? 'border-[var(--brand-ink)] bg-[var(--brand-ink)]/5 shadow-sm'
+                                                        : 'border-[var(--ui-border)] hover:border-[var(--brand-ink)]/20'
                                                 }`}
                                             >
                                                 <div className="flex items-center justify-between mb-2">
                                                     <span
-                                                        className={`text-[11px] font-black uppercase tracking-widest ${
+                                                        className={`text-xs font-semibold ${
                                                             selectedValue === option.value
-                                                                ? 'text-[#1A1A1A]'
-                                                                : 'text-zinc-600'
+                                                                ? 'text-brand-ink'
+                                                                : 'text-text-soft'
                                                         }`}
                                                     >
                                                         {option.label}
                                                     </span>
                                                     {selectedValue === option.value && (
-                                                        <div className="w-4 h-4 rounded-full bg-[#1A1A1A]" />
+                                                        <div className="w-4 h-4 rounded-full bg-[var(--brand-ink)]" />
                                                     )}
                                                 </div>
                                                 {option.description && (
-                                                    <p className="text-[10px] text-zinc-400">{option.description}</p>
+                                                    <Text variant="muted" size="xs">{option.description}</Text>
                                                 )}
-                                            </button>
+                                            </Button>
                                         ))}
                                     </div>
                                 )}
@@ -129,7 +128,7 @@ export function SettingEditor({
                                         onChange={(e) => setSelectedValue(e.target.value)}
                                         min={min}
                                         max={max}
-                                        className="w-full p-4 rounded-2xl border border-zinc-200 bg-white text-lg font-medium focus:outline-none focus:border-[#1A1A1A] focus:ring-2 focus:ring-[#1A1A1A]/10"
+                                        className="w-full p-4 rounded-2xl border border-[var(--ui-border)] bg-white text-base font-medium focus:outline-none focus:border-[var(--brand-ink)] focus:ring-2 focus:ring-[var(--brand-ink)]/10 text-brand-ink"
                                     />
                                 )}
 
@@ -141,11 +140,11 @@ export function SettingEditor({
                                             onChange={(e) => setSelectedValue(e.target.value)}
                                             min={min}
                                             max={max}
-                                            className="w-full h-2 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-[#1A1A1A]"
+                                            className="w-full h-2 bg-[var(--ui-border)] rounded-lg appearance-none cursor-pointer accent-[var(--brand-ink)]"
                                         />
-                                        <div className="flex justify-between text-[10px] text-zinc-400 font-mono">
+                                        <div className="flex justify-between text-xs text-text-soft font-mono">
                                             <span>{min}</span>
-                                            <span className="text-lg font-black text-[#1A1A1A]">{selectedValue}</span>
+                                            <span className="text-base font-semibold text-brand-ink">{selectedValue}</span>
                                             <span>{max}</span>
                                         </div>
                                     </div>
@@ -153,19 +152,23 @@ export function SettingEditor({
                             </div>
 
                             {/* Footer */}
-                            <div className="p-8 border-t border-[#1A1A1A]/5 flex gap-3">
-                                <button
+                            <div className="p-8 border-t border-[var(--ui-border)] flex gap-3">
+                                <Button
+                                    variant="secondary"
                                     onClick={onClose}
-                                    className="flex-1 px-6 py-4 rounded-2xl bg-zinc-100 hover:bg-zinc-200 text-[11px] font-black uppercase tracking-widest text-zinc-600 transition-all"
+                                    className="flex-1"
+                                    size="lg"
                                 >
                                     Cancel
-                                </button>
-                                <button
+                                </Button>
+                                <Button
+                                    variant="primary"
                                     onClick={handleSave}
-                                    className="flex-1 px-6 py-4 rounded-2xl bg-[#1A1A1A] hover:bg-[#1A1A1A]/90 text-[11px] font-black uppercase tracking-widest text-white transition-all"
+                                    className="flex-1"
+                                    size="lg"
                                 >
                                     Save Changes
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </motion.div>

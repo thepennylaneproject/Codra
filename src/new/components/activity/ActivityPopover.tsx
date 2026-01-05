@@ -6,6 +6,7 @@
 import { X } from 'lucide-react';
 import { BudgetBreakdown } from './hooks';
 import { Alert } from './hooks';
+import { Button } from '@/components/ui/Button';
 
 interface BudgetPopoverContentProps {
     breakdown: BudgetBreakdown;
@@ -33,13 +34,13 @@ function BudgetPopoverContent({ breakdown, onClose }: BudgetPopoverContentProps)
         <div className="absolute bottom-12 right-4 w-80 bg-[#1A1A1A] border border-zinc-800 rounded-lg shadow-2xl overflow-hidden z-50">
             {/* Header */}
             <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
-                <span className="text-sm font-bold text-zinc-200">Budget Breakdown</span>
-                <button
+                <span className="text-sm font-semibold text-zinc-200">Budget Breakdown</span>
+                <Button
                     onClick={onClose}
                     className="p-1 rounded hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 transition-colors"
                 >
                     <X size={14} />
-                </button>
+                </Button>
             </div>
 
             {/* Content */}
@@ -47,13 +48,13 @@ function BudgetPopoverContent({ breakdown, onClose }: BudgetPopoverContentProps)
                 {/* Daily */}
                 <div>
                     <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-zinc-400 uppercase tracking-wider">Today</span>
+                        <span className="text-xs text-zinc-400">Today</span>
                         <span className="text-xs text-zinc-500">
                             {((breakdown.daily.spent / breakdown.daily.limit) * 100).toFixed(0)}%
                         </span>
                     </div>
                     <div className="flex items-baseline gap-2">
-                        <span className="text-lg font-bold text-zinc-200">
+                        <span className="text-base font-semibold text-zinc-200">
                             ${breakdown.daily.spent.toFixed(2)}
                         </span>
                         <span className="text-sm text-zinc-500">
@@ -62,7 +63,7 @@ function BudgetPopoverContent({ breakdown, onClose }: BudgetPopoverContentProps)
                     </div>
                     <div className="mt-2 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-[#FF6B6B] rounded-full transition-all"
+                            className="h-full bg-zinc-600 rounded-full transition-all"
                             style={{ width: `${Math.min(100, (breakdown.daily.spent / breakdown.daily.limit) * 100)}%` }}
                         />
                     </div>
@@ -71,7 +72,7 @@ function BudgetPopoverContent({ breakdown, onClose }: BudgetPopoverContentProps)
                 {/* Weekly */}
                 <div>
                     <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-zinc-400 uppercase tracking-wider">This Week</span>
+                        <span className="text-xs text-zinc-400">This Week</span>
                         <span className="text-xs text-zinc-500">
                             {((breakdown.weekly.spent / breakdown.weekly.limit) * 100).toFixed(0)}%
                         </span>
@@ -89,7 +90,7 @@ function BudgetPopoverContent({ breakdown, onClose }: BudgetPopoverContentProps)
                 {/* Monthly */}
                 <div>
                     <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-zinc-400 uppercase tracking-wider">This Month</span>
+                        <span className="text-xs text-zinc-400">This Month</span>
                         <span className="text-xs text-zinc-500">
                             {((breakdown.monthly.spent / breakdown.monthly.limit) * 100).toFixed(0)}%
                         </span>
@@ -113,13 +114,13 @@ function AlertPopoverContent({ alert, onDismiss }: AlertPopoverContentProps) {
         <div className="absolute bottom-12 left-4 w-96 bg-[#1A1A1A] border border-zinc-800 rounded-lg shadow-2xl overflow-hidden z-50">
             {/* Header */}
             <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
-                <span className="text-sm font-bold text-zinc-200">Alert Details</span>
-                <button
+                <span className="text-sm font-semibold text-zinc-200">Alert Details</span>
+                <Button
                     onClick={onDismiss}
                     className="p-1 rounded hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 transition-colors"
                 >
                     <X size={14} />
-                </button>
+                </Button>
             </div>
 
             {/* Content */}
@@ -136,12 +137,12 @@ function AlertPopoverContent({ alert, onDismiss }: AlertPopoverContentProps) {
                     </div>
                 )}
 
-                <button
+                <Button
                     onClick={onDismiss}
                     className="w-full px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-sm font-medium rounded transition-colors"
                 >
-                    Got it
-                </button>
+                    Close alert
+                </Button>
             </div>
         </div>
     );

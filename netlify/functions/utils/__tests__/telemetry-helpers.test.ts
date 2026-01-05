@@ -5,7 +5,7 @@
  * Tests for telemetry helper functions.
  */
 
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect } from 'vitest';
 import { hashQuery, calculateEstimatedCost } from '../telemetry-helpers';
 
 describe('Telemetry Helpers', () => {

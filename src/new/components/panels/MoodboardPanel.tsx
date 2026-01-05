@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { MoodboardImage } from '../../../domain/types';
 import { Pin, RotateCcw, Plus, Image } from 'lucide-react';
 import { EmptyState } from '../EmptyState';
+import { Button } from '@/components/ui/Button';
 
 // ============================================
 // Types
@@ -72,11 +73,11 @@ export function MoodboardPanel({
 
                         {/* Caption */}
                         <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-2 group-hover:translate-y-0 transition-transform">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-white/80">
+                            <span className="text-xs font-semibold text-white/80">
                                 {image.role}
                             </span>
                             {image.caption && (
-                                <p className="text-xs text-white/70 mt-0.5 line-clamp-2">
+                                <p className="text-xs text-white/70 mt-0 line-clamp-2">
                                     {image.caption}
                                 </p>
                             )}
@@ -84,31 +85,31 @@ export function MoodboardPanel({
 
                         {/* Pin indicator */}
                         {image.locked && (
-                            <div className="absolute top-2 left-2 p-1.5 bg-white rounded-full shadow-sm">
+                            <div className="absolute top-2 left-2 p-1 bg-white rounded-full shadow-sm">
                                 <Pin size={12} className="text-zinc-900 fill-current" />
                             </div>
                         )}
 
                         {/* Editable controls */}
                         {editable && hoveredId === image.id && (
-                            <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button
+                            <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Button
                                     onClick={() => onTogglePin?.(image.id)}
-                                    className={`p-1.5 rounded-full transition-all ${image.locked
+                                    className={`p-1 rounded-full transition-all ${image.locked
                                         ? 'bg-white text-zinc-900'
                                         : 'bg-white/10 text-white hover:bg-white hover:text-zinc-900'
                                         }`}
                                     title={image.locked ? 'Unpin' : 'Pin'}
                                 >
                                     <Pin size={12} className={image.locked ? 'fill-current' : ''} />
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     onClick={() => onRegenerate?.(image.id)}
-                                    className="p-1.5 bg-white/10 text-white hover:bg-white hover:text-zinc-900 rounded-full transition-all"
+                                    className="p-1 bg-white/10 text-white hover:bg-white hover:text-zinc-900 rounded-full transition-all"
                                     title="Regenerate"
                                 >
                                     <RotateCcw size={12} />
-                                </button>
+                                </Button>
                             </div>
                         )}
                     </div>
@@ -117,13 +118,13 @@ export function MoodboardPanel({
 
             {/* Add button */}
             {editable && images.length < 6 && onAdd && (
-                <button
+                <Button
                     onClick={onAdd}
                     className="w-full p-3 border border-dashed border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 rounded-sm text-sm text-zinc-400 hover:text-zinc-600 transition-colors flex items-center justify-center gap-2"
                 >
                     <Plus size={14} />
                     Add Reference
-                </button>
+                </Button>
             )}
         </div>
     );

@@ -6,6 +6,7 @@
 import { create } from 'zustand';
 import { useEffect } from 'react';
 import { X, Check, AlertCircle, Info } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 // Toast types
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
@@ -115,13 +116,13 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }
         >
             <Icon size={18} className={ICON_STYLES[toast.type]} />
             <span className="flex-1 text-sm font-medium">{toast.message}</span>
-            <button
+            <Button
                 onClick={onDismiss}
                 className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-                aria-label="Dismiss"
+                aria-label="Close"
             >
                 <X size={14} />
-            </button>
+            </Button>
         </div>
     );
 }

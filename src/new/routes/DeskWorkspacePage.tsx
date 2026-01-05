@@ -12,6 +12,14 @@ import { LyraAssistant } from '../../components/codra/LyraAssistant';
 import { DeskSwitcher } from '../components/desks/DeskSwitcher';
 import { DeskCanvas } from '../components/desks/DeskCanvas';
 import { useDeskSwitching } from '../components/desks/hooks/useDeskSwitching';
+import { SectionHeader } from '@/components/ui/SectionHeader';
+import { SettingsModal } from '@/components/settings/SettingsModal';
+import { getBudgetSummary } from '../../lib/codra/codra-guardrails';
+import { ExportModal } from '@/components/export/ExportModal';
+import { useContextRevisions } from '@/hooks/useContextRevisions';
+import { useStudioMode } from '@/hooks/useStudioMode';
+import { StudioCarousel } from '@/components/studio/StudioCarousel';
+import { analytics } from '@/lib/analytics';
 
 /**
  * DESK WORKSPACE PAGE
@@ -26,10 +34,14 @@ export const DeskWorkspacePage: React.FC = () => {
     const { 
         layout, 
         toggleDock, 
+        sessionCost,
     } = useFlowStore();
+    const { studioEnabled, setStudioEnabled, showCarousel, dismissCarousel } = useStudioMode();
 
     const [project, setProject] = useState<Project | null>(null);
     const [currentPrompt, setCurrentPrompt] = useState<string>('');
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isExportModalOpen, setIsExportModalOpen] = useState(false);
     const { loading } = useSupabaseSpread(projectId);
     
     // Load project data
@@ -39,18 +51,46 @@ export const DeskWorkspacePage: React.FC = () => {
         }
     }, [projectId]);
 
+    React.useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === ',') {
+                e.preventDefault();
+                setIsSettingsOpen(true);
+            }
+            if (e.shiftKey && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                const next = !studioEnabled;
+                setStudioEnabled(next);
+                if (next) {
+                    analytics.track('studio_toggle_enabled', { source: 'keyboard_shortcut' });
+                }
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [setStudioEnabled, studioEnabled]);
+
+    React.useEffect(() => {
+        if (!studioEnabled) {
+            setStudioEnabled(true);
+        }
+    }, [setStudioEnabled, studioEnabled]);
+
+    const budgetSummary = project?.budgetPolicy ? getBudgetSummary(project.id, project.budgetPolicy) : null;
+    const { currentRevision } = useContextRevisions(projectId);
+
     const activeDeskTint = `var(--desk-${activeDesk}-tint)`;
 
     if (loading) {
         return (
-            <div className="h-screen bg-[var(--desk-bg)] flex items-center justify-center font-mono text-xs uppercase tracking-widest text-[var(--desk-text-muted)]">
+            <div className="h-screen bg-[var(--desk-bg)] flex items-center justify-center font-mono text-xs text-desk-text-muted">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="flex flex-col items-center gap-4"
                 >
                     <div className="w-12 h-12 rounded-full border-2 border-[var(--brand-teal)]/20 border-t-[var(--brand-teal)] animate-spin" />
-                    Opening Workspace...
+                    <span>Opening Workspace...</span>
                 </motion.div>
             </div>
         );
@@ -58,7 +98,7 @@ export const DeskWorkspacePage: React.FC = () => {
 
     return (
         <div 
-            className="h-screen bg-[var(--desk-bg)] flex flex-col text-[var(--desk-text-primary)] selection:bg-[var(--brand-teal)]/30 overflow-hidden transition-colors duration-500"
+            className="h-screen bg-[var(--desk-bg)] flex flex-col text-desk-text-primary selection:bg-[var(--brand-teal)]/30 overflow-hidden transition-colors duration-500"
             style={{ backgroundColor: activeDeskTint ? `color-mix(in srgb, var(--desk-bg), ${activeDeskTint} 10%)` : 'var(--desk-bg)' }}
         >
             {/* Unified Workspace Header */}
@@ -71,10 +111,12 @@ export const DeskWorkspacePage: React.FC = () => {
                 rightDockVisible={layout.rightDockVisible}
                 onToggleLeftDock={() => toggleDock('left')}
                 onToggleRightDock={() => toggleDock('right')}
+                onOpenSettings={() => setIsSettingsOpen(true)}
+                onOpenExport={() => setIsExportModalOpen(true)}
             />
 
             {/* Desk Switcher Tabs */}
-            <DeskSwitcher activeDesk={activeDesk} onSwitch={switchDesk} />
+            {studioEnabled && <DeskSwitcher activeDesk={activeDesk} onSwitch={switchDesk} />}
 
             <CollabPresenceLayer>
                 <main className="flex-1 overflow-hidden flex">
@@ -86,15 +128,17 @@ export const DeskWorkspacePage: React.FC = () => {
                                 animate={{ x: 0, opacity: 1 }}
                                 exit={{ x: -layout.leftDockWidth, opacity: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="border-r border-[var(--desk-border)] bg-[var(--desk-bg)]/30 backdrop-blur-sm shrink-0 p-6 flex flex-col gap-8"
+                                className="glass-panel-light border-0 border-r border-[var(--desk-border)] rounded-none bg-[var(--desk-bg)]/30 shrink-0 p-6 flex flex-col gap-8"
                                 style={{ width: layout.leftDockWidth }}
                             >
                                 <section>
-                                    <h3 className="text-[10px] text-[var(--desk-text-muted)] font-bold uppercase tracking-widest mb-4">Production Context</h3>
+                                    <SectionHeader title="Production Context" className="mt-0 mb-4" />
                                     <div className="space-y-4">
                                         <div className="p-4 rounded-xl bg-[var(--desk-surface)] border border-[var(--desk-border)] space-y-2 shadow-sm">
-                                            <p className="text-[10px] font-mono text-[var(--brand-teal)] uppercase tracking-wider">Active Memory</p>
-                                            <p className="text-xs text-[var(--desk-text-primary)] leading-relaxed italic">"Editorial high-contrast mono with Bauhaus accents."</p>
+                                            <p className="text-xs font-mono text-brand-teal">Active Memory</p>
+                                            <p className="text-xs text-desk-text-primary leading-relaxed italic">
+                                                &quot;Editorial high-contrast mono with Bauhaus accents.&quot;
+                                            </p>
                                         </div>
                                     </div>
                                 </section>
@@ -117,7 +161,7 @@ export const DeskWorkspacePage: React.FC = () => {
                                 animate={{ x: 0, opacity: 1 }}
                                 exit={{ x: layout.rightDockWidth, opacity: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="border-l border-[var(--desk-border)] bg-[var(--desk-bg)]/30 backdrop-blur-sm shrink-0 p-6"
+                                className="glass-panel-light border-0 border-l border-[var(--desk-border)] rounded-none bg-[var(--desk-bg)]/30 shrink-0 p-6"
                                 style={{ width: layout.rightDockWidth }}
                             >
                                 <LyraAssistant
@@ -130,6 +174,32 @@ export const DeskWorkspacePage: React.FC = () => {
                     </AnimatePresence>
                 </main>
             </CollabPresenceLayer>
+
+            <SettingsModal
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+                projectId={projectId || undefined}
+                defaultScope="project"
+                sessionSpend={sessionCost}
+                todaySpend={budgetSummary?.spent}
+            />
+
+            <ExportModal
+                isOpen={isExportModalOpen}
+                onClose={() => setIsExportModalOpen(false)}
+                defaultScope="context"
+                contextData={currentRevision?.data as Record<string, unknown> | undefined}
+                projectName={project?.name}
+            />
+
+            <StudioCarousel
+                isOpen={showCarousel}
+                onDismiss={dismissCarousel}
+                onComplete={() => {
+                    analytics.track('studio_carousel_completed', { source: 'studio_toggle' });
+                    dismissCarousel();
+                }}
+            />
         </div>
     );
 };

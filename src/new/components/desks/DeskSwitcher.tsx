@@ -8,6 +8,7 @@ import { PenLine, Palette, Code2, BarChart3, LucideIcon } from 'lucide-react';
 import { ProductionDeskId } from '../../../domain/types';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Button } from '@/components/ui/Button';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -39,15 +40,15 @@ export const DeskSwitcher: React.FC<DeskSwitcherProps> = ({ activeDesk, onSwitch
         const isActive = activeDesk === desk.id;
         
         return (
-          <button
+          <Button
             key={desk.id}
             onClick={() => onSwitch(desk.id)}
             className={cn(
               "flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all relative",
-              "hover:text-[var(--desk-text-primary)]",
+              "hover:text-desk-text-primary",
               isActive
-                ? "text-[var(--color-brand-coral)]"
-                : "text-[var(--desk-text-muted)]"
+                ? "text-zinc-500"
+                : "text-desk-text-muted"
             )}
           >
             <Icon size={16} strokeWidth={isActive ? 2 : 1.5} />
@@ -55,9 +56,9 @@ export const DeskSwitcher: React.FC<DeskSwitcherProps> = ({ activeDesk, onSwitch
             
             {/* Coral underline for active tab */}
             {isActive && (
-              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--color-brand-coral)]" />
+              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-zinc-600" />
             )}
-          </button>
+          </Button>
         );
       })}
     </nav>

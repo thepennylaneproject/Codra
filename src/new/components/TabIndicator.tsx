@@ -11,6 +11,7 @@
  */
 
 import { transitions } from '../../lib/design/tokens';
+import { Button } from '@/components/ui/Button';
 
 interface TabIndicatorProps {
     /** Whether this tab is active */
@@ -28,7 +29,7 @@ interface TabIndicatorProps {
  */
 export function TabIndicator({ active, children, onClick, className = '' }: TabIndicatorProps) {
     return (
-        <button
+        <Button
             onClick={onClick}
             data-component="TabIndicator"
             data-accent-usage={active ? 'active-tab' : undefined}
@@ -38,8 +39,8 @@ export function TabIndicator({ active, children, onClick, className = '' }: TabI
                 ${transitions.fast}
                 ${
                     active
-                        ? 'text-[var(--color-ink)] border-b-[var(--tab-active-border-width)] border-[var(--tab-active-border)]'
-                        : 'text-[var(--color-ink-light)] border-b-2 border-transparent hover:text-[var(--color-ink)] hover:bg-[var(--tab-hover-bg)]'
+                        ? 'text-text-primary border-b-[var(--tab-active-border-width)] border-[var(--tab-active-border)]'
+                        : 'text-text-secondary border-b-2 border-transparent hover:text-text-primary hover:bg-[var(--tab-hover-bg)]'
                 }
                 ${className}
             `}
@@ -48,7 +49,7 @@ export function TabIndicator({ active, children, onClick, className = '' }: TabI
             tabIndex={active ? 0 : -1}
         >
             {children}
-        </button>
+        </Button>
     );
 }
 

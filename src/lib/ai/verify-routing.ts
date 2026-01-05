@@ -12,7 +12,7 @@ async function verify() {
     const costDeepSeek = costEngine.estimateCost('deepseek-coder', 1000);
     console.log('DeepSeek Cost (1k tokens):', costDeepSeek);
 
-    const comparison = costEngine.compareModels('Write a complex react component', ['gpt-4', 'gpt-3.5-turbo', 'claude-3-haiku']);
+    const comparison = costEngine.compareModels('Write a complex react component', ['gpt-4', 'gpt-3-turbo', 'claude-3-haiku']);
     console.log('Comparison Top 3:', comparison.map(c => `${c.model}: ${c.recommendation} ($${c.estimatedCost})`));
 
     console.log('\n--- Verifying Smart Router ---');

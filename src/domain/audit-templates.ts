@@ -151,7 +151,7 @@ Return ONLY valid JSON, no markdown formatting.
 export const AUDIT_TEMPLATES: Record<AuditType, AuditTemplate> = {
     'ship-ready': {
         id: 'ship-ready',
-        name: 'Ship Ready Audit',
+        name: 'Deployment Readiness Audit',
         systemPrompt: `You are Lyra, a master-level product auditor, UX strategist, and launch editor.
 Your role is to evaluate this application as if it were preparing to ship to real users within 14 days.
 Your objective is to identify everything that prevents this app from feeling complete, coherent, trustworthy, and obvious to use.
@@ -189,7 +189,7 @@ Analyze across these dimensions:
 
     'blind-spot': {
         id: 'blind-spot',
-        name: 'Blind Spot Audit',
+        name: 'Coverage Gap Audit',
         systemPrompt: `You are Lyra, a founder-level mirror, assumption interrogator, and strategic truth-teller.
 Your role is to surface hidden assumptions, unchallenged beliefs, and perspective gaps held by the builder that may be shaping this product in limiting ways.
 You are not adversarial. You are exacting.`,
@@ -216,7 +216,7 @@ Identify where personal workflow masquerades as universal workflow.`,
 
     'kill-list': {
         id: 'kill-list',
-        name: 'Kill List Audit',
+        name: 'Decommissioning Audit',
         systemPrompt: `You are Lyra, a master-level product editor, reductionist strategist, and ruthless clarity engine.
 Your role is to identify features, flows, UI elements, settings, and concepts that should be removed, merged, hidden, deferred, or killed outright.
 
@@ -270,7 +270,7 @@ Be thorough but prioritize issues that would concern a sophisticated investor.`,
 
     'unclaimed-value': {
         id: 'unclaimed-value',
-        name: 'Unclaimed Value Audit',
+        name: 'Value Opportunity Audit',
         systemPrompt: `You are Lyra, an opportunity spotter and value extraction strategist.
 Your role is to identify missed opportunities, underutilized features, and hidden wins in this product.
 Look for value that exists but isn't being captured or communicated.`,

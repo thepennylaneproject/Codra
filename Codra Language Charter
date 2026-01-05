@@ -1,0 +1,222 @@
+## Codra Language Charter
+
+**Purpose:** establish trust, precision, and professional credibility while preserving Codra’s underlying design soul through restraint and clarity.
+
+Codra speaks like a **serious systems tool built by people who understand infrastructure**, not like a metaphor engine, onboarding coach, or lifestyle app.
+
+### Core Principle
+
+Codra uses **industry-standard language exclusively**.
+Any emotional tone emerges from *clarity, consistency, and cause-effect visibility*, not wording.
+
+If a term would appear in:
+• engineering documentation
+• API references
+• DevOps tooling
+• workflow orchestration platforms
+
+…it is eligible.
+
+If it would not, it is banned.
+
+---
+
+## Voice and Tone Rules
+
+Codra is **calm, precise, and untheatrical**.
+
+No hype.
+No anthropomorphism.
+No motivational language.
+No “friendly helper” voice.
+
+Codra does not congratulate.
+Codra does not encourage.
+Codra reports reality.
+
+Correct tone examples:
+• “Execution completed”
+• “3 nodes failed”
+• “Dependency unresolved”
+• “Trigger activated”
+• “Pipeline paused”
+
+Incorrect tone examples:
+• “Nice work!”
+• “You’re all set”
+• “Oops, something went wrong”
+• “Let’s try again”
+• “Magic happens here”
+
+If it sounds like onboarding copy, it does not belong in Codra.
+
+---
+
+## Approved Verb Set (Action Language)
+
+Codra actions describe **what actually happens** in a system.
+
+Preferred verbs include:
+run
+execute
+trigger
+connect
+configure
+define
+validate
+deploy
+retry
+pause
+resume
+resolve
+fail
+log
+
+Avoid soft verbs that imply guidance or emotion.
+
+Disallowed verbs include:
+start (use *run* or *execute*)
+build (unless literal build artifacts)
+help
+guide
+explore
+discover
+create magic
+automate for you
+
+Codra never claims agency on the user’s behalf.
+
+---
+
+## Approved Noun Set (Object Language)
+
+Codra names things as **technical objects**, not experiences.
+
+Preferred nouns include:
+pipeline
+workflow
+node
+step
+input
+output
+dependency
+state
+execution
+trigger
+event
+log
+error
+configuration
+variable
+
+Disallowed nouns include:
+spell
+ritual
+flow state
+magic
+assistant
+wizard
+journey
+canvas (borderline, avoid if possible)
+
+If a noun sounds like it belongs in a productivity blog, it is suspect.
+
+---
+
+## Error and Failure Language
+
+Failure is normal. Codra treats it as data.
+
+Errors are:
+• direct
+• specific
+• non-apologetic
+
+Correct:
+“Execution failed at node 4: missing API key”
+“Dependency cycle detected”
+“Trigger condition not met”
+
+Incorrect:
+“Something went wrong”
+“Oops”
+“Don’t worry, we’ll fix this”
+
+Codra does not soothe. Codra informs.
+
+---
+
+## UI Microcopy Rules
+
+Buttons are verbs.
+Labels are nouns.
+Statuses are states.
+
+Good:
+Run pipeline
+Pause execution
+Retry failed node
+
+Bad:
+Go
+Try again
+Fix it
+Make it work
+
+Empty states should be **descriptive, not instructive**.
+
+Correct:
+“No pipelines defined”
+
+Incorrect:
+“Let’s build your first pipeline!”
+
+---
+
+## Metaphor Containment Rule (Critical)
+
+Metaphor is **never allowed in user-facing language**.
+
+Metaphor is permitted only in:
+• internal design rationale
+• visual composition
+• interaction pacing
+• spatial layout
+
+The *structure* may feel like a notebook or synth.
+The *words* must read like documentation.
+
+This is non-negotiable.
+
+---
+
+## Accent Color Semantics (Language Adjacent)
+
+Coral is treated as **a semantic signal**, not branding.
+
+Coral may only appear where language indicates:
+• execution
+• activation
+• failure requiring action
+• selected operational focus
+
+Coral must never appear near:
+• descriptive text
+• labels
+• passive UI chrome
+
+If coral appears without a verb nearby, it is wrong.
+
+---
+
+## Final Test (Ship Gate)
+
+Before shipping any UI text, ask:
+
+“Would a senior engineer roll their eyes at this?”
+
+If yes, rewrite.
+
+“Could this text appear in a log file or API doc?”
+
+If no, delete or rephrase.

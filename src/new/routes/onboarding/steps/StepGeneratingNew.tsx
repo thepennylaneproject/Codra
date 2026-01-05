@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { useSpreadGeneration } from '../hooks/useSpreadGeneration';
-import { Button } from '../../../components/Button';
 import { ProgressSpinner, ProgressBar } from '../../../components/ProgressDot';
 import { CheckCircle2 } from 'lucide-react';
 import { analytics } from '@/lib/analytics';
+import { Button } from '@/components/ui/Button';
 
 interface SuccessProps {
     projectName: string;
@@ -39,16 +39,16 @@ const OnboardingSuccess = ({ projectName, sessionStartTime, generationStartTime,
             </div>
             
             <div className="space-y-3">
-                <h1 className="text-2xl font-medium text-[#1A1A1A]">
-                    Your workspace is ready!
+                <h1 className="text-xl font-medium text-text-primary">
+                    Workspace provisioned.
                 </h1>
-                <p className="text-base text-[#5A5A5A]">
-                    Opening {projectName}...
+                <p className="text-base text-text-secondary">
+                    Opening {projectName} workspace...
                 </p>
             </div>
             
-            <p className="text-xs text-[#8A8A8A] uppercase tracking-wider">
-                Redirecting automatically
+            <p className="text-xs text-text-soft">
+                Redirect in progress.
             </p>
         </div>
     );
@@ -76,13 +76,13 @@ export const StepGenerating = () => {
         return (
             <div className="min-h-[500px] flex flex-col items-center justify-center text-center space-y-6">
                 <div className="p-6 bg-red-50 rounded-full">
-                    <span className="text-red-500 text-3xl">!</span>
+                    <span className="text-red-500 text-xl">!</span>
                 </div>
                 <div className="space-y-2">
-                    <h2 className="text-2xl font-medium text-[#1A1A1A]">
+                    <h2 className="text-xl font-medium text-text-primary">
                         Generation Failed
                     </h2>
-                    <p className="text-base text-[#5A5A5A] max-w-md">
+                    <p className="text-base text-text-secondary max-w-md">
                         {error}
                     </p>
                 </div>
@@ -91,7 +91,7 @@ export const StepGenerating = () => {
                     variant="primary"
                     size="lg"
                 >
-                    Try Again
+                    Run provisioning
                 </Button>
             </div>
         );
@@ -114,7 +114,7 @@ export const StepGenerating = () => {
             {/* Loading Animation */}
             <div className="relative">
                 {/* Outer glow ring - neutral (ACCENT GOVERNANCE: removed coral decoration) */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#1A1A1A]/10 to-[#1A1A1A]/5 blur-xl animate-pulse" />
+                <div className="absolute inset-0 rounded-full bg-brand-ink/10 blur-xl animate-pulse" />
 
                 {/* Main spinner - coral accent (PERMITTED: active-progress) */}
                 <div className="relative p-8 bg-white rounded-full border-2 border-[#1A1A1A]/5">
@@ -124,11 +124,11 @@ export const StepGenerating = () => {
             
             {/* Status Message */}
             <div className="space-y-3">
-                <h1 className="text-2xl font-medium text-[#1A1A1A]">
-                    Creating your workspace...
+                <h1 className="text-xl font-medium text-text-primary">
+                    Provisioning workspace...
                 </h1>
-                <p className="text-base text-[#5A5A5A]">
-                    Setting up {data.projectName} with smart defaults
+                <p className="text-base text-text-secondary">
+                    Applying default configuration for {data.projectName}
                 </p>
             </div>
             
@@ -138,10 +138,9 @@ export const StepGenerating = () => {
             </div>
             
             {/* Helper Text */}
-            <p className="text-xs text-[#8A8A8A] uppercase tracking-wider max-w-md">
-                This takes just a moment. You can adjust all settings after setup.
+            <p className="text-xs text-text-soft max-w-md">
+                Provisioning in progress. Configuration remains editable.
             </p>
         </div>
     );
 };
-

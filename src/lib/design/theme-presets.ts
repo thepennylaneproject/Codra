@@ -45,12 +45,12 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
             buttonStyle: 'solid',
             mode: 'light',
         },
-        colors: { primary: '#1A1A1A', accent: '#FF4D4D' },
+        colors: { primary: '#1A1A1A', accent: '#71717A' },
         backgroundImage: '', // Solid Ivory background preferred
         atmosphere: {
             glassTint: 'rgba(255, 250, 240, 0.85)',
             glowColor: 'rgba(255, 77, 77, 0.15)',
-            particleColor: '#FF4D4D',
+            particleColor: '#71717A',
             hueRotate: 0,
         },
         dataTheme: 'editorial',
@@ -194,5 +194,4 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
         dataTheme: 'default-v2',
     }
 };
-
 

@@ -1,6 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertCircle, RefreshCcw, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/Button';
 
 interface Props {
     children: ReactNode;
@@ -52,30 +53,29 @@ export class ErrorBoundary extends Component<Props, State> {
                         <AlertCircle className="text-red-500" size={48} />
                     </motion.div>
 
-                    <h2 className="text-2xl font-black tracking-tight text-[#1A1A1A] mb-4">
+                    <h2 className="text-xl font-semibold tracking-tight text-text-primary mb-4">
                         Something went wrong
                     </h2>
 
-                    <p className="text-[#5A5A5A] text-sm max-w-md leading-relaxed mb-8">
-                        An error occurred in the <span className="text-red-500 font-bold">{this.props.name || 'system'}</span> component.
+                    <p className="text-text-secondary text-sm max-w-md leading-relaxed mb-8">
+                        An error occurred in the <span className="text-red-500 font-semibold">{this.props.name || 'system'}</span> component.
                         This has been logged for review.
                     </p>
 
                     <div className="flex items-center gap-4">
-                        <button
+                        <Button
                             onClick={this.handleReset}
-                            className="flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#FF4D4D] text-white font-black uppercase tracking-widest text-xs rounded-xl transition-all shadow-xl"
+                            className="flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-zinc-600 text-white font-semibold text-xs rounded-xl transition-all shadow-xl"
                         >
                             <RefreshCcw size={14} />
                             Reload Page
-                        </button>
+                        </Button>
 
                         <a
                             href="/"
-                            className="flex items-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 text-[#5A5A5A] hover:text-[#1A1A1A] font-bold uppercase tracking-widest text-xs rounded-xl transition-all border border-[#1A1A1A]/10"
-                        >
+                            className="flex items-center gap-2 pxflex px-6 py-3 bg-white hover:bg-gray-50 text-text-secondary hover:text-text-primary font-semibold text-xs rounded-xl transition-all border border-[#1A1A1A]/10">
                             <Home size={14} />
-                            Go to Projects
+                            Open projects
                         </a>
                     </div>
                 </div>

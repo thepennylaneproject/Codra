@@ -7,6 +7,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/auth/AuthProvider';
+import { Button } from '@/components/ui/Button';
 
 // Icons
 const Icons = {
@@ -140,22 +141,22 @@ function SuccessState() {
         <Icons.CheckCircle />
       </div>
 
-      <h2 className="text-2xl font-semibold text-zinc-100 mb-2">Password updated!</h2>
+      <h2 className="text-xl font-semibold text-zinc-100 mb-2">Password updated.</h2>
       <p className="text-zinc-400 mb-8">
-        Your password has been successfully reset. You can now sign in with your new password.
+        Password reset complete. Sign in with the new password.
       </p>
 
-      <button
+      <Button
         onClick={() => navigate('/login')}
         className="
           px-6 py-3 rounded-xl font-medium
-          bg-gradient-to-r from-indigo-500 to-purple-600 text-white
-          hover:from-indigo-600 hover:to-purple-700
+          bg-zinc-900 text-white
+          hover:bg-zinc-800
           transition-all duration-200
         "
       >
-        Continue to login
-      </button>
+        Open login
+      </Button>
     </div>
   );
 }
@@ -192,7 +193,7 @@ export function ResetPasswordForm() {
     setError(null);
 
     if (!isPasswordValid) {
-      setError('Please choose a stronger password.');
+      setError('Password does not meet strength requirements.');
       return;
     }
 
@@ -213,7 +214,7 @@ export function ResetPasswordForm() {
 
       setShowSuccess(true);
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+      setError('Unexpected error. Retry.');
     } finally {
       setIsSubmitting(false);
     }
@@ -235,15 +236,15 @@ export function ResetPasswordForm() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center">
             <Icons.Activity />
           </div>
-          <span className="text-2xl font-bold text-white tracking-tight">Codra</span>
+          <span className="text-xl font-semibold text-white tracking-tight">Codra</span>
         </div>
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-semibold text-zinc-100 mb-2">Set new password</h2>
+          <h2 className="text-xl font-semibold text-zinc-100 mb-2">Set new password</h2>
           <p className="text-zinc-500">
             Choose a strong password for your account.
           </p>
@@ -258,7 +259,7 @@ export function ResetPasswordForm() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* New Password */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-zinc-300">
@@ -277,7 +278,7 @@ export function ResetPasswordForm() {
                 autoComplete="new-password"
                 autoFocus
                 className="
-                  w-full px-4 py-3 pl-11 pr-11 rounded-xl
+                  w-full px-4 py-3 pl-12 pr-12 rounded-xl
                   bg-zinc-900/50 border border-zinc-800
                   text-zinc-100 placeholder-zinc-600
                   hover:border-zinc-700 focus:border-indigo-500
@@ -286,13 +287,13 @@ export function ResetPasswordForm() {
                   transition-all duration-200
                 "
               />
-              <button
+              <Button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-400 transition-colors"
               >
                 {showPassword ? <Icons.EyeOff /> : <Icons.Eye />}
-              </button>
+              </Button>
             </div>
             <PasswordStrength password={password} />
           </div>
@@ -314,7 +315,7 @@ export function ResetPasswordForm() {
                 disabled={isSubmitting}
                 autoComplete="new-password"
                 className={`
-                  w-full px-4 py-3 pl-11 pr-11 rounded-xl
+                  w-full px-4 py-3 pl-12 pr-12 rounded-xl
                   bg-zinc-900/50 border
                   text-zinc-100 placeholder-zinc-600
                   focus:outline-none focus:ring-2 focus:ring-indigo-500/50
@@ -328,22 +329,22 @@ export function ResetPasswordForm() {
                   }
                 `}
               />
-              <button
+              <Button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-400 transition-colors"
               >
                 {showConfirmPassword ? <Icons.EyeOff /> : <Icons.Eye />}
-              </button>
+              </Button>
             </div>
             {confirmPassword && !passwordsMatch && (
-              <p className="text-sm text-red-400 flex items-center gap-1.5">
+              <p className="text-sm text-red-400 flex items-center gap-1">
                 <Icons.AlertCircle />
                 Passwords do not match
               </p>
             )}
             {confirmPassword && passwordsMatch && (
-              <p className="text-sm text-emerald-400 flex items-center gap-1.5">
+              <p className="text-sm text-emerald-400 flex items-center gap-1">
                 <Icons.Check />
                 Passwords match
               </p>
@@ -351,13 +352,13 @@ export function ResetPasswordForm() {
           </div>
 
           {/* Submit Button */}
-          <button
+          <Button
             type="submit"
             disabled={isSubmitting || !isPasswordValid || !passwordsMatch}
             className="
               w-full py-3 px-4 rounded-xl font-medium
-              bg-gradient-to-r from-indigo-500 to-purple-600 text-white
-              hover:from-indigo-600 hover:to-purple-700
+              bg-zinc-900 text-white
+              hover:bg-zinc-800
               focus:outline-none focus:ring-2 focus:ring-indigo-500/50
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-all duration-200
@@ -372,7 +373,7 @@ export function ResetPasswordForm() {
             ) : (
               'Update password'
             )}
-          </button>
+          </Button>
         </form>
 
         {/* Back to Login */}
@@ -381,7 +382,7 @@ export function ResetPasswordForm() {
             to="/login"
             className="text-zinc-400 hover:text-zinc-300 text-sm transition-colors"
           >
-            Back to login
+            Open login
           </Link>
         </div>
       </div>

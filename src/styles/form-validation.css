@@ -7,7 +7,7 @@
 /* Required field indicator (red asterisk) */
 .required-indicator {
     color: #e11d48;
-    font-weight: bold;
+    font-weight: var(--font-weight-semibold);
     margin-left: 4px;
 }
 

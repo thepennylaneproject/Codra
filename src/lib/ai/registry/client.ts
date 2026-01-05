@@ -76,13 +76,22 @@ export async function fetchProviderRegistry(
             }
         });
 
+        const contentType = response.headers.get('content-type') || '';
         if (!response.ok) {
-            // Fallback to static registry in development or on error
-            console.warn(`[ProviderRegistry] Fetch failed with status ${response.status}, falling back to static registry.`);
             return { providers: PROVIDER_REGISTRY };
         }
 
-        const data: ProviderRegistryResponse = await response.json();
+        const rawBody = await response.text();
+        if (!contentType.includes('application/json')) {
+            return { providers: PROVIDER_REGISTRY };
+        }
+
+        let data: ProviderRegistryResponse;
+        try {
+            data = JSON.parse(rawBody) as ProviderRegistryResponse;
+        } catch {
+            return { providers: PROVIDER_REGISTRY };
+        }
 
         // Update cache
         registryCache = {
@@ -91,9 +100,7 @@ export async function fetchProviderRegistry(
         };
 
         return data;
-    } catch (error) {
-        // Fallback to static registry on network error
-        console.warn('[ProviderRegistry] Network error, falling back to static registry:', error);
+    } catch {
         return { providers: PROVIDER_REGISTRY };
     }
 }

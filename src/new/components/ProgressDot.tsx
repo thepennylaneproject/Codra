@@ -140,8 +140,8 @@ export function ProgressBar({ value, size = 'md', showLabel = false, className =
         <div className={`w-full ${className}`}>
             {showLabel && (
                 <div className="flex justify-between mb-1">
-                    <span className="text-xs font-medium text-[var(--color-ink-light)]">Progress</span>
-                    <span className="text-xs font-medium text-[var(--color-ink-light)]">{Math.round(clampedValue)}%</span>
+                    <span className="text-xs font-medium text-text-secondary">Progress</span>
+                    <span className="text-xs font-medium text-text-secondary">{Math.round(clampedValue)}%</span>
                 </div>
             )}
             <div

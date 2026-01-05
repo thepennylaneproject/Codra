@@ -7,6 +7,7 @@ import { Site, Deploy, EnvVar } from '../../../../lib/deploy/types';
 import { AlertCircle, CheckCircle2, RefreshCw, Settings, Globe, ChevronRight } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Button } from '@/components/ui/Button';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -91,32 +92,32 @@ export function DeployPanel() {
             <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-900/50">
                 <div className="flex items-center gap-6">
                     <div className="flex bg-white dark:bg-zinc-900 rounded-xl p-1 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-                        <button
+                        <Button
                             onClick={() => { setActiveProvider('netlify'); setSelectedSiteId(null); }}
                             className={cn(
-                                "px-4 py-1.5 rounded-lg transition-all text-[10px] font-black uppercase tracking-widest",
+                                "px-4 py-1 rounded-lg transition-all text-xs font-semibold",
                                 activeProvider === 'netlify'
                                     ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20'
                                     : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200'
                             )}
                         >
                             Netlify
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             onClick={() => { setActiveProvider('vercel'); setSelectedSiteId(null); }}
                             className={cn(
-                                "px-4 py-1.5 rounded-lg transition-all text-[10px] font-black uppercase tracking-widest",
+                                "px-4 py-1 rounded-lg transition-all text-xs font-semibold",
                                 activeProvider === 'vercel'
                                     ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20'
                                     : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200'
                             )}
                         >
                             Vercel
-                        </button>
+                        </Button>
                     </div>
 
                     {deploy.loading && (
-                        <div className="flex items-center gap-2 text-[10px] font-mono text-rose-500 uppercase tracking-widest animate-pulse">
+                        <div className="flex items-center gap-2 text-xs font-mono text-rose-500 animate-pulse">
                             <RefreshCw size={10} className="animate-spin" />
                             Synchronizing
                         </div>
@@ -125,17 +126,17 @@ export function DeployPanel() {
 
                 <div className="flex items-center gap-4">
                     {!token ? (
-                        <span className="text-[10px] font-bold text-amber-500 uppercase tracking-[0.2em] flex items-center gap-1.5">
+                        <span className="text-xs font-semibold text-amber-500 flex items-center gap-1.5">
                             <AlertCircle size={10} />
                             Key Required
                         </span>
                     ) : (
-                        <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.2em] flex items-center gap-1.5">
+                        <span className="text-xs font-semibold text-emerald-500 flex items-center gap-1.5">
                             <CheckCircle2 size={10} />
                             Verified
                         </span>
                     )}
-                    <button
+                    <Button
                         className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-lg text-zinc-400 transition-all hover:text-zinc-600"
                         onClick={() => {
                             setToken('');
@@ -144,7 +145,7 @@ export function DeployPanel() {
                         title="Reset Token"
                     >
                         <Settings size={16} />
-                    </button>
+                    </Button>
                 </div>
             </header>
 
@@ -155,8 +156,8 @@ export function DeployPanel() {
                         <div className="space-y-6">
                             <div className="p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm space-y-4">
                                 <div className="space-y-2">
-                                    <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
-                                        Connect {activeProvider === 'netlify' ? 'Netlify' : 'Vercel'}
+                                    <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">
+                                        Connect {activeProvider}
                                     </h3>
                                     <p className="text-xs text-zinc-500 leading-relaxed font-medium">
                                         Enter your Personal Access Token to bridge your local workspace to production.
@@ -171,7 +172,7 @@ export function DeployPanel() {
                                     }}
                                 />
                                 <div className="p-3 bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-100 dark:border-zinc-800/50">
-                                    <p className="text-[9px] text-zinc-400 font-mono uppercase leading-tight">
+                                    <p className="text-xs text-zinc-400 font-mono leading-tight">
                                         Your token is stored locally in your browser for session persistence.
                                     </p>
                                 </div>
@@ -188,15 +189,15 @@ export function DeployPanel() {
 
                             {selectedSiteId && (
                                 <div className="p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm space-y-4">
-                                    <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Release Management</h4>
-                                    <button
+                                    <h4 className="text-xs font-semibold text-zinc-400">Release Management</h4>
+                                    <Button
                                         onClick={handleDeployTrigger}
                                         disabled={deploy.loading}
-                                        className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-bold text-[10px] uppercase tracking-[0.2em] py-3 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 shadow-lg shadow-zinc-900/10 dark:shadow-none"
+                                        className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold text-xs py-3 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 shadow-lg shadow-zinc-900/10 dark:shadow-none"
                                     >
                                         <RefreshCw size={12} className={deploy.loading ? 'animate-spin' : ''} />
                                         Trigger Release
-                                    </button>
+                                    </Button>
                                 </div>
                             )}
                         </>
@@ -208,33 +209,33 @@ export function DeployPanel() {
                     {selectedSiteId ? (
                         <>
                             <nav className="flex px-4 border-b border-zinc-100 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-900/50">
-                                <button
+                                <Button
                                     onClick={() => setActiveTab('overview')}
                                     className={cn(
-                                        "px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] border-b-2 transition-all",
+                                        "px-6 py-4 text-xs font-semibold border-b-2 transition-all",
                                         activeTab === 'overview'
-                                            ? 'border-rose-500 text-rose-600 dark:text-rose-400'
+                                            ? 'border-zinc-900 text-zinc-900 dark:text-zinc-100'
                                             : 'border-transparent text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200'
                                     )}
                                 >
                                     Event History
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     onClick={() => setActiveTab('env')}
                                     className={cn(
-                                        "px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] border-b-2 transition-all",
+                                        "px-6 py-4 text-xs font-semibold border-b-2 transition-all",
                                         activeTab === 'env'
-                                            ? 'border-rose-500 text-rose-600 dark:text-rose-400'
+                                            ? 'border-zinc-900 text-zinc-900 dark:text-zinc-100'
                                             : 'border-transparent text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200'
                                     )}
                                 >
                                     Global Config
-                                </button>
+                                </Button>
                             </nav>
 
                             <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
                                 {deploy.error && (
-                                    <div className="mb-8 p-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/50 rounded-xl text-rose-600 dark:text-rose-400 text-xs font-bold uppercase tracking-wide flex items-center gap-3">
+                                    <div className="mb-8 p-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/50 rounded-xl text-rose-600 dark:text-rose-400 text-xs font-semibold flex items-center gap-3">
                                         <AlertCircle size={16} />
                                         {deploy.error}
                                     </div>
@@ -255,12 +256,12 @@ export function DeployPanel() {
                                 <Globe size={40} strokeWidth={1.5} />
                             </div>
                             <div className="space-y-2 max-w-sm">
-                                <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tighter">Production Overview</h2>
+                                <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 tracking-tighter">Production Overview</h2>
                                 <p className="text-sm text-zinc-500 font-medium leading-relaxed">
-                                    Select a production target from the sidebar to view deployment events, logs, and global environment state.
+                                    Select a production target from the sidebar to continue.
                                 </p>
                             </div>
-                            <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-300 uppercase tracking-widest">
+                            <div className="flex items-center gap-2 text-xs font-mono text-zinc-300">
                                 <span>Awaiting Target Selection</span>
                                 <ChevronRight size={10} />
                             </div>

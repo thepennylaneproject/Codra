@@ -152,14 +152,12 @@ export const TYPOGRAPHY = {
     fontWeight: FONT_WEIGHT.regular,
     lineHeight: LINE_HEIGHT.normal,
   },
-  // Label: 12px / medium / 1.4 / uppercase
+  // Label: 12px / medium / 1.4
   label: {
     fontFamily: FONT_FAMILY.base,
     fontSize: FONT_SIZE.sm,
     fontWeight: FONT_WEIGHT.medium,
     lineHeight: 1.4,
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.05em',
   },
   // Mono: 12px / regular / 1.5
   mono: {
@@ -402,23 +400,6 @@ export const GLASS_DENSITY = {
 } as const;
 
 /**
- * Gradient tokens - Protest Poster inspired
- */
-export const GRADIENT = {
-  // Energy flow: Magenta to Teal
-  energy: 'linear-gradient(135deg, #D81159 0%, #00D9D9 100%)',
-  // Forge: Gold to Magenta (warmth + intensity)
-  forge: 'linear-gradient(135deg, #F4D03F 0%, #D81159 100%)',
-  // Code: Teal to Cream (digital clarity)
-  code: 'linear-gradient(135deg, #00D9D9 0%, #FFFDF7 100%)',
-  // Dark overlay for panels
-  dark: 'linear-gradient(to bottom, rgba(26, 31, 38, 0.5) 0%, rgba(10, 14, 18, 0.8) 55%)',
-  // Subtle radial overlay
-  overlay: `radial-gradient(circle at top, rgba(0, 217, 217, 0.12) 0, transparent 58%),
-            radial-gradient(circle at bottom right, rgba(244, 208, 63, 0.1) 0, transparent 55%)`,
-} as const;
-
-/**
  * Semantic color aliases for component states
  */
 export const SEMANTIC = {
@@ -639,6 +620,393 @@ export const COMPONENTS = {
   },
 } as const;
 
+/**
+ * Token file version (increment on breaking visual changes).
+ */
+export const TOKENS_VERSION = '2025-03-01';
+
+/**
+ * UI palette tokens (Ivory & Ink system).
+ */
+export const UI = {
+  bg: BRAND.ivory,
+  bgSecondary: BACKGROUND.subtle,
+  text: BRAND.ink,
+  textMuted: TEXT.muted,
+  textDisabled: TEXT.soft,
+  border: 'rgba(26, 26, 26, 0.1)',
+  borderSoft: 'rgba(26, 26, 26, 0.05)',
+  borderStrong: 'rgba(26, 26, 26, 0.2)',
+} as const;
+
+/**
+ * Cosmic palette tokens (dark system).
+ */
+export const COSMIC = {
+  void: '#050608',
+  voidSoft: '#0A0E12',
+  voidElevated: '#12171D',
+  stardust: '#F8F9FA',
+  stardustWarm: '#FFFDF7',
+  stardustMuted: '#9CA3AF',
+  stardustDim: '#6B7280',
+} as const;
+
+/**
+ * Shell palette tokens (panel system).
+ */
+export const SHELL = {
+  surface0: '#0A0A0F',
+  surface1: '#12121A',
+  surface2: '#1A1A24',
+  border: '#2A2A36',
+  textPrimary: '#F5F5F7',
+  textSecondary: '#8A8A9A',
+} as const;
+
+/**
+ * Energy spectrum tokens (accent spectrum).
+ */
+export const ENERGY = {
+  teal: '#00D9D9',
+  cyan: '#22D3EE',
+  magenta: '#D81159',
+  rose: '#F43F5E',
+  gold: '#F4D03F',
+  amber: '#F59E0B',
+} as const;
+
+/**
+ * Glow tokens (luminous effects).
+ */
+export const GLOW = {
+  teal: 'rgba(0, 217, 217, 0.5)',
+  tealSoft: 'rgba(0, 217, 217, 0.2)',
+  tealSubtle: 'rgba(0, 217, 217, 0.08)',
+  magenta: 'rgba(216, 17, 89, 0.5)',
+  magentaSoft: 'rgba(216, 17, 89, 0.2)',
+  gold: 'rgba(244, 208, 63, 0.5)',
+  goldSoft: 'rgba(244, 208, 63, 0.15)',
+} as const;
+
+/**
+ * Glass surface tokens.
+ */
+export const GLASS = {
+  bg: 'rgba(18, 23, 29, 0.85)',
+  frosted: 'rgba(18, 23, 29, 0.92)',
+  clear: 'rgba(18, 23, 29, 0.6)',
+  edge: 'rgba(255, 255, 255, 0.08)',
+  edgeBright: 'rgba(255, 255, 255, 0.15)',
+  highlight: 'rgba(255, 255, 255, 0.05)',
+} as const;
+
+/**
+ * Layout and sizing tokens.
+ */
+export const LAYOUT = {
+  breakpoints: BREAKPOINTS,
+  shell: {
+    headerHeight: '56px',
+    sidebarLeft: '240px',
+    sidebarRight: '320px',
+    gutter: '24px',
+  },
+  stripHeight: '40px',
+} as const;
+
+/**
+ * Desk surface tokens.
+ */
+export const DESK = {
+  bg: BRAND.ivory,
+  surface: BACKGROUND.subtle,
+  border: UI.borderSoft,
+  textPrimary: BRAND.ink,
+  textMuted: TEXT.muted,
+  tints: {
+    write: ENERGY.magenta,
+    design: ENERGY.teal,
+    code: ENERGY.gold,
+    analyze: ENERGY.cyan,
+  },
+} as const;
+
+/**
+ * Extended font sizes for UI utilities.
+ */
+export const FONT_SIZE_EXTENDED = {
+  '2xs': FONT_SIZE.sm,
+  xs: FONT_SIZE.sm,
+  sm: FONT_SIZE.base,
+  base: FONT_SIZE.lg,
+  md: FONT_SIZE.lg,
+  lg: FONT_SIZE.lg,
+  xl: FONT_SIZE.xl,
+  '2xl': FONT_SIZE.xl,
+  '3xl': FONT_SIZE.xl,
+  '4xl': FONT_SIZE.xl,
+} as const;
+
+/**
+ * Extended font weights for UI utilities.
+ */
+export const FONT_WEIGHT_EXTENDED = {
+  regular: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 600,
+} as const;
+
+/**
+ * Extended spacing scale (semantic + extended).
+ */
+export const SPACING_EXTENDED = {
+  xs: SPACE.xs,
+  sm: SPACE.sm,
+  md: SPACE.md,
+  lg: SPACE.lg,
+  xl: SPACE.xl,
+  '2xl': SPACE['2xl'],
+  '3xl': '64px',
+} as const;
+
+/**
+ * Single source of truth for all design tokens.
+ */
+export const tokens = {
+  /** Colors */
+  colors: {
+    brand: {
+      ...BRAND,
+      teal: ENERGY.teal,
+      violet: '#7A77FF',
+      magenta: ENERGY.magenta,
+      cream: COSMIC.stardustWarm,
+    },
+    ui: UI,
+    cosmic: COSMIC,
+    shell: SHELL,
+    energy: ENERGY,
+    glow: GLOW,
+    glass: GLASS,
+    background: BACKGROUND,
+    surface: SURFACE,
+    border: BORDER,
+    text: TEXT,
+    state: STATE,
+    accent: ACCENT,
+    accentCoral: ACCENT_CORAL,
+    semantic: SEMANTIC,
+  },
+  /** Typography */
+  typography: {
+    fontFamily: FONT_FAMILY,
+    fontSize: FONT_SIZE_EXTENDED,
+    fontWeight: FONT_WEIGHT_EXTENDED,
+    lineHeight: LINE_HEIGHT,
+  },
+  /** Spacing */
+  spacing: {
+    scale: {
+      0: '0',
+      1: '4px',
+      2: '8px',
+      3: '12px',
+      4: '16px',
+      6: '24px',
+      8: '32px',
+      12: '48px',
+    },
+    semantic: SPACING_EXTENDED,
+  },
+  /** Shadows */
+  shadows: SHADOW,
+  /** Borders */
+  borders: {
+    radius: RADIUS,
+  },
+  /** Z-index */
+  zIndex: Z_INDEX,
+  /** Motion */
+  motion: MOTION,
+  /** Transitions */
+  transitions: TRANSITION,
+  /** Backdrop */
+  backdrop: BACKDROP,
+  /** Gradients */
+  /** Layout */
+  layout: LAYOUT,
+  /** Desk surfaces */
+  desk: DESK,
+  /** CSS variable map (generated output source) */
+  cssVars: {
+    colors: {
+      'brand-ink': BRAND.ink,
+      'brand-ivory': BRAND.ivory,
+      'brand-coral': BRAND.coral,
+      'brand-gold': BRAND.gold,
+      'brand-teal': ENERGY.teal,
+      'brand-violet': '#7A77FF',
+      'brand-magenta': ENERGY.magenta,
+      'brand-cream': COSMIC.stardustWarm,
+      'brand-accent': BRAND.coral,
+      'color-brand-coral': BRAND.coral,
+      'color-ink': BRAND.ink,
+      'color-ink-light': TEXT.muted,
+      'color-ink-muted': TEXT.soft,
+      'color-ivory': BRAND.ivory,
+      'ui-bg': UI.bg,
+      'ui-border': UI.border,
+      'ui-border-soft': UI.borderSoft,
+      'ui-text': UI.text,
+      'void': COSMIC.void,
+      'void-soft': COSMIC.voidSoft,
+      'void-elevated': COSMIC.voidElevated,
+      'stardust': COSMIC.stardust,
+      'stardust-warm': COSMIC.stardustWarm,
+      'stardust-muted': COSMIC.stardustMuted,
+      'stardust-dim': COSMIC.stardustDim,
+      'energy-teal': ENERGY.teal,
+      'energy-cyan': ENERGY.cyan,
+      'energy-magenta': ENERGY.magenta,
+      'energy-rose': ENERGY.rose,
+      'energy-gold': ENERGY.gold,
+      'energy-amber': ENERGY.amber,
+      'glass-bg': GLASS.bg,
+      'glass-frosted': GLASS.frosted,
+      'glass-clear': GLASS.clear,
+      'glass-edge': GLASS.edge,
+      'glass-border': GLASS.edge,
+      'glass-blur': BACKDROP.blurMd,
+      'surface-glass': SURFACE.glass,
+      'shell-surface-0': SHELL.surface0,
+      'shell-surface-1': SHELL.surface1,
+      'shell-surface-2': SHELL.surface2,
+      'shell-border': SHELL.border,
+      'shell-text-primary': SHELL.textPrimary,
+      'shell-text-secondary': SHELL.textSecondary,
+      'bg-default': BACKGROUND.default,
+      'bg-elevated': BACKGROUND.elevated,
+      'bg-subtle': BACKGROUND.subtle,
+      'nav-bg': SEMANTIC.navBg,
+      'panel-bg': SEMANTIC.panelBg,
+      'border-subtle': BORDER.subtle,
+      'border-strong': BORDER.strong,
+      'border-accent': BORDER.accent,
+      'text-primary': TEXT.primary,
+      'text-muted': TEXT.muted,
+      'text-soft': TEXT.soft,
+      'text-accent': ACCENT.primary,
+      'state-success': STATE.success,
+      'state-warning': STATE.warning,
+      'state-error': STATE.error,
+      'state-info': STATE.info,
+      'color-bg': BACKGROUND.default,
+      'color-bg-primary': BACKGROUND.default,
+      'color-bg-secondary': BACKGROUND.elevated,
+      'color-border': BORDER.subtle,
+      'color-border-soft': BORDER.subtle,
+      'color-border-strong': BORDER.strong,
+      'color-border-subtle': BORDER.subtle,
+      'color-text-primary': TEXT.primary,
+      'color-text-secondary': TEXT.muted,
+      'color-text-muted': TEXT.soft,
+      'color-surface': BACKGROUND.elevated,
+      'color-surface-dark': SURFACE.glass,
+      'color-primary': ACCENT_CORAL.base,
+      'color-primary-hover': ACCENT_CORAL.hover,
+      'color-primary-active': ACCENT_CORAL.active,
+      'color-accent': ACCENT_CORAL.base,
+      'color-accent-hover': ACCENT_CORAL.hover,
+      'accent': ACCENT.primary,
+      'accent-border': ACCENT.border,
+      'progress-active': ACCENT_CORAL.permitted.activeProgress.fill,
+      'progress-active-bg': ACCENT_CORAL.permitted.activeProgress.bg,
+      'tab-active-border': BRAND.coral,
+      'tab-active-border-width': '2px',
+      'tab-hover-bg': UI.borderSoft,
+      'button-primary-bg': ACCENT_CORAL.permitted.primaryCta.bg,
+      'button-primary-bg-hover': ACCENT_CORAL.permitted.primaryCta.bgHover,
+      'button-primary-bg-active': ACCENT_CORAL.permitted.primaryCta.bgActive,
+      'button-primary-text': ACCENT_CORAL.permitted.primaryCta.text,
+      'shell-resize-handle-active': BRAND.coral,
+      'shell-resize-handle-hover': UI.borderStrong,
+      'desk-bg': DESK.bg,
+      'desk-surface': DESK.surface,
+      'desk-border': DESK.border,
+      'desk-text-primary': DESK.textPrimary,
+      'desk-text-muted': DESK.textMuted,
+      'desk-write-tint': DESK.tints.write,
+      'desk-design-tint': DESK.tints.design,
+      'desk-code-tint': DESK.tints.code,
+      'desk-analyze-tint': DESK.tints.analyze,
+    },
+    glassDensity: {
+      'glass-density-sparse': GLASS_DENSITY.sparse,
+      'glass-density-balanced': GLASS_DENSITY.balanced,
+      'glass-density-dense': GLASS_DENSITY.dense,
+    },
+    typography: {
+      'font-family-base': FONT_FAMILY.base,
+      'font-size-2xs': FONT_SIZE_EXTENDED['2xs'],
+      'font-size-xs': FONT_SIZE_EXTENDED.xs,
+      'font-size-sm': FONT_SIZE_EXTENDED.sm,
+      'font-size-base': FONT_SIZE_EXTENDED.base,
+      'font-size-md': FONT_SIZE_EXTENDED.md,
+      'font-size-lg': FONT_SIZE_EXTENDED.lg,
+      'font-size-xl': FONT_SIZE_EXTENDED.xl,
+      'font-size-2xl': FONT_SIZE_EXTENDED['2xl'],
+      'font-size-3xl': FONT_SIZE_EXTENDED['3xl'],
+      'font-size-4xl': FONT_SIZE_EXTENDED['4xl'],
+      'font-weight-regular': FONT_WEIGHT_EXTENDED.regular,
+      'font-weight-medium': FONT_WEIGHT_EXTENDED.medium,
+      'font-weight-semibold': FONT_WEIGHT_EXTENDED.semibold,
+      'font-weight-bold': FONT_WEIGHT_EXTENDED.bold,
+      'line-height-tight': LINE_HEIGHT.tight,
+      'line-height-normal': LINE_HEIGHT.normal,
+      'line-height-relaxed': LINE_HEIGHT.relaxed,
+    },
+    spacing: {
+      'space-xs': SPACING_EXTENDED.xs,
+      'space-sm': SPACING_EXTENDED.sm,
+      'space-md': SPACING_EXTENDED.md,
+      'space-lg': SPACING_EXTENDED.lg,
+      'space-xl': SPACING_EXTENDED.xl,
+      'space-2xl': SPACING_EXTENDED['2xl'],
+      'space-3xl': SPACING_EXTENDED['3xl'],
+    },
+    radius: {
+      'radius-md': RADIUS.md,
+      'radius-lg': RADIUS.lg,
+      'radius-xl': RADIUS.xl,
+      'radius-full': RADIUS.full,
+    },
+    shadows: {
+      'shadow-md': SHADOW.md,
+      'shadow-xl': SHADOW.xl,
+    },
+    transitions: {
+      'transition-base': TRANSITION.base,
+      'motion-transition-instant': MOTION.transition.instant,
+      'motion-transition-expressive': MOTION.transition.expressive,
+    },
+    zIndex: {
+      'z-base': Z_INDEX.base,
+      'z-sticky': Z_INDEX.sticky,
+      'z-overlay': Z_INDEX.modalBackdrop,
+      'z-modal': Z_INDEX.modal,
+    },
+    layout: {
+      'shell-header-height': LAYOUT.shell.headerHeight,
+      'shell-sidebar-left': LAYOUT.shell.sidebarLeft,
+      'shell-sidebar-right': LAYOUT.shell.sidebarRight,
+      'shell-gutter': LAYOUT.shell.gutter,
+      'strip-height': LAYOUT.stripHeight,
+    },
+  },
+} as const;
+
 export default {
   BRAND,
   BACKGROUND,
@@ -658,7 +1026,6 @@ export default {
   BACKDROP,
   TRANSITION,
   Z_INDEX,
-  GRADIENT,
   SEMANTIC,
   BREAKPOINTS,
   PALETTE,
@@ -667,5 +1034,17 @@ export default {
   GOLD_ACCENT,
   A11Y,
   GLASS_DENSITY,
+  TOKENS_VERSION,
+  UI,
+  COSMIC,
+  SHELL,
+  ENERGY,
+  GLOW,
+  GLASS,
+  LAYOUT,
+  DESK,
+  FONT_SIZE_EXTENDED,
+  FONT_WEIGHT_EXTENDED,
+  SPACING_EXTENDED,
+  tokens,
 };
-

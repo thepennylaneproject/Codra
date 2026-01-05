@@ -16,10 +16,12 @@ export function useSupabaseSpread(projectId: string | undefined) {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const isUuid = (value: string) =>
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 
     // Load data from Supabase
     useEffect(() => {
-        if (!projectId || !user) {
+        if (!projectId || !user || !isUuid(projectId)) {
             setLoading(false);
             return;
         }
@@ -80,7 +82,7 @@ export function useSupabaseSpread(projectId: string | undefined) {
 
     // Save Spread function
     const saveSpread = useCallback(async (updatedSpread: Spread) => {
-        if (!user || !projectId || saving) return;
+        if (!user || !projectId || saving || !isUuid(projectId)) return;
 
         setSaving(true);
         setError(null);
@@ -114,7 +116,7 @@ export function useSupabaseSpread(projectId: string | undefined) {
 
     // Save Task Queue function
     const saveTaskQueue = useCallback(async (updatedQueue: TaskQueue) => {
-        if (!user || !projectId || saving) return;
+        if (!user || !projectId || saving || !isUuid(projectId)) return;
 
         setSaving(true);
         setError(null);

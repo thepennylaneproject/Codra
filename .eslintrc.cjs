@@ -1,6 +1,3 @@
-// Register custom Codra ESLint plugin using CommonJS require
-const codraPlugin = require('./eslint-rules');
-
 module.exports = {
     root: true,
     parser: '@typescript-eslint/parser',
@@ -20,6 +17,7 @@ module.exports = {
         '@typescript-eslint',
         'react',
         'react-hooks',
+        'codra',
     ],
     extends: [
         'eslint:recommended',
@@ -41,12 +39,24 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'warn',
         '@typescript-eslint/no-unused-vars': 'warn',
 
-        // NOTE: Codra accent governance rule requires ES module conversion
-        // The custom plugin is currently in ES modules format which conflicts with .cjs config
-        // For now, violations have been manually fixed. To enforce via ESLint:
-        // 1. Either convert eslint-rules/ back to CommonJS
-        // 2. Or migrate entire project to ESLint flat config (eslint.config.js)
-        // Uncomment below when ready:
-        // 'codra/no-hardcoded-accent': 'error',
+        // Codra design system warnings
+        'codra/no-arbitrary-tailwind': 'warn',
+        'codra/coral-restricted': 'error',
+        'codra/font-size-locked': 'error',
+        'codra/font-weight-locked': 'error',
+        'codra/spacing-locked': 'warn',
+        'codra/button-usage': 'warn',
     },
+    overrides: [
+        {
+            files: ['**/generated-*.css', '**/generated-*.js'],
+            rules: {
+                'codra/no-arbitrary-tailwind': 'off',
+                'codra/coral-restricted': 'off',
+                'codra/font-size-locked': 'off',
+                'codra/font-weight-locked': 'off',
+                'codra/spacing-locked': 'off',
+            },
+        },
+    ],
 };

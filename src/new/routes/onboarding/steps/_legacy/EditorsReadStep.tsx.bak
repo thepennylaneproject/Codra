@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useOnboardingStore } from '../store';
+import { Button } from '@/components/ui/Button';
 
 const SUGGESTED_GOALS = [
     "Increase Audience Reach",
@@ -54,15 +55,15 @@ export const EditorsReadStep = () => {
     return (
         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
             <header className="space-y-4">
-                <h1 className="text-4xl md:text-5xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
+                <h1 className="text-xl md:text-xl font-normal tracking-tight text-zinc-900 dark:text-zinc-50">
                     Editor's Read
                 </h1>
-                <p className="text-xl text-zinc-500 font-light max-w-lg">
+                <p className="text-xl text-zinc-500 font-normal max-w-lg">
                     Define the parameters of success. What are we aiming for?
                 </p>
             </header>
 
-            <div className="space-y-10">
+            <div className="space-y-12">
 
                 {/* Goals */}
                 <div className="space-y-4">
@@ -71,7 +72,7 @@ export const EditorsReadStep = () => {
                     </label>
                     <div className="flex flex-wrap gap-3">
                         {SUGGESTED_GOALS.map(goal => (
-                            <button
+                            <Button
                                 key={goal}
                                 onClick={() => toggleGoal(goal)}
                                 className={`px-4 py-2 border text-sm transition-all duration-300 ${data.goals?.includes(goal)
@@ -80,17 +81,17 @@ export const EditorsReadStep = () => {
                                     }`}
                             >
                                 {goal}
-                            </button>
+                            </Button>
                         ))}
                     </div>
 
                     {!showHelper && (!data.goals || data.goals.length === 0) && (
-                        <button
+                        <Button
                             onClick={() => setShowHelper(true)}
                             className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 underline underline-offset-4 decoration-dotted mt-2"
                         >
                             I'm not sure — help me decide
-                        </button>
+                        </Button>
                     )}
 
                     {showHelper && (
@@ -99,18 +100,18 @@ export const EditorsReadStep = () => {
                                 Is this work primarily for internal alignment or public consumption?
                             </p>
                             <div className="flex gap-3">
-                                <button
+                                <Button
                                     onClick={() => applyHelperRecommendation('internal')}
-                                    className="px-3 py-1.5 text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm rounded hover:border-amber-400 transition-colors"
+                                    className="px-3 py-2 text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm rounded hover:border-amber-400 transition-colors"
                                 >
                                     Internal / Experimental
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     onClick={() => applyHelperRecommendation('public')}
-                                    className="px-3 py-1.5 text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm rounded hover:border-amber-400 transition-colors"
+                                    className="px-3 py-2 text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm rounded hover:border-amber-400 transition-colors"
                                 >
                                     Public / Production
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     )}
@@ -123,7 +124,7 @@ export const EditorsReadStep = () => {
                     </label>
                     <div className="flex flex-wrap gap-3">
                         {SUGGESTED_BOUNDARIES.map(boundary => (
-                            <button
+                            <Button
                                 key={boundary}
                                 onClick={() => toggleBoundary(boundary)}
                                 className={`px-4 py-2 border text-sm transition-all duration-300 ${data.boundaries?.includes(boundary)
@@ -132,25 +133,25 @@ export const EditorsReadStep = () => {
                                     }`}
                             >
                                 {boundary}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 </div>
 
                 <div className="flex justify-between pt-8 border-t border-zinc-100 dark:border-zinc-900">
-                    <button
+                    <Button
                         onClick={() => setStep('assignment')}
                         className="text-sm font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                     >
                         &larr; Back
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={() => setStep('desks')}
-                        className="group flex items-center gap-2 text-lg font-medium text-zinc-900 dark:text-zinc-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                        className="group flex items-center gap-2 text-base font-medium text-zinc-900 dark:text-zinc-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
                     >
                         Staffing & Desks
                         <span className="block w-6 h-[1px] bg-current group-hover:w-10 transition-all" />
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

@@ -1,0 +1,14 @@
+{
+  "defaultSeverity": "warning",
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "color-no-invalid-hex": true,
+    "declaration-property-value-disallowed-list": {
+      "font-size": ["/^(?!(12px|14px|16px|24px|var\\(--)).*$/"],
+      "font-weight": ["/^(100|300|700|800|900)$/"]
+    },
+    "selector-max-specificity": "0,3,0",
+    "declaration-no-important": true,
+    "function-disallowed-list": ["rgb", "rgba", "hsl", "hsla"]
+  }
+}

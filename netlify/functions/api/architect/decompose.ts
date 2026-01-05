@@ -164,7 +164,7 @@ export const handler: Handler = async (event) => {
                 const tasksData = parseJSONResponse(tasksResponse);
 
                 for (const task of tasksData) {
-                    const { data: saved } = await supabaseAdmin
+                    const { data: saved }: { data: any | null } = await supabaseAdmin
                         .from('tasks')
                         .insert({
                             project_id: projectId,

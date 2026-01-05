@@ -44,7 +44,7 @@ const AIMLAPI_MODELS: ModelRegistryEntry[] = [
         creator: 'OpenAI'
     },
     {
-        id: 'gpt-3.5-turbo',
+        id: 'gpt-3-turbo',
         displayName: 'GPT-3.5 Turbo',
         modalities: ['text', 'code'],
         contextWindow: 16385,
@@ -199,13 +199,13 @@ const AIMLAPI_MODELS: ModelRegistryEntry[] = [
     // More Specialized / Open-Source Image Models
     {
         id: 'playground-v2.5',
-        displayName: 'Playground v2.5',
+        displayName: 'Execution v2.5',
         modalities: ['image'],
         contextWindow: 0,
         priceHint: { inputPer1k: 0, outputPer1k: 0.015 },
         latencyHintMs: 4000,
         tags: ['image-gen', 'aesthetic', 'visual'],
-        creator: 'Playground AI'
+        creator: 'Execution AI'
     },
     {
         id: 'aura-flow',
@@ -436,7 +436,7 @@ const GEMINI_MODELS: ModelRegistryEntry[] = [
         creator: 'Google'
     },
     {
-        id: 'gemini-2.0-pro-exp-02-05',
+        id: 'gemini-2.0-pro-exp-2-05',
         displayName: 'Gemini 2.0 Pro (Experimental)',
         modalities: ['text', 'code', 'vision'],
         contextWindow: 2000000,

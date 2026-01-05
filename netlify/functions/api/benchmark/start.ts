@@ -303,7 +303,7 @@ async function submitAimlApiBatch(
 function startBatchPolling(benchmarkId: string, batchId: string, userId: string) {
   // Create a polling function that calls another Netlify function
   // to avoid Lambda timeout issues
-  fetch(`${process.env.DEPLOY_URL || 'http://localhost:8888'}/.netlify/functions/api/benchmark/poll`, {
+  fetch(`${process.env.DEPLOY_URL || 'http://localhost:5173'}/.netlify/functions/api/benchmark/poll`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -29,7 +29,7 @@ export function DeployHistory({ deploys, loading, className }: DeployHistoryProp
             <div className="flex flex-col items-center justify-center p-12 text-center space-y-3 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800">
                 <Clock className="text-zinc-300" size={32} />
                 <div className="space-y-1">
-                    <p className="text-sm font-bold text-zinc-400">No Deploy History</p>
+                    <p className="text-sm font-semibold text-zinc-400">No Deploy History</p>
                     <p className="text-xs text-zinc-500">Your production activity will appear here.</p>
                 </div>
             </div>
@@ -39,10 +39,10 @@ export function DeployHistory({ deploys, loading, className }: DeployHistoryProp
     return (
         <div className={cn("space-y-6", className)}>
             <header className="flex items-center justify-between">
-                <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em]">
+                <h3 className="text-xs font-semibold text-zinc-400">
                     Recent Activity
                 </h3>
-                <span className="text-[10px] font-mono text-zinc-400 px-2 py-0.5 bg-zinc-100 dark:bg-zinc-900 rounded">
+                <span className="text-xs font-mono text-zinc-400 px-2 py-0 bg-zinc-100 dark:bg-zinc-900 rounded">
                     {deploys.length} Events
                 </span>
             </header>
@@ -56,7 +56,7 @@ export function DeployHistory({ deploys, loading, className }: DeployHistoryProp
                         <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-3">
                                 <StatusBadge state={deploy.state} />
-                                <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest bg-zinc-50 dark:bg-zinc-800 px-2 py-0.5 rounded">
+                                <span className="text-xs font-mono font-semibold text-zinc-400 bg-zinc-50 dark:bg-zinc-800 px-2 py-0 rounded">
                                     {deploy.context}
                                 </span>
                             </div>
@@ -71,11 +71,11 @@ export function DeployHistory({ deploys, loading, className }: DeployHistoryProp
                         </div>
 
                         <div className="space-y-2">
-                            <span className="text-sm text-zinc-900 dark:text-zinc-100 font-bold leading-tight line-clamp-2">
+                            <span className="text-sm text-zinc-900 dark:text-zinc-100 font-semibold leading-tight line-clamp-2">
                                 {deploy.commitMessage || 'Automated Production Release'}
                             </span>
 
-                            <div className="flex items-center gap-4 text-[10px] font-mono text-zinc-400 uppercase tracking-wider">
+                            <div className="flex items-center gap-4 text-xs font-mono text-zinc-400">
                                 <span className="flex items-center gap-1 text-zinc-500">
                                     <GitCommit size={10} />
                                     {deploy.commitRef?.substring(0, 7) || 'N/A'}
@@ -104,7 +104,7 @@ function StatusBadge({ state }: { state: string }) {
 
     return (
         <span className={cn(
-            "text-[9px] uppercase font-black px-2 py-0.5 rounded border tracking-[0.1em]",
+            "text-xs font-semibold px-2 py-0 rounded border",
             styles[state] || defaultStyle
         )}>
             {state}

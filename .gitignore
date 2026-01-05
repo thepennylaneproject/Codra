@@ -6,6 +6,8 @@ dist/
 build/
 .out/
 .next/
+src/styles/generated-tokens.css
+tailwind.config.generated.js
 
 # Environment
 .env

@@ -24,14 +24,14 @@ export function LyraRecallButton() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={lyra.show}
-                className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl bg-[#1A1A1A] hover:bg-[#FF4D4D] text-white shadow-xl shadow-[#1A1A1A]/20 flex items-center justify-center transition-colors group"
-                title="Show Lyra"
+                className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl bg-[#1A1A1A] hover:bg-zinc-600 text-white shadow-xl shadow-[#1A1A1A]/20 flex items-center justify-center transition-colors group"
+                title="Open Lyra module"
             >
                 <Sparkles size={24} className="group-hover:animate-pulse" />
 
                 {/* Tooltip */}
-                <span className="absolute right-full mr-3 px-3 py-1.5 bg-[#1A1A1A] text-white text-xs font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                    Show Lyra
+                <span className="absolute right-full mr-3 px-3 py-1 bg-[#1A1A1A] text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                    Open Lyra module
                 </span>
             </motion.button>
         </AnimatePresence>

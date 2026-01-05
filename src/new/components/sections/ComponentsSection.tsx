@@ -4,6 +4,7 @@
  */
 
 import { Box, CheckCircle2, Clock, Play, BarChart2, MoreHorizontal } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 interface Component {
     name: string;
@@ -39,13 +40,13 @@ export function ComponentsSection({ content, isEditing, onUpdate }: ComponentsSe
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between mb-2">
-                <span className="block text-[10px] uppercase tracking-wide text-zinc-400 font-bold">
+                <span className="block text-xs text-zinc-400 font-semibold">
                     Asset Management
                 </span>
                 <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1">
                         <BarChart2 size={12} className="text-zinc-400" />
-                        <span className="text-[10px] text-zinc-500 font-bold uppercase">{components.length} Assets</span>
+                        <span className="text-xs text-zinc-500 font-semibold">{components.length} Assets</span>
                     </div>
                 </div>
             </div>
@@ -62,26 +63,22 @@ export function ComponentsSection({ content, isEditing, onUpdate }: ComponentsSe
                                 <div className={`p-2 rounded-xl ${config.bg} ${config.color}`}>
                                     <config.icon size={20} />
                                 </div>
-                                <button className="p-1 opacity-0 group-hover:opacity-100 transition-opacity text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300">
+                                <Button className="p-1 opacity-0 group-hover:opacity-100 transition-opacity text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300">
                                     <MoreHorizontal size={16} />
-                                </button>
+                                </Button>
                             </div>
 
                             <div className="space-y-1 mb-4">
-                                <h4 className="text-xs font-black uppercase tracking-tight text-zinc-900 dark:text-zinc-100">
-                                    {comp.name}
-                                </h4>
-                                <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
-                                    {comp.type}
-                                </p>
+                                <h4 className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">{comp.name}</h4>
+                                <p className="text-xs text-zinc-400 font-semibold">{comp.type}</p>
                             </div>
 
                             <div className="flex items-center justify-between pt-3 border-t border-zinc-50 dark:border-zinc-800">
                                 <div className="flex items-center gap-3">
-                                    <div className="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">
+                                    <div className="text-xs text-zinc-400 font-medium">
                                         Usage: <span className="text-zinc-900 dark:text-zinc-200 font-mono">{comp.usageCount || 0}</span>
                                     </div>
-                                    <div className="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">
+                                    <div className="text-xs text-zinc-400 font-medium">
                                         Status: <span className={config.color}>{comp.status}</span>
                                     </div>
                                 </div>
@@ -90,11 +87,11 @@ export function ComponentsSection({ content, isEditing, onUpdate }: ComponentsSe
                                     <select
                                         value={comp.status}
                                         onChange={(e) => handleUpdateStatus(i, e.target.value as Component['status'])}
-                                        className="text-[9px] font-bold uppercase bg-transparent text-zinc-500 focus:outline-none cursor-pointer"
+                                        className="text-xs font-semibold bg-transparent text-zinc-500 focus:outline-none cursor-pointer"
                                     >
                                         <option value="pending">Pending</option>
                                         <option value="draft">Draft</option>
-                                        <option value="ready">Ready</option>
+                                        <option value="ready">Idle</option>
                                         <option value="final">Final</option>
                                     </select>
                                 )}
@@ -104,10 +101,10 @@ export function ComponentsSection({ content, isEditing, onUpdate }: ComponentsSe
                 })}
 
                 {isEditing && (
-                    <button className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-zinc-100 dark:border-zinc-800 rounded-2xl text-zinc-400 hover:border-indigo-200 hover:text-indigo-400 transition-all group">
+                    <Button className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-zinc-100 dark:border-zinc-800 rounded-2xl text-zinc-400 hover:border-indigo-200 hover:text-indigo-400 transition-all group">
                         <Box size={24} className="mb-2 group-hover:scale-110 transition-transform" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">+ Define Asset</span>
-                    </button>
+                        <span className="text-xs font-semibold">+ Define Asset</span>
+                    </Button>
                 )}
             </div>
         </div>

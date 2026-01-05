@@ -27,10 +27,10 @@ export interface FileEntry {
 export class LocalFileSystemAdapter implements FileSystemAdapter {
     async openDirectory(): Promise<FileSystemDirectoryHandle> {
         console.log('[LocalFS] openDirectory called');
-        // @ts-ignore - File System Access API
+        // @ts-expect-error - File System Access API
         console.log('[LocalFS] showDirectoryPicker available?', typeof window.showDirectoryPicker);
 
-        // @ts-ignore - File System Access API
+        // @ts-expect-error - File System Access API
         if (!window.showDirectoryPicker) {
             console.error('[LocalFS] window.showDirectoryPicker is not available');
             throw new Error('File System Access API not supported');
@@ -38,7 +38,7 @@ export class LocalFileSystemAdapter implements FileSystemAdapter {
 
         try {
             console.log('[LocalFS] Calling showDirectoryPicker...');
-            // @ts-ignore
+            // @ts-expect-error - File System Access API
             const handle = await window.showDirectoryPicker();
             console.log('[LocalFS] Directory handle received:', handle);
             return handle;
@@ -50,7 +50,7 @@ export class LocalFileSystemAdapter implements FileSystemAdapter {
 
     async listDirectory(handle: FileSystemDirectoryHandle): Promise<FileEntry[]> {
         const entries: FileEntry[] = [];
-        // @ts-ignore - TS might not have full File System Access types by default
+        // @ts-expect-error - TS might not have full File System Access types by default
         for await (const [name, entry] of handle.entries()) {
             // Filter .DS_Store and standard hidden files/folders if needed
             if (name === '.DS_Store' || name === '.git' || name === 'node_modules') continue;
@@ -96,11 +96,11 @@ export class LocalFileSystemAdapter implements FileSystemAdapter {
     }
 
     async verifyPermission(handle: FileSystemHandle, mode: 'read' | 'readwrite'): Promise<boolean> {
-        // @ts-ignore
+        // @ts-expect-error - File System Access API
         if ((await handle.queryPermission({ mode })) === 'granted') {
             return true;
         }
-        // @ts-ignore
+        // @ts-expect-error - File System Access API
         if ((await handle.requestPermission({ mode })) === 'granted') {
             return true;
         }
@@ -108,7 +108,7 @@ export class LocalFileSystemAdapter implements FileSystemAdapter {
     }
 
     async requestPermission(handle: FileSystemHandle, mode: 'read' | 'readwrite'): Promise<boolean> {
-        // @ts-ignore
+        // @ts-expect-error - File System Access API
         const status = await handle.requestPermission({ mode });
         return status === 'granted';
     }

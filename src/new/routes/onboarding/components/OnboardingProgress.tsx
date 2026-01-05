@@ -23,7 +23,7 @@ export const OnboardingProgress = ({ currentStep }: OnboardingProgressProps) => 
             {/* Progress Bar */}
             <div className="relative h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                 <div
-                    className="absolute inset-y-0 left-0 bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 ease-out animate-shimmer"
+                    className="absolute inset-y-0 left-0 bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 ease-out"
                     style={{ width: `${progress}%` }}
                 />
             </div>
@@ -57,7 +57,7 @@ export const OnboardingProgress = ({ currentStep }: OnboardingProgressProps) => 
                             </div>
 
                             {/* Label (hidden on mobile except for current) */}
-                            <span className={`text-xs font-medium uppercase tracking-wider hidden sm:block ${isCurrent ? '' : 'opacity-60'
+                            <span className={`text-xs font-medium hidden sm:block ${isCurrent ? '' : 'opacity-60'
                                 }`}>
                                 {meta.progressLabel}
                             </span>

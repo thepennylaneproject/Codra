@@ -50,27 +50,27 @@ export function validateProjectContext(data: ProjectContextFormState): Validatio
     // Check Target Audience
     const audiencePrimary = data.audience?.primary?.trim() || '';
     if (!audiencePrimary || audiencePrimary.toLowerCase() === 'self' || audiencePrimary === 'N/A') {
-        errors.audience = 'Please specify your target audience';
+        errors.audience = 'Target audience required.';
     }
 
     // Check Brand Constraints (Voice & Tone)
     const voiceGuidelines = data.brand?.voiceGuidelines?.trim() || '';
     if (!voiceGuidelines || voiceGuidelines === 'N/A') {
-        errors.brand = 'Please define your brand voice and tone';
+        errors.brand = 'Brand voice and tone required.';
     }
 
     // Check Success Criteria (Definition of Done)
     const definitionOfDone = data.success?.definitionOfDone || [];
     const validCriteria = definitionOfDone.filter(item => item?.trim());
     if (validCriteria.length === 0) {
-        errors.success = 'Please define at least one success criterion';
+        errors.success = 'At least one success criterion required.';
     }
 
     // Check Guardrails (Must Avoid)
     const mustAvoid = data.guardrails?.mustAvoid || [];
     const validGuardrails = mustAvoid.filter(item => item?.trim());
     if (validGuardrails.length === 0) {
-        errors.guardrails = 'Please add at least one guardrail or constraint';
+        errors.guardrails = 'At least one guardrail or constraint required.';
     }
 
     return {
@@ -97,8 +97,8 @@ export function getValidationSummary(errors: Record<string, string>): string {
     });
 
     if (errorCount === 1) {
-        return `Please complete the ${fieldNames[0]} section before continuing.`;
+        return `Complete the ${fieldNames[0]} section before continuing.`;
     }
 
-    return `Please complete the following sections: ${fieldNames.join(', ')}.`;
+    return `Complete the following sections: ${fieldNames.join(', ')}.`;
 }

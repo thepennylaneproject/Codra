@@ -1,0 +1,26 @@
+@import "./generated-tokens.css";
+
+:root {
+  --glass-panel-bg: rgba(15, 15, 26, 0.7);
+  --glass-panel-border: rgba(255, 255, 255, 0.1);
+  --glass-panel-radius: 12px;
+  --glass-panel-blur: 16px;
+  --glass-panel-light-bg: rgba(248, 250, 252, 0.8);
+  --glass-panel-light-border: rgba(0, 0, 0, 0.05);
+}
+
+.glass-panel {
+  background: var(--glass-panel-bg);
+  backdrop-filter: blur(var(--glass-panel-blur));
+  -webkit-backdrop-filter: blur(var(--glass-panel-blur));
+  border: 1px solid var(--glass-panel-border);
+  border-radius: var(--glass-panel-radius);
+}
+
+.glass-panel-light {
+  background: var(--glass-panel-light-bg);
+  backdrop-filter: blur(var(--glass-panel-blur));
+  -webkit-backdrop-filter: blur(var(--glass-panel-blur));
+  border: 1px solid var(--glass-panel-light-border);
+  border-radius: var(--glass-panel-radius);
+}

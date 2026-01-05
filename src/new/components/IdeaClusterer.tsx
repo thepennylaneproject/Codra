@@ -8,17 +8,18 @@
 
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
-import { 
-    Sparkles, 
-    Plus, 
-    X, 
-    Loader2, 
+import { Button } from '@/components/ui/Button';
+import {
+    Sparkles,
+    Plus,
+    X,
+    Loader2,
     Grid3x3,
     ListOrdered,
     Lightbulb,
     Flame,
     Clock,
-    AlertCircle
+    AlertCircle,
 } from 'lucide-react';
 
 export interface Idea {
@@ -150,41 +151,41 @@ export const IdeaClusterer: React.FC<IdeaClustererProps> = ({
             {/* Header */}
             <div className="px-4 py-3 bg-[#FFFAF0] border-b border-[#1A1A1A]/5 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-lg bg-zinc-900 flex items-center justify-center">
                         <Lightbulb size={14} className="text-white" />
                     </div>
                     <div>
-                        <h3 className="text-[11px] font-black uppercase tracking-[0.1em] text-[#1A1A1A]">
+                        <h3 className="text-xs font-semibold text-text-primary">
                             Idea Clusterer
                         </h3>
-                        <p className="text-[9px] text-[#8A8A8A]">
+                        <p className="text-xs text-text-soft">
                             {ideas.length} idea{ideas.length !== 1 ? 's' : ''} • {clusters.length} cluster{clusters.length !== 1 ? 's' : ''}
                         </p>
                     </div>
                 </div>
                 
                 <div className="flex items-center gap-1">
-                    <button
+                    <Button
                         onClick={() => setViewMode('input')}
-                        className={`p-1.5 rounded-lg transition-colors ${
+                        className={`p-1 rounded-lg transition-colors ${
                             viewMode === 'input' 
                                 ? 'bg-[#1A1A1A] text-white' 
-                                : 'text-[#8A8A8A] hover:bg-[#1A1A1A]/5'
+                                : 'text-text-soft hover:bg-[#1A1A1A]/5'
                         }`}
                     >
                         <ListOrdered size={14} />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={() => setViewMode('clusters')}
-                        className={`p-1.5 rounded-lg transition-colors ${
+                        className={`p-1 rounded-lg transition-colors ${
                             viewMode === 'clusters' 
                                 ? 'bg-[#1A1A1A] text-white' 
-                                : 'text-[#8A8A8A] hover:bg-[#1A1A1A]/5'
+                                : 'text-text-soft hover:bg-[#1A1A1A]/5'
                         }`}
                         disabled={clusters.length === 0}
                     >
                         <Grid3x3 size={14} />
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -208,13 +209,13 @@ export const IdeaClusterer: React.FC<IdeaClustererProps> = ({
                                     placeholder="Dump your ideas here... (Enter to add)"
                                     className="flex-1 px-3 py-2 bg-[#1A1A1A]/5 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/30 min-h-[60px]"
                                 />
-                                <button
+                                <Button
                                     onClick={addIdea}
                                     disabled={!inputValue.trim()}
                                     className="px-3 bg-[#1A1A1A] text-white rounded-xl disabled:opacity-30 transition-opacity"
                                 >
                                     <Plus size={18} />
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Ideas list */}
@@ -225,24 +226,23 @@ export const IdeaClusterer: React.FC<IdeaClustererProps> = ({
                                         value={idea}
                                         className="flex items-start gap-2 p-2 bg-[#FFFAF0] rounded-xl border border-[#1A1A1A]/5 cursor-grab active:cursor-grabbing"
                                     >
-                                        <span className="text-sm text-[#1A1A1A] flex-1">{idea.content}</span>
-                                        <button
+                                        <span className="text-sm text-text-primary flex-1">{idea.content}</span>
+                                        <Button
                                             onClick={() => removeIdea(idea.id)}
-                                            className="p-1 text-[#8A8A8A] hover:text-red-500 transition-colors"
+                                            className="p-1 text-text-soft hover:text-red-500 transition-colors"
                                         >
                                             <X size={12} />
-                                        </button>
+                                        </Button>
                                     </Reorder.Item>
                                 ))}
                             </Reorder.Group>
 
                             {/* Cluster button */}
                             {ideas.length >= 3 && (
-                                <button
+                                <Button
                                     onClick={clusterIdeas}
                                     disabled={isProcessing}
-                                    className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
-                                >
+                                    className="w-full py-3 bg-zinc-900 text-white rounded-xl font-semibold text-sm flex items-center justify-center gap-2 hover:bg-zinc-800 transition-colors disabled:opacity-50">
                                     {isProcessing ? (
                                         <>
                                             <Loader2 size={16} className="animate-spin" />
@@ -254,7 +254,7 @@ export const IdeaClusterer: React.FC<IdeaClustererProps> = ({
                                             Cluster {ideas.length} Ideas
                                         </>
                                     )}
-                                </button>
+                                </Button>
                             )}
                         </motion.div>
                     ) : (
@@ -273,10 +273,10 @@ export const IdeaClusterer: React.FC<IdeaClustererProps> = ({
                                     <div className="px-3 py-2 bg-white/50 flex items-center justify-between">
                                         <div className="flex items-center gap-2">
                                             {getPriorityIcon(cluster.priority)}
-                                            <span className="text-xs font-bold text-[#1A1A1A]">{cluster.name}</span>
-                                            <span className="text-[9px] text-[#8A8A8A]">({cluster.ideas.length})</span>
+                                            <span className="text-xs font-semibold text-text-primary">{cluster.name}</span>
+                                            <span className="text-xs text-text-soft">({cluster.ideas.length})</span>
                                         </div>
-                                        <span className={`px-2 py-0.5 rounded-full text-[8px] font-bold uppercase ${getFeasibilityColor(cluster.feasibility)}`}>
+                                        <span className={`px-2 py-0 rounded-full text-xs font-semibold ${getFeasibilityColor(cluster.feasibility)}`}>
                                             {cluster.feasibility}
                                         </span>
                                     </div>
@@ -284,7 +284,7 @@ export const IdeaClusterer: React.FC<IdeaClustererProps> = ({
                                         {cluster.ideas.map((idea) => (
                                             <div
                                                 key={idea.id}
-                                                className="px-2 py-1.5 bg-white rounded-lg text-xs text-[#5A5A5A]"
+                                                className="px-2 py-1 bg-white rounded-lg text-xs text-text-secondary"
                                             >
                                                 {idea.content}
                                             </div>
@@ -293,15 +293,15 @@ export const IdeaClusterer: React.FC<IdeaClustererProps> = ({
                                 </div>
                             ))}
                             
-                            <button
+                            <Button
                                 onClick={() => {
                                     setClusters([]);
                                     setViewMode('input');
                                 }}
-                                className="w-full py-2 text-[#8A8A8A] text-xs font-bold uppercase tracking-wider hover:text-[#1A1A1A] transition-colors"
+                                className="w-full py-2 text-text-soft text-xs font-semibold hover:text-text-primary transition-colors"
                             >
-                                ← Back to Ideas
-                            </button>
+                                Open ideas
+                            </Button>
                         </motion.div>
                     )}
                 </AnimatePresence>

@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../hooks/useOnboarding';
-import { Button } from '../../../components/Button';
-import { ArrowRight } from 'lucide-react';
 import { analytics } from '@/lib/analytics';
+import { Button } from '@/components/ui/Button';
 
 const PROJECT_TYPE_OPTIONS = [
     { id: 'campaign' as const, label: 'Campaign', description: 'Full-funnel campaign production', icon: '🚀' },
@@ -17,13 +16,14 @@ export const StepProjectInfo = () => {
     const { data, updateData, canProceedFromProjectInfo, startSession } = useOnboarding();
     const nameInputRef = useRef<HTMLInputElement>(null);
     const [startTime] = useState(Date.now());
+    const canProceed = canProceedFromProjectInfo();
     
     // Auto-focus project name input on mount and track view
     useEffect(() => {
         nameInputRef.current?.focus();
         startSession();
         analytics.track('onboarding_step_viewed', { step: 1, stepName: 'project-info' });
-    }, []);
+    }, [startSession]);
     
     const handleContinue = () => {
         if (canProceedFromProjectInfo()) {
@@ -45,14 +45,14 @@ export const StepProjectInfo = () => {
     };
     
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 pb-28">
             {/* Step Title */}
             <div className="space-y-2">
-                <h1 className="text-2xl font-medium text-[#1A1A1A]">
+                <h1 className="text-xl font-medium text-text-primary">
                     What are you making?
                 </h1>
-                <p className="text-base text-[#5A5A5A]">
-                    Tell us about your project. We'll set up everything else.
+                <p className="text-base text-text-secondary">
+                    Tell us about your project. We&apos;ll set up everything else.
                 </p>
             </div>
             
@@ -60,7 +60,7 @@ export const StepProjectInfo = () => {
             <div className="space-y-2">
                 <label 
                     htmlFor="project-name" 
-                    className="block text-sm font-medium text-[#5A5A5A]"
+                    className="block text-sm font-medium text-text-secondary"
                 >
                     Project Name *
                 </label>
@@ -72,35 +72,36 @@ export const StepProjectInfo = () => {
                     onChange={(e) => updateData({ projectName: e.target.value })}
                     onKeyPress={handleKeyPress}
                     placeholder="My Awesome Project"
-                    className="w-full px-4 py-3 text-base text-[#1A1A1A] bg-white border border-[#1A1A1A]/10 rounded-lg focus:outline-none focus:border-[#1A1A1A]/30 transition-colors"
+                    className="w-full px-4 py-3 text-base text-text-primary bg-white border border-[#1A1A1A]/10 rounded-lg focus:outline-none focus:border-[#1A1A1A]/30 transition-colors"
                 />
             </div>
             
             {/* Project Type Selector */}
             <div className="space-y-3">
-                <label className="block text-sm font-medium text-[#5A5A5A]">
+                <label className="block text-sm font-medium text-text-secondary">
                     Project Type *
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                     {PROJECT_TYPE_OPTIONS.map((option) => (
-                        <button
+                        <Button
                             key={option.id}
                             onClick={() => updateData({ projectType: option.id })}
+                            aria-pressed={data.projectType === option.id}
                             className={`
-                                relative p-4 text-left rounded-lg border-2 transition-all
+                                relative p-4 text-left rounded-lg border-2 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/30
                                 ${data.projectType === option.id
-                                    ? 'border-[#1A1A1A] bg-[#1A1A1A]/[0.02]'
+                                    ? 'border-[#1A1A1A] bg-[#1A1A1A]/[0.02] shadow-[inset_0_0_0_1px_rgba(26,26,26,0.2)]'
                                     : 'border-[#1A1A1A]/10 bg-white hover:border-[#1A1A1A]/20'
                                 }
                             `}
                         >
                             <div className="flex items-start gap-3">
-                                <span className="text-2xl">{option.icon}</span>
+                                <span className="text-xl">{option.icon}</span>
                                 <div className="flex-1 min-w-0">
-                                    <div className="font-medium text-[#1A1A1A] mb-0.5">
+                                    <div className="font-medium text-text-primary mb-0">
                                         {option.label}
                                     </div>
-                                    <div className="text-xs text-[#5A5A5A]">
+                                    <div className="text-xs text-text-secondary">
                                         {option.description}
                                     </div>
                                 </div>
@@ -112,7 +113,7 @@ export const StepProjectInfo = () => {
                                     </svg>
                                 </div>
                             )}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </div>
@@ -121,7 +122,7 @@ export const StepProjectInfo = () => {
             <div className="space-y-2">
                 <label 
                     htmlFor="description" 
-                    className="block text-sm font-medium text-[#5A5A5A]"
+                    className="block text-sm font-medium text-text-secondary"
                 >
                     Description (Optional)
                 </label>
@@ -131,22 +132,24 @@ export const StepProjectInfo = () => {
                     onChange={(e) => updateData({ description: e.target.value })}
                     placeholder="A one-sentence description of your project..."
                     rows={2}
-                    className="w-full px-4 py-3 text-base text-[#1A1A1A] bg-white border border-[#1A1A1A]/10 rounded-lg focus:outline-none focus:border-[#1A1A1A]/30 transition-colors resize-none"
+                    className="w-full px-4 py-3 text-base text-text-primary bg-white border border-[#1A1A1A]/10 rounded-lg focus:outline-none focus:border-[#1A1A1A]/30 transition-colors resize-none"
                 />
             </div>
             
-            {/* Continue Button */}
-            <div className="pt-4">
-                <Button
-                    onClick={handleContinue}
-                    disabled={!canProceedFromProjectInfo()}
-                    variant="primary"
-                    className="w-full"
-                    size="lg"
-                    rightIcon={<ArrowRight size={20} />}
-                >
-                    Continue
-                </Button>
+            <div className="fixed inset-x-0 bottom-0 z-40 pointer-events-none">
+                <div className="max-w-2xl mx-auto px-6 md:px-12 py-6 flex items-center justify-end">
+                    <Button
+                        onClick={handleContinue}
+                        disabled={!canProceed}
+                        variant="primary"
+                        size="lg"
+                        className="px-10 shadow-lg pointer-events-auto bg-zinc-900 text-white hover:bg-zinc-800"
+                        aria-label="Create project"
+                        title={!canProceed ? 'Project configuration incomplete' : 'Create project'}
+                    >
+                        Create project
+                    </Button>
+                </div>
             </div>
         </div>
     );

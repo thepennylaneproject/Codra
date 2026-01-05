@@ -45,7 +45,7 @@ export function LyraClarification({
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.05 }}
                         onClick={() => onSelect(option.value)}
-                        className="px-4 py-3 border border-zinc-700 hover:border-[#FF6B6B] hover:bg-[#FF6B6B]/10 text-zinc-300 hover:text-white text-sm rounded-lg transition-all text-left"
+                        className="px-4 py-3 border border-zinc-700 hover:border-zinc-400 hover:bg-zinc-200/50 text-zinc-300 hover:text-white text-sm rounded-lg transition-all text-left"
                     >
                         {option.label}
                     </motion.button>

@@ -23,21 +23,21 @@ export const THINKING_MODES: Record<ThinkingMode, ThinkingModeConfig> = {
         id: 'convergent',
         name: 'Convergent',
         description: 'Direct, efficient, best answer first',
-        icon: '🎯',
+        icon: '',
         promptPrefix: `You are in CONVERGENT mode. Focus on THE BEST answer:
 - Give one clear, well-reasoned response
 - Prioritize practicality and proven approaches
 - Be concise and actionable
-- Skip exploration, go straight to the recommendation`,
+- Skip enumeration, go straight to the recommendation`,
         outputFormat: 'single',
         temperature: 0.3,
     },
     divergent: {
         id: 'divergent',
         name: 'Divergent',
-        description: 'Explore 5+ wildly different approaches',
-        icon: '🌟',
-        promptPrefix: `You are in DIVERGENT mode. Explore MULTIPLE different directions:
+        description: 'Generate 5+ distinct approaches',
+        icon: '',
+        promptPrefix: `You are in DIVERGENT mode. Enumerate MULTIPLE different directions:
 - Generate at least 5 distinctly different approaches
 - Include at least one unconventional/unexpected option
 - Don't pre-judge - include ideas that might seem risky
@@ -50,7 +50,7 @@ export const THINKING_MODES: Record<ThinkingMode, ThinkingModeConfig> = {
         id: 'devils-advocate',
         name: "Devil's Advocate",
         description: 'Challenge every assumption',
-        icon: '😈',
+        icon: '',
         promptPrefix: `You are in DEVIL'S ADVOCATE mode. Challenge and critique:
 - Identify weaknesses, risks, and potential failures
 - Question assumptions that seem "obvious"
@@ -65,14 +65,14 @@ export const THINKING_MODES: Record<ThinkingMode, ThinkingModeConfig> = {
         id: 'chaos',
         name: 'Chaos',
         description: 'Intentionally absurd ideas to break patterns',
-        icon: '🎲',
+        icon: '',
         promptPrefix: `You are in CHAOS mode. Break all patterns:
 - Generate deliberately unusual, unexpected ideas
 - Combine unrelated concepts
 - Suggest approaches that might seem "wrong" at first
 - Include at least one idea that makes you uncomfortable
 - Don't self-censor - the goal is to break conventional thinking
-- These are prompts for further exploration, not final solutions`,
+- These are prompts for further analysis, not final solutions`,
         outputFormat: 'multiple',
         temperature: 1.0,
     },
@@ -111,9 +111,9 @@ export function formatForThinkingMode(mode: ThinkingMode, response: string): {
     let currentItem = '';
     
     for (const line of lines) {
-        if (/^\d+[\.\)]\s/.test(line)) {
+        if (/^\d+[.)]\s/.test(line)) {
             if (currentItem) items.push(currentItem.trim());
-            currentItem = line.replace(/^\d+[\.\)]\s/, '');
+            currentItem = line.replace(/^\d+[.)]\s/, '');
         } else if (currentItem) {
             currentItem += ' ' + line;
         }

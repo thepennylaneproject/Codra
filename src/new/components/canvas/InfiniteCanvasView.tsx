@@ -6,6 +6,7 @@
 
 import { useState, useRef, useCallback, ReactNode, WheelEvent, MouseEvent } from 'react';
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/Button';
 
 interface InfiniteCanvasViewProps {
     children: ReactNode;
@@ -106,29 +107,29 @@ export function InfiniteCanvasView({
             </motion.div>
 
             {/* Controls */}
-            <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-zinc-900/80 backdrop-blur-md rounded-lg p-1 shadow-lg z-50">
-                <button
+            <div className="absolute bottom-4 right-4 flex items-center gap-2 glass-panel border-0 bg-zinc-900/80 rounded-lg p-1 shadow-lg z-50">
+                <Button
                     onClick={() => setTransform(prev => ({ ...prev, scale: Math.max(minScale, prev.scale - 0.25) }))}
                     className="p-2 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition-colors text-sm font-mono"
                 >
                     −
-                </button>
-                <span className="text-[10px] font-mono text-zinc-500 w-12 text-center">
+                </Button>
+                <span className="text-xs font-mono text-zinc-500 w-12 text-center">
                     {Math.round(transform.scale * 100)}%
                 </span>
-                <button
+                <Button
                     onClick={() => setTransform(prev => ({ ...prev, scale: Math.min(maxScale, prev.scale + 0.25) }))}
                     className="p-2 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition-colors text-sm font-mono"
                 >
                     +
-                </button>
+                </Button>
                 <div className="w-px h-4 bg-zinc-700" />
-                <button
+                <Button
                     onClick={handleReset}
-                    className="px-2 py-1 hover:bg-zinc-800 rounded text-[10px] font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition-colors"
+                    className="px-2 py-1 hover:bg-zinc-800 rounded text-xs font-semibold text-zinc-400 hover:text-white transition-colors"
                 >
                     Reset
-                </button>
+                </Button>
             </div>
         </div>
     );

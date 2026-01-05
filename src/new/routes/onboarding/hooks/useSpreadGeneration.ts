@@ -70,11 +70,11 @@ export const useSpreadGeneration = () => {
                     colors: {
                         primary: '#1A1A1A',
                         secondary: '#FFFAF0',
-                        accent: '#FF6B6B',
+                        accent: '#71717A',
                     },
                 },
                 successCriteria: {
-                    definitionOfDone: ['Initial setup completed', 'Ready for first task'],
+                    definitionOfDone: ['Initial setup completed', 'Idle for first task'],
                     stakeholders: [{ name: 'Owner', role: 'Decision maker' }],
                 },
                 guardrails: {
@@ -100,7 +100,7 @@ export const useSpreadGeneration = () => {
             await new Promise(r => setTimeout(r, 500));
             
             // Redirect to workspace
-            navigate(`/p/${project.id}/spread`);
+            navigate(`/p/${project.id}/workspace`);
             
             return {
                 spreadId: crypto.randomUUID(),
@@ -109,7 +109,7 @@ export const useSpreadGeneration = () => {
             };
             
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to generate spread');
+            setError(err instanceof Error ? err.message : 'Failed to generate workspace');
             setIsGenerating(false);
             throw err;
         }

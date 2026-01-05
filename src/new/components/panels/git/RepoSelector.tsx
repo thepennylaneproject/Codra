@@ -3,6 +3,7 @@ import { gitHubAdapter, Repository } from '../../../../lib/git/github';
 import { GitBranch, Lock, Search, Globe, ChevronRight } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Button } from '@/components/ui/Button';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -42,7 +43,7 @@ export const RepoSelector: React.FC<RepoSelectorProps> = ({ onSelect, className 
 
     if (loading) {
         return (
-            <div className="p-8 text-zinc-400 text-xs font-mono uppercase tracking-widest text-center animate-pulse">
+            <div className="p-8 text-zinc-400 text-xs font-mono text-center animate-pulse">
                 Fetching Repositories...
             </div>
         );
@@ -58,21 +59,21 @@ export const RepoSelector: React.FC<RepoSelectorProps> = ({ onSelect, className 
                         placeholder="Search repositories..."
                         value={filter}
                         onChange={(e) => setFilter(e.target.value)}
-                        className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg pl-9 pr-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-rose-500/10 focus:border-rose-500 transition-all placeholder:text-zinc-400"
+                        className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg pl-8 pr-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-rose-500/10 focus:border-rose-500 transition-all placeholder:text-zinc-400"
                     />
                 </div>
             </div>
 
             <div className="flex-1 overflow-y-auto custom-scrollbar">
                 {filteredRepos.map(repo => (
-                    <button
+                    <Button
                         key={repo.id}
                         onClick={() => onSelect(repo)}
                         className="w-full text-left p-4 border-b border-zinc-50 dark:border-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all group relative overflow-hidden"
                     >
                         <div className="flex items-start justify-between mb-1">
                             <div className="flex items-center gap-2">
-                                <span className="font-bold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
+                                <span className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
                                     {repo.name}
                                 </span>
                                 {repo.private ? (
@@ -88,7 +89,7 @@ export const RepoSelector: React.FC<RepoSelectorProps> = ({ onSelect, className 
                             {repo.description || 'No description provided'}
                         </p>
 
-                        <div className="flex items-center gap-4 text-[10px] font-mono text-zinc-400 uppercase tracking-wider">
+                        <div className="flex items-center gap-4 text-xs font-mono text-zinc-400">
                             <span className="flex items-center gap-1 text-zinc-500">
                                 <GitBranch size={10} />
                                 {repo.default_branch}
@@ -98,13 +99,13 @@ export const RepoSelector: React.FC<RepoSelectorProps> = ({ onSelect, className 
 
                         {/* Hover accent */}
                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-rose-500 -translate-x-full group-hover:translate-x-0 transition-transform" />
-                    </button>
+                    </Button>
                 ))}
 
                 {filteredRepos.length === 0 && (
                     <div className="p-12 text-center space-y-2">
                         <div className="text-sm font-medium text-zinc-400">No repositories found</div>
-                        <p className="text-xs text-zinc-500">Try adjusting your search terms</p>
+                        <p className="text-xs text-zinc-500">Adjust search terms.</p>
                     </div>
                 )}
             </div>

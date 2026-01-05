@@ -2,8 +2,8 @@ import { PageSEOConfig } from './types';
 
 
 const DEFAULT_SEO: PageSEOConfig = {
-    title: 'Codra - AI Workflow Assistant',
-    description: 'Build, debug, and optimize AI workflows in one unified interface.',
+    title: 'Codra - Workflow Orchestration',
+    description: 'Build, debug, and optimize workflows in one unified interface.',
     twitterCard: 'summary_large_image',
     robots: 'index, follow'
 };
@@ -11,7 +11,7 @@ const DEFAULT_SEO: PageSEOConfig = {
 export const SEO_REGISTRY: Record<string, PageSEOConfig> = {
     '/': {
         title: 'Codra - Home',
-        description: 'Welcome to Codra. The AI workbench for developers.',
+        description: 'Codra system overview. Workflow orchestration for developers.',
     },
     '/dashboard': {
         title: 'Dashboard | Codra',
@@ -30,8 +30,8 @@ export const SEO_REGISTRY: Record<string, PageSEOConfig> = {
         description: 'Configure technical asset bundles and accessibility settings.',
     },
     '/ai': {
-        title: 'AI Playground | Codra',
-        description: 'Test and iterate on your prompts and models.',
+        title: 'Execution workspace | Codra',
+        description: 'Run prompt and model evaluations.',
     },
     '/settings/profile': {
         title: 'Profile Settings | Codra',

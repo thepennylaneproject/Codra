@@ -52,8 +52,8 @@ function getAccentClasses(style: AccentStyle, active: boolean): string {
 
     const classes: Record<AccentStyle, string> = {
         border: 'border border-[var(--accent-border)]',
-        background: 'bg-[var(--accent)] text-[var(--bg-default)]',
-        text: 'text-[var(--accent)]',
+        background: 'bg-[var(--accent)] text-background-default',
+        text: 'text-text-accent',
     };
 
     return classes[style];

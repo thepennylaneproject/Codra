@@ -1,16 +1,25 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding, FileUpload } from '../hooks/useOnboarding';
-import { Button } from '../../../components/Button';
 import { ArrowLeft, ArrowRight, Upload, X, FileText, Image as ImageIcon } from 'lucide-react';
 import { analytics } from '@/lib/analytics';
+import { Button } from '@/components/ui/Button';
+import { SimilarProjectsList, type ImportedContext } from '@/components/onboarding/SimilarProjectsList';
+import { ImportContextModal, type EditedContext } from '@/components/onboarding/ImportContextModal';
+import { useAuth } from '@/hooks/useAuth';
+import { useFeatureFlag } from '@/hooks/useFeatureFlag';
+import { FEATURE_FLAGS } from '@/lib/feature-flags';
 
 export const StepAddContext = () => {
     const navigate = useNavigate();
-    const { data, addFile, removeFile } = useOnboarding();
+    const { data, addFile, removeFile, updateData } = useOnboarding();
+    const { user } = useAuth();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [startTime] = useState(Date.now());
+    const [importModalOpen, setImportModalOpen] = useState(false);
+    const [selectedContext, setSelectedContext] = useState<ImportedContext | null>(null);
+    const showSmartImport = useFeatureFlag(FEATURE_FLAGS.SMART_CONTEXT_IMPORT);
 
     useEffect(() => {
         analytics.track('onboarding_step_viewed', { step: 2, stepName: 'context' });
@@ -38,6 +47,43 @@ export const StepAddContext = () => {
             fileTypes: data.contextFiles.map(f => f.type),
         });
         navigate('/new?step=generating');
+    };
+    
+    const handleImportClick = (context: ImportedContext) => {
+        setSelectedContext(context);
+        setImportModalOpen(true);
+        
+        analytics.track('context_import_clicked', {
+            sourceProjectId: context.projectId,
+            matchScore: context.matchScore,
+            matchReason: '', // Will be set from similarity data
+        });
+    };
+    
+    const handleImportConfirm = (editedContext: EditedContext) => {
+        if (!selectedContext) return;
+        
+        // Track which fields were edited
+        const fieldsEdited: string[] = [];
+        if (editedContext.description !== selectedContext.description) fieldsEdited.push('description');
+        if (editedContext.audience !== selectedContext.audience) fieldsEdited.push('audience');
+        if (JSON.stringify(editedContext.goals) !== JSON.stringify(selectedContext.goals)) fieldsEdited.push('goals');
+        
+        // Update onboarding state with imported context
+        updateData({
+            description: editedContext.description,
+            // Note: Store goals/audience in context for later use in generation
+        });
+        
+        analytics.track('context_import_confirmed', {
+            sourceProjectId: selectedContext.projectId,
+            matchScore: selectedContext.matchScore,
+            matchReason: '',
+            fieldsEdited,
+        });
+        
+        setImportModalOpen(false);
+        setSelectedContext(null);
     };
     
     const handleFileSelect = (files: FileList | null) => {
@@ -91,13 +137,25 @@ export const StepAddContext = () => {
         <div className="space-y-8">
             {/* Step Title */}
             <div className="space-y-2">
-                <h1 className="text-2xl font-medium text-[#1A1A1A]">
+                <h1 className="text-xl font-medium text-text-primary">
                     Add Context (Optional)
                 </h1>
-                <p className="text-base text-[#5A5A5A]">
-                    Upload files or docs to help us understand your project better. Or skip this step entirely.
+                <p className="text-base text-text-secondary">
+                    Upload files or docs to attach project context. This step is optional.
                 </p>
             </div>
+            
+            {/* Similar Projects Import */}
+            {showSmartImport && user && (
+                <SimilarProjectsList
+                    newProject={{
+                        name: data.projectName,
+                        type: data.projectType,
+                        description: data.description,
+                    }}
+                    onImport={handleImportClick}
+                />
+            )}
             
             {/* File Drop Zone */}
             <div
@@ -126,14 +184,14 @@ export const StepAddContext = () => {
                 <div className="space-y-4">
                     <div className="flex justify-center">
                         <div className="p-4 bg-[#1A1A1A]/5 rounded-full">
-                            <Upload size={32} className="text-[#5A5A5A]" />
+                            <Upload size={32} className="text-text-secondary" />
                         </div>
                     </div>
                     <div className="space-y-1">
-                        <p className="text-base font-medium text-[#1A1A1A]">
+                        <p className="text-base font-medium text-text-primary">
                             Drop files here or click to browse
                         </p>
-                        <p className="text-sm text-[#8A8A8A]">
+                        <p className="text-sm text-text-soft">
                             Images, PDFs, and documents accepted
                         </p>
                     </div>
@@ -143,7 +201,7 @@ export const StepAddContext = () => {
             {/* File List */}
             {data.contextFiles.length > 0 && (
                 <div className="space-y-3">
-                    <h3 className="text-sm font-medium text-[#5A5A5A]">
+                    <h3 className="text-sm font-medium text-text-secondary">
                         Uploaded Files ({data.contextFiles.length})
                     </h3>
                     <div className="space-y-2">
@@ -157,32 +215,32 @@ export const StepAddContext = () => {
                                     {file.preview ? (
                                         <img src={file.preview} alt={file.name} className="w-full h-full object-cover" />
                                     ) : file.type.startsWith('image/') ? (
-                                        <ImageIcon size={20} className="text-[#5A5A5A]" />
+                                        <ImageIcon size={20} className="text-text-secondary" />
                                     ) : (
-                                        <FileText size={20} className="text-[#5A5A5A]" />
+                                        <FileText size={20} className="text-text-secondary" />
                                     )}
                                 </div>
                                 
                                 {/* File Info */}
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium text-[#1A1A1A] truncate">
+                                    <p className="text-sm font-medium text-text-primary truncate">
                                         {file.name}
                                     </p>
-                                    <p className="text-xs text-[#8A8A8A]">
+                                    <p className="text-xs text-text-soft">
                                         {formatFileSize(file.size)}
                                     </p>
                                 </div>
                                 
                                 {/* Remove Button */}
-                                <button
+                                <Button
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         removeFile(file.id);
                                     }}
-                                    className="flex-shrink-0 p-1.5 hover:bg-[#1A1A1A]/5 rounded transition-colors"
+                                    className="flex-shrink-0 p-1 hover:bg-[#1A1A1A]/5 rounded transition-colors"
                                 >
-                                    <X size={16} className="text-[#8A8A8A]" />
-                                </button>
+                                    <X size={16} className="text-text-soft" />
+                                </Button>
                             </div>
                         ))}
                     </div>
@@ -197,9 +255,9 @@ export const StepAddContext = () => {
                     variant="ghost"
                     size="lg"
                     leftIcon={<ArrowLeft size={20} />}
-                    className="text-[#5A5A5A]"
+                    className="text-text-secondary"
                 >
-                    Back
+                    Open previous step
                 </Button>
                 
                 <div className="flex-1" />
@@ -209,9 +267,9 @@ export const StepAddContext = () => {
                     onClick={handleSkip}
                     variant="ghost"
                     size="lg"
-                    className="border border-[#1A1A1A]/20 text-[#1A1A1A]"
+                    className="border border-[#1A1A1A]/20 text-text-primary"
                 >
-                    Skip
+                    Open next step
                 </Button>
                 
                 {/* Continue Button */}
@@ -224,6 +282,19 @@ export const StepAddContext = () => {
                     Continue
                 </Button>
             </div>
+            
+            {/* Import Context Modal */}
+            {selectedContext && (
+                <ImportContextModal
+                    isOpen={importModalOpen}
+                    onClose={() => {
+                        setImportModalOpen(false);
+                        setSelectedContext(null);
+                    }}
+                    onConfirm={handleImportConfirm}
+                    sourceContext={selectedContext}
+                />
+            )}
         </div>
     );
 };

@@ -7,6 +7,7 @@
 import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../lib/auth/AuthProvider';
+import { Button } from '@/components/ui/Button';
 
 // Icons
 const Icons = {
@@ -33,7 +34,7 @@ const Icons = {
   ),
   ArrowLeft: () => (
     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 19l-7-7m0 0l7-7m-6 7h18" />
     </svg>
   ),
   Activity: () => (
@@ -59,16 +60,16 @@ function SuccessState({ email }: SuccessStateProps) {
         <Icons.CheckCircle />
       </div>
 
-      <h2 className="text-2xl font-semibold text-zinc-100 mb-2">Check your email</h2>
+      <h2 className="text-xl font-semibold text-zinc-100 mb-2">Check your email</h2>
       <p className="text-zinc-400 mb-6">
-        We've sent a password reset link to<br />
+        We&apos;ve sent a password reset link to<br />
         <span className="text-zinc-200 font-medium">{email}</span>
       </p>
 
       <div className="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 text-left mb-6">
         <p className="text-sm text-zinc-400">
           Click the link in the email to reset your password. The link will expire in 24 hours.
-          If you don't see the email, check your spam folder.
+          If you don&apos;t see the email, check your spam folder.
         </p>
       </div>
 
@@ -77,7 +78,7 @@ function SuccessState({ email }: SuccessStateProps) {
         className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors"
       >
         <Icons.ArrowLeft />
-        Back to login
+        Open login
       </Link>
     </div>
   );
@@ -112,7 +113,7 @@ export function ForgotPasswordForm() {
 
       setShowSuccess(true);
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+      setError('Unexpected error. Retry.');
     } finally {
       setIsSubmitting(false);
     }
@@ -134,17 +135,17 @@ export function ForgotPasswordForm() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center">
             <Icons.Activity />
           </div>
-          <span className="text-2xl font-bold text-white tracking-tight">Codra</span>
+          <span className="text-xl font-semibold text-white tracking-tight">Codra</span>
         </div>
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-semibold text-zinc-100 mb-2">Forgot your password?</h2>
+          <h2 className="text-xl font-semibold text-zinc-100 mb-2">Forgot your password?</h2>
           <p className="text-zinc-500">
-            Enter your email address and we'll send you a link to reset your password.
+            Enter your email address and we&apos;ll send you a link to reset your password.
           </p>
         </div>
 
@@ -157,7 +158,7 @@ export function ForgotPasswordForm() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label className="block text-sm font-medium text-zinc-300">
               Email address
@@ -175,7 +176,7 @@ export function ForgotPasswordForm() {
                 autoComplete="email"
                 autoFocus
                 className="
-                  w-full px-4 py-3 pl-11 rounded-xl
+                  w-full px-4 py-3 pl-12 rounded-xl
                   bg-zinc-900/50 border border-zinc-800
                   text-zinc-100 placeholder-zinc-600
                   hover:border-zinc-700 focus:border-indigo-500
@@ -188,13 +189,13 @@ export function ForgotPasswordForm() {
           </div>
 
           {/* Submit Button */}
-          <button
+          <Button
             type="submit"
             disabled={isSubmitting || !email}
             className="
               w-full py-3 px-4 rounded-xl font-medium
-              bg-gradient-to-r from-indigo-500 to-purple-600 text-white
-              hover:from-indigo-600 hover:to-purple-700
+              bg-zinc-900 text-white
+              hover:bg-zinc-800
               focus:outline-none focus:ring-2 focus:ring-indigo-500/50
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-all duration-200
@@ -209,7 +210,7 @@ export function ForgotPasswordForm() {
             ) : (
               'Send reset link'
             )}
-          </button>
+          </Button>
         </form>
 
         {/* Back to Login */}
@@ -219,7 +220,7 @@ export function ForgotPasswordForm() {
             className="inline-flex items-center gap-2 text-zinc-400 hover:text-zinc-300 text-sm transition-colors"
           >
             <Icons.ArrowLeft />
-            Back to login
+            Open login
           </Link>
         </div>
       </div>

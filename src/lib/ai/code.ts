@@ -174,7 +174,7 @@ export class CodraAssistant implements CodeAssistant {
             model: selection.model,
             provider: selection.provider,
             messages: [
-                { role: 'system', content: this.buildSystemPrompt('Helpful Coding Assistant') },
+                { role: 'system', content: this.buildSystemPrompt('Coding Processor') },
                 { role: 'user', content: `Context:\n${contextStr}\n\nUser Question: ${message}` }
             ],
             temperature: selection.temperature,

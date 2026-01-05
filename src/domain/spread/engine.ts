@@ -154,7 +154,7 @@ export function generateSpreadFromProfile(
     sections.push(buildNotesSection());
 
     // Generate TOC
-    let activeDesks = (project.activeDesks || []) as ProductionDeskId[];
+    const activeDesks = (project.activeDesks || []) as ProductionDeskId[];
 
     // Healing: Inferred desks if missing but goals are present
     if (activeDesks.length === 0 && project.goals) {
@@ -209,7 +209,7 @@ function buildInitialLyraState(
     const suggestedArtifacts: string[] = [];
     const activeDesks = (project.activeDesks || []) as ProductionDeskId[];
 
-    if (project.name === 'AI Playground') {
+    if (project.name === 'Execution workspace') {
         suggestedArtifacts.push('playground-guide');
     }
 

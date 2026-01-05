@@ -4,6 +4,7 @@
  */
 
 import { BudgetStatus } from './hooks';
+import { Button } from '@/components/ui/Button';
 
 interface BudgetSegmentProps {
     budget: BudgetStatus;
@@ -15,12 +16,12 @@ export function BudgetSegment({ budget, onClick }: BudgetSegmentProps) {
 
     // Determine color based on health
     const healthColor =
-        health === 'critical' ? 'text-[#EF4444]' :
-        health === 'warning' ? 'text-[#F59E0B]' :
-        'text-[#22C55E]';
+        health === 'critical' ? 'text-state-error' :
+        health === 'warning' ? 'text-state-warning' :
+        'text-state-success';
 
     return (
-        <button
+        <Button
             onClick={onClick}
             className="flex items-center gap-2 px-4 hover:bg-zinc-800/50 transition-colors cursor-pointer"
         >
@@ -31,6 +32,6 @@ export function BudgetSegment({ budget, onClick }: BudgetSegmentProps) {
             <span className="text-sm text-zinc-400">
                 ${dailyLimit.toFixed(2)} today
             </span>
-        </button>
+        </Button>
     );
 }

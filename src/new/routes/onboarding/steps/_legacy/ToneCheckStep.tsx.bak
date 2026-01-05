@@ -1,6 +1,7 @@
 
 import { useOnboardingStore } from '../store';
 import { EditorialPreferences } from '../../../../domain/types';
+import { Button } from '@/components/ui/Button';
 
 const TONES: { id: EditorialPreferences['tone']; label: string; description: string }[] = [
     { id: 'neutral', label: 'Neutral / Journalistic', description: 'Objective, balanced, and fact-forward.' },
@@ -61,7 +62,7 @@ export const ToneCheckStep = () => {
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {items.map(item => (
-                    <button
+                    <Button
                         key={item.id}
                         onClick={() => onSelect(item.id)}
                         className={`p-4 text-left border transition-all duration-300 group ${currentValue === item.id
@@ -78,7 +79,7 @@ export const ToneCheckStep = () => {
                         <div className={`text-xs leading-relaxed ${currentValue === item.id ? 'text-zinc-300 dark:text-zinc-500' : 'text-zinc-500 group-hover:text-zinc-700 dark:group-hover:text-zinc-300'}`}>
                             {item.description}
                         </div>
-                    </button>
+                    </Button>
                 ))}
             </div>
         </div>
@@ -87,10 +88,10 @@ export const ToneCheckStep = () => {
     return (
         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-20">
             <header className="space-y-4">
-                <h1 className="text-4xl md:text-5xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
+                <h1 className="text-xl md:text-xl font-normal tracking-tight text-zinc-900 dark:text-zinc-50">
                     Editorial Direction
                 </h1>
-                <p className="text-xl text-zinc-500 font-light max-w-lg">
+                <p className="text-xl text-zinc-500 font-normal max-w-lg">
                     Define the voice, look, and feel of your project.
                 </p>
             </header>
@@ -107,20 +108,20 @@ export const ToneCheckStep = () => {
                 {renderSection('Pacing & Rhythm', PACINGS, pacing, (id) => updateEditorial({ pacing: id }))}
             </div>
 
-            <div className="flex justify-between pt-8 border-t border-zinc-100 dark:border-zinc-900 sticky bottom-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md py-6 -mx-6 px-6 md:-mx-12 md:px-12 border-t border-zinc-200">
-                <button
+            <div className="flex justify-between pt-8 glass-panel-light border-0 border-t border-zinc-100 dark:border-zinc-900 rounded-none bg-white/80 dark:bg-zinc-950/80 py-6 -mx-6 px-6 md:-mx-12 md:px-12 border-t border-zinc-200">
+                <Button
                     onClick={() => setStep('budget')}
                     className="text-sm font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                 >
                     &larr; Back
-                </button>
-                <button
+                </Button>
+                <Button
                     onClick={() => setStep('close')}
-                    className="group flex items-center gap-2 text-lg font-medium text-zinc-900 dark:text-zinc-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                    className="group flex items-center gap-2 text-base font-medium text-zinc-900 dark:text-zinc-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
                 >
                     Review & Initialize
                     <span className="block w-6 h-[1px] bg-current group-hover:w-10 transition-all" />
-                </button>
+                </Button>
             </div>
         </div>
     );

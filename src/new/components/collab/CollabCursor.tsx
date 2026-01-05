@@ -42,7 +42,7 @@ export function CollabCursor({ x, y, name, color }: CollabCursorProps) {
 
             {/* Name Tag */}
             <div
-                className="absolute top-5 left-4 px-2 py-1 rounded-full text-white text-[10px] font-bold uppercase tracking-wider whitespace-nowrap shadow-lg"
+                className="absolute top-4 left-4 px-2 py-1 rounded-full text-white text-xs font-semibold whitespace-nowrap shadow-lg"
                 style={{ backgroundColor: color }}
             >
                 {name}

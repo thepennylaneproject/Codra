@@ -31,7 +31,7 @@ export const AUDIT_METADATA: Record<AuditType, {
 }> = {
     'ship-ready': {
         id: 'ship-ready',
-        name: 'Ship Ready Audit',
+        name: 'Deployment Readiness Audit',
         description: 'Comprehensive pre-launch review of workflows, UX, polish, and trust signals.',
         icon: 'Rocket',
         estimatedCost: 0.40,
@@ -40,7 +40,7 @@ export const AUDIT_METADATA: Record<AuditType, {
     },
     'blind-spot': {
         id: 'blind-spot',
-        name: 'Blind Spot Audit',
+        name: 'Coverage Gap Audit',
         description: 'Surfaces hidden assumptions, builder biases, and perspective gaps.',
         icon: 'Eye',
         estimatedCost: 0.40,
@@ -49,7 +49,7 @@ export const AUDIT_METADATA: Record<AuditType, {
     },
     'kill-list': {
         id: 'kill-list',
-        name: 'Kill List Audit',
+        name: 'Decommissioning Audit',
         description: 'Identifies features to remove, merge, defer, or simplify.',
         icon: 'Scissors',
         estimatedCost: 0.08,
@@ -67,7 +67,7 @@ export const AUDIT_METADATA: Record<AuditType, {
     },
     'unclaimed-value': {
         id: 'unclaimed-value',
-        name: 'Unclaimed Value Audit',
+        name: 'Value Opportunity Audit',
         description: 'Surfaces missed opportunities, underutilized features, and hidden wins.',
         icon: 'Gem',
         estimatedCost: 0.40,

@@ -11,6 +11,7 @@ import { X, ChevronRight, Sparkles, AlertCircle, TrendingUp, Clock, Lightbulb, L
 import { LyraNudge, NudgeCategory, NudgePriority } from '../../lib/lyra/LyraObserver';
 import { useLyra } from '../../lib/lyra/LyraContext';
 import { clsx } from 'clsx';
+import { Button } from '@/components/ui/Button';
 
 // ============================================
 // Category Icons
@@ -37,7 +38,7 @@ const PRIORITY_STYLES: Record<NudgePriority, { border: string; glow: string; ico
     medium: {
         border: 'border-[var(--brand-accent)]/30',
         glow: 'shadow-[var(--brand-accent)]/10',
-        icon: 'text-[var(--brand-accent)]',
+        icon: 'text-zinc-500',
     },
     low: {
         border: 'border-zinc-300 dark:border-zinc-700',
@@ -79,7 +80,7 @@ export function LyraNudgeBubble({ nudge, onDismiss, onAction, className }: LyraN
         <div
             className={clsx(
                 // Base styles
-                "relative max-w-sm rounded-2xl border backdrop-blur-xl",
+                "relative max-w-sm glass-panel rounded-2xl",
                 "bg-white/90 dark:bg-zinc-900/90",
                 "shadow-lg",
                 styles.border,
@@ -127,7 +128,7 @@ export function LyraNudgeBubble({ nudge, onDismiss, onAction, className }: LyraN
 
                     {/* Dismiss Button */}
                     {nudge.dismissable && (
-                        <button
+                        <Button
                             onClick={handleDismiss}
                             className={clsx(
                                 "flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center",
@@ -135,24 +136,24 @@ export function LyraNudgeBubble({ nudge, onDismiss, onAction, className }: LyraN
                                 "hover:bg-zinc-100 dark:hover:bg-zinc-800",
                                 "transition-colors"
                             )}
-                            aria-label="Dismiss"
+                            aria-label="Close"
                         >
                             <X size={14} />
-                        </button>
+                        </Button>
                     )}
                 </div>
 
                 {/* Action Button (if provided) */}
                 {nudge.action && (
-                    <button
+                    <Button
                         onClick={() => {
                             nudge.action?.callback();
                             onAction?.();
                             handleDismiss();
                         }}
                         className={clsx(
-                            "mt-3 w-full flex items-center justify-center gap-1.5",
-                            "px-3 py-1.5 rounded-lg text-xs font-medium",
+                            "mt-3 w-full flex items-center justify-center gap-1",
+                            "px-3 py-1 rounded-lg text-xs font-medium",
                             "bg-zinc-100 dark:bg-zinc-800",
                             "text-zinc-700 dark:text-zinc-300",
                             "hover:bg-zinc-200 dark:hover:bg-zinc-700",
@@ -161,7 +162,7 @@ export function LyraNudgeBubble({ nudge, onDismiss, onAction, className }: LyraN
                     >
                         {nudge.action.label}
                         <ChevronRight size={12} />
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>

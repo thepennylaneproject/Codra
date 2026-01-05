@@ -133,7 +133,7 @@ export const handler: Handler = async (event) => {
     }
 
     // Log rotation event (for audit trail)
-    await supabase.from('audit_logs').insert({
+    const { error: auditError } = await supabase.from('audit_logs').insert({
       user_id: credential.user_id,
       credential_id: credentialId,
       action: 'rotate_credential',
@@ -142,7 +142,11 @@ export const handler: Handler = async (event) => {
         environment: credential.environment
       },
       timestamp: new Date()
-    }).catch(err => console.log('Audit log error:', err));
+    });
+
+    if (auditError) {
+      console.log('Audit log error:', auditError);
+    }
 
     return {
       statusCode: 200,

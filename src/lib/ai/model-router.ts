@@ -58,7 +58,7 @@ export class ModelRouter {
             default:
                 return {
                     provider: 'openai',
-                    model: 'gpt-3.5-turbo',
+                    model: 'gpt-3-turbo',
                     temperature: 0.7
                 };
         }

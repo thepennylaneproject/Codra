@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { Terminal, FileCode, Folder, ChevronRight, Play, CheckCircle2, AlertCircle, ShieldAlert, Activity, Sparkles } from 'lucide-react';
 import { MOCK_ERRORS } from '../../../domain/integrations';
 import { SourceImportOverlay } from './engineering/SourceImportOverlay';
+import { Button } from '@/components/ui/Button';
 
 interface CodeCanvasProps {
     projectId: string;
@@ -73,19 +74,19 @@ export const CodeCanvas: React.FC<CodeCanvasProps> = ({
             {/* File Explorer (Surgical) */}
             <aside className="w-56 flex flex-col gap-6">
                 <section>
-                    <h3 className="text-[10px] text-[var(--desk-text-muted)] font-bold uppercase tracking-widest mb-4">Filesystem</h3>
+                    <h3 className="text-xs text-desk-text-muted font-semibold mb-4">Filesystem</h3>
                     <div className="space-y-1">
                         {files.map(file => (
-                            <button
+                            <Button
                                 key={file.name}
                                 onClick={() => setSelectedFile(file.name)}
                                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all text-xs font-mono ${selectedFile === file.name
                                     ? "bg-[var(--desk-surface)] border border-[var(--desk-border)] text-rose-400 shadow-sm"
-                                    : "text-[var(--desk-text-muted)] hover:bg-[var(--desk-bg)]/50"
+                                    : "text-desk-text-muted hover:bg-[var(--desk-bg)]/50"
                                     }`}
                             >
                                 <div className="flex items-center gap-2">
-                                    <FileCode size={14} className={selectedFile === file.name ? "text-rose-500" : "text-[var(--desk-text-muted)]/60"} />
+                                    <FileCode size={14} className={selectedFile === file.name ? "text-rose-500" : "text-desk-text-muted opacity-60"} />
                                     <span>{file.name}</span>
                                 </div>
                                 {file.status === 'ready' ? (
@@ -93,15 +94,15 @@ export const CodeCanvas: React.FC<CodeCanvasProps> = ({
                                 ) : (
                                     <AlertCircle size={10} className="text-amber-500/50" />
                                 )}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 </section>
 
                 <section>
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-[10px] text-[var(--desk-text-muted)] font-bold uppercase tracking-widest">Observability</h3>
-                        <span className="flex items-center gap-1 text-[8px] font-bold text-rose-500 uppercase tracking-wider">
+                        <h3 className="text-xs text-desk-text-muted font-semibold">Observability</h3>
+                        <span className="flex items-center gap-1 text-xs font-semibold text-rose-500">
                             <Activity size={8} className="animate-pulse" />
                             Sentry Live
                         </span>
@@ -112,32 +113,32 @@ export const CodeCanvas: React.FC<CodeCanvasProps> = ({
                                 <div className="flex items-center justify-between mb-1">
                                     <div className="flex items-center gap-2">
                                         <ShieldAlert size={10} className="text-rose-500" />
-                                        <span className="text-[9px] font-mono text-rose-400 uppercase">{error.culprit}</span>
+                                        <span className="text-xs font-mono text-rose-400">{error.culprit}</span>
                                     </div>
-                                    <button
+                                    <Button
                                         onClick={() => handleAnalyzeError(error)}
                                         className="opacity-0 group-hover:opacity-100 p-1 hover:bg-rose-500/20 rounded transition-all"
                                     >
                                         <Sparkles size={8} className="text-rose-400" />
-                                    </button>
+                                    </Button>
                                 </div>
-                                <p className="text-[10px] text-[var(--desk-text-muted)] line-clamp-1 group-hover:line-clamp-none transition-all">{error.message}</p>
+                                <p className="text-xs text-desk-text-muted line-clamp-1 group-hover:line-clamp-none transition-all">{error.message}</p>
                             </div>
                         ))}
                     </div>
                 </section>
 
                 <section>
-                    <h3 className="text-[10px] text-[var(--desk-text-muted)] font-bold uppercase tracking-widest mb-4">Operations</h3>
+                    <h3 className="text-xs text-desk-text-muted font-semibold mb-4">Operations</h3>
                     <div className="space-y-2">
-                        <button className="w-full flex items-center gap-2 px-3 py-2 bg-[var(--desk-bg)] hover:bg-[var(--desk-surface)] border border-[var(--desk-border)] rounded-lg text-[10px] font-bold uppercase tracking-wider text-[var(--desk-text-muted)] transition-colors">
+                        <Button className="w-full flex items-center gap-2 px-3 py-2 bg-[var(--desk-bg)] hover:bg-[var(--desk-surface)] border border-[var(--desk-border)] rounded-lg text-xs font-semibold text-desk-text-muted transition-colors">
                             <Play size={10} className="text-green-500" />
                             Run Dev Server
-                        </button>
-                        <button className="w-full flex items-center gap-2 px-3 py-2 bg-[var(--desk-bg)] hover:bg-[var(--desk-surface)] border border-[var(--desk-border)] rounded-lg text-[10px] font-bold uppercase tracking-wider text-[var(--desk-text-muted)] transition-colors">
+                        </Button>
+                        <Button className="w-full flex items-center gap-2 px-3 py-2 bg-[var(--desk-bg)] hover:bg-[var(--desk-surface)] border border-[var(--desk-border)] rounded-lg text-xs font-semibold text-desk-text-muted transition-colors">
                             <Terminal size={10} className="text-rose-500" />
                             Open Logs
-                        </button>
+                        </Button>
                     </div>
                 </section>
             </aside>
@@ -146,9 +147,9 @@ export const CodeCanvas: React.FC<CodeCanvasProps> = ({
             <div className="flex-1 flex flex-col bg-[var(--desk-bg)]/50 border border-[var(--desk-border)] rounded-3xl overflow-hidden shadow-2xl">
                 <header className="p-4 border-b border-[var(--desk-border)] bg-[var(--desk-surface)]/80 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <Folder size={14} className="text-[var(--desk-text-muted)]" />
-                        <ChevronRight size={10} className="text-[var(--desk-border)]" />
-                        <span className="text-xs font-mono text-[var(--desk-text-muted)]">src / engine / <span className="text-[var(--desk-text-primary)]">{selectedFile}</span></span>
+                        <Folder size={14} className="text-desk-text-muted" />
+                        <ChevronRight size={10} className="text-desk-border" />
+                        <span className="text-xs font-mono text-desk-text-muted">src / engine / <span className="text-desk-text-primary">{selectedFile}</span></span>
                     </div>
                     <div className="flex gap-1">
                         <div className="w-2.5 h-2.5 rounded-full bg-[var(--desk-bg)]" />
@@ -157,29 +158,29 @@ export const CodeCanvas: React.FC<CodeCanvasProps> = ({
                     </div>
                 </header>
 
-                <div className="flex-1 p-6 font-mono text-xs text-[var(--desk-text-primary)]/80 leading-relaxed overflow-y-auto">
+                <div className="flex-1 p-6 font-mono text-xs text-desk-text-primary opacity-80 leading-relaxed overflow-y-auto">
                     {selectedFile ? (
                         <pre>
-                            {`/**\n * ${selectedFile}\n * Generated by Lyra Code Desk\n */\n\nimport { useEffect } from 'react';\n\nexport function Component() {\n  // Implementation details follow the Bauhaus editorial pattern\n  // Using high-contrast mono spacing\n  \n  return (\n    <div className="p-12">\n      <h1 className="text-2xl font-black uppercase tracking-tighter">\n        Production Architecture\n      </h1>\n    </div>\n  );\n}`}
+                            {`/**\n * ${selectedFile}\n * Generated by Lyra Code Desk\n */\n\nimport { useEffect } from 'react';\n\nexport function Component() {\n  // Implementation details follow the Bauhaus editorial pattern\n  // Using high-contrast mono spacing\n  \n  return (\n    <div className="p-12">\n      <h1 className="text-xl font-semibold tracking-tighter">\n        Production Architecture\n      </h1>\n    </div>\n  );\n}`}
                         </pre>
                     ) : (
                         <div className="h-full flex flex-col items-center justify-center opacity-20 text-center">
                             <FileCode size={48} className="mb-4" />
-                            <p className="font-bold">Select a file to view source</p>
+                            <p className="font-semibold">Select a file to view source</p>
                         </div>
                     )}
                 </div>
 
                 {/* Terminal simulation */}
-                <footer className="h-40 bg-[var(--desk-bg)] border-t border-[var(--desk-border)] p-4 font-mono text-[10px] text-[var(--desk-text-muted)] flex flex-col gap-1 overflow-y-auto shadow-inner relative">
+                <footer className="h-40 bg-[var(--desk-bg)] border-t border-[var(--desk-border)] p-4 font-mono text-xs text-desk-text-muted flex flex-col gap-1 overflow-y-auto shadow-inner relative">
                     <div className="absolute top-2 right-4 flex items-center gap-2">
                         {isAnalyzing && (
-                            <span className="flex items-center gap-1 text-rose-500 animate-pulse uppercase font-bold tracking-tighter">
+                            <span className="flex items-center gap-1 text-rose-500 animate-pulse font-semibold tracking-tighter">
                                 <Sparkles size={10} />
-                                Analysis in progress
+                                Analyzing
                             </span>
                         )}
-                        <span className="text-[var(--desk-border)]">UTF-8</span>
+                        <span className="text-desk-border">UTF-8</span>
                     </div>
                     {logs.map((log, i) => (
                         <p key={i} className={log.startsWith('$') ? 'text-green-500/80' : log.startsWith('>') ? 'text-rose-400' : ''}>{log}</p>

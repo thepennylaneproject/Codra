@@ -235,6 +235,8 @@ export type ArtifactStatus =
     | 'under_review'
     | 'needs_revision'
     | 'approved'
+    | 'changes_requested'
+    | 'rejected'
     | 'archived';
 
 export interface Artifact {
@@ -282,6 +284,12 @@ export interface ArtifactVersion {
 
     // Diff tracking
     diffFromPrevious?: string;    // JSON diff or description
+
+    // Approval info
+    approvalStatus: 'pending' | 'approved' | 'changes_requested' | 'rejected';
+    approvedAt?: string;
+    approvedBy?: string;
+    rejectionNote?: string;
 
     // Metadata
     createdAt: string;

@@ -1,6 +1,5 @@
 import { LucideIcon } from 'lucide-react';
-import { Button } from './Button';
-import { typography } from '../../lib/design/tokens';
+import { Button } from '@/components/ui/Button';
 
 interface EmptyStateProps {
     icon?: LucideIcon;
@@ -24,19 +23,19 @@ export function EmptyState({
     secondaryAction,
 }: EmptyStateProps) {
     return (
-        <div className="flex flex-col items-center justify-center py-16 px-8 text-center">
+        <div className="flex flex-col items-center justify-center py-12 px-8 text-center">
             {Icon && (
                 <div className="w-12 h-12 rounded-full bg-[#1A1A1A]/5 flex items-center justify-center mb-4">
-                    <Icon size={24} className="text-[#8A8A8A]" strokeWidth={1.5} />
+                    <Icon size={24} className="text-text-soft" strokeWidth={1.5} />
                 </div>
             )}
             
-            <h3 className={`${typography.styles.heading} text-lg text-[#1A1A1A] mb-2`}>
+            <h3 className="text-base font-semibold text-text-primary mb-2">
                 {title}
             </h3>
             
             {description && (
-                <p className="text-sm text-[#8A8A8A] max-w-sm mb-6">
+                <p className="text-sm text-text-soft max-w-sm mb-6">
                     {description}
                 </p>
             )}

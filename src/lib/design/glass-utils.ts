@@ -29,12 +29,12 @@ export function getGlassOpacity(density: DensityLevel): number {
  * Dense content gets more blur for visual separation
  */
 export function getBlurClass(density: DensityLevel): string {
-    const blurMap: Record<DensityLevel, string> = {
-        sparse: 'backdrop-blur-md',
-        balanced: 'backdrop-blur-lg',
-        dense: 'backdrop-blur-xl',
+    const classMap: Record<DensityLevel, string> = {
+        sparse: 'glass-panel',
+        balanced: 'glass-panel',
+        dense: 'glass-panel',
     };
-    return blurMap[density];
+    return classMap[density];
 }
 
 /**
@@ -42,9 +42,9 @@ export function getBlurClass(density: DensityLevel): string {
  */
 export function getBlurAmount(density: DensityLevel): number {
     const blurMap: Record<DensityLevel, number> = {
-        sparse: 8,
-        balanced: 12,
-        dense: 18,
+        sparse: 16,
+        balanced: 16,
+        dense: 16,
     };
     return blurMap[density];
 }
@@ -134,8 +134,6 @@ export function buildGlassStyles(options: {
 
     return {
         backgroundColor: `rgba(18, 23, 29, ${getGlassOpacity(density)})`,
-        backdropFilter: `blur(${getBlurAmount(density)}px)`,
-        WebkitBackdropFilter: `blur(${getBlurAmount(density)}px)`,
         borderColor: `rgba(255, 255, 255, ${getBorderOpacity(isActive, isHovered)})`,
     };
 }
@@ -146,32 +144,32 @@ export function buildGlassStyles(options: {
 export const GLASS_PRESETS = {
     panel: {
         density: 'balanced' as DensityLevel,
-        blur: 12,
-        opacity: 0.6,
-        borderRadius: '18px',
+        blur: 16,
+        opacity: 0.7,
+        borderRadius: '12px',
     },
     card: {
         density: 'balanced' as DensityLevel,
-        blur: 12,
-        opacity: 0.6,
-        borderRadius: '14px',
+        blur: 16,
+        opacity: 0.7,
+        borderRadius: '12px',
     },
     modal: {
         density: 'dense' as DensityLevel,
-        blur: 18,
-        opacity: 0.8,
-        borderRadius: '18px',
+        blur: 16,
+        opacity: 0.7,
+        borderRadius: '12px',
     },
     tooltip: {
         density: 'dense' as DensityLevel,
-        blur: 18,
-        opacity: 0.85,
-        borderRadius: '10px',
+        blur: 16,
+        opacity: 0.7,
+        borderRadius: '12px',
     },
     floating: {
         density: 'sparse' as DensityLevel,
-        blur: 8,
-        opacity: 0.45,
-        borderRadius: '14px',
+        blur: 16,
+        opacity: 0.7,
+        borderRadius: '12px',
     },
 } as const;

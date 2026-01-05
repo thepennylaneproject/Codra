@@ -45,8 +45,7 @@ export function FunnelChart({ data }: FunnelChartProps) {
                 border: 'none', 
                 boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
                 fontSize: '10px',
-                fontWeight: 'bold',
-                textTransform: 'uppercase'
+                fontWeight: 600
             }}
           />
           <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={32}>

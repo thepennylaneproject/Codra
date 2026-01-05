@@ -15,6 +15,9 @@ import type { QualityPriority, SpendingStrategy, AutonomyLevel, ThemePreference 
 import { behaviorTracker } from '../../lib/smart-defaults/inference-engine';
 import { supabase } from '../../lib/supabase';
 
+import { Heading, Text, Label } from '../../new/components';
+import { Button } from '@/components/ui/Button';
+
 type EditorType = 'qualityPriority' | 'autonomyLevel' | 'maxSteps' | 'riskTolerance' | 'dailyLimit' | 'strategy' | 'theme' | null;
 
 export function SettingsPage() {
@@ -81,36 +84,36 @@ export function SettingsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#FFFAF0] text-[#1A1A1A] font-sans selection:bg-[#1A1A1A]/10">
+        <div className="min-h-screen bg-[var(--ui-bg)] text-text-primary font-sans selection:bg-[var(--brand-ink)]/10">
             {/* Header */}
-            <header className="sticky top-0 z-50 bg-[#FFFAF0]/80 backdrop-blur-xl border-b border-[#1A1A1A]/5 px-8 h-20 flex items-center justify-between">
+            <header className="sticky top-0 z-50 glass-panel-light border-0 border-b border-[var(--ui-border)] rounded-none bg-[var(--ui-bg)]/80 px-8 h-20 flex items-center justify-between">
                 <div className="flex items-center gap-6">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={() => navigate('/projects')}
-                        className="p-2 hover:bg-zinc-100 rounded-xl transition-colors group"
+                        size="sm"
+                        className="group"
                     >
                         <ArrowLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
-                    </button>
+                    </Button>
                     <div>
-                        <h1 className="text-xl font-black uppercase tracking-tight">Settings</h1>
-                        <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
-                            Account Defaults
-                        </p>
+                        <Heading size="lg" className="tracking-tight">Settings</Heading>
+                        <Label variant="muted">Account Defaults</Label>
                     </div>
                 </div>
             </header>
 
-            <main className="max-w-4xl mx-auto py-16 px-8">
+            <main className="max-w-4xl mx-auto py-12 px-8">
                 {/* Intro */}
-                <div className="mb-12 p-8 bg-white border border-[#1A1A1A]/5 rounded-3xl">
-                    <h2 className="text-sm font-black uppercase tracking-widest mb-3">Smart Defaults</h2>
-                    <p className="text-sm text-zinc-600 leading-relaxed">
-                        These are your account-level defaults. They're designed to be right 80% of the time.
+                <div className="mb-12 p-8 bg-white border border-[var(--ui-border)] rounded-3xl">
+                    <Heading size="lg" className="mb-3">Smart Defaults</Heading>
+                    <Text variant="muted">
+                        These are your account-level defaults. They&apos;re designed to be right 80% of the time.
                         You can override them per-project in the project settings.
-                    </p>
+                    </Text>
                 </div>
 
-                <div className="space-y-16">
+                <div className="space-y-12">
                     {/* AI Behavior */}
                     <section>
                         <div className="flex items-center gap-3 mb-6">
@@ -118,10 +121,8 @@ export function SettingsPage() {
                                 <Zap size={20} />
                             </div>
                             <div>
-                                <h2 className="text-sm font-black uppercase tracking-widest">AI Behavior</h2>
-                                <p className="text-[10px] text-zinc-400">
-                                    How AI models work for you
-                                </p>
+                                <Heading size="lg">AI Behavior</Heading>
+                                <Label variant="muted">How AI models work for you</Label>
                             </div>
                         </div>
 
@@ -160,10 +161,8 @@ export function SettingsPage() {
                                 <CircleDollarSign size={20} />
                             </div>
                             <div>
-                                <h2 className="text-sm font-black uppercase tracking-widest">Budget</h2>
-                                <p className="text-[10px] text-zinc-400">
-                                    Spending limits and strategy
-                                </p>
+                                <Heading size="lg">Budget</Heading>
+                                <Label variant="muted">Spending limits and strategy</Label>
                             </div>
                         </div>
 
@@ -190,10 +189,8 @@ export function SettingsPage() {
                                 <Palette size={20} />
                             </div>
                             <div>
-                                <h2 className="text-sm font-black uppercase tracking-widest">Visual</h2>
-                                <p className="text-[10px] text-zinc-400">
-                                    Interface preferences
-                                </p>
+                                <Heading size="lg">Visual</Heading>
+                                <Label variant="muted">Interface preferences</Label>
                             </div>
                         </div>
 
@@ -208,14 +205,18 @@ export function SettingsPage() {
                     </section>
 
                     {/* Reset */}
-                    <section className="pt-8 border-t border-[#1A1A1A]/5">
-                        <button
+                    <section className="pt-8 border-t border-[var(--ui-border)]">
+                        <Button
+                            variant="secondary"
                             onClick={resetToDefaults}
-                            className="w-full p-6 bg-zinc-50 hover:bg-zinc-100 rounded-2xl text-[11px] font-black uppercase tracking-widest text-zinc-600 transition-all flex items-center justify-center gap-3"
+                            className="w-full p-8"
+                            size="lg"
                         >
-                            <RotateCcw size={16} />
-                            Reset All to Defaults
-                        </button>
+                            <div className="flex items-center gap-3">
+                                <RotateCcw size={16} />
+                                Reset All to Defaults
+                            </div>
+                        </Button>
                     </section>
                 </div>
             </main>
@@ -318,10 +319,10 @@ export function SettingsPage() {
             />
 
             {/* Footer */}
-            <footer className="mt-20 py-12 border-t border-[#1A1A1A]/5 bg-white/50 text-center">
-                <p className="text-[10px] font-mono text-zinc-300 uppercase tracking-[0.3em]">
+            <footer className="mt-12 py-12 border-t border-[var(--ui-border)] bg-white/50 text-center">
+                <Label variant="muted" className="text-xs font-mono text-zinc-400">
                     Codra Smart Defaults System
-                </p>
+                </Label>
             </footer>
         </div>
     );

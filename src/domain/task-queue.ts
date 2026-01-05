@@ -97,6 +97,9 @@ export interface SpreadTask {
 
     /** IDs of tasks that must complete first */
     dependencies: string[];
+    
+    /** IDs of approved artifacts to include as context */
+    contextArtifactIds?: string[];
 
     /** Estimated cost in USD from SmartRouter */
     estimatedCost?: number;

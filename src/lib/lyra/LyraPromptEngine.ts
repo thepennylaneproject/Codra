@@ -29,6 +29,7 @@ export interface PromptContext {
     };
     currentSection?: SpreadSection;
     pastMemories?: Array<{ title: string; memory: string }>;
+    contextArtifacts?: Array<{ title: string; type: string; content: string }>;
 }
 
 /**
@@ -305,7 +306,8 @@ export function buildPromptContext(
     spread: Spread,
     profile: ExtendedOnboardingProfile | null,
     currentSectionId?: string,
-    tasks?: SpreadTask[]
+    tasks?: SpreadTask[],
+    activeTask?: SpreadTask
 ): PromptContext {
     const currentSection = currentSectionId
         ? spread.sections.find(s => s.id === currentSectionId)
@@ -317,6 +319,16 @@ export function buildPromptContext(
             title: t.title,
             memory: t.memory as string
         }))
+        : undefined;
+
+    const contextArtifacts = activeTask?.contextArtifactIds && tasks
+        ? tasks
+            .filter(t => activeTask.contextArtifactIds?.includes(t.artifactId || ''))
+            .map(t => ({
+                title: t.title,
+                type: t.deskId,
+                content: t.output || ''
+            }))
         : undefined;
 
     return {
@@ -332,6 +344,7 @@ export function buildPromptContext(
         } : undefined,
         currentSection,
         pastMemories,
+        contextArtifacts,
     };
 }
 
@@ -341,13 +354,24 @@ export function buildPromptContext(
 export function buildPromptContextFromProject(
     project: Project,
     currentSection?: SpreadSection,
-    tasks?: SpreadTask[]
+    tasks?: SpreadTask[],
+    activeTask?: SpreadTask
 ): PromptContext {
     const pastMemories = tasks
         ? tasks.filter(t => t.status === 'complete' && t.memory).map(t => ({
             title: t.title,
             memory: t.memory as string
         }))
+        : undefined;
+
+    const contextArtifacts = activeTask?.contextArtifactIds && tasks
+        ? tasks
+            .filter(t => activeTask.contextArtifactIds?.includes(t.artifactId || ''))
+            .map(t => ({
+                title: t.title,
+                type: t.deskId,
+                content: t.output || ''
+            }))
         : undefined;
 
     return {
@@ -362,6 +386,7 @@ export function buildPromptContextFromProject(
         activeDesks: (project.deliverables?.map(d => d.type).filter((v, i, a) => a.indexOf(v) === i) || []) as unknown as ProductionDeskId[],
         currentSection,
         pastMemories,
+        contextArtifacts,
     };
 }
 
@@ -441,6 +466,20 @@ export function generatePromptForTask(
         for (const item of projectContext.pastMemories) {
             systemParts.push(`### ${item.title}`);
             systemParts.push(`> ${item.memory}`);
+        }
+    }
+
+    // Add Specific Context Artifacts (Explicit Injection)
+    if (projectContext.contextArtifacts && projectContext.contextArtifacts.length > 0) {
+        systemParts.push('');
+        systemParts.push('## Reference Artifacts (Approved Content)');
+        systemParts.push('The following specific artifacts have been provided as direct references for this task:');
+
+        for (const item of projectContext.contextArtifacts) {
+            systemParts.push(`### ${item.title} (${item.type})`);
+            systemParts.push('```');
+            systemParts.push(item.content);
+            systemParts.push('```');
         }
     }
 

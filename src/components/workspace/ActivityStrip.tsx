@@ -95,18 +95,18 @@ export const ActivityStrip: React.FC<ActivityStripProps> = ({
         {alerts.map((alert, index) => (
           <div
             key={index}
-            className="flex items-center gap-1.5 px-2 py-1 rounded"
+            className="flex items-center gap-1 px-2 py-1 rounded"
             style={{
               backgroundColor: `${getAlertColor(alert.type)}15`,
               color: getAlertColor(alert.type),
             }}
           >
             {getAlertIcon(alert.type)}
-            <span className="font-medium text-[10px]">{alert.message}</span>
+            <span className="font-medium text-xs">{alert.message}</span>
           </div>
         ))}
         {alerts.length === 0 && (
-          <span className="text-[10px] opacity-60">All systems operational</span>
+          <span className="text-xs opacity-60">All systems operational</span>
         )}
       </div>
     </div>

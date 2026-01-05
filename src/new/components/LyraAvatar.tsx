@@ -42,7 +42,7 @@ export function LyraAvatar({
         >
             {/* Ambient Character Glow */}
             {showGlow && (
-                <div className="absolute inset-0 bg-gradient-to-t from-rose-500/10 to-transparent opacity-50" />
+                <div className="absolute inset-0 bg-black/5 opacity-50" />
             )}
 
             {/* Layer Stack */}

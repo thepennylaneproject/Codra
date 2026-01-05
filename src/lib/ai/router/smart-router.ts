@@ -334,7 +334,7 @@ export class SmartRouter {
         notes.push(`Required modalities: ${requiredModalities.join(', ')}`);
 
         // Step 1: Gather all candidate models
-        let candidates: Array<{ provider: ProviderRegistryEntry; model: ModelRegistryEntry }> = [];
+        const candidates: Array<{ provider: ProviderRegistryEntry; model: ModelRegistryEntry }> = [];
 
         for (const provider of PROVIDER_REGISTRY) {
             // Filter by allowed providers

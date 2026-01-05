@@ -5,6 +5,7 @@
 
 import { Target, ChevronUp, ChevronDown, CheckCircle2, Circle } from 'lucide-react';
 import { EmptyState } from '../EmptyState';
+import { Button } from '@/components/ui/Button';
 
 interface Goal {
     text: string;
@@ -38,12 +39,10 @@ export function GoalsSection({ content, isEditing, onUpdate }: GoalsSectionProps
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between mb-2">
-                <span className="block text-[10px] uppercase tracking-wide text-zinc-400 font-bold">
+                <span className="block text-xs text-zinc-400 font-semibold">
                     Priority Stacking
                 </span>
-                <p className="text-[9px] text-zinc-400 uppercase font-medium">
-                    Drag to reorder
-                </p>
+                <p className="text-xs text-zinc-400 font-medium">Drag to reorder</p>
             </div>
 
             <div className="space-y-3">
@@ -60,24 +59,24 @@ export function GoalsSection({ content, isEditing, onUpdate }: GoalsSectionProps
                         `}
                     >
                         {/* Status Icon */}
-                        <button
+                        <Button
                             onClick={() => handleToggleComplete(i)}
                             className={`mt-1 transition-colors ${goal.completed ? 'text-green-500' : 'text-zinc-300 hover:text-zinc-400'}`}
                         >
                             {goal.completed ? <CheckCircle2 size={18} /> : <Circle size={18} />}
-                        </button>
+                        </Button>
 
                         {/* Content */}
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
                                 <span className={`
-                                    px-1.5 py-0.5 text-[8px] font-black uppercase tracking-widest rounded
+                                    px-1 py-0 text-xs font-semibold rounded
                                     ${goal.priority === 'primary' ? 'bg-rose-500 text-white' : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400'}
                                 `}>
                                     {goal.priority}
                                 </span>
                                 {goal.completed && (
-                                    <span className="text-[8px] font-bold text-green-600 uppercase tracking-tight">Completed</span>
+                                    <span className="text-xs font-semibold text-green-600">Completed</span>
                                 )}
                             </div>
                             <p className={`text-sm leading-relaxed ${goal.completed ? 'line-through text-zinc-400' : 'text-zinc-800 dark:text-zinc-200'}`}>
@@ -88,13 +87,13 @@ export function GoalsSection({ content, isEditing, onUpdate }: GoalsSectionProps
                         {/* Controls (visible in editing or hover) */}
                         {isEditing && (
                             <div className="flex flex-col gap-1">
-                                <button
+                                <Button
                                     onClick={() => handleTogglePriority(i)}
                                     className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded transition-colors text-zinc-400 hover:text-rose-500"
                                     title="Toggle Priority"
                                 >
                                     {goal.priority === 'primary' ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
-                                </button>
+                                </Button>
                                 <Target size={14} className="mx-auto text-zinc-300" />
                             </div>
                         )}
@@ -111,9 +110,9 @@ export function GoalsSection({ content, isEditing, onUpdate }: GoalsSectionProps
             </div>
 
             {isEditing && (
-                <button className="w-full py-3 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-bold text-zinc-400 uppercase tracking-widest hover:border-rose-200 hover:text-rose-500 transition-all">
+                <Button className="w-full py-3 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-semibold text-zinc-400 hover:border-rose-200 hover:text-rose-500 transition-all">
                     + Add Strategic Goal
-                </button>
+                </Button>
             )}
         </div>
     );

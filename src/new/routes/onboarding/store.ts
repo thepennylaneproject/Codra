@@ -41,37 +41,37 @@ export const STEP_METADATA: Record<OnboardingStep, {
     mode: {
         title: 'What are you building?',
         description: 'Pick the type that best describes your project.',
-        helperText: 'This helps Codra generate the right prompts for you.',
-        progressLabel: 'Start',
+        helperText: 'Used to generate prompt defaults.',
+        progressLabel: 'Initialization',
     },
     context: {
         title: 'Context & Intent',
-        description: 'Help us understand what you are building and for whom.',
-        helperText: 'This shapes how Codra assists you throughout the project.',
+        description: 'Describe what is being built and the intended audience.',
+        helperText: 'Defines execution defaults across the project.',
         progressLabel: 'Intent',
     },
     import: {
-        title: 'Import Your Project',
-        description: 'Tell us about the project you\'re bringing in.',
-        helperText: 'We\'ll be careful with your existing work.',
+        title: 'Project import',
+        description: 'Provide details for the incoming project.',
+        helperText: 'Existing work remains unchanged.',
         progressLabel: 'Import',
     },
     'ai-preferences': {
         title: 'AI Preferences',
-        description: 'How should AI models work for you?',
-        helperText: 'These become your defaults—adjust per-task anytime.',
+        description: 'Define model execution behavior.',
+        helperText: 'Sets defaults; overrides allowed per task.',
         progressLabel: 'AI',
     },
     budget: {
         title: 'Budget & Costs',
-        description: 'How should we manage spending?',
-        helperText: 'You\'re always in control—we\'ll never surprise you.',
+        description: 'Define budget control behavior.',
+        helperText: 'Budget controls enforced at execution.',
         progressLabel: 'Budget',
     },
     visual: {
         title: 'Visual Direction',
         description: 'Define the look and feel of your project.',
-        helperText: 'These preferences generate your initial moodboard.',
+        helperText: 'Preferences generate the initial moodboard.',
         progressLabel: 'Visual',
     },
     'tear-sheet-intent': {
@@ -81,14 +81,14 @@ export const STEP_METADATA: Record<OnboardingStep, {
         progressLabel: 'Brief',
     },
     generating: {
-        title: 'Generating Your Project',
-        description: 'Creating your Moodboard and Project Brief...',
-        helperText: 'This takes just a moment.',
+        title: 'Project provisioning',
+        description: 'Creating moodboard and project brief...',
+        helperText: 'Provisioning in progress.',
         progressLabel: 'Generate',
     },
     complete: {
-        title: 'Complete',
-        description: 'Your project is ready for review.',
+        title: 'Execution complete',
+        description: 'Project review pending.',
         helperText: '',
         progressLabel: 'Review',
     },
@@ -346,7 +346,7 @@ export const useOnboardingStore = create<OnboardingState>()(
                         colors: {
                             primary: '#1A1A1A',
                             secondary: '#FFFAF0',
-                            accent: '#FF4D4D',
+                            accent: '#71717A',
                         },
                     },
                     successCriteria: {
@@ -414,15 +414,16 @@ export function canProceedFromStep(step: OnboardingStep, state: OnboardingState)
         case 'mode':
             return true; // Always can proceed from mode selection
 
-        case 'context':
+        case 'context': {
             const ctx = state.profile.context;
             // Simplified: only require project description and type
             return !!(
                 ctx.firstProjectDescription &&
                 state.profile.projectType
             );
+        }
 
-        case 'import':
+        case 'import': {
             const imp = state.profile.importData;
             return !!(
                 imp.projectType &&
@@ -432,18 +433,20 @@ export function canProceedFromStep(step: OnboardingStep, state: OnboardingState)
                 imp.cautionLevel &&
                 imp.aiDisagreementBehavior
             );
+        }
 
         case 'ai-preferences':
             // Simplified: always allow proceeding (defaults are sufficient)
             return true;
 
-        case 'budget':
+        case 'budget': {
             const budget = state.profile.budgetPreferences;
             return !!(
                 budget.budgetMode
             );
+        }
 
-        case 'visual':
+        case 'visual': {
             const vis = state.profile.visualDirection;
             return !!(
                 vis.personality.length > 0 &&
@@ -451,6 +454,7 @@ export function canProceedFromStep(step: OnboardingStep, state: OnboardingState)
                 vis.visualStyles.length > 0 &&
                 vis.colorDirections.length > 0
             );
+        }
 
         default:
             return true;

@@ -37,46 +37,49 @@ export function BudgetMeter({ metrics, dailyLimit, className }: BudgetMeterProps
                         <StatusIcon size={16} strokeWidth={1.5} className={statusColors[healthStatus as keyof typeof statusColors].split(' ')[0]} />
                     </div>
                     <div>
-                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-900">Budget Health</h4>
-                        <p className="text-[9px] text-zinc-400 uppercase">{healthStatus}</p>
+                        <h4 className="text-xs font-semibold text-zinc-900">Budget Health</h4>
+                        <p className="text-xs text-zinc-400">{healthStatus}</p>
                     </div>
                 </div>
                 <div className="text-right">
-                    <p className="text-[11px] font-mono font-bold text-zinc-900">${burnRate.toFixed(2)}<span className="text-[9px] text-zinc-400 font-normal">/day</span></p>
-                    <p className="text-[8px] text-zinc-400 uppercase tracking-tighter">Avg Daily Burn</p>
+                    <p className="text-xs font-mono font-semibold text-zinc-900">
+                        ${burnRate.toFixed(2)}
+                        <span className="text-xs text-zinc-400 font-normal">/day</span>
+                    </p>
+                    <p className="text-xs text-zinc-400">Avg Daily Burn</p>
                 </div>
             </div>
 
             {/* Gauge Area */}
             <div className="space-y-3">
                 {/* Burn Rate Gauge */}
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                     <div className="flex justify-between items-end">
-                        <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-tighter">Daily Capacity</span>
-                        <span className="text-[9px] font-mono text-zinc-400">${dailyLimit} limit</span>
+                        <span className="text-xs font-semibold text-zinc-500">Daily Capacity</span>
+                        <span className="text-xs font-mono text-zinc-400">${dailyLimit} limit</span>
                     </div>
                     <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
                         <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${burnPercentage}%` }}
                             transition={{ duration: 1, ease: "easeOut" }}
-                            className={cn("h-full rounded-full transition-colors animate-shimmer", statusColors[healthStatus as keyof typeof statusColors].split(' ')[1])}
+                            className={cn("h-full rounded-full transition-colors", statusColors[healthStatus as keyof typeof statusColors].split(' ')[1])}
                         />
                     </div>
                 </div>
 
                 {/* Total Cost Forecast */}
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                     <div className="flex justify-between items-end">
-                        <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-tighter">Total Forecast</span>
+                        <span className="text-xs font-semibold text-zinc-500">Total Forecast</span>
                         <div className="flex gap-2">
                             <div className="flex items-center gap-1">
                                 <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                                <span className="text-[8px] font-mono text-zinc-400">Spent</span>
+                                <span className="text-xs font-mono text-zinc-400">Spent</span>
                             </div>
                             <div className="flex items-center gap-1">
                                 <div className="w-1.5 h-1.5 rounded-full bg-indigo-200" />
-                                <span className="text-[8px] font-mono text-zinc-400">Proj.</span>
+                                <span className="text-xs font-mono text-zinc-400">Proj.</span>
                             </div>
                         </div>
                     </div>
@@ -86,7 +89,7 @@ export function BudgetMeter({ metrics, dailyLimit, className }: BudgetMeterProps
                             initial={{ width: 0 }}
                             animate={{ width: `${Math.min(100, (metrics.burnRate / metrics.projectedCost) * 100)}%` }} // Approximate spent ratio
                             transition={{ duration: 1, ease: "easeOut" }}
-                            className="h-full bg-indigo-500 rounded-l-full animate-shimmer"
+                            className="h-full bg-indigo-500 rounded-l-full"
                         />
                         {/* Projected segment */}
                         <motion.div
@@ -101,21 +104,21 @@ export function BudgetMeter({ metrics, dailyLimit, className }: BudgetMeterProps
                 {/* Projected Cost vs Progress */}
                 <div className="flex gap-4 pt-2 border-t border-zinc-50">
                     <div className="flex-1">
-                        <p className="text-[14px] font-mono font-bold text-zinc-900">${projectedCost.toFixed(2)}</p>
-                        <p className="text-[8px] text-zinc-400 uppercase tracking-tighter">Projected Total</p>
+                        <p className="text-sm font-mono font-semibold text-zinc-900">${projectedCost.toFixed(2)}</p>
+                        <p className="text-xs text-zinc-400">Projected Total</p>
                     </div>
                     <div className="flex-1 border-l border-zinc-50 pl-4">
-                        <p className="text-[14px] font-mono font-bold text-zinc-900">{Math.round(progress)}%</p>
-                        <p className="text-[8px] text-zinc-400 uppercase tracking-tighter">Queue Progress</p>
+                        <p className="text-sm font-mono font-semibold text-zinc-900">{Math.round(progress)}%</p>
+                        <p className="text-xs text-zinc-400">Queue Progress</p>
                     </div>
                 </div>
             </div>
 
             {/* Micro-annotation */}
             {healthStatus !== 'healthy' && (
-                <div className="mt-3 flex items-start gap-1.5 p-2 bg-rose-50 rounded-lg">
+                <div className="mt-3 flex items-start gap-1 p-2 bg-rose-50 rounded-lg">
                     <TrendingUp size={10} strokeWidth={1.5} className="text-rose-500 mt-0.5" />
-                    <p className="text-[8px] leading-tight text-rose-600 font-medium">
+                    <p className="text-xs leading-tight text-rose-600 font-medium">
                         Burn rate is exceeding target. Consider consolidating tasks or upgrading budget policy.
                     </p>
                 </div>

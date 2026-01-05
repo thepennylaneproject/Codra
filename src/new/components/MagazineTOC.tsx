@@ -13,6 +13,7 @@
 import { useEffect, useCallback } from 'react';
 import { SpreadTask, TaskStatus } from '../../domain/task-queue';
 import { TOCEntry, EnhancedTOCEntry, ProductionDeskId, PRODUCTION_DESKS } from '../../domain/types';
+import { Button } from '@/components/ui/Button';
 import {
     Circle,
     CheckCircle2,
@@ -40,7 +41,7 @@ const styles = {
         border-b border-zinc-300
     `,
     mastheadTitle: `
-        text-[10px] font-bold uppercase tracking-[0.3em]
+        text-xs font-semibold
         text-zinc-400
         mb-1
     `,
@@ -56,7 +57,7 @@ const styles = {
         bg-zinc-100
     `,
     sectionTitle: `
-        text-[9px] font-bold uppercase tracking-[0.2em]
+        text-xs font-semibold
         text-zinc-500
     `,
 
@@ -85,7 +86,7 @@ const styles = {
 
     // Entry number - Monospace page number style
     entryNumber: `
-        font-mono text-[11px] font-medium
+        font-mono text-xs font-medium
         w-6 flex-shrink-0
         text-zinc-400
     `,
@@ -106,10 +107,10 @@ const styles = {
 
     // Entry subtitle/description
     entrySub: `
-        text-[10px]
+        text-xs
         text-zinc-400
         leading-tight
-        mt-0.5
+        mt-0
     `,
     entrySubActive: `
         text-zinc-400
@@ -128,7 +129,7 @@ const styles = {
         bg-zinc-100
     `,
     footerText: `
-        text-[9px] font-medium uppercase tracking-[0.15em]
+        text-xs font-medium
         text-zinc-400
     `,
     footerProgress: `
@@ -142,8 +143,8 @@ const styles = {
 
     // Desk label
     deskLabel: `
-        text-[9px] font-medium uppercase tracking-wider
-        px-1.5 py-0.5
+        text-xs font-medium
+        px-1 py-0
         rounded
         bg-zinc-200
         text-zinc-500
@@ -340,7 +341,7 @@ function TaskEntry({ task, index, isActive, onSelect }: TaskEntryProps) {
     const statusColor = STATUS_COLORS[task.status];
 
     return (
-        <button
+        <Button
             onClick={onSelect}
             className={`
                 ${styles.entry}
@@ -381,7 +382,7 @@ function TaskEntry({ task, index, isActive, onSelect }: TaskEntryProps) {
                 size={14}
                 className={`${styles.statusIcon} ${statusColor}`}
             />
-        </button>
+        </Button>
     );
 }
 
@@ -404,7 +405,7 @@ function SectionEntry({ entry, index, isActive, onSelect }: SectionEntryProps) {
     const statusColor = status ? STATUS_COLORS[status as keyof typeof STATUS_COLORS] : '';
 
     return (
-        <button
+        <Button
             onClick={onSelect}
             className={`
                 ${styles.entry}
@@ -436,7 +437,7 @@ function SectionEntry({ entry, index, isActive, onSelect }: SectionEntryProps) {
                     className={`${styles.statusIcon} ${statusColor}`}
                 />
             )}
-        </button>
+        </Button>
     );
 }
 

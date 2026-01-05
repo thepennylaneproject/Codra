@@ -5,6 +5,7 @@
  */
 
 import { BarChart3, Database, PieChart, TrendingUp, Sparkles, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 interface AnalyzeCanvasProps {
     projectId: string;
@@ -22,19 +23,19 @@ export const AnalyzeCanvas: React.FC<AnalyzeCanvasProps> = ({ projectId }) => {
     ];
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center py-16 px-8">
+        <div className="w-full h-full flex flex-col items-center justify-center py-12 px-8">
             {/* Header */}
             <div className="text-center mb-12">
-                <div className="w-16 h-16 rounded-2xl bg-[#FF4D4D]/10 flex items-center justify-center mx-auto mb-6">
-                    <BarChart3 size={32} className="text-[#FF4D4D]" />
+                <div className="w-16 h-16 rounded-2xl bg-zinc-200/50 flex items-center justify-center mx-auto mb-6">
+                    <BarChart3 size={32} className="text-zinc-500" />
                 </div>
-                <h2 className="text-2xl font-black text-[#1A1A1A] mb-3">Analyze Desk</h2>
+                <h2 className="text-xl font-semibold text-text-primary mb-3">Analyze Desk</h2>
                 <div className="flex items-center justify-center gap-2 mb-4">
                     <Sparkles size={14} className="text-amber-500" />
-                    <span className="text-xs font-bold uppercase tracking-widest text-amber-600">Coming Soon</span>
+                    <span className="text-xs font-semibold text-amber-600">Coming Soon</span>
                 </div>
-                <p className="text-[#5A5A5A] max-w-md">
-                    Turn data into insights. Analyze datasets, generate visualizations, and discover trends with AI assistance.
+                <p className="text-text-secondary max-w-md">
+                    Execute data analysis, generate visualizations, and surface trends with configured models.
                 </p>
             </div>
 
@@ -47,9 +48,9 @@ export const AnalyzeCanvas: React.FC<AnalyzeCanvasProps> = ({ projectId }) => {
                             key={idx}
                             className="p-4 bg-white border border-[#1A1A1A]/10 rounded-xl opacity-60"
                         >
-                            <Icon size={20} className="text-[#8A8A8A] mb-3" />
-                            <p className="text-sm font-bold text-[#1A1A1A] mb-1">{feature.label}</p>
-                            <p className="text-xs text-[#8A8A8A]">{feature.description}</p>
+                            <Icon size={20} className="text-text-soft mb-3" />
+                            <p className="text-sm font-semibold text-text-primary mb-1">{feature.label}</p>
+                            <p className="text-xs text-text-soft">{feature.description}</p>
                         </div>
                     );
                 })}
@@ -57,13 +58,13 @@ export const AnalyzeCanvas: React.FC<AnalyzeCanvasProps> = ({ projectId }) => {
 
             {/* CTA */}
             <div className="text-center">
-                <p className="text-sm text-[#8A8A8A] mb-4">
-                    While we build this desk, try the Code Desk for codebase analysis.
+                <p className="text-sm text-text-soft mb-4">
+                    This desk is unavailable. Use the Code Desk for codebase analysis.
                 </p>
-                <button className="flex items-center gap-2 px-6 py-3 bg-[#1A1A1A]/5 hover:bg-[#1A1A1A]/10 text-[#5A5A5A] rounded-xl font-bold text-xs uppercase tracking-widest transition-colors mx-auto">
-                    Explore Code Desk
+                <Button className="flex items-center gap-2 px-6 py-3 bg-[#1A1A1A]/5 hover:bg-[#1A1A1A]/10 text-text-secondary rounded-xl font-semibold text-xs transition-colors mx-auto">
+                    Open Code Desk
                     <ArrowRight size={14} />
-                </button>
+                </Button>
             </div>
         </div>
     );

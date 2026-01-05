@@ -3,6 +3,7 @@ import { EnvVar } from '../../../../lib/deploy/types';
 import { Key, Lock, Edit3, Check, X } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Button } from '@/components/ui/Button';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -46,7 +47,7 @@ export function EnvVarEditor({ envVars, onSave, loading, className }: EnvVarEdit
     return (
         <div className={cn("space-y-6", className)}>
             <header className="flex items-center justify-between">
-                <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                <h3 className="text-xs font-semibold text-zinc-400 flex items-center gap-2">
                     <Key size={10} />
                     Environment Config
                 </h3>
@@ -56,9 +57,9 @@ export function EnvVarEditor({ envVars, onSave, loading, className }: EnvVarEdit
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-100 dark:border-zinc-800">
-                            <th className="px-4 py-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Key</th>
-                            <th className="px-4 py-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Value</th>
-                            <th className="px-4 py-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest text-right">Action</th>
+                            <th className="px-4 py-3 text-xs font-semibold text-zinc-400">Key</th>
+                            <th className="px-4 py-3 text-xs font-semibold text-zinc-400">Value</th>
+                            <th className="px-4 py-3 text-xs font-semibold text-zinc-400 text-right">Action</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-50 dark:divide-zinc-900">
@@ -71,7 +72,7 @@ export function EnvVarEditor({ envVars, onSave, loading, className }: EnvVarEdit
                         )}
                         {envVars.map((env) => (
                             <tr key={env.key} className="group hover:bg-zinc-50/50 dark:hover:bg-zinc-900/20 transition-all">
-                                <td className="px-4 py-4 font-mono text-xs text-zinc-600 dark:text-zinc-400 font-bold">
+                                <td className="px-4 py-4 font-mono text-xs text-zinc-600 dark:text-zinc-400 font-semibold">
                                     {env.key}
                                 </td>
                                 <td className="px-4 py-4 text-xs font-mono text-zinc-400">
@@ -81,10 +82,10 @@ export function EnvVarEditor({ envVars, onSave, loading, className }: EnvVarEdit
                                             value={editValue}
                                             onChange={(e) => setEditValue(e.target.value)}
                                             autoFocus
-                                            className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-rose-500/10 focus:border-rose-500 transition-all shadow-inner"
+                                            className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-rose-500/10 focus:border-rose-500 transition-all shadow-inner"
                                         />
                                     ) : (
-                                        <div className="flex items-center gap-1.5 opacity-60">
+                                        <div className="flex items-center gap-1 opacity-60">
                                             <Lock size={10} />
                                             <span>••••••••</span>
                                         </div>
@@ -93,10 +94,10 @@ export function EnvVarEditor({ envVars, onSave, loading, className }: EnvVarEdit
                                 <td className="px-4 py-4 text-right">
                                     {editingKey === env.key ? (
                                         <div className="flex justify-end gap-1">
-                                            <button
+                                            <Button
                                                 onClick={handleSave}
                                                 disabled={saving}
-                                                className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
+                                                className="p-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
                                                 title="Save Changes"
                                             >
                                                 {saving ? (
@@ -104,22 +105,22 @@ export function EnvVarEditor({ envVars, onSave, loading, className }: EnvVarEdit
                                                 ) : (
                                                     <Check size={14} />
                                                 )}
-                                            </button>
-                                            <button
+                                            </Button>
+                                            <Button
                                                 onClick={() => setEditingKey(null)}
-                                                className="p-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-900 text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all"
+                                                className="p-1 rounded-lg bg-zinc-50 dark:bg-zinc-900 text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all"
                                                 title="Cancel"
                                             >
                                                 <X size={14} />
-                                            </button>
+                                            </Button>
                                         </div>
                                     ) : (
-                                        <button
+                                        <Button
                                             onClick={() => handleEdit(env)}
                                             className="p-2 rounded-lg text-zinc-300 hover:text-rose-500 dark:text-zinc-700 dark:hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all"
                                         >
                                             <Edit3 size={14} />
-                                        </button>
+                                        </Button>
                                     )}
                                 </td>
                             </tr>

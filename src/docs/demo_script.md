@@ -13,7 +13,7 @@
 
 In a traditional workflow, Alex would spend hours briefing freelancers or wrestling with generic AI tools that don’t remember his client's voice.
 
-Welcome to Codra. This isn't just a project list; it's a **Production Registry**. Every workspace here represents a high-fidelity 'Spread'—a context-aware studio tailored to a specific client assignment."
+Codra system overview. This isn't just a project list; it's a **Production Registry**. Every workspace here represents a high-fidelity 'Spread'—a context-aware workspace tailored to a specific client assignment."
 
 ---
 

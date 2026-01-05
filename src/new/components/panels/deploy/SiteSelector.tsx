@@ -24,7 +24,7 @@ export function SiteSelector({ sites, selectedSiteId, onSelect, loading, classNa
 
     return (
         <div className={cn("flex flex-col gap-3", className)}>
-            <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] flex items-center gap-2">
+            <label className="text-xs font-semibold text-zinc-400 flex items-center gap-2">
                 <Server size={10} />
                 Production Target
             </label>
@@ -32,7 +32,7 @@ export function SiteSelector({ sites, selectedSiteId, onSelect, loading, classNa
                 <select
                     value={selectedSiteId || ''}
                     onChange={(e) => onSelect(e.target.value)}
-                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-rose-500/10 focus:border-rose-500 transition-all appearance-none cursor-pointer pr-10"
+                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-rose-500/10 focus:border-rose-500 transition-all appearance-none cursor-pointer pr-8"
                 >
                     <option value="" disabled>Select a production site...</option>
                     {sites.map((site) => (
@@ -53,10 +53,9 @@ export function SiteSelector({ sites, selectedSiteId, onSelect, loading, classNa
                     href={selectedSite.adminUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[10px] font-bold text-rose-500 hover:text-rose-600 hover:underline flex items-center gap-1.5 transition-colors uppercase tracking-widest"
+                    className="text-xs font-semibold text-zinc-500 hover:text-zinc-700 hover:underline flex items-center gap-1 transition-colors"
                 >
-                    Provider Dashboard
-                    <ExternalLink size={10} />
+                    Provider Dashboard <ExternalLink size={10} />
                 </a>
             )}
         </div>

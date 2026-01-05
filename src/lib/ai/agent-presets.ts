@@ -24,7 +24,7 @@ export const AGENT_PRESETS: AgentPreset[] = [
     },
     {
         id: 'premium-code-assistant',
-        name: 'Premium Code Assistant',
+        name: 'Premium Code Processor',
         description: 'Highest quality code generation and debugging',
         taskCategory: TaskCategory.CODE_ASSISTANCE,
         agentFramework: 'cline',
@@ -32,7 +32,7 @@ export const AGENT_PRESETS: AgentPreset[] = [
         reasoning: 'Cline + GPT-4o provides advanced reasoning for complex coding tasks with Plan/Act modes',
         estimatedCostTier: CostTier.MEDIUM,
         estimatedLatencyTier: LatencyTier.MEDIUM,
-        icon: '🎯'
+        icon: ''
     },
     {
         id: 'cursor-claude',
@@ -127,7 +127,7 @@ export const AGENT_PRESETS: AgentPreset[] = [
         name: 'Quick Content Generation',
         description: 'Fast summaries and simple content',
         taskCategory: TaskCategory.CONTENT_GENERATION,
-        modelId: 'gpt-3.5-turbo',
+        modelId: 'gpt-3-turbo',
         reasoning: 'GPT-3.5 Turbo offers fast, cost-effective content for simple tasks',
         estimatedCostTier: CostTier.LOW,
         estimatedLatencyTier: LatencyTier.FAST,
@@ -163,7 +163,7 @@ export const AGENT_PRESETS: AgentPreset[] = [
     // GENERAL PURPOSE presets
     {
         id: 'balanced-assistant',
-        name: 'Balanced Assistant',
+        name: 'Balanced Processor',
         description: 'Good balance of quality and cost',
         taskCategory: TaskCategory.GENERAL_PURPOSE,
         modelId: 'gpt-4o',
@@ -177,7 +177,7 @@ export const AGENT_PRESETS: AgentPreset[] = [
         name: 'Budget-Friendly',
         description: 'Cost-effective for high-volume tasks',
         taskCategory: TaskCategory.GENERAL_PURPOSE,
-        modelId: 'gpt-3.5-turbo',
+        modelId: 'gpt-3-turbo',
         reasoning: 'GPT-3.5 Turbo offers the best price-performance for simple tasks',
         estimatedCostTier: CostTier.LOW,
         estimatedLatencyTier: LatencyTier.FAST,

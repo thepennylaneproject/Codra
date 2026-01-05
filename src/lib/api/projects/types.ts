@@ -115,6 +115,10 @@ export interface ArtifactVersionRow {
     user_feedback_tags: string[];
     user_feedback_note: string | null;
     diff_from_previous: string | null;
+    approval_status: string;
+    approved_at: string | null;
+    approved_by: string | null;
+    rejection_note: string | null;
     created_at: string;
 }
 
@@ -252,6 +256,10 @@ export function mapVersionRowToVersion(row: ArtifactVersionRow): ArtifactVersion
         userFeedbackTags: row.user_feedback_tags,
         userFeedbackNote: row.user_feedback_note || undefined,
         diffFromPrevious: row.diff_from_previous || undefined,
+        approvalStatus: (row.approval_status as ArtifactVersion['approvalStatus']) || 'pending',
+        approvedAt: row.approved_at || undefined,
+        approvedBy: row.approved_by || undefined,
+        rejectionNote: row.rejection_note || undefined,
         createdAt: row.created_at,
     };
 }

@@ -8,8 +8,10 @@ export type AnalyticsEvent =
   | FlowEvent 
   | DeskEvent
   | MarketingEvent
-  | MonetizationEvent
+  | MonetizationEvent 
   | BlueprintEvent
+  | BudgetEvent
+  | ApprovalEvent
   | CatchAllEvent;
 
 // ONBOARDING EVENTS
@@ -18,7 +20,10 @@ export type OnboardingEvent =
   | { name: 'onboarding_step_completed'; properties: OnboardingStepCompletionProperties }
   | { name: 'onboarding_step_skipped'; properties: OnboardingStepProperties }
   | { name: 'onboarding_completed'; properties: OnboardingSessionProperties }
-  | { name: 'first_spread_generated'; properties: GenerationProperties };
+  | { name: 'first_spread_generated'; properties: GenerationProperties }
+  | { name: 'similar_projects_shown'; properties: SimilarProjectsProperties }
+  | { name: 'context_import_clicked'; properties: ContextImportProperties }
+  | { name: 'context_import_confirmed'; properties: ContextImportConfirmProperties };
 
 export interface OnboardingStepProperties {
   step: number;
@@ -42,6 +47,22 @@ export interface GenerationProperties {
   spreadId: string;
   durationFromStartMs: number;
   projectType: string;
+}
+
+export interface SimilarProjectsProperties {
+  count: number;
+  step: number;
+  hasProjects: boolean;
+}
+
+export interface ContextImportProperties {
+  sourceProjectId: string;
+  matchScore: number;
+  matchReason: string;
+}
+
+export interface ContextImportConfirmProperties extends ContextImportProperties {
+  fieldsEdited: string[];
 }
 
 // CORE FLOW EVENTS
@@ -112,6 +133,18 @@ export type MonetizationEvent =
 // BLUEPRINT EVENTS
 export type BlueprintEvent =
   | { name: 'blueprint_selected'; properties: { blueprintId: string } };
+
+// BUDGET EVENTS
+export type BudgetEvent =
+  | { name: 'budget_widget_clicked'; properties?: Record<string, unknown> }
+  | { name: 'budget_threshold_reached'; properties: { threshold: number, percentage: number } }
+  | { name: 'budget_adjusted'; properties: { newLimit: number, oldLimit: number } };
+
+// APPROVAL EVENTS
+export type ApprovalEvent =
+  | { name: 'artifact_approved'; properties: { versionId: string, artifactId: string, status: string } }
+  | { name: 'artifact_rejected'; properties: { versionId: string, artifactId: string, status: string } }
+  | { name: 'batch_suggestions_created'; properties: { count: number, desks: string[] } };
 
 // CATCH-ALL FOR UNTYPED OR LEGACY EVENTS
 export type CatchAllEvent = {

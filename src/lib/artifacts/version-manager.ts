@@ -5,7 +5,6 @@
 
 import { supabase } from '../supabase';
 import type { ArtifactVersion, ArtifactStatus } from '../../types/architect';
-import { canTransition } from './state-machine';
 import { calculateDiff } from './diff-utils';
 
 export interface CreateVersionParams {
@@ -198,19 +197,6 @@ export const versionManager = {
         userId?: string
     ): Promise<boolean> {
         try {
-            const { data: artifact } = await supabase
-                .from('artifacts')
-                .select('status')
-                .eq('id', artifactId)
-                .single();
-
-            if (!artifact) return false;
-
-            if (!canTransition(artifact.status as ArtifactStatus, newStatus)) {
-                console.error(`Invalid transition: ${artifact.status} → ${newStatus}`);
-                return false;
-            }
-
             const updates: Record<string, any> = { status: newStatus };
 
             if (newStatus === 'approved') {
@@ -226,6 +212,62 @@ export const versionManager = {
             return !error;
         } catch (error) {
             console.error('Error updating status:', error);
+            return false;
+        }
+    },
+
+    /**
+     * Update a specific version's approval status
+     */
+    async updateVersionStatus(
+        versionId: string,
+        params: {
+            status: ArtifactVersion['approvalStatus'];
+            userId?: string;
+            rejectionNote?: string;
+        }
+    ): Promise<boolean> {
+        try {
+            const updates: Record<string, any> = {
+                approval_status: params.status,
+                rejection_note: params.rejectionNote,
+            };
+
+            if (params.status === 'approved') {
+                updates.approved_at = new Date().toISOString();
+                updates.approved_by = params.userId;
+            } else {
+                updates.approved_at = null;
+                updates.approved_by = null;
+            }
+
+            const { data: version, error: versionError } = await supabase
+                .from('artifact_versions')
+                .update(updates)
+                .eq('id', versionId)
+                .select('artifact_id')
+                .single();
+
+            if (versionError || !version) throw versionError;
+
+            // Also update the main artifact status to match
+            let mainStatus: ArtifactStatus = 'under_review';
+            if (params.status === 'approved') mainStatus = 'approved';
+            if (params.status === 'changes_requested') mainStatus = 'changes_requested';
+            if (params.status === 'rejected') mainStatus = 'rejected';
+
+            await supabase
+                .from('artifacts')
+                .update({ 
+                    status: mainStatus,
+                    approved_at: params.status === 'approved' ? updates.approved_at : undefined,
+                    approved_by: params.status === 'approved' ? updates.approved_by : undefined
+                })
+                .eq('id', version.artifact_id);
+
+            return true;
+        } catch (error) {
+            console.error('Error updating version status:', error);
             return false;
         }
     },
@@ -256,6 +298,10 @@ function mapDbVersionToType(dbRecord: any): ArtifactVersion {
         userFeedbackTags: dbRecord.user_feedback_tags,
         userFeedbackNote: dbRecord.user_feedback_note,
         diffFromPrevious: dbRecord.diff_from_previous,
+        approvalStatus: dbRecord.approval_status || 'pending',
+        approvedAt: dbRecord.approved_at,
+        approvedBy: dbRecord.approved_by,
+        rejectionNote: dbRecord.rejection_note,
         createdAt: dbRecord.created_at,
     };
 }

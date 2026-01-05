@@ -19,6 +19,7 @@ import { useWorkspaceLayout } from '../../hooks/useWorkspaceLayout';
 import { PanelDock } from './PanelDock';
 import { ActivityStrip } from './ActivityStrip';
 import { WorkspaceHeader } from '../../new/components/shell/WorkspaceHeader';
+import { Text } from '../../new/components';
 
 interface WorkspaceShellProps {
   projectId: string;
@@ -144,7 +145,7 @@ export const WorkspaceShell: React.FC<WorkspaceShellProps> = ({
           onToggle={toggleRightDock}
         >
           {rightDockContent || (
-            <PlaceholderDock title="Right Dock" items={['Lyra', 'Output Inspector']} />
+            <PlaceholderDock title="Right Dock" items={['Lyra module', 'Output Inspector']} />
           )}
         </PanelDock>
       </div>
@@ -161,24 +162,16 @@ export const WorkspaceShell: React.FC<WorkspaceShellProps> = ({
 const PlaceholderDock: React.FC<{ title: string; items: string[] }> = ({ title, items }) => {
   return (
     <div className="h-full p-6 flex flex-col gap-4">
-      <h3
-        className="text-sm font-bold uppercase tracking-wider"
-        style={{ color: 'var(--shell-text-primary)' }}
-      >
+      <Text as="h2" size="xs" className="text-shell-text-primary">
         {title}
-      </h3>
+      </Text>
       <div className="flex flex-col gap-2">
         {items.map((item, index) => (
           <div
             key={index}
-            className="p-3 rounded-lg border"
-            style={{
-              backgroundColor: 'var(--shell-surface-2)',
-              borderColor: 'var(--shell-border)',
-              color: 'var(--shell-text-secondary)',
-            }}
+            className="p-3 rounded-xl border border-[var(--shell-border)] bg-[var(--shell-surface-2)] text-shell-text-secondary"
           >
-            <span className="text-xs font-medium">{item} (placeholder)</span>
+            <Text size="xs" className="font-medium">{item} (placeholder)</Text>
           </div>
         ))}
       </div>

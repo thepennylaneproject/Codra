@@ -1,11 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Check, Sparkles, Zap } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 /**
  * ACCENT COLOR GOVERNANCE SHOWCASE
  * 
  * This story documents and demonstrates the strict governance rules
- * for coral accent color (#FF6B6B) usage in Codra.
+ * for coral accent color usage in Codra.
  * 
  * **GOVERNANCE PRINCIPLE:**
  * Coral should be reserved ONLY for primary actions and active states.
@@ -31,9 +32,9 @@ export const PermittedUses: Story = {
   render: () => (
     <div className="max-w-6xl mx-auto p-8 space-y-12 bg-[#FFFAF0]">
       <div className="mb-12">
-        <h1 className="text-4xl font-black tracking-tight mb-4">Permitted Accent Uses</h1>
-        <p className="text-lg text-[#5A5A5A]">
-          These are the <strong>ONLY</strong> scenarios where coral accent (#FF6B6B, var(--color-accent)) is permitted.
+        <h1 className="text-xl font-semibold tracking-tight mb-4">Permitted Accent Uses</h1>
+        <p className="text-base text-text-secondary">
+          These are the <strong>ONLY</strong> scenarios where coral accent is permitted.
         </p>
       </div>
 
@@ -42,10 +43,10 @@ export const PermittedUses: Story = {
         title="1. Primary CTA Button"
         description="The ONE action you want users to take on a screen. Maximum one per viewport."
       >
-        <button className="px-8 py-4 bg-[#FF4D4D] hover:bg-[#FF5252] text-white rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-xl">
+        <Button className="px-8 py-4 bg-zinc-600 hover:bg-[#FF5252] text-white rounded-2xl font-semibold text-xs transition-all shadow-xl">
           Start Project
-        </button>
-        <p className="text-sm text-[#8A8A8A] mt-4 italic">
+        </Button>
+        <p className="text-sm text-text-soft mt-4 italic">
           ✅ Coral background on the ONE primary action
         </p>
       </Section>
@@ -56,17 +57,17 @@ export const PermittedUses: Story = {
         description="2px coral underline on the currently active tab only."
       >
         <div className="inline-flex gap-6 border-b border-[#1A1A1A]/10 pb-4">
-          <button className="text-sm font-bold text-[#1A1A1A] border-b-2 border-[#FF4D4D] pb-4 -mb-4">
+          <Button className="text-sm font-semibold text-text-primary border-b-2 border-zinc-400 pb-4 -mb-4">
             Write
-          </button>
-          <button className="text-sm font-medium text-[#8A8A8A] pb-4 -mb-4 hover:text-[#1A1A1A]">
+          </Button>
+          <Button className="text-sm font-medium text-text-soft pb-4 -mb-4 hover:text-text-primary">
             Research
-          </button>
-          <button className="text-sm font-medium text-[#8A8A8A] pb-4 -mb-4 hover:text-[#1A1A1A]">
+          </Button>
+          <Button className="text-sm font-medium text-text-soft pb-4 -mb-4 hover:text-text-primary">
             Revise
-          </button>
+          </Button>
         </div>
-        <p className="text-sm text-[#8A8A8A] mt-4 italic">
+        <p className="text-sm text-text-soft mt-4 italic">
           ✅ 2px coral bottom border on active tab
         </p>
       </Section>
@@ -77,10 +78,10 @@ export const PermittedUses: Story = {
         description="Coral dot or spinner when a task is actively executing."
       >
         <div className="flex items-center gap-3">
-          <div className="w-3 h-3 rounded-full bg-[#FF4D4D] animate-pulse" />
+          <div className="w-3 h-3 rounded-full bg-zinc-600 animate-pulse" />
           <span className="text-sm font-medium">Generating content...</span>
         </div>
-        <p className="text-sm text-[#8A8A8A] mt-4 italic">
+        <p className="text-sm text-text-soft mt-4 italic">
           ✅ Pulsing coral dot during execution
         </p>
       </Section>
@@ -90,13 +91,13 @@ export const PermittedUses: Story = {
         title="4. Success State"
         description="Coral checkmark or border on successful completion."
       >
-        <div className="p-4 border border-[#FF4D4D]/30 bg-[#FF4D4D]/5 rounded-xl flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-[#FF4D4D] flex items-center justify-center">
+        <div className="p-4 border border-zinc-300/60 bg-zinc-200/40 rounded-xl flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-zinc-600 flex items-center justify-center">
             <Check size={16} strokeWidth={3} className="text-white" />
           </div>
           <span className="text-sm font-medium">Export completed successfully</span>
         </div>
-        <p className="text-sm text-[#8A8A8A] mt-4 italic">
+        <p className="text-sm text-text-soft mt-4 italic">
           ✅ Coral checkmark and subtle border on success
         </p>
       </Section>
@@ -107,16 +108,16 @@ export const PermittedUses: Story = {
         description="2px coral left border on the currently selected output."
       >
         <div className="space-y-2">
-          <div className="p-4 bg-white rounded-xl border-l-2 border-[#FF4D4D] shadow-sm">
-            <p className="text-sm font-bold">Brand Strategy v2.3</p>
-            <p className="text-xs text-[#8A8A8A]">Selected output</p>
+          <div className="p-4 bg-white rounded-xl border-l-2 border-zinc-400 shadow-sm">
+            <p className="text-sm font-semibold">Brand Strategy v2.3</p>
+            <p className="text-xs text-text-soft">Selected output</p>
           </div>
           <div className="p-4 bg-white rounded-xl border-l-2 border-transparent hover:border-[#1A1A1A]/10">
-            <p className="text-sm font-medium text-[#5A5A5A]">Brand Strategy v2.2</p>
-            <p className="text-xs text-[#8A8A8A]">Previous version</p>
+            <p className="text-sm font-medium text-text-secondary">Brand Strategy v2.2</p>
+            <p className="text-xs text-text-soft">Previous version</p>
           </div>
         </div>
-        <p className="text-sm text-[#8A8A8A] mt-4 italic">
+        <p className="text-sm text-text-soft mt-4 italic">
           ✅ 2px coral left border on selected item only
         </p>
       </Section>
@@ -129,9 +130,9 @@ export const PermittedUses: Story = {
         <input
           type="text"
           placeholder="Search blueprints..."
-          className="px-4 py-3 bg-white border border-[#1A1A1A]/10 rounded-xl focus:outline-none focus:border-[#FF4D4D] transition-all w-full max-w-md"
+          className="px-4 py-3 bg-white border border-[#1A1A1A]/10 rounded-xl focus:outline-none focus:border-zinc-400 transition-all w-full max-w-md"
         />
-        <p className="text-sm text-[#8A8A8A] mt-4 italic">
+        <p className="text-sm text-text-soft mt-4 italic">
           ✅ Coral border on focus for immediate feedback
         </p>
       </Section>
@@ -147,8 +148,8 @@ export const ProhibitedUses: Story = {
   render: () => (
     <div className="max-w-6xl mx-auto p-8 space-y-12 bg-[#FFFAF0]">
       <div className="mb-12">
-        <h1 className="text-4xl font-black tracking-tight mb-4">Prohibited Accent Uses</h1>
-        <p className="text-lg text-[#5A5A5A]">
+        <h1 className="text-xl font-semibold tracking-tight mb-4">Prohibited Accent Uses</h1>
+        <p className="text-base text-text-secondary">
           Common violations and their <strong>correct alternatives</strong>.
         </p>
       </div>
@@ -160,14 +161,14 @@ export const ProhibitedUses: Story = {
       >
         <div className="space-y-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#EF4444] mb-3">❌ WRONG</p>
-            <span className="bg-[#FF4D4D] text-white text-xs font-black px-4 py-1.5 rounded-full shadow-lg">
+            <p className="text-xs font-semibold text-state-error mb-3">❌ WRONG</p>
+            <span className="bg-zinc-600 text-white text-xs font-semibold px-4 py-1 rounded-full shadow-lg">
               MOST POPULAR
             </span>
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#10B981] mb-3">✅ CORRECT</p>
-            <span className="border border-white/20 bg-white/5 text-[#1A1A1A]/80 text-xs font-black px-4 py-1.5 rounded-full">
+            <p className="text-xs font-semibold text-state-success mb-3">✅ CORRECT</p>
+            <span className="border border-white/20 bg-white/5 text-text-primary/80 text-xs font-semibold px-4 py-1 rounded-full">
               MOST POPULAR
             </span>
           </div>
@@ -181,25 +182,25 @@ export const ProhibitedUses: Story = {
       >
         <div className="space-y-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#EF4444] mb-3">❌ WRONG</p>
+            <p className="text-xs font-semibold text-state-error mb-3">❌ WRONG</p>
             <div className="flex gap-3">
-              <button className="px-6 py-3 bg-[#FF4D4D] text-white rounded-xl font-bold text-sm">
+              <Button className="px-6 py-3 bg-zinc-600 text-white rounded-xl font-semibold text-sm">
                 Save Draft
-              </button>
-              <button className="px-6 py-3 bg-[#FF4D4D] text-white rounded-xl font-bold text-sm">
+              </Button>
+              <Button className="px-6 py-3 bg-zinc-600 text-white rounded-xl font-semibold text-sm">
                 Publish Now
-              </button>
+              </Button>
             </div>
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#10B981] mb-3">✅ CORRECT</p>
+            <p className="text-xs font-semibold text-state-success mb-3">✅ CORRECT</p>
             <div className="flex gap-3">
-              <button className="px-6 py-3 bg-white border border-[#1A1A1A]/10 text-[#1A1A1A] rounded-xl font-bold text-sm hover:border-[#1A1A1A]/20">
+              <Button className="px-6 py-3 bg-white border border-[#1A1A1A]/10 text-text-primary rounded-xl font-semibold text-sm hover:border-[#1A1A1A]/20">
                 Save Draft
-              </button>
-              <button className="px-6 py-3 bg-[#FF4D4D] text-white rounded-xl font-bold text-sm">
+              </Button>
+              <Button className="px-6 py-3 bg-zinc-600 text-white rounded-xl font-semibold text-sm">
                 Publish Now
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -212,16 +213,16 @@ export const ProhibitedUses: Story = {
       >
         <div className="space-y-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#EF4444] mb-3">❌ WRONG</p>
-            <button className="p-3 bg-white border border-[#1A1A1A]/5 rounded-xl hover:bg-[#FF4D4D] hover:text-white transition-all">
+            <p className="text-xs font-semibold text-state-error mb-3">❌ WRONG</p>
+            <Button className="p-3 bg-white border border-[#1A1A1A]/5 rounded-xl hover:bg-zinc-600 hover:text-white transition-all">
               ← Back
-            </button>
+            </Button>
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#10B981] mb-3">✅ CORRECT</p>
-            <button className="p-3 bg-white border border-[#1A1A1A]/5 rounded-xl hover:opacity-70 transition-opacity">
+            <p className="text-xs font-semibold text-state-success mb-3">✅ CORRECT</p>
+            <Button className="p-3 bg-white border border-[#1A1A1A]/5 rounded-xl hover:opacity-70 transition-opacity">
               ← Back
-            </button>
+            </Button>
           </div>
         </div>
       </ComparisonSection>
@@ -233,17 +234,17 @@ export const ProhibitedUses: Story = {
       >
         <div className="space-y-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#EF4444] mb-3">❌ WRONG</p>
+            <p className="text-xs font-semibold text-state-error mb-3">❌ WRONG</p>
             <div className="flex gap-6">
-              <Zap size={32} className="text-[#FF4D4D]" />
-              <Sparkles size={32} className="text-[#FF4D4D]" />
+              <Zap size={32} className="text-zinc-500" />
+              <Sparkles size={32} className="text-zinc-500" />
             </div>
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#10B981] mb-3">✅ CORRECT</p>
+            <p className="text-xs font-semibold text-state-success mb-3">✅ CORRECT</p>
             <div className="flex gap-6">
-              <Zap size={32} className="text-[#1A1A1A]/60" />
-              <Sparkles size={32} className="text-[#1A1A1A]/60" />
+              <Zap size={32} className="text-text-primary/60" />
+              <Sparkles size={32} className="text-text-primary/60" />
             </div>
           </div>
         </div>
@@ -256,19 +257,19 @@ export const ProhibitedUses: Story = {
       >
         <div className="space-y-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#EF4444] mb-3">❌ WRONG</p>
+            <p className="text-xs font-semibold text-state-error mb-3">❌ WRONG</p>
             <div className="flex items-center gap-3">
-              <div className="p-0.5 rounded-full bg-[#FF4D4D]/10">
-                <Check size={12} strokeWidth={4} className="text-[#FF4D4D]" />
+              <div className="p-0 rounded-full bg-zinc-200/50">
+                <Check size={12} strokeWidth={4} className="text-zinc-500" />
               </div>
               <span className="text-sm">Unlimited projects</span>
             </div>
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#10B981] mb-3">✅ CORRECT</p>
+            <p className="text-xs font-semibold text-state-success mb-3">✅ CORRECT</p>
             <div className="flex items-center gap-3">
-              <div className="p-0.5 rounded-full bg-[#10B981]/10">
-                <Check size={12} strokeWidth={4} className="text-[#10B981]" />
+              <div className="p-0 rounded-full bg-[#10B981]/10">
+                <Check size={12} strokeWidth={4} className="text-state-success" />
               </div>
               <span className="text-sm">Unlimited projects</span>
             </div>
@@ -283,17 +284,17 @@ export const ProhibitedUses: Story = {
       >
         <div className="space-y-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#EF4444] mb-3">❌ WRONG</p>
+            <p className="text-xs font-semibold text-state-error mb-3">❌ WRONG</p>
             <div className="p-6 bg-white rounded-2xl border border-[#1A1A1A]/5">
-              <h3 className="text-2xl font-black hover:text-[#FF4D4D] transition-colors cursor-pointer">
+              <h3 className="text-xl font-semibold hover:text-zinc-500 transition-colors cursor-pointer">
                 Product Launch Strategy
               </h3>
             </div>
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#10B981] mb-3">✅ CORRECT</p>
+            <p className="text-xs font-semibold text-state-success mb-3">✅ CORRECT</p>
             <div className="p-6 bg-white rounded-2xl border border-[#1A1A1A]/5 hover:border-[#1A1A1A]/20 transition-colors cursor-pointer">
-              <h3 className="text-2xl font-black">
+              <h3 className="text-xl font-semibold">
                 Product Launch Strategy
               </h3>
             </div>
@@ -329,8 +330,8 @@ export const ViolationDashboard: Story = {
     return (
       <div className="max-w-6xl mx-auto p-8 bg-[#FFFAF0]">
         <div className="mb-12">
-          <h1 className="text-4xl font-black tracking-tight mb-4">Violation Dashboard</h1>
-          <p className="text-lg text-[#5A5A5A]">
+          <h1 className="text-xl font-semibold tracking-tight mb-4">Violation Dashboard</h1>
+          <p className="text-base text-text-secondary">
             Current state of accent color governance violations in the codebase.
           </p>
         </div>
@@ -346,17 +347,17 @@ export const ViolationDashboard: Story = {
         {/* Violations List */}
         <div className="bg-white rounded-2xl border border-[#1A1A1A]/5 overflow-hidden">
           <div className="px-6 py-4 border-b border-[#1A1A1A]/5">
-            <h2 className="text-lg font-black">Active Violations</h2>
+            <h2 className="text-base font-semibold">Active Violations</h2>
           </div>
           <div className="divide-y divide-[#1A1A1A]/5">
             {violations.map((violation, idx) => (
               <div key={idx} className="px-6 py-4 flex items-start gap-4 hover:bg-[#1A1A1A]/5 transition-colors">
                 <SeverityBadge severity={violation.severity} />
                 <div className="flex-1">
-                  <p className="font-bold text-sm mb-1">
+                  <p className="font-semibold text-sm mb-1">
                     {violation.file}:{violation.line}
                   </p>
-                  <p className="text-sm text-[#5A5A5A]">{violation.issue}</p>
+                  <p className="text-sm text-text-secondary">{violation.issue}</p>
                 </div>
               </div>
             ))}
@@ -365,8 +366,8 @@ export const ViolationDashboard: Story = {
 
         {/* Target State */}
         <div className="mt-12 p-8 bg-[#10B981]/10 border border-[#10B981]/20 rounded-2xl">
-          <h3 className="text-2xl font-black mb-2">🎯 Target State</h3>
-          <p className="text-lg text-[#5A5A5A]">
+          <h3 className="text-xl font-semibold mb-2">Target State</h3>
+          <p className="text-base text-text-secondary">
             <strong>0 violations</strong> - All coral usage limited to permitted scenarios only
           </p>
         </div>
@@ -387,8 +388,8 @@ function Section({ title, description, children }: {
   return (
     <div className="p-8 bg-white rounded-2xl border border-[#1A1A1A]/5">
       <div className="mb-6">
-        <h2 className="text-2xl font-black mb-2">{title}</h2>
-        <p className="text-sm text-[#5A5A5A]">{description}</p>
+        <h2 className="text-xl font-semibold mb-2">{title}</h2>
+        <p className="text-sm text-text-secondary">{description}</p>
       </div>
       <div className="p-6 bg-[#FFFAF0] rounded-xl border border-[#1A1A1A]/5">
         {children}
@@ -405,8 +406,8 @@ function ComparisonSection({ title, description, children }: {
   return (
     <div className="p-8 bg-white rounded-2xl border border-[#1A1A1A]/5">
       <div className="mb-6">
-        <h2 className="text-2xl font-black mb-2">{title}</h2>
-        <p className="text-sm text-[#5A5A5A]">{description}</p>
+        <h2 className="text-xl font-semibold mb-2">{title}</h2>
+        <p className="text-sm text-text-secondary">{description}</p>
       </div>
       <div className="grid md:grid-cols-2 gap-8">
         {children}
@@ -422,8 +423,8 @@ function MetricCard({ label, value, color }: { label: string; value: number; col
 
   return (
     <div className={`p-6 rounded-xl border ${bgColor} ${borderColor}`}>
-      <p className="text-xs font-bold uppercase tracking-widest text-[#8A8A8A] mb-2">{label}</p>
-      <p className={`text-4xl font-black ${textColor}`}>{value}</p>
+      <p className="text-xs font-semibold text-text-soft mb-2">{label}</p>
+      <p className={`text-xl font-semibold ${textColor}`}>{value}</p>
     </div>
   );
 }
@@ -436,7 +437,7 @@ function SeverityBadge({ severity }: { severity: 'high' | 'medium' | 'low' }) {
   };
 
   return (
-    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${styles[severity]}`}>
+    <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${styles[severity]}`}>
       {severity}
     </span>
   );

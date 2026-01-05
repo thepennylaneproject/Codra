@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { AssetManifestJSON } from './types.ts';
+import { AssetManifestJSON } from './types';
 
 // Helper Regex
-const PATH_REGEX = /^[a-zA-Z0-9_\-\.\/]+$/;
+const PATH_REGEX = /^[a-zA-Z0-9_\-./]+$/;
 const SYMBOL_REGEX = /^[a-zA-Z][a-zA-Z0-9_]*$/;
 
 // 1. File Schema

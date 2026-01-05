@@ -25,14 +25,14 @@ export function MetricsDashboard() {
     <div className="p-8 space-y-8 max-w-7xl mx-auto">
       <div className="flex items-center justify-between">
         <div>
-            <h1 className="text-2xl font-black uppercase tracking-tight text-zinc-900">
+            <h1 className="text-xl font-semibold tracking-tight text-zinc-900">
                 Product Metrics
             </h1>
             <p className="text-sm text-zinc-500">
                 Performance and health monitoring for Codra
             </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1 bg-zinc-100 rounded-full text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+        <div className="flex items-center gap-2 px-3 py-1 bg-zinc-100 rounded-full text-xs font-semibold text-zinc-500">
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
             Live Monitor
         </div>
@@ -74,7 +74,7 @@ export function MetricsDashboard() {
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-white p-6 rounded-2xl border border-zinc-100 shadow-sm">
-            <h2 className="text-xs font-black uppercase tracking-widest text-zinc-400 mb-6 flex items-center gap-2">
+            <h2 className="text-xs font-semibold text-zinc-400 mb-6 flex items-center gap-2">
                 <Layout size={14} />
                 Onboarding Funnel
             </h2>
@@ -89,7 +89,7 @@ export function MetricsDashboard() {
         </div>
 
         <div className="bg-white p-6 rounded-2xl border border-zinc-100 shadow-sm">
-            <h2 className="text-xs font-black uppercase tracking-widest text-zinc-400 mb-6 flex items-center gap-2">
+            <h2 className="text-xs font-semibold text-zinc-400 mb-6 flex items-center gap-2">
                 <Layout size={14} />
                 Flow Completion %
             </h2>

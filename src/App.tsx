@@ -20,7 +20,7 @@ import { AuthCallback } from './pages/auth/AuthCallback';
 import { Outlet } from 'react-router-dom';
 
 const AppShell = () => (
-  <div className="min-h-screen bg-[#FFFAF0]">
+  <div className="min-h-screen bg-[var(--ui-bg)]">
     <Outlet />
   </div>
 );
@@ -155,6 +155,11 @@ export function App() {
 
                     <Route
                       path="/p/:projectId/spread"
+                      element={<Navigate replace to="../workspace" />}
+                    />
+
+                    <Route
+                      path="/p/:projectId/workspace"
                       element={
                         <ProtectedRoute>
                           <NewSpreadPage />

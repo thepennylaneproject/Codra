@@ -1,5 +1,6 @@
 
 import { useOnboardingStore } from '../store';
+import { Button } from '@/components/ui/Button';
 
 export const AssignmentStep = () => {
     const { data, updateData, setStep } = useOnboardingStore();
@@ -7,10 +8,10 @@ export const AssignmentStep = () => {
     return (
         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
             <header className="space-y-4">
-                <h1 className="text-4xl md:text-5xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
+                <h1 className="text-xl md:text-xl font-normal tracking-tight text-zinc-900 dark:text-zinc-50">
                     The Assignment
                 </h1>
-                <p className="text-xl text-zinc-500 font-light max-w-lg">
+                <p className="text-xl text-zinc-500 font-normal max-w-lg">
                     Every issue begins with a directive. What are we creating today?
                 </p>
             </header>
@@ -25,7 +26,7 @@ export const AssignmentStep = () => {
                         type="text"
                         value={data.projectName}
                         onChange={(e) => updateData({ projectName: e.target.value })}
-                        className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-2 text-3xl md:text-4xl font-light focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 transition-all placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
+                        className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-2 text-xl md:text-xl font-normal focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 transition-all placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
                         placeholder="Untitled Project"
                         autoFocus
                     />
@@ -38,7 +39,7 @@ export const AssignmentStep = () => {
                     <textarea
                         value={data.description}
                         onChange={(e) => updateData({ description: e.target.value })}
-                        className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-2 text-xl font-light focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 transition-all placeholder:text-zinc-200 dark:placeholder:text-zinc-800 min-h-[120px] resize-none leading-relaxed"
+                        className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-2 text-xl font-normal focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 transition-all placeholder:text-zinc-200 dark:placeholder:text-zinc-800 min-h-[120px] resize-none leading-relaxed"
                         placeholder="e.g. A deep dive into the future of..."
                     />
                 </div>
@@ -51,30 +52,30 @@ export const AssignmentStep = () => {
                         type="text"
                         value={data.audience}
                         onChange={(e) => updateData({ audience: e.target.value })}
-                        className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-2 text-xl font-light focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 transition-all placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
+                        className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-2 text-xl font-normal focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 transition-all placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
                         placeholder="e.g. C-Suite Executives, DevOps Engineers..."
                     />
                 </div>
 
                 <div className="flex justify-between pt-4">
-                    <button
+                    <Button
                         onClick={() => setStep('first-gen')}
                         className="text-sm font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                     >
                         &larr; Back
-                    </button>
+                    </Button>
                     <div className="flex items-center gap-4">
                         <span className="text-xs text-zinc-400 italic">
                             (You can change all of this later)
                         </span>
-                        <button
+                        <Button
                             onClick={() => setStep('read')}
                             disabled={!data.projectName.trim()}
-                            className="group flex items-center gap-2 text-lg font-medium text-zinc-900 dark:text-zinc-100 hover:text-amber-600 dark:hover:text-amber-400 disabled:opacity-30 disabled:hover:text-zinc-900 transition-colors"
+                            className="group flex items-center gap-2 text-base font-medium text-zinc-900 dark:text-zinc-100 hover:text-amber-600 dark:hover:text-amber-400 disabled:opacity-30 disabled:hover:text-zinc-900 transition-colors"
                         >
                             Editor's Read
                             <span className="block w-6 h-[1px] bg-current group-hover:w-10 transition-all" />
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

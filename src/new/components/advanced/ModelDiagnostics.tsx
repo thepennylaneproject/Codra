@@ -11,6 +11,7 @@ import { smartRouter } from '../../../lib/ai/router/smart-router';
 import { useProviderRegistry } from '../../../lib/ai/registry/useProviderRegistry';
 import { ModelRegistryEntry, ProviderRegistryEntry } from '../../../lib/ai/registry/types';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/Button';
 
 interface ModelDiagnosticsProps {
     isOpen: boolean;
@@ -77,7 +78,7 @@ export function ModelDiagnostics({ isOpen, onClose, currentTask }: ModelDiagnost
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+                        className="fixed inset-0 glass-panel border-0 rounded-none bg-black/50 z-50"
                     />
 
                     {/* Panel */}
@@ -95,27 +96,25 @@ export function ModelDiagnostics({ isOpen, onClose, currentTask }: ModelDiagnost
                                     <div className="p-2 rounded-lg bg-rose-500/10">
                                         <Cpu size={20} className="text-rose-500" />
                                     </div>
-                                    <h2 className="text-lg font-black uppercase tracking-tight text-[var(--color-text-primary)]">
+                                    <h2 className="text-base font-semibold tracking-tight text-text-primary">
                                         Model Diagnostics
                                     </h2>
                                 </div>
-                                <button
+                                <Button
                                     onClick={onClose}
-                                    className="p-2 rounded-lg hover:bg-[var(--color-bg)] transition-colors text-[var(--color-text-muted)]"
+                                    className="p-2 rounded-lg hover:bg-[var(--color-bg)] transition-colors text-text-soft"
                                 >
                                     <X size={18} />
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Content */}
                             <div className="p-6 space-y-6">
                                 {/* Current Task */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)]">
-                                        Current Task
-                                    </label>
+                                    <label className="text-xs font-semibold text-text-soft">Current Task</label>
                                     <div className="px-4 py-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)]">
-                                        <p className="text-sm font-mono text-[var(--color-text-primary)]">
+                                        <p className="text-sm font-mono text-text-primary">
                                             {taskDescription}
                                         </p>
                                     </div>
@@ -125,21 +124,19 @@ export function ModelDiagnostics({ isOpen, onClose, currentTask }: ModelDiagnost
                                 <div className="space-y-3 p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
                                     <div className="flex items-center gap-2">
                                         <Zap size={14} className="text-emerald-500" />
-                                        <label className="text-xs font-bold uppercase tracking-widest text-emerald-600">
-                                            Smart Mode Selection
-                                        </label>
+                                        <label className="text-xs font-semibold text-emerald-600">Smart Mode Selection</label>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-                                                <span className="text-sm font-bold text-emerald-600">
+                                            <div className="px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                                                <span className="text-sm font-semibold text-emerald-600">
                                                     {smartModeModel}
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-2 mt-2">
-                                        <Info size={12} className="text-emerald-500/60 mt-0.5 flex-shrink-0" />
+                                        <Info size={12} className="text-emerald-500/60 mt-0 flex-shrink-0" />
                                         <p className="text-xs text-emerald-600/80 font-mono">
                                             {selectionReason}
                                         </p>
@@ -148,9 +145,7 @@ export function ModelDiagnostics({ isOpen, onClose, currentTask }: ModelDiagnost
 
                                 {/* Override Section */}
                                 <div className="space-y-3">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)]">
-                                        Override (this task only)
-                                    </label>
+                                    <label className="text-xs font-semibold text-text-soft">Override (this task only)</label>
 
                                     <select
                                         value={overrideModelId ? `${overrideProviderId}:${overrideModelId}` : ''}
@@ -164,7 +159,7 @@ export function ModelDiagnostics({ isOpen, onClose, currentTask }: ModelDiagnost
                                                 setOverrideProviderId('');
                                             }
                                         }}
-                                        className="w-full px-4 py-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] text-sm font-mono text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all"
+                                        className="w-full px-4 py-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] text-sm font-mono text-text-primary focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all"
                                     >
                                         <option value="">Select model...</option>
                                         {allModels.map((model) => (
@@ -186,12 +181,12 @@ export function ModelDiagnostics({ isOpen, onClose, currentTask }: ModelDiagnost
                                             className="w-4 h-4 rounded border-amber-500/30 text-amber-500 focus:ring-amber-500/50"
                                         />
                                         <div className="flex items-start gap-2 flex-1">
-                                            <AlertCircle size={14} className="text-amber-500 mt-0.5 flex-shrink-0" />
+                                            <AlertCircle size={14} className="text-amber-500 mt-0 flex-shrink-0" />
                                             <div className="space-y-1">
-                                                <span className="text-xs font-bold text-amber-600">
+                                                <span className="text-xs font-semibold text-amber-600">
                                                     Remember override for similar tasks
                                                 </span>
-                                                <p className="text-[10px] text-amber-600/70">
+                                                <p className="text-xs text-amber-600/70">
                                                     This will bypass Smart Mode for tasks of the same type
                                                 </p>
                                             </div>
@@ -202,19 +197,19 @@ export function ModelDiagnostics({ isOpen, onClose, currentTask }: ModelDiagnost
 
                             {/* Footer Actions */}
                             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[var(--color-border)] bg-[var(--color-surface-dark)]">
-                                <button
+                                <Button
                                     onClick={handleUseSmartMode}
-                                    className="px-5 py-2.5 rounded-lg border border-[var(--color-border)] text-sm font-bold uppercase tracking-wider text-[var(--color-text-muted)] hover:bg-[var(--color-bg)] transition-colors"
+                                    className="px-4 py-2 rounded-lg border border-[var(--color-border)] text-sm font-semibold text-text-soft hover:bg-[var(--color-bg)] transition-colors"
                                 >
                                     Use Smart Mode
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     onClick={handleApplyOverride}
                                     disabled={!overrideModelId}
-                                    className="px-5 py-2.5 rounded-lg bg-rose-500 hover:bg-rose-600 disabled:bg-[var(--color-border)] disabled:cursor-not-allowed text-sm font-bold uppercase tracking-wider text-white transition-colors shadow-lg shadow-rose-500/20 disabled:shadow-none"
+                                    className="px-4 py-2 rounded-lg bg-rose-500 hover:bg-rose-600 disabled:bg-[var(--color-border)] disabled:cursor-not-allowed text-sm font-semibold text-white transition-colors shadow-lg shadow-rose-500/20 disabled:shadow-none"
                                 >
                                     Apply Override
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </motion.div>

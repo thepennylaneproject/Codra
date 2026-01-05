@@ -5,6 +5,7 @@ import { createProject } from '../../../../domain/projects';
 import { generateMoodboardV2 } from '../moodboardGeneratorV2';
 import { TearSheetRevision } from '../../../../domain/types';
 import { Loader2, Sparkles, FileText, Palette } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 type GenerationPhase = 'starting' | 'moodboard' | 'tear-sheet' | 'project' | 'complete';
 
@@ -13,7 +14,7 @@ const PHASE_LABELS: Record<GenerationPhase, string> = {
     moodboard: 'Generating Moodboard v1...',
     'tear-sheet': 'Creating Tear Sheet v1...',
     project: 'Setting up project workspace...',
-    complete: 'Ready for review',
+    complete: 'Provisioning complete',
 };
 
 export const GeneratingStep = () => {
@@ -127,7 +128,7 @@ export const GeneratingStep = () => {
         return (
             <div className="min-h-[400px] flex flex-col items-center justify-center text-center space-y-6">
                 <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-full">
-                    <span className="text-red-500 text-2xl">!</span>
+                    <span className="text-red-500 text-xl">!</span>
                 </div>
                 <div className="space-y-2">
                     <h2 className="text-xl font-medium text-zinc-900 dark:text-zinc-100">
@@ -135,12 +136,12 @@ export const GeneratingStep = () => {
                     </h2>
                     <p className="text-zinc-500 max-w-md">{error}</p>
                 </div>
-                <button
+                <Button
                     onClick={handleRetry}
                     className="px-6 py-3 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 rounded-sm text-sm font-medium hover:opacity-90 transition-opacity"
                 >
-                    Go Back and Retry
-                </button>
+                    Open previous step
+                </Button>
             </div>
         );
     }
@@ -150,21 +151,21 @@ export const GeneratingStep = () => {
 
             {/* Animated Icon */}
             <div className="relative">
-                <div className="p-6 bg-gradient-to-br from-amber-50 to-rose-50 dark:from-amber-900/20 dark:to-rose-900/20 rounded-full">
+                <div className="p-6 bg-amber-50 dark:bg-amber-900/20 rounded-full">
                     <Sparkles
                         size={48}
                         className="text-amber-500 animate-pulse"
                     />
                 </div>
-                <div className="absolute -inset-4 bg-gradient-to-r from-amber-200/20 via-rose-200/20 to-amber-200/20 rounded-full blur-xl animate-pulse" />
+                <div className="absolute -inset-4 bg-amber-200/20 rounded-full blur-xl animate-pulse" />
             </div>
 
             {/* Status */}
             <div className="space-y-4">
-                <h1 className="text-5xl font-black tracking-tighter text-[#1A1A1A] leading-none">
-                    {phase === 'complete' ? 'Production Ready' : 'Project Initiation'}
+                <h1 className="text-xl font-semibold tracking-tighter text-text-primary leading-none">
+                    {phase === 'complete' ? 'Provisioning complete' : 'Project initiation'}
                 </h1>
-                <p className="text-xl text-[#5A5A5A] font-medium italic font-serif">
+                <p className="text-xl text-text-secondary font-medium italic font-serif">
                     {PHASE_LABELS[phase]}
                 </p>
             </div>
@@ -190,7 +191,7 @@ export const GeneratingStep = () => {
             )}
 
             {/* Helper text */}
-            <p className="text-[10px] text-[#8A8A8A] font-black uppercase tracking-[0.2em] max-w-xs leading-loose">
+            <p className="text-xs text-text-soft font-semibold max-w-xs leading-loose">
                 Assembling your workspace.<br/>
                 Final review and confirmation required before launch.
             </p>
@@ -211,15 +212,15 @@ function ProgressIcon({
     return (
         <div className={`flex flex-col items-center gap-3 transition-all duration-700 ${status === 'pending' ? 'opacity-20' : 'opacity-100'
             }`}>
-            <div className={`p-5 rounded-full transition-all duration-700 shadow-2xl ${status === 'complete'
+            <div className={`p-4 rounded-full transition-all duration-700 shadow-2xl ${status === 'complete'
                 ? 'bg-[#1A1A1A] text-white shadow-[#1A1A1A]/20'
                 : status === 'active'
-                    ? 'bg-[#FF4D4D] text-white shadow-[#FF4D4D]/30 animate-pulse'
-                    : 'bg-white border border-[#1A1A1A]/5 text-[#8A8A8A]'
+                    ? 'bg-zinc-600 text-white shadow-zinc-500/30 animate-pulse'
+                    : 'bg-white border border-[#1A1A1A]/5 text-text-soft'
                 }`}>
                 <Icon size={24} strokeWidth={status === 'complete' ? 3 : 2} />
             </div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-[#1A1A1A]">{label}</span>
+            <span className="text-xs font-semibold text-text-primary">{label}</span>
         </div>
     );
 }

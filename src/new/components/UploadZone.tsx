@@ -88,10 +88,10 @@ export function UploadZone({
                 </div>
 
                 <div className="text-center">
-                    <p className="text-sm font-bold text-zinc-900 mb-1">
+                    <p className="text-sm font-semibold text-zinc-900 mb-1">
                         {isDragging ? "Release to upload" : "Click or drag files here"}
                     </p>
-                    <p className="text-[10px] uppercase font-black tracking-widest text-zinc-400">
+                    <p className="text-xs font-semibold text-zinc-400">
                         Images, Docs, or PDF • Max {maxSize / (1024 * 1024)}MB
                     </p>
                 </div>
@@ -102,7 +102,7 @@ export function UploadZone({
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
-                            className="absolute -bottom-10 left-0 right-0 flex items-center justify-center gap-2 text-[10px] font-bold text-rose-500 bg-rose-50 px-3 py-1.5 rounded-full border border-rose-100"
+                            className="absolute -bottom-8 left-0 right-0 flex items-center justify-center gap-2 text-xs font-semibold text-rose-500 bg-rose-50 px-3 py-1 rounded-full border border-rose-100"
                         >
                             <X size={12} />
                             {error}

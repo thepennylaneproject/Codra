@@ -54,6 +54,7 @@ import {
 import { CoherenceLoopView } from '../components/CoherenceLoopView';
 import { getProjects } from '../../domain/projects';
 import type { Project } from '../../domain/types';
+import { Button } from '@/components/ui/Button';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -352,15 +353,15 @@ export default function CoherenceScanPage() {
     return (
         <div className="min-h-screen bg-[#FFFAF0]">
             {/* Header */}
-            <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-[#1A1A1A]/10">
+            <header className="sticky top-0 z-50 glass-panel-light border-0 border-b border-[#1A1A1A]/10 rounded-none bg-white/80">
                 <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-emerald-600 flex items-center justify-center">
                             <Zap className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-lg font-bold text-[#1A1A1A]">Coherence Scan</h1>
-                            <p className="text-xs text-[#8A8A8A]">Pre-deployment audit system</p>
+                            <h1 className="text-base font-semibold text-text-primary">Coherence Scan</h1>
+                            <p className="text-xs text-text-soft">Pre-deployment audit system</p>
                         </div>
                     </div>
 
@@ -368,16 +369,19 @@ export default function CoherenceScanPage() {
                     {scansRemaining && (
                         <div className="flex items-center gap-4 text-xs">
                             <div className="text-right">
-                                <span className="text-[#8A8A8A]">Scans this month:</span>
-                                <span className="ml-2 font-bold text-[#1A1A1A]">
+                                <span className="text-text-soft">Scans this month:</span>
+                                <span className="ml-2 font-semibold text-text-primary">
                                     {scansRemaining.fullScans.used}/{scansRemaining.fullScans.allowed}
                                 </span>
                             </div>
                             {userTier === 'free' && (
-                                <button className="flex items-center gap-1 px-3 py-1.5 bg-amber-500 text-white rounded-full text-xs font-medium hover:bg-amber-600 transition-colors">
+                                <Button
+                                    disabled
+                                    className="flex items-center gap-1 px-3 py-1 bg-amber-500 text-white rounded-full text-xs font-medium hover:bg-amber-600 transition-colors"
+                                >
                                     <Crown className="w-3 h-3" />
-                                    Upgrade
-                                </button>
+                                    Unavailable
+                                </Button>
                             )}
                         </div>
                     )}
@@ -388,18 +392,18 @@ export default function CoherenceScanPage() {
                 {/* Project Context Selector */}
                 <div className="bg-white rounded-xl border border-[#1A1A1A]/10 p-4 mb-6 flex items-center justify-between gap-4">
                     <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8A8A8A] mb-1">Project Context</p>
+                        <p className="text-xs font-semibold text-text-soft mb-1">Project Context</p>
                         {loadingProjects ? (
                             <div className="w-48 h-5 rounded-full bg-[#1A1A1A]/5 animate-pulse" />
                         ) : activeProject ? (
                             <>
-                                <p className="text-sm font-semibold text-[#1A1A1A]">{activeProject.name}</p>
-                                <p className="text-xs text-[#8A8A8A] line-clamp-1">
+                                <p className="text-sm font-semibold text-text-primary">{activeProject.name}</p>
+                                <p className="text-xs text-text-soft line-clamp-1">
                                     Findings will be pushed to this workspace&apos;s task queue.
                                 </p>
                             </>
                         ) : (
-                            <p className="text-sm text-[#8A8A8A]">
+                            <p className="text-sm text-text-soft">
                                 No workspace selected. Choose one to attach scan findings.
                             </p>
                         )}
@@ -421,9 +425,9 @@ export default function CoherenceScanPage() {
                         {projects.length === 0 && (
                             <Link
                                 to="/projects"
-                                className="px-4 py-2 bg-[#1A1A1A] text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-[#1A1A1A]/90"
+                                className="px-4 py-2 bg-[#1A1A1A] text-white rounded-lg text-xs font-semibold hover:bg-[#1A1A1A]/90"
                             >
-                                Go to registry
+                                Open registry
                             </Link>
                         )}
                     </div>
@@ -440,8 +444,8 @@ export default function CoherenceScanPage() {
                             className="space-y-8"
                         >
                             <div className="text-center max-w-lg mx-auto">
-                                <h2 className="text-2xl font-bold text-[#1A1A1A] mb-2">Choose Your Scan</h2>
-                                <p className="text-[#8A8A8A]">
+                                <h2 className="text-xl font-semibold text-text-primary mb-2">Choose Your Scan</h2>
+                                <p className="text-text-soft">
                                     Select the depth of analysis you need for your project.
                                 </p>
                             </div>
@@ -449,7 +453,7 @@ export default function CoherenceScanPage() {
                             {/* Scan Type Cards */}
                             <div className="grid md:grid-cols-3 gap-6">
                                 {/* Quick Check */}
-                                <button
+                                <Button
                                     onClick={() => handleSelectScanType('quick-check')}
                                     disabled={!projectId || loadingProjects}
                                     className={cn(
@@ -462,20 +466,20 @@ export default function CoherenceScanPage() {
                                     <div className="w-12 h-12 rounded-lg bg-zinc-100 flex items-center justify-center mb-4 group-hover:bg-emerald-50 transition-colors">
                                         <Rocket className="w-6 h-6 text-zinc-500 group-hover:text-emerald-600" />
                                     </div>
-                                    <h3 className="font-bold text-[#1A1A1A] mb-1">Quick Check</h3>
-                                    <p className="text-sm text-[#8A8A8A] mb-4">
+                                    <h3 className="font-semibold text-text-primary mb-1">Quick Check</h3>
+                                    <p className="text-sm text-text-soft mb-4">
                                         Fast ship-readiness check. Perfect for a final review.
                                     </p>
                                     <div className="flex items-center justify-between text-xs">
                                         <span className="text-emerald-600 font-medium">
                                             {userTier === 'free' ? 'Free' : 'Included'}
                                         </span>
-                                        <span className="text-[#8A8A8A]">~30 seconds</span>
+                                        <span className="text-text-soft">~30 seconds</span>
                                     </div>
-                                </button>
+                                </Button>
 
                                 {/* Full Scan */}
-                                <button
+                                <Button
                                     onClick={() => handleSelectScanType('full-scan')}
                                     disabled={(userTier === 'free' && limits.fullScansPerMonth === 0) || !projectId || loadingProjects}
                                     className={cn(
@@ -493,51 +497,51 @@ export default function CoherenceScanPage() {
                                     <div className="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center mb-4">
                                         <Zap className="w-6 h-6 text-emerald-600" />
                                     </div>
-                                    <h3 className="font-bold text-[#1A1A1A] mb-1">Full Scan</h3>
-                                    <p className="text-sm text-[#8A8A8A] mb-4">
+                                    <h3 className="font-semibold text-text-primary mb-1">Full Scan</h3>
+                                    <p className="text-sm text-text-soft mb-4">
                                         Comprehensive audit across all dimensions.
                                     </p>
                                     <div className="flex items-center justify-between text-xs">
                                         <span className="text-emerald-600 font-medium">
                                             {limits.fullScansPerMonth}/month included
                                         </span>
-                                        <span className="text-[#8A8A8A]">~2 minutes</span>
+                                        <span className="text-text-soft">~2 minutes</span>
                                     </div>
-                                </button>
+                                </Button>
 
                                 {/* Deep Scan */}
-                                <button
+                                <Button
                                     onClick={() => handleSelectScanType('deep-scan')}
                                     disabled={!limits.deepScanAvailable || !projectId || loadingProjects}
                                     className={cn(
                                         "group text-left p-6 rounded-xl border transition-all relative",
                                         limits.deepScanAvailable
-                                            ? "bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200 hover:shadow-lg"
+                                            ? "bg-emerald-50 border-emerald-200 hover:shadow-lg"
                                             : "bg-white border-[#1A1A1A]/10 opacity-60 cursor-not-allowed"
                                     )}
                                 >
                                     <div className="absolute top-4 right-4">
-                                        <span className="px-2 py-0.5 bg-[#1A1A1A] text-white text-[10px] font-bold rounded-full">
+                                        <span className="px-2 py-0 bg-[#1A1A1A] text-white text-xs font-semibold rounded-full">
                                             PRO
                                         </span>
                                     </div>
                                     <div className="w-12 h-12 rounded-lg bg-teal-100 flex items-center justify-center mb-4">
                                         <Eye className="w-6 h-6 text-teal-600" />
                                     </div>
-                                    <h3 className="font-bold text-[#1A1A1A] mb-1">Deep Scan</h3>
-                                    <p className="text-sm text-[#8A8A8A] mb-4">
+                                    <h3 className="font-semibold text-text-primary mb-1">Deep Scan</h3>
+                                    <p className="text-sm text-text-soft mb-4">
                                         Multi-model ensemble for maximum insight.
                                     </p>
                                     <div className="flex items-center justify-between text-xs">
                                         <span className="text-teal-600 font-medium">$15-25 add-on</span>
-                                        <span className="text-[#8A8A8A]">~5 minutes</span>
+                                        <span className="text-text-soft">~5 minutes</span>
                                     </div>
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Audit Types Preview */}
                             <div className="bg-white rounded-xl border border-[#1A1A1A]/10 p-6">
-                                <h3 className="text-sm font-bold text-[#1A1A1A] mb-4">What We Analyze</h3>
+                                <h3 className="text-sm font-semibold text-text-primary mb-4">What We Analyze</h3>
                                 <div className="grid md:grid-cols-3 gap-4">
                                     {Object.entries(AUDIT_METADATA).filter(([id]) => id !== 'coherence-loop').map(([id, audit]) => {
                                         const Icon = AUDIT_ICONS[id as AuditType];
@@ -547,8 +551,8 @@ export default function CoherenceScanPage() {
                                                     <Icon className="w-4 h-4 text-zinc-500" />
                                                 </div>
                                                 <div>
-                                                    <div className="text-sm font-medium text-[#1A1A1A]">{audit.name}</div>
-                                                    <div className="text-xs text-[#8A8A8A] line-clamp-2">{audit.description}</div>
+                                                    <div className="text-sm font-medium text-text-primary">{audit.name}</div>
+                                                    <div className="text-xs text-text-soft line-clamp-2">{audit.description}</div>
                                                 </div>
                                             </div>
                                         );
@@ -601,30 +605,30 @@ export default function CoherenceScanPage() {
 
                             {/* Navigation */}
                             <div className="flex items-center justify-between">
-                                <button
+                                <Button
                                     onClick={handlePrevQuestion}
                                     disabled={currentQuestionIndex === 0}
-                                    className="px-4 py-2 text-sm text-[#8A8A8A] hover:text-[#1A1A1A] disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="px-4 py-2 text-sm text-text-soft hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Back
-                                </button>
+                                    Open previous step
+                                </Button>
 
                                 {currentQuestionIndex < CLARIFYING_QUESTIONS.length - 1 ? (
-                                    <button
+                                    <Button
                                         onClick={handleNextQuestion}
                                         className="flex items-center gap-2 px-6 py-2 bg-[#1A1A1A] text-white rounded-lg hover:bg-[#1A1A1A]/90 transition-colors"
                                     >
                                         Continue
                                         <ChevronRight className="w-4 h-4" />
-                                    </button>
+                                    </Button>
                                 ) : (
-                                    <button
+                                    <Button
                                         onClick={handleStartScan}
                                         className="flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
                                     >
-                                        Start Scan
+                                        Run scan
                                         <Zap className="w-4 h-4" />
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                         </motion.div>
@@ -644,8 +648,8 @@ export default function CoherenceScanPage() {
                             </div>
 
                             <div>
-                                <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">Scanning Your Project</h2>
-                                <p className="text-[#8A8A8A]">
+                                <h2 className="text-xl font-semibold text-text-primary mb-2">Scanning Your Project</h2>
+                                <p className="text-text-soft">
                                     Running {currentScan.auditTypes.length} audits...
                                 </p>
                             </div>
@@ -678,7 +682,7 @@ export default function CoherenceScanPage() {
                                             </div>
                                             <span className={cn(
                                                 "text-sm",
-                                                isComplete ? "text-emerald-700" : "text-[#8A8A8A]"
+                                                isComplete ? "text-emerald-700" : "text-text-soft"
                                             )}>
                                                 {audit.name}
                                             </span>
@@ -703,38 +707,38 @@ export default function CoherenceScanPage() {
                                 <div className="bg-white rounded-xl border border-[#1A1A1A]/10 p-6">
                                     <div className="flex items-center justify-between mb-6">
                                         <div>
-                                            <h2 className="text-xl font-bold text-[#1A1A1A]">Scan Complete</h2>
-                                            <p className="text-sm text-[#8A8A8A]">
+                                    <h2 className="text-xl font-semibold text-text-primary">Execution complete</h2>
+                                            <p className="text-sm text-text-soft">
                                                 Found {currentScan.findings.length} findings across {currentScan.auditTypes.length} audits
                                             </p>
                                         </div>
                                         <div className="text-right">
-                                            <div className="text-3xl font-bold text-[#1A1A1A]">
+                                            <div className="text-xl font-semibold text-text-primary">
                                                 {currentScan.summary.healthScore}
                                             </div>
-                                            <div className="text-xs text-[#8A8A8A]">Health Score</div>
+                                            <div className="text-xs text-text-soft">Health Score</div>
                                         </div>
                                     </div>
 
                                     {/* Severity Counts */}
                                     <div className="flex gap-4">
                                         {currentScan.summary.criticalCount > 0 && (
-                                            <div className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-sm font-medium">
+                                            <div className="px-3 py-1 bg-red-50 text-red-600 rounded-lg text-sm font-medium">
                                                 {currentScan.summary.criticalCount} Critical
                                             </div>
                                         )}
                                         {currentScan.summary.highCount > 0 && (
-                                            <div className="px-3 py-1.5 bg-orange-50 text-orange-600 rounded-lg text-sm font-medium">
+                                            <div className="px-3 py-1 bg-orange-50 text-orange-600 rounded-lg text-sm font-medium">
                                                 {currentScan.summary.highCount} High
                                             </div>
                                         )}
                                         {currentScan.summary.mediumCount > 0 && (
-                                            <div className="px-3 py-1.5 bg-amber-50 text-amber-700 rounded-lg text-sm font-medium">
+                                            <div className="px-3 py-1 bg-amber-50 text-amber-700 rounded-lg text-sm font-medium">
                                                 {currentScan.summary.mediumCount} Medium
                                             </div>
                                         )}
                                         {currentScan.summary.lowCount > 0 && (
-                                            <div className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium">
+                                            <div className="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium">
                                                 {currentScan.summary.lowCount} Low
                                             </div>
                                         )}
@@ -745,8 +749,8 @@ export default function CoherenceScanPage() {
                             {/* Findings List */}
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-sm font-bold text-[#1A1A1A]">Findings</h3>
-                                    <span className="text-xs text-[#8A8A8A]">
+                                    <h3 className="text-sm font-semibold text-text-primary">Findings</h3>
+                                    <span className="text-xs text-text-soft">
                                         {currentScan.findings.filter(f => f.selected).length} selected for action
                                     </span>
                                 </div>
@@ -761,21 +765,21 @@ export default function CoherenceScanPage() {
                             </div>
 
                             {/* Action Bar */}
-                            <div className="sticky bottom-4 bg-white/90 backdrop-blur-sm rounded-xl border border-[#1A1A1A]/10 p-4 flex items-center justify-between">
+                            <div className="sticky bottom-4 glass-panel-light border-[#1A1A1A]/10 bg-white/90 rounded-xl p-4 flex items-center justify-between">
                                 <div className="text-sm">
-                                    <span className="text-[#8A8A8A]">Selected: </span>
-                                    <span className="font-bold text-[#1A1A1A]">
+                                    <span className="text-text-soft">Selected: </span>
+                                    <span className="font-semibold text-text-primary">
                                         {currentScan.findings.filter(f => f.selected).length} findings
                                     </span>
                                 </div>
-                                <button
+                                <Button
                                     onClick={handleAddToQueue}
                                     disabled={currentScan.findings.filter(f => f.selected).length === 0}
                                     className="flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Add to Task Queue
                                     <ArrowRight className="w-4 h-4" />
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Loop Suggestion Footer */}
@@ -783,22 +787,22 @@ export default function CoherenceScanPage() {
                                 <div className="bg-emerald-50 rounded-xl border border-emerald-200 p-6 flex items-center justify-between">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
-                                            <RefreshCw className="w-6 h-6 text-emerald-600 animate-spin-slow" />
+                                            <RefreshCw className="w-6 h-6 text-emerald-600 animate-spin" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-[#1A1A1A]">Ready for verification?</h4>
+                                            <h4 className="font-semibold text-text-primary">Verification available</h4>
                                             <p className="text-sm text-emerald-700">
-                                                You've addressed most findings. Start a coherence loop to verify improvements.
+                                                You&apos;ve addressed most findings. Start a coherence loop to verify improvements.
                                             </p>
                                         </div>
                                     </div>
-                                    <button
+                                    <Button
                                         onClick={handleStartLoop}
-                                        className="flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] text-white rounded-lg hover:bg-[#1A1A1A]/90 transition-all font-bold uppercase tracking-widest text-[10px]"
+                                        className="flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] text-white rounded-lg hover:bg-[#1A1A1A]/90 transition-all font-semibold text-xs"
                                     >
                                         <Play className="w-4 h-4" />
-                                        Start Loop
-                                    </button>
+                                        Run loop
+                                    </Button>
                                 </div>
                             )}
                         </motion.div>
@@ -839,7 +843,7 @@ function QuestionRenderer({
     if (question.type === 'text') {
         return (
             <div className="space-y-4">
-                <label className="block text-lg font-medium text-[#1A1A1A]">
+                <label className="block text-base font-medium text-text-primary">
                     {question.question}
                 </label>
                 <textarea
@@ -856,12 +860,12 @@ function QuestionRenderer({
     if (question.type === 'select') {
         return (
             <div className="space-y-4">
-                <label className="block text-lg font-medium text-[#1A1A1A]">
+                <label className="block text-base font-medium text-text-primary">
                     {question.question}
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                     {question.options?.map((opt) => (
-                        <button
+                        <Button
                             key={opt.value}
                             onClick={() => onChange(opt.value)}
                             className={cn(
@@ -872,7 +876,7 @@ function QuestionRenderer({
                             )}
                         >
                             {opt.label}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </div>
@@ -883,14 +887,14 @@ function QuestionRenderer({
         const selectedValues = (value as string[]) || [];
         return (
             <div className="space-y-4">
-                <label className="block text-lg font-medium text-[#1A1A1A]">
+                <label className="block text-base font-medium text-text-primary">
                     {question.question}
                 </label>
                 <div className="flex flex-wrap gap-2">
                     {question.options?.map((opt) => {
                         const isSelected = selectedValues.includes(opt.value);
                         return (
-                            <button
+                            <Button
                                 key={opt.value}
                                 onClick={() => {
                                     if (isSelected) {
@@ -908,7 +912,7 @@ function QuestionRenderer({
                             >
                                 {isSelected && <Check className="w-3 h-3 inline mr-1" />}
                                 {opt.label}
-                            </button>
+                            </Button>
                         );
                     })}
                 </div>
@@ -941,40 +945,40 @@ function FindingCard({
                 onClick={() => setIsExpanded(!isExpanded)}
             >
                 {/* Selection Toggle */}
-                <button
+                <Button
                     onClick={(e) => {
                         e.stopPropagation();
                         onToggle();
                     }}
                     className={cn(
-                        "w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 mt-0.5",
+                        "w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 mt-0",
                         finding.selected
                             ? "border-emerald-600 bg-emerald-600"
                             : "border-[#1A1A1A]/20"
                     )}
                 >
                     {finding.selected && <Check className="w-3 h-3 text-white" />}
-                </button>
+                </Button>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                         <span className={cn(
-                            "px-2 py-0.5 text-[10px] font-bold uppercase rounded border",
+                            "px-2 py-0 text-xs font-semibold rounded border",
                             SEVERITY_COLORS[finding.severity]
                         )}>
                             {finding.severity}
                         </span>
-                        <span className="text-xs text-[#8A8A8A]">
+                        <span className="text-xs text-text-soft">
                             {finding.category.replace(/-/g, ' ')}
                         </span>
                     </div>
-                    <h4 className="font-medium text-[#1A1A1A] mb-1">{finding.title}</h4>
-                    <p className="text-sm text-[#8A8A8A] line-clamp-2">{finding.observation}</p>
+                    <h4 className="font-medium text-text-primary mb-1">{finding.title}</h4>
+                    <p className="text-sm text-text-soft line-clamp-2">{finding.observation}</p>
                 </div>
 
                 {/* Effort Badge */}
-                <div className="text-xs text-[#8A8A8A] shrink-0">
+                <div className="text-xs text-text-soft shrink-0">
                     {finding.estimatedEffort}
                 </div>
             </div>
@@ -988,18 +992,18 @@ function FindingCard({
                         exit={{ height: 0, opacity: 0 }}
                         className="border-t border-[#1A1A1A]/5 overflow-hidden"
                     >
-                        <div className="p-4 pl-13 space-y-3 text-sm">
+                        <div className="p-4 pl-12 space-y-3 text-sm">
                             <div>
-                                <div className="text-[#8A8A8A] text-xs uppercase tracking-wider mb-1">Why It Matters</div>
-                                <p className="text-[#1A1A1A]">{finding.whyItMatters}</p>
+                                <div className="text-text-soft text-xs mb-1">Why It Matters</div>
+                                <p className="text-text-primary">{finding.whyItMatters}</p>
                             </div>
                             <div>
-                                <div className="text-[#8A8A8A] text-xs uppercase tracking-wider mb-1">User Impact</div>
-                                <p className="text-[#1A1A1A]">{finding.userImpact}</p>
+                                <div className="text-text-soft text-xs mb-1">User Impact</div>
+                                <p className="text-text-primary">{finding.userImpact}</p>
                             </div>
                             <div>
-                                <div className="text-[#8A8A8A] text-xs uppercase tracking-wider mb-1">Recommendation</div>
-                                <p className="text-[#1A1A1A]">{finding.recommendation}</p>
+                                <div className="text-text-soft text-xs mb-1">Recommendation</div>
+                                <p className="text-text-primary">{finding.recommendation}</p>
                             </div>
                         </div>
                     </motion.div>

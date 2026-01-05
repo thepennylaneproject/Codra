@@ -10,6 +10,7 @@ import { useState, useMemo } from 'react';
 import { ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, X, Check } from 'lucide-react';
 import { FEEDBACK_TAGS, FeedbackTagId } from '../../lib/feedback/feedback-store';
 import { clsx } from 'clsx';
+import { Button } from '@/components/ui/Button';
 
 // ============================================
 // Types
@@ -114,8 +115,7 @@ export function ArtifactFeedbackBar({
 
     return (
         <div className={clsx(
-            "rounded-xl border",
-            "bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm",
+            "glass-panel bg-white/80 dark:bg-zinc-900/80",
             "border-zinc-200 dark:border-zinc-800",
             className
         )}>
@@ -123,7 +123,7 @@ export function ArtifactFeedbackBar({
             <div className="flex items-center gap-2 px-3 py-2">
                 {/* Sentiment Buttons */}
                 <div className="flex items-center gap-1">
-                    <button
+                    <Button
                         onClick={() => handleSentimentClick(true)}
                         className={clsx(
                             "w-8 h-8 rounded-lg flex items-center justify-center transition-all",
@@ -134,8 +134,8 @@ export function ArtifactFeedbackBar({
                         aria-label="Like"
                     >
                         <ThumbsUp size={16} />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={() => handleSentimentClick(false)}
                         className={clsx(
                             "w-8 h-8 rounded-lg flex items-center justify-center transition-all",
@@ -146,7 +146,7 @@ export function ArtifactFeedbackBar({
                         aria-label="Dislike"
                     >
                         <ThumbsDown size={16} />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Divider */}
@@ -160,7 +160,7 @@ export function ArtifactFeedbackBar({
 
                 {/* Expand/Collapse */}
                 {sentiment !== null && (
-                    <button
+                    <Button
                         onClick={() => setIsExpanded(!isExpanded)}
                         className={clsx(
                             "w-6 h-6 rounded flex items-center justify-center",
@@ -169,36 +169,36 @@ export function ArtifactFeedbackBar({
                         )}
                     >
                         {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                    </button>
+                    </Button>
                 )}
 
                 {/* Submit (if sentiment selected) */}
                 {sentiment !== null && (
-                    <button
+                    <Button
                         onClick={handleSubmit}
                         className={clsx(
                             "px-3 py-1 rounded-lg text-xs font-medium transition-colors",
-                            "bg-[var(--brand-accent)]/10 text-[var(--brand-accent)]",
+                            "bg-[var(--brand-accent)]/10 text-zinc-500",
                             "hover:bg-[var(--brand-accent)]/20"
                         )}
                     >
                         Done
-                    </button>
+                    </Button>
                 )}
 
                 {/* Dismiss */}
                 {onDismiss && (
-                    <button
+                    <Button
                         onClick={onDismiss}
                         className={clsx(
                             "w-6 h-6 rounded flex items-center justify-center",
                             "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300",
                             "hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
                         )}
-                        aria-label="Dismiss"
+                        aria-label="Close"
                     >
                         <X size={14} />
-                    </button>
+                    </Button>
                 )}
             </div>
 
@@ -206,7 +206,7 @@ export function ArtifactFeedbackBar({
             {isExpanded && (
                 <div className="px-3 pb-3 pt-1 border-t border-zinc-100 dark:border-zinc-800">
                     {/* Tag Pills */}
-                    <div className="flex flex-wrap gap-1.5 mb-3">
+                    <div className="flex flex-wrap gap-1 mb-3">
                         {relevantTagIds.map(tagId => {
                             const tag = FEEDBACK_TAGS[tagId];
                             if (!tag) return null;
@@ -214,7 +214,7 @@ export function ArtifactFeedbackBar({
                             const isSelected = selectedTags.has(tagId);
 
                             return (
-                                <button
+                                <Button
                                     key={tagId}
                                     onClick={() => handleTagToggle(tagId)}
                                     className={clsx(
@@ -226,7 +226,7 @@ export function ArtifactFeedbackBar({
                                 >
                                     <span className="mr-1">{tag.emoji}</span>
                                     {tag.label}
-                                </button>
+                                </Button>
                             );
                         })}
                     </div>
@@ -238,7 +238,7 @@ export function ArtifactFeedbackBar({
                         onChange={(e) => setNote(e.target.value)}
                         placeholder="Add a note (optional)"
                         className={clsx(
-                            "w-full px-3 py-1.5 rounded-lg text-xs",
+                            "w-full px-3 py-1 rounded-lg text-xs",
                             "bg-zinc-50 dark:bg-zinc-800/50",
                             "border border-zinc-200 dark:border-zinc-700",
                             "placeholder:text-zinc-400 dark:placeholder:text-zinc-500",

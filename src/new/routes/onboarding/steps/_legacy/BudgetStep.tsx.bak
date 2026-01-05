@@ -1,5 +1,6 @@
 
 import { useOnboardingStore } from '../store';
+import { Button } from '@/components/ui/Button';
 
 export const BudgetStep = () => {
     const { data, updateBudget, setStep } = useOnboardingStore();
@@ -8,10 +9,10 @@ export const BudgetStep = () => {
     return (
         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
             <header className="space-y-4">
-                <h1 className="text-4xl md:text-5xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
+                <h1 className="text-xl md:text-xl font-normal tracking-tight text-zinc-900 dark:text-zinc-50">
                     Budget & Policy
                 </h1>
-                <p className="text-xl text-zinc-500 font-light max-w-lg">
+                <p className="text-xl text-zinc-500 font-normal max-w-lg">
                     Set the operational limits for this project's intelligence retrieval.
                 </p>
             </header>
@@ -24,7 +25,7 @@ export const BudgetStep = () => {
                         <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-400">
                             Daily Token Limit
                         </label>
-                        <span className="text-2xl font-light tabular-nums">
+                        <span className="text-xl font-normal tabular-nums">
                             {budgetPolicy.dailyLimit}
                         </span>
                     </div>
@@ -49,7 +50,7 @@ export const BudgetStep = () => {
                         <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-400">
                             Max Cost Per Run ($)
                         </label>
-                        <span className="text-2xl font-light tabular-nums">
+                        <span className="text-xl font-normal tabular-nums">
                             ${budgetPolicy.maxCostPerRun}
                         </span>
                     </div>
@@ -74,30 +75,30 @@ export const BudgetStep = () => {
                             Pauses high-cost operations for manual review.
                         </p>
                     </div>
-                    <button
+                    <Button
                         onClick={() => updateBudget({ approvalRequired: !budgetPolicy.approvalRequired })}
                         className={`w-12 h-6 rounded-full p-1 transition-colors duration-300 ease-in-out ${budgetPolicy.approvalRequired ? 'bg-zinc-900 dark:bg-zinc-100' : 'bg-zinc-200 dark:bg-zinc-800'
                             }`}
                     >
                         <div className={`w-4 h-4 bg-white dark:bg-zinc-900 rounded-full shadow-sm transform transition-transform duration-300 ${budgetPolicy.approvalRequired ? 'translate-x-6' : 'translate-x-0'
                             }`} />
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="flex justify-between pt-8">
-                    <button
+                    <Button
                         onClick={() => setStep('desks')}
                         className="text-sm font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                     >
                         &larr; Back
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={() => setStep('tone')}
-                        className="group flex items-center gap-2 text-lg font-medium text-zinc-900 dark:text-zinc-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                        className="group flex items-center gap-2 text-base font-medium text-zinc-900 dark:text-zinc-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
                     >
                         Tone Check
                         <span className="block w-6 h-[1px] bg-current group-hover:w-10 transition-all" />
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

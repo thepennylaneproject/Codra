@@ -48,7 +48,7 @@ export function generateTheme(seed: ThemeSeed, name: string = 'Custom'): Generat
     // Generate text colors with contrast checking
     let textPrimary = isDark ? '#FFFFFF' : '#111111';
     let textSecondary = isDark ? '#A0A0A0' : '#555555';
-    let textMuted = isDark ? '#707070' : '#888888';
+    const textMuted = isDark ? '#707070' : '#888888';
 
     // Ensure text meets contrast requirements against background
     textPrimary = ensureContrast(textPrimary, bgDefault, contrastConfig.minRatio, isDark);
@@ -146,7 +146,7 @@ function ensureContrast(
 ): string {
     let currentRatio = getContrastRatio(textColor, bgColor);
     let iterations = 0;
-    let hsl = hexToHsl(textColor);
+    const hsl = hexToHsl(textColor);
 
     while (currentRatio < minRatio && iterations < 20) {
         // Adjust lightness

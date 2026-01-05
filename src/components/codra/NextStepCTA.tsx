@@ -1,6 +1,6 @@
 // src/components/codra/NextStepCTA.tsx
 import { useState } from 'react';
-import { Button, IconButton } from '../../new/components/Button';
+import { Button, IconButton } from '@/components/ui/Button';
 import { X } from 'lucide-react';
 
 interface NextStepCTAProps {
@@ -21,26 +21,26 @@ export function NextStepCTA({ onSelectWorkspace }: NextStepCTAProps) {
     <>
       <div className="next-step-section">
         <p className="success-message">
-          <span className="checkmark">✓</span> Brief complete
+          <span className="checkmark">✓</span> Brief status: complete
         </p>
         <Button
           variant="primary"
           size="lg"
           onClick={() => setShowModal(true)}
         >
-          Create Your First Task →
+          Create task →
         </Button>
       </div>
 
       {showModal && (
         <div className="workspace-modal" onClick={() => setShowModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>Where would you like to start?</h2>
-            <p>Choose a workspace to create your first task.</p>
+            <h2>Select a workspace</h2>
+            <p>Select a workspace to create a task.</p>
 
             <div className="workspace-grid">
               {workspaces.map(ws => (
-                <button
+                <Button
                   key={ws.id}
                   className="workspace-card"
                   onClick={() => {
@@ -51,7 +51,7 @@ export function NextStepCTA({ onSelectWorkspace }: NextStepCTAProps) {
                   <div className="workspace-icon">{ws.icon}</div>
                   <div className="workspace-name">{ws.name}</div>
                   <div className="workspace-desc">{ws.desc}</div>
-                </button>
+                </Button>
               ))}
             </div>
 

@@ -54,8 +54,8 @@ const MODEL_CATALOG: Record<string, ModelInfo> = {
         capabilities: ['chat', 'code', 'reasoning'],
         isPowered: true,
     },
-    'gpt-3.5-turbo': {
-        id: 'gpt-3.5-turbo',
+    'gpt-3-turbo': {
+        id: 'gpt-3-turbo',
         name: 'GPT-3.5 Turbo',
         provider: 'aimlapi',
         contextWindow: 4096,
@@ -342,7 +342,7 @@ export class AimlApiProvider implements AIProvider {
                     Authorization: `Bearer ${this.apiKey}`,
                 },
                 body: JSON.stringify({
-                    model: 'gpt-3.5-turbo',
+                    model: 'gpt-3-turbo',
                     messages: [{ role: 'user' as const, content: 'test' }],
                     max_tokens: 10,
                 }),

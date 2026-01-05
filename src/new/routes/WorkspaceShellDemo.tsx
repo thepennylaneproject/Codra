@@ -7,6 +7,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { WorkspaceShell } from '../../components/workspace';
 import { Sparkles, FileText, Lightbulb, Terminal } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 export const WorkspaceShellDemo: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -15,25 +16,25 @@ export const WorkspaceShellDemo: React.FC = () => {
   const leftDockContent = (
     <div className="h-full p-6 flex flex-col gap-6">
       <div>
-        <h3 className="text-sm font-bold mb-4" style={{ color: 'var(--shell-text-primary)' }}>
+        <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--shell-text-primary)' }}>
           Table of Contents
         </h3>
         <div className="space-y-2">
           {['Introduction', 'Objectives', 'Constraints', 'Requirements'].map((item, i) => (
-            <button
+            <Button
               key={i}
               className="w-full text-left px-3 py-2 rounded-lg text-xs hover:bg-[var(--shell-surface-2)] transition-colors"
               style={{ color: 'var(--shell-text-secondary)' }}
             >
               <FileText size={12} className="inline mr-2" />
               {item}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
 
       <div>
-        <h3 className="text-sm font-bold mb-4" style={{ color: 'var(--shell-text-primary)' }}>
+        <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--shell-text-primary)' }}>
           AI Tasks
         </h3>
         <div className="space-y-2">
@@ -60,8 +61,8 @@ export const WorkspaceShellDemo: React.FC = () => {
   const rightDockContent = (
     <div className="h-full p-6 flex flex-col gap-6">
       <div>
-        <h3 className="text-sm font-bold mb-4" style={{ color: 'var(--shell-text-primary)' }}>
-          Lyra Suggestions
+        <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--shell-text-primary)' }}>
+          Lyra module suggestions
         </h3>
         <div className="space-y-3">
           {[
@@ -86,7 +87,7 @@ export const WorkspaceShellDemo: React.FC = () => {
       </div>
 
       <div>
-        <h3 className="text-sm font-bold mb-4" style={{ color: 'var(--shell-text-primary)' }}>
+        <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--shell-text-primary)' }}>
           Output Inspector
         </h3>
         <div
@@ -107,9 +108,9 @@ export const WorkspaceShellDemo: React.FC = () => {
   const canvasContent = (
     <div className="h-full flex items-center justify-center">
       <div className="text-center space-y-4 max-w-md">
-        <Sparkles size={48} className="text-[var(--brand-teal)] mx-auto animate-pulse" />
+        <Sparkles size={48} className="text-brand-teal mx-auto animate-pulse" />
         <h1
-          className="text-4xl font-bold"
+          className="text-xl font-semibold"
           style={{ color: 'var(--text-primary)' }}
         >
           Workspace Shell Demo
@@ -118,7 +119,7 @@ export const WorkspaceShellDemo: React.FC = () => {
           className="text-sm"
           style={{ color: 'var(--text-muted)' }}
         >
-          Try the following features:
+          Review the following features:
         </p>
         <ul className="text-xs space-y-2 text-left" style={{ color: 'var(--text-soft)' }}>
           <li>• <kbd className="px-2 py-1 bg-white/5 rounded">Cmd/Ctrl + \</kbd> - Toggle left dock</li>

@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import type { TaskOverrideSettings, QualityPriority } from '../../domain/smart-defaults-types';
 import { SETTINGS_LABELS } from '../../domain/smart-defaults-types';
+import { Button } from '@/components/ui/Button';
 
 interface TaskOverridePanelProps {
     taskType: string;
@@ -43,10 +44,10 @@ export function TaskOverridePanel({
             <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-subtle)] rounded-lg shadow-xl max-w-md w-full mx-4">
                 {/* Header */}
                 <div className="px-6 py-4 border-b border-[var(--color-border-subtle)]">
-                    <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
-                        Adjust Task Settings
+                    <h2 className="text-base font-semibold text-text-primary">
+                        Configure task settings
                     </h2>
-                    <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+                    <p className="text-sm text-text-secondary mt-1">
                         Override settings for this {taskType} task
                     </p>
                 </div>
@@ -55,7 +56,7 @@ export function TaskOverridePanel({
                 <div className="px-6 py-4 space-y-4">
                     {/* Quality Priority */}
                     <div>
-                        <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                        <label className="block text-sm font-medium text-text-primary mb-2">
                             Quality Priority
                         </label>
                         <select
@@ -65,7 +66,7 @@ export function TaskOverridePanel({
                                     e.target.value ? (e.target.value as QualityPriority) : undefined
                                 )
                             }
-                            className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-subtle)] rounded-md text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+                            className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-subtle)] rounded-md text-text-primary focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
                         >
                             <option value="">Use default</option>
                             <option value="quality">{SETTINGS_LABELS.qualityPriority.quality}</option>
@@ -77,7 +78,7 @@ export function TaskOverridePanel({
 
                     {/* Max Steps */}
                     <div>
-                        <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                        <label className="block text-sm font-medium text-text-primary mb-2">
                             Max Steps
                         </label>
                         <input
@@ -89,19 +90,19 @@ export function TaskOverridePanel({
                                 setMaxSteps(e.target.value ? parseInt(e.target.value) : undefined)
                             }
                             placeholder="Use default"
-                            className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-subtle)] rounded-md text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+                            className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-subtle)] rounded-md text-text-primary focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
                         />
                     </div>
 
                     {/* Model Override */}
                     <div>
-                        <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                        <label className="block text-sm font-medium text-text-primary mb-2">
                             Model Override
                         </label>
                         <select
                             value={modelOverride || ''}
                             onChange={(e) => setModelOverride(e.target.value || undefined)}
-                            className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-subtle)] rounded-md text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+                            className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-subtle)] rounded-md text-text-primary focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
                         >
                             <option value="">Use default</option>
                             <option value="claude-haiku">Claude Haiku (Fast)</option>
@@ -118,11 +119,11 @@ export function TaskOverridePanel({
                             id="remember-similar"
                             checked={rememberForSimilar}
                             onChange={(e) => setRememberForSimilar(e.target.checked)}
-                            className="w-4 h-4 text-[var(--color-accent)] bg-[var(--color-bg-secondary)] border-[var(--color-border-subtle)] rounded focus:ring-2 focus:ring-[var(--color-accent)]"
+                            className="w-4 h-4 text-zinc-500 bg-[var(--color-bg-secondary)] border-[var(--color-border-subtle)] rounded focus:ring-2 focus:ring-[var(--color-accent)]"
                         />
                         <label
                             htmlFor="remember-similar"
-                            className="text-sm text-[var(--color-text-secondary)] cursor-pointer"
+                            className="text-sm text-text-secondary cursor-pointer"
                         >
                             Remember for similar {taskType} tasks
                         </label>
@@ -131,18 +132,18 @@ export function TaskOverridePanel({
 
                 {/* Footer */}
                 <div className="px-6 py-4 border-t border-[var(--color-border-subtle)] flex justify-end space-x-3">
-                    <button
+                    <Button
                         onClick={onCancel}
-                        className="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                        className="px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
                     >
                         Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={handleApply}
                         className="px-4 py-2 text-sm font-medium bg-[var(--color-accent)] text-white rounded-md hover:opacity-90 transition-opacity"
                     >
                         Apply
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

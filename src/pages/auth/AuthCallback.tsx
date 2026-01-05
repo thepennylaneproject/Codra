@@ -7,6 +7,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../../lib/api/auth';
+import { Button } from '@/components/ui/Button';
 
 // ============================================================
 // Loading State
@@ -18,24 +19,24 @@ function LoadingState() {
       <div className="flex flex-col items-center gap-6">
         {/* Animated Logo */}
         <div className="relative">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 animate-pulse" />
-          <div 
-            className="absolute inset-0 w-16 h-16 rounded-2xl border-2 border-indigo-400/30 animate-spin"
+          <div className="w-16 h-16 rounded-2xl bg-zinc-800 animate-pulse" />
+          <div
+            className="absolute inset-0 w-16 h-16 rounded-2xl border-2 border-zinc-600/40 animate-spin"
             style={{ animationDuration: '3s' }}
           />
         </div>
-        
+
         <div className="text-center">
-          <h2 className="text-lg font-medium text-zinc-200 mb-2">Completing sign in...</h2>
-          <p className="text-sm text-zinc-500">Please wait while we verify your credentials</p>
+          <h2 className="text-base font-medium text-zinc-200 mb-2">Completing sign in...</h2>
+          <p className="text-sm text-zinc-500">Verifying credentials.</p>
         </div>
 
         {/* Loading dots */}
-        <div className="flex gap-1.5">
+        <div className="flex gap-1">
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce"
+              className="w-2 h-2 rounded-full bg-zinc-500 animate-bounce"
               style={{ animationDelay: `${i * 150}ms` }}
             />
           ))}
@@ -66,19 +67,19 @@ function ErrorState({ error, description, onRetry }: ErrorStateProps) {
     },
     server_error: {
       title: 'Server Error',
-      message: 'Something went wrong on our end. Please try again.',
+      message: 'Server error. Retry.',
     },
     missing_code: {
       title: 'Invalid Callback',
-      message: 'The authentication callback was invalid. Please try signing in again.',
+      message: 'Invalid authentication callback. Retry sign-in.',
     },
     invalid_request: {
       title: 'Invalid Request',
-      message: 'The authentication request was invalid. Please try again.',
+      message: 'Invalid authentication request. Retry.',
     },
     default: {
       title: 'Authentication Failed',
-      message: description || 'We couldn\'t complete your sign-in. Please try again.',
+      message: description || 'Sign-in failed. Retry.',
     },
   };
 
@@ -90,8 +91,12 @@ function ErrorState({ error, description, onRetry }: ErrorStateProps) {
         {/* Error Icon */}
         <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
           <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M12 9v2m0 4h.01m-6 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
           </svg>
         </div>
 
@@ -99,18 +104,18 @@ function ErrorState({ error, description, onRetry }: ErrorStateProps) {
         <p className="text-zinc-400 mb-8">{message}</p>
 
         <div className="flex items-center justify-center gap-3">
-          <button
+          <Button
             onClick={onRetry}
-            className="px-5 py-2.5 text-sm font-medium bg-zinc-800 text-zinc-100 rounded-xl hover:bg-zinc-700 transition-colors"
+            className="px-4 py-2 text-sm font-medium bg-zinc-800 text-zinc-100 rounded-xl hover:bg-zinc-700 transition-colors"
           >
-            Try Again
-          </button>
-          <button
+            Retry
+          </Button>
+          <Button
             onClick={() => navigate('/login')}
-            className="px-5 py-2.5 text-sm font-medium bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all"
+            className="px-4 py-2 text-sm font-medium bg-zinc-900 text-white rounded-xl hover:bg-zinc-800 transition-all"
           >
-            Back to Login
-          </button>
+            Open login
+          </Button>
         </div>
       </div>
     </div>

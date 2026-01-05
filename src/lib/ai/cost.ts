@@ -52,8 +52,8 @@ const MODEL_PRICES: Record<string, ModelPricing> = {
         provider: 'openai',
         type: 'chat'
     },
-    'gpt-3.5-turbo': {
-        id: 'gpt-3.5-turbo',
+    'gpt-3-turbo': {
+        id: 'gpt-3-turbo',
         inputCostPer1k: 0.0005,
         outputCostPer1k: 0.0015,
         quality: 0.7,
@@ -162,7 +162,24 @@ export class CostEngine {
         const inputTokens = estimatedTokens * 0.7;
         const outputTokens = estimatedTokens * 0.3;
 
-        return this.calculateCostFromSplit(pricing, inputTokens, outputTokens);
+        const baseCost = this.calculateCostFromSplit(pricing, inputTokens, outputTokens);
+        return this.applyMarkup(baseCost);
+    }
+
+    estimateTokens(taskType: string, contextSize: number = 2000): number {
+        // Heuristics for expected token usage per task type
+        switch (taskType) {
+            case 'code': return contextSize + 1500; // Code tasks usually have long outputs
+            case 'analysis': return contextSize + 1000;
+            case 'chat': return contextSize + 500;
+            case 'creative': return contextSize + 2000;
+            default: return contextSize + 500;
+        }
+    }
+
+    applyMarkup(cost: number): number {
+        const MARKUP_FACTOR = 1.2; // 20% markup
+        return cost * MARKUP_FACTOR;
     }
 
     calculateActualCost(model: string, usage: TokenUsage): number {
@@ -265,7 +282,7 @@ export class CostEngine {
             // Or skip for now as it requires usage estimation.
         }
 
-        return candidates.length > 0 ? candidates[0].id : 'gpt-3.5-turbo';
+        return candidates.length > 0 ? candidates[0].id : 'gpt-3-turbo';
     }
 }
 

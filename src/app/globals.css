@@ -1,10 +1,3 @@
-/* ========================================
-   CODRA GLOBAL STYLES
-   Built on design-tokens.css foundation
-   ======================================== */
-
-@import "./design-tokens.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,16 +7,92 @@
    ========================================= */
 
 @layer components {
+  :root {
+    --text-title: 1.5rem;
+    --text-title-leading: 1.2;
+    --text-section: 1rem;
+    --text-section-leading: 1.4;
+    --text-body: 0.875rem;
+    --text-body-leading: 1.6;
+    --text-helper: 0.75rem;
+    --text-helper-leading: 1.5;
+    --text-meta: 0.6875rem;
+    --text-meta-leading: 1.4;
+  }
+
+  .text-title {
+    font-size: var(--text-title);
+    line-height: var(--text-title-leading);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .text-section {
+    font-size: var(--text-section);
+    line-height: var(--text-section-leading);
+    font-weight: 600;
+  }
+
+  .text-body {
+    font-size: var(--text-body);
+    line-height: var(--text-body-leading);
+    font-weight: 500;
+  }
+
+  .text-helper {
+    font-size: var(--text-helper);
+    line-height: var(--text-helper-leading);
+    font-weight: 400;
+  }
+
+  .text-meta {
+    font-size: var(--text-meta);
+    line-height: var(--text-meta-leading);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .page-container {
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .page-gutter {
+    padding: var(--space-2xl) var(--space-xl);
+  }
+  .workspace-surface {
+    background-color: var(--ui-bg);
+    background-image:
+      linear-gradient(
+        to bottom,
+        rgba(20, 20, 20, 0.04) 1px,
+        transparent 1px
+      ),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+    background-size: 100% 28px, 140px 140px;
+    background-blend-mode: multiply;
+  }
+
+  .section-header-subtle h3 {
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+  }
+
+  .section-header-subtle p {
+    max-width: 38ch;
+  }
   .text-display-xl {
-    @apply font-display text-7xl font-black leading-tight tracking-tight;
+    @apply font-display text-xl font-semibold leading-tight tracking-tight;
   }
 
   .text-display-lg {
-    @apply font-display text-6xl font-bold leading-tight -tracking-wide;
+    @apply font-display text-xl font-semibold leading-tight -tracking-wide;
   }
 
   .text-display-md {
-    @apply font-display text-5xl font-bold leading-tight;
+    @apply font-display text-xl font-semibold leading-tight;
   }
 
   /* =========================================
@@ -31,19 +100,19 @@
      ========================================= */
 
   .text-heading-xl {
-    @apply font-display text-4xl font-bold leading-tight;
+    @apply font-display text-xl font-semibold leading-tight;
   }
 
   .text-heading-lg {
-    @apply font-sans text-3xl font-bold leading-tight;
+    @apply font-sans text-xl font-semibold leading-tight;
   }
 
   .text-heading-md {
-    @apply font-sans text-2xl font-semibold leading-normal;
+    @apply font-sans text-xl font-semibold leading-normal;
   }
 
   .text-heading-sm {
-    @apply font-sans text-lg font-semibold leading-normal;
+    @apply font-sans text-base font-semibold leading-normal;
   }
 
   /* =========================================
@@ -67,15 +136,15 @@
      ========================================= */
 
   .text-label-lg {
-    @apply font-sans text-base font-semibold leading-normal uppercase tracking-wide;
+    @apply font-sans text-base font-semibold leading-normal;
   }
 
   .text-label-md {
-    @apply font-sans text-sm font-semibold leading-normal uppercase tracking-wide;
+    @apply font-sans text-sm font-semibold leading-normal;
   }
 
   .text-label-sm {
-    @apply font-sans text-xs font-semibold leading-normal uppercase tracking-wide;
+    @apply font-sans text-xs font-normal leading-normal;
   }
 
   /* =========================================
@@ -88,6 +157,14 @@
 
   .text-code-lg {
     @apply font-mono text-sm font-normal leading-normal;
+  }
+
+  /* =========================================
+     FOCUS UTILITIES
+     ========================================= */
+
+  .focus-standard {
+    @apply focus-visible:outline focus-visible:outline-1 focus-visible:outline-zinc-400 focus-visible:outline-offset-2 focus-visible:ring-2 focus-visible:ring-zinc-300/50;
   }
 
   /* =========================================
@@ -114,16 +191,19 @@
     @apply text-brand-magenta;
   }
 
-  .text-teal {
-    @apply text-brand-teal;
-  }
-
-  .text-gold {
-    @apply text-brand-gold;
-  }
+  /* Quick Classes - Brand Colors */
+  .text-ink { @apply text-brand-ink; }
+  .text-ivory { @apply text-brand-ivory; }
+  .text-teal { @apply text-brand-teal; }
+  .text-violet { @apply text-brand-violet; }
 
   .text-cream {
     @apply text-brand-cream;
+  }
+
+  /* Effects - Demoted to subtle */
+  .soft-glow-teal {
+    box-shadow: 0 0 15px rgba(0, 217, 217, 0.1);
   }
 
   /* =========================================
@@ -136,10 +216,6 @@
 
   .glow-teal {
     @apply shadow-glow-teal;
-  }
-
-  .glow-gold {
-    @apply shadow-glow-gold;
   }
 
   /* =========================================
@@ -156,20 +232,12 @@
     @apply border-brand-magenta;
   }
 
-  .border-gold {
-    @apply border-brand-gold;
-  }
-
   .border-teal {
     @apply border-brand-teal;
   }
 
   .bg-magenta {
     @apply bg-brand-magenta;
-  }
-
-  .bg-gold {
-    @apply bg-brand-gold;
   }
 
   .bg-teal {
@@ -205,7 +273,7 @@ body {
   /* Allow fixed background to show through */
   color: var(--stardust);
   font-family: var(--font-family-base);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   line-height: var(--line-height-normal);
 }
 
@@ -227,24 +295,8 @@ select {
 
 .app-root {
   min-height: 100vh;
-  background: var(--gradient-dark), var(--bg-default);
-  background-attachment: fixed;
+  background: var(--bg-default);
   color: var(--text-primary);
-}
-
-.app-root.grain-overlay::before {
-  content: "";
-  position: fixed;
-  inset: -40px;
-  pointer-events: none;
-  opacity: 0.22;
-  mix-blend-mode: soft-light;
-  background-image: repeating-linear-gradient(0deg,
-      rgba(255, 255, 255, 0.03) 0,
-      rgba(255, 255, 255, 0.03) 1px,
-      transparent 1px,
-      transparent 2px);
-  z-index: var(--z-base);
 }
 
 /* =========================================
@@ -266,9 +318,7 @@ select {
   padding: var(--space-2xl) var(--space-3xl);
   border-radius: var(--radius-xl);
   border: 1px solid var(--border-subtle);
-  background: linear-gradient(145deg,
-      rgba(15, 18, 20, 0.98),
-      rgba(16, 22, 28, 0.98));
+  background: var(--bg-elevated);
   box-shadow: var(--shadow-xl);
   max-width: 640px;
   width: 100%;
@@ -278,23 +328,21 @@ select {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  border: 1px solid var(--brand-gold);
+  border: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: var(--font-weight-bold);
-  text-transform: lowercase;
-  letter-spacing: 0.12em;
+  font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-xl);
-  background: radial-gradient(circle at top, #27323c, #050608);
-  color: var(--brand-gold);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
   flex-shrink: 0;
 }
 
 .home-copy h1 {
   margin: 0 0 var(--space-sm);
-  font-size: var(--font-size-4xl);
-  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
   letter-spacing: -0.02em;
 }
 
@@ -339,7 +387,7 @@ select {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--gradient-overlay), var(--bg-default);
+  background: var(--bg-default);
   color: var(--text-primary);
 }
 
@@ -351,7 +399,6 @@ select {
   padding: var(--space-md) var(--space-lg);
   border-bottom: 1px solid var(--border-subtle);
   background: var(--nav-bg);
-  backdrop-filter: var(--backdrop-blur-md);
   gap: var(--space-lg);
   position: relative;
   z-index: var(--z-sticky);
@@ -367,15 +414,13 @@ select {
   width: 32px;
   height: 32px;
   border-radius: var(--radius-full);
-  border: 1px solid var(--brand-gold);
+  border: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: var(--font-size-sm);
-  letter-spacing: 0.16em;
-  text-transform: lowercase;
-  background: radial-gradient(circle at top, #27323c, #050608);
-  color: var(--brand-gold);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
   flex-shrink: 0;
 }
 
@@ -388,8 +433,6 @@ select {
 .studio-title {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
   margin: 0;
   color: var(--text-primary);
 }
@@ -469,8 +512,6 @@ select {
   padding: var(--space-sm) var(--space-lg);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
   color: var(--text-muted);
 }
 
@@ -488,7 +529,6 @@ select {
 .sidebar-empty-text {
   font-size: var(--font-size-xs);
   color: var(--text-muted);
-  font-style: italic;
 }
 
 /* Center Column */
@@ -497,7 +537,7 @@ select {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: var(--gradient-dark);
+  background: var(--bg-default);
 }
 
 .studio-storyboard-region {
@@ -539,12 +579,7 @@ select {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(circle at top,
-      rgba(78, 128, 141, 0.16),
-      transparent 55%),
-    radial-gradient(circle at bottom,
-      rgba(199, 167, 106, 0.16),
-      transparent 60%);
+  background: none;
 }
 
 .storyboard-inner {
@@ -565,7 +600,7 @@ select {
 
 .storyboard-title {
   margin: 0;
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
 }
 
@@ -632,11 +667,9 @@ select {
   font-size: var(--font-size-xs);
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-full);
-  border: 1px solid rgba(78, 128, 141, 0.7);
-  background: rgba(78, 128, 141, 0.12);
-  color: #a0d5df;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
 }
 
 .scene-card-intent {
@@ -698,42 +731,6 @@ select {
   font-size: var(--font-size-xs);
   color: var(--text-muted);
   font-weight: var(--font-weight-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-/* Glass morphism base - Photonic Glass */
-.glass {
-  background: var(--glass-bg, rgba(18, 23, 29, 0.85));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.08));
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
-}
-
-/* User Requested Class */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.04);
-  /* As per instructions */
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.glass-frosted {
-  background: var(--glass-frosted, rgba(18, 23, 29, 0.92));
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.08));
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
-}
-
-.glass-clear {
-  background: var(--glass-clear, rgba(18, 23, 29, 0.6));
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.08));
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
 }
 
 .architect-textarea {
@@ -970,8 +967,6 @@ select {
 
 .forge-output-label {
   font-size: var(--font-size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
   color: var(--text-muted);
   font-weight: var(--font-weight-semibold);
 }
@@ -995,11 +990,11 @@ select {
 
 .react-flow {
   height: 100%;
-  background: var(--gradient-dark);
+  background: var(--bg-default);
 }
 
 .react-flow__viewport {
-  background: var(--gradient-dark);
+  background: var(--bg-default);
 }
 
 /* =========================================
@@ -1009,23 +1004,8 @@ select {
 .studio-shell {
   position: relative;
   min-height: 100vh;
-  background: var(--gradient-overlay), var(--bg-default);
+  background: var(--bg-default);
   color: var(--text-primary);
-}
-
-.studio-shell::before {
-  content: "";
-  position: fixed;
-  inset: -40px;
-  pointer-events: none;
-  opacity: 0.22;
-  mix-blend-mode: soft-light;
-  background-image: repeating-linear-gradient(0deg,
-      rgba(255, 255, 255, 0.03) 0,
-      rgba(255, 255, 255, 0.03) 1px,
-      transparent 1px,
-      transparent 2px);
-  z-index: var(--z-base);
 }
 
 /* =========================================
@@ -1036,26 +1016,8 @@ select {
   position: relative;
   border-radius: var(--radius-xl);
   border: 1px solid var(--border-subtle);
-  background: var(--gradient-overlay), var(--surface-glass);
+  background: var(--bg-elevated);
   box-shadow: var(--shadow-xl);
-  backdrop-filter: var(--backdrop-blur-lg);
-}
-
-.panel-elevated::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  border: 1px solid var(--border-accent);
-  opacity: 0;
-  transform: scale(0.99);
-  pointer-events: none;
-  transition: opacity var(--transition-base), transform var(--transition-base);
-}
-
-.panel-elevated:hover::before {
-  opacity: 0.5;
-  transform: scale(1.01);
 }
 
 /* =========================================
@@ -1064,8 +1026,6 @@ select {
 
 .section-kicker {
   font-size: var(--font-size-xs);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
   color: var(--text-accent);
   font-weight: var(--font-weight-semibold);
   margin: 0;

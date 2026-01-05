@@ -188,7 +188,7 @@ export class OpenAIProvider implements AIProvider {
                     Authorization: `Bearer ${this.apiKey}`,
                 },
                 body: JSON.stringify({
-                    model: 'gpt-3.5-turbo',
+                    model: 'gpt-3-turbo',
                     messages: [{ role: 'user', content: 'hi' }],
                     max_tokens: 1,
                 }),

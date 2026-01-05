@@ -92,7 +92,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
     },
     {
         id: 'pitch-deck-studio',
-        name: 'Pitch Deck Studio',
+        name: 'Pitch Deck Studio workspace',
         description: 'Focused investor materials and executive summaries for pre-seed and seed rounds.',
         type: 'other',
         goals: ['pitch-deck', 'print-materials'],

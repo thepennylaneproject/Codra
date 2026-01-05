@@ -11,6 +11,7 @@ import { analytics } from '@/lib/analytics';
 import { useEffect } from 'react';
 import { behaviorTracker } from '../../lib/smart-defaults/inference-engine';
 import { supabase } from '../../lib/supabase';
+import { Button } from '@/components/ui/Button';
 
 interface ExportModalProps {
     isOpen: boolean;
@@ -42,7 +43,7 @@ const FORMAT_CONFIG: Record<string, { format: ExportFormat; label: string; icon:
         { format: 'md', label: 'Markdown Documentation', icon: FileText },
     ],
     spread: [
-        { format: 'pdf', label: 'Complete Canvas PDF', icon: Printer },
+        { format: 'pdf', label: 'Complete workspace PDF', icon: Printer },
         { format: 'md', label: 'Markdown Bundle', icon: FileText },
     ],
 };
@@ -135,7 +136,7 @@ export function ExportModal({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-zinc-950/40 backdrop-blur-md"
+                className="fixed inset-0 z-[10000] flex items-center justify-center p-4 glass-panel border-0 rounded-none bg-zinc-950/40"
                 onClick={onClose}
             >
                 <motion.div
@@ -149,27 +150,25 @@ export function ExportModal({
                     <div className="px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-800/50">
                         <div className="flex items-center gap-2">
                             <Download size={18} className="text-indigo-500" />
-                            <h3 className="text-sm font-black uppercase tracking-widest text-zinc-900 dark:text-zinc-100">
+                            <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                                 Export Artifact
                             </h3>
                         </div>
-                        <button
+                        <Button
                             onClick={onClose}
                             className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
                         >
                             <X size={18} className="text-zinc-500" />
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Body */}
                     <div className="p-6">
-                        <p className="text-[11px] text-zinc-500 uppercase font-bold tracking-wider mb-4">
-                            Select Format
-                        </p>
+                        <p className="text-xs text-zinc-500 font-semibold mb-4">Select Format</p>
 
                         <div className="space-y-2">
                             {formats.map((config) => (
-                                <button
+                                <Button
                                     key={config.format}
                                     onClick={() => handleExport(config.format)}
                                     disabled={isExporting}
@@ -192,10 +191,10 @@ export function ExportModal({
                                         <config.icon size={20} />
                                     </div>
                                     <div className="flex-1">
-                                        <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
-                                            .{config.format.toUpperCase()}
+                                        <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">
+                                            .{config.format}
                                         </div>
-                                        <div className="text-[10px] text-zinc-500 dark:text-zinc-400">
+                                        <div className="text-xs text-zinc-500 dark:text-zinc-400">
                                             {config.label}
                                         </div>
                                     </div>
@@ -212,16 +211,14 @@ export function ExportModal({
                                             )}
                                         </motion.div>
                                     )}
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     </div>
 
                     {/* Footer */}
                     <div className="px-6 py-4 bg-zinc-50 dark:bg-zinc-800/50 flex items-center justify-center">
-                        <p className="text-[9px] text-zinc-400 font-medium uppercase tracking-[0.2em]">
-                            Artifact ID: {artifactId.slice(0, 8)}...
-                        </p>
+                        <p className="text-xs text-zinc-400 font-medium">Artifact ID: {artifactId.slice(0, 8)}...</p>
                     </div>
                 </motion.div>
             </motion.div>
