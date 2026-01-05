@@ -1,0 +1,314 @@
+/**
+ * EXECUTION DESK VISUAL HIERARCHY
+ * src/styles/execution-desk.css
+ *
+ * Typography and visual rules for the execution desk layout.
+ *
+ * Visual hierarchy (most prominent to least):
+ * 1. CENTER COLUMN - Outputs (PRIMARY) - dominates attention
+ * 2. LEFT COLUMN - Lyra conversation - subdued, supportive
+ * 3. RIGHT COLUMN - Proof/verification - quiet, exception-only
+ *
+ * The UI must reflect how the system thinks, not how chat apps work.
+ */
+
+/* ============================================
+   EXECUTION DESK ROOT
+   ============================================ */
+
+.execution-desk {
+  --desk-font-scale: 1;
+  --desk-spacing-scale: 1;
+}
+
+/* ============================================
+   LEFT COLUMN: LYRA (Subdued)
+   ============================================ */
+
+.lyra-column {
+  /* Typography: Smaller than center, subdued */
+  font-size: calc(13px * var(--desk-font-scale));
+  line-height: 1.5;
+  color: var(--text-soft);
+}
+
+.lyra-column h1,
+.lyra-column h2,
+.lyra-column h3 {
+  font-size: calc(10px * var(--desk-font-scale));
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-soft);
+  opacity: 0.6;
+}
+
+.lyra-column p {
+  font-size: calc(13px * var(--desk-font-scale));
+  color: var(--text-soft);
+}
+
+/* Message styling: NO bubbles, clean lines */
+.lyra-column .message {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.lyra-column .message-user {
+  color: var(--text-primary);
+}
+
+.lyra-column .message-lyra {
+  color: var(--text-soft);
+}
+
+/* Input: minimal, not a chat box */
+.lyra-column input {
+  font-size: calc(13px * var(--desk-font-scale));
+  background: transparent;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radii-md);
+  padding: 8px 12px;
+}
+
+.lyra-column input::placeholder {
+  color: var(--text-soft);
+  opacity: 0.4;
+}
+
+/* ============================================
+   CENTER COLUMN: EXECUTION SURFACE (PRIMARY)
+   ============================================ */
+
+.execution-surface {
+  /* Typography: Largest, most prominent */
+  font-size: calc(15px * var(--desk-font-scale));
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+/* Document styling */
+.execution-surface .output-document {
+  background: white;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radii-lg);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.execution-surface .output-document h2 {
+  font-size: calc(16px * var(--desk-font-scale));
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.execution-surface .output-document .content {
+  font-size: calc(15px * var(--desk-font-scale));
+  line-height: 1.7;
+}
+
+/* Status indicators */
+.execution-surface .status-draft {
+  color: var(--text-soft);
+  background: var(--color-border-soft);
+}
+
+.execution-surface .status-verified {
+  color: var(--state-success);
+  background: var(--state-success-bg, rgba(16, 185, 129, 0.1));
+}
+
+.execution-surface .status-needs-review {
+  color: var(--state-warning);
+  background: var(--state-warning-bg, rgba(245, 158, 11, 0.1));
+}
+
+/* Empty state */
+.execution-surface .empty-state {
+  text-align: center;
+  padding: 80px 40px;
+}
+
+.execution-surface .empty-state h3 {
+  font-size: calc(14px * var(--desk-font-scale));
+  font-weight: 500;
+  color: var(--text-soft);
+  margin-bottom: 8px;
+}
+
+.execution-surface .empty-state p {
+  font-size: calc(12px * var(--desk-font-scale));
+  color: var(--text-soft);
+  opacity: 0.6;
+}
+
+/* ============================================
+   RIGHT COLUMN: PROOF PANEL (Quiet)
+   ============================================ */
+
+.proof-panel {
+  /* Typography: Smallest, quiet */
+  font-size: calc(12px * var(--desk-font-scale));
+  line-height: 1.5;
+  color: var(--text-soft);
+}
+
+.proof-panel h3 {
+  font-size: calc(9px * var(--desk-font-scale));
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.proof-panel p {
+  font-size: calc(12px * var(--desk-font-scale));
+}
+
+/* Verification items: minimal, no verbosity */
+.proof-panel .verification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: calc(12px * var(--desk-font-scale));
+}
+
+.proof-panel .verification-passed {
+  color: var(--state-success);
+}
+
+.proof-panel .verification-failed {
+  color: var(--state-error);
+}
+
+.proof-panel .verification-warning {
+  color: var(--state-warning);
+}
+
+/* ============================================
+   HEADER & FOOTER (Minimal, Functional)
+   ============================================ */
+
+.desk-header {
+  font-size: calc(12px * var(--desk-font-scale));
+}
+
+.desk-header h1 {
+  font-size: calc(14px * var(--desk-font-scale));
+  font-weight: 500;
+}
+
+.desk-footer {
+  font-size: calc(10px * var(--desk-font-scale));
+  color: var(--text-soft);
+}
+
+/* ============================================
+   VISUAL HIERARCHY SPACING
+   ============================================ */
+
+/* Center column gets the most visual breathing room */
+.execution-surface {
+  padding: calc(48px * var(--desk-spacing-scale)) calc(32px * var(--desk-spacing-scale));
+}
+
+/* Left column is narrower, tighter */
+.lyra-column {
+  padding: calc(12px * var(--desk-spacing-scale)) calc(16px * var(--desk-spacing-scale));
+}
+
+/* Right column is compact */
+.proof-panel {
+  padding: calc(16px * var(--desk-spacing-scale));
+}
+
+/* ============================================
+   DOCUMENT SPACING IN CENTER
+   ============================================ */
+
+.execution-surface .output-document + .output-document {
+  margin-top: calc(32px * var(--desk-spacing-scale));
+}
+
+.execution-surface .output-document header {
+  padding: calc(16px * var(--desk-spacing-scale)) calc(24px * var(--desk-spacing-scale));
+  border-bottom: 1px solid var(--ui-border);
+  background: rgba(0, 0, 0, 0.01);
+}
+
+.execution-surface .output-document .content {
+  padding: calc(20px * var(--desk-spacing-scale)) calc(24px * var(--desk-spacing-scale));
+}
+
+.execution-surface .output-document footer {
+  padding: calc(12px * var(--desk-spacing-scale)) calc(24px * var(--desk-spacing-scale));
+  border-top: 1px solid var(--ui-border);
+  background: rgba(0, 0, 0, 0.01);
+}
+
+/* ============================================
+   ANIMATION & TRANSITIONS
+   ============================================ */
+
+.execution-surface .output-document {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.execution-surface .output-document:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.execution-surface .output-document.is-active {
+  box-shadow: 0 0 0 2px var(--ui-border);
+}
+
+/* Proof panel slide in */
+.proof-panel-enter {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.proof-panel-enter-active {
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.proof-panel-exit {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.proof-panel-exit-active {
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.2s ease-in, opacity 0.2s ease-in;
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 1200px) {
+  .execution-desk {
+    --desk-font-scale: 0.95;
+    --desk-spacing-scale: 0.9;
+  }
+}
+
+@media (max-width: 900px) {
+  .execution-desk {
+    --desk-font-scale: 0.9;
+    --desk-spacing-scale: 0.8;
+  }
+
+  /* Hide Lyra on small screens, show as modal */
+  .lyra-column {
+    display: none;
+  }
+}
