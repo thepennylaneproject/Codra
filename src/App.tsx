@@ -35,6 +35,7 @@ import { PlacementProvider } from './lib/placement/PlacementContext';
 
 // New Pipeline
 import { NewSpreadPage } from './new/routes/NewSpreadPage';
+import { ExecutionDeskPage } from './new/routes/ExecutionDeskPage';
 import { ProjectContextPage } from './new/routes/ProjectContextPage';
 import { NewProjectOnboarding } from './new/routes/onboarding/NewProjectOnboarding';
 import { OnboardingFlow } from './new/routes/onboarding/OnboardingFlow';
@@ -160,6 +161,16 @@ export function App() {
 
                     <Route
                       path="/p/:projectId/workspace"
+                      element={
+                        <ProtectedRoute>
+                          <ExecutionDeskPage />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    {/* Legacy workspace (kept for comparison/rollback) */}
+                    <Route
+                      path="/p/:projectId/workspace-legacy"
                       element={
                         <ProtectedRoute>
                           <NewSpreadPage />
