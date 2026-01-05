@@ -105,12 +105,11 @@ export function ExecutionDesk({
 
   return (
     <div
-      className="h-screen w-screen flex flex-col overflow-hidden"
-      style={{ backgroundColor: 'var(--shell-surface-0)' }}
+      className="execution-desk h-screen w-screen flex flex-col overflow-hidden bg-white"
     >
-      {/* Header - Minimal, functional */}
+      {/* Header - minimal chrome */}
       {headerContent && (
-        <header className="h-12 shrink-0 border-b border-[var(--shell-border)]">
+        <header className="h-10 shrink-0 border-b border-[var(--ui-border)]/20">
           {headerContent}
         </header>
       )}
@@ -118,104 +117,46 @@ export function ExecutionDesk({
       {/* Main Three-Column Layout */}
       <div className="flex-1 flex overflow-hidden">
 
-        {/* LEFT: Lyra Column - Narrow, Subdued */}
+        {/* LEFT: Lyra Column - receded */}
         {layout.leftDockVisible && (
           <aside
-            className="h-full shrink-0 relative flex flex-col border-r border-[var(--ui-border)]/50"
-            style={{
-              width: lyraWidth,
-              backgroundColor: 'var(--color-ivory)',
-              opacity: 0.95,
-            }}
+            className="h-full shrink-0 relative flex flex-col border-r border-[var(--ui-border)]/10 bg-zinc-50/50"
+            style={{ width: lyraWidth }}
           >
-            {/* Lyra content - subdued, smaller typography */}
-            <div className="flex-1 overflow-y-auto lyra-column">
+            <div className="flex-1 overflow-y-auto">
               {lyraContent}
             </div>
-
-            {/* Resize handle */}
             <div
-              className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-zinc-300/40 transition-colors z-10"
+              className="absolute right-0 top-0 w-px h-full cursor-col-resize hover:bg-zinc-200 transition-colors"
               onMouseDown={() => setIsResizing(true)}
             />
           </aside>
         )}
 
         {/* CENTER: Execution Surface - PRIMARY */}
-        <main
-          className="flex-1 flex flex-col overflow-hidden"
-          style={{ backgroundColor: 'var(--bg-default)' }}
-        >
-          <div className="flex-1 overflow-y-auto execution-surface">
+        <main className="flex-1 flex flex-col overflow-hidden bg-white">
+          <div className="flex-1 overflow-y-auto">
             {children}
           </div>
         </main>
 
-        {/* RIGHT: Proof Panel - Collapsed by default */}
+        {/* RIGHT: Proof Panel - collapsed by default */}
         {proofVisible && proofContent && (
           <aside
-            className="h-full shrink-0 border-l border-[var(--ui-border)]/50 bg-white"
+            className="h-full shrink-0 border-l border-[var(--ui-border)]/10 bg-zinc-50/30"
             style={{ width: PROOF_COLUMN_WIDTH }}
           >
-            <div className="h-full flex flex-col">
-              {/* Proof header with close */}
-              <div className="h-10 px-4 flex items-center justify-between border-b border-[var(--ui-border)]/40">
-                <span className="text-[10px] font-semibold text-text-soft uppercase tracking-wider">
-                  Verification
-                </span>
-                <button
-                  onClick={() => setProofVisible(false)}
-                  className="p-1 hover:bg-zinc-100 rounded text-text-soft hover:text-text-primary transition-colors"
-                  aria-label="Close proof panel"
-                >
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M2 2l8 8M10 2l-8 8" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Proof content - minimal, no narration */}
-              <div className="flex-1 overflow-y-auto proof-panel">
-                {proofContent}
-              </div>
-            </div>
+            {proofContent}
           </aside>
         )}
       </div>
 
-      {/* Footer - Activity/status, minimal */}
+      {/* Footer - factual status */}
       {footerContent && (
-        <footer className="h-10 shrink-0 border-t border-[var(--shell-border)]">
+        <footer className="h-8 shrink-0 border-t border-[var(--ui-border)]/10">
           {footerContent}
         </footer>
       )}
-
-      {/* Inline styles for visual hierarchy */}
-      <style>{`
-        /* Lyra column: subdued, collaborative feel */
-        .lyra-column {
-          font-size: 13px;
-          color: var(--text-soft);
-        }
-        .lyra-column h1, .lyra-column h2, .lyra-column h3 {
-          font-size: 11px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          color: var(--text-soft);
-        }
-
-        /* Execution surface: primary, document-focused */
-        .execution-surface {
-          font-size: 15px;
-        }
-
-        /* Proof panel: quiet, minimal */
-        .proof-panel {
-          font-size: 12px;
-          color: var(--text-soft);
-        }
-      `}</style>
     </div>
   );
 }

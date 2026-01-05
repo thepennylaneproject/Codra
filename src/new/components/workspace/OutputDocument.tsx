@@ -48,65 +48,52 @@ export function OutputDocument({
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.12 }}
       id={`output-${id}`}
       className={`
         output-document
-        bg-white
-        border border-[var(--ui-border)]/60
-        rounded-xl
-        overflow-hidden
-        shadow-sm
-        ${isActive ? 'ring-2 ring-zinc-200' : ''}
+        ${isActive ? 'border-l-2 border-l-zinc-300 pl-6' : 'pl-8'}
       `}
     >
-      {/* Document Header */}
-      <header className="px-6 py-4 border-b border-[var(--ui-border)]/40 bg-zinc-50/50">
-        <div className="flex items-start justify-between gap-4">
-          {/* Title */}
+      {/* Document Header - minimal */}
+      <header className="mb-4">
+        <div className="flex items-baseline justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <h2 className="text-base font-semibold text-text-primary truncate">
+            <h2 className="text-[15px] font-medium text-text-primary">
               {title}
             </h2>
             {source && (
-              <p className="text-[11px] text-text-soft/60 mt-0.5 uppercase tracking-wider">
+              <p className="text-[10px] text-text-soft/40 mt-1 uppercase tracking-wider">
                 {source}
               </p>
             )}
           </div>
-
-          {/* Status Badge */}
-          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium ${statusColorClass}`}>
-            <StatusIcon size={12} />
-            <span>{statusLabel}</span>
-          </div>
+          <span className={`text-[10px] ${statusColorClass.replace('bg-', '').split(' ')[0]}`}>
+            {statusLabel}
+          </span>
         </div>
       </header>
 
-      {/* Document Body - The actual content */}
-      <div className="px-6 py-5">
-        <div className="prose prose-sm max-w-none text-text-primary">
-          {children}
-        </div>
+      {/* Document Body */}
+      <div className="prose prose-sm max-w-none text-text-primary leading-relaxed">
+        {children}
       </div>
 
-      {/* Document Footer - Minimal metadata */}
+      {/* Document Footer - only if metadata present */}
       {(timestamp || metadata) && (
-        <footer className="px-6 py-3 border-t border-[var(--ui-border)]/20 bg-zinc-50/30">
-          <div className="flex items-center justify-between text-[10px] text-text-soft/60">
+        <footer className="mt-6 pt-4 border-t border-[var(--ui-border)]/20">
+          <div className="flex items-center justify-between text-[10px] text-text-soft/40">
             {timestamp && (
-              <span>
-                {timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              <span className="tabular-nums">
+                {timestamp.toLocaleDateString()}
               </span>
             )}
             {metadata && (
               <div className="flex items-center gap-3">
                 {Object.entries(metadata).map(([key, value]) => (
-                  <span key={key}>
-                    <span className="uppercase tracking-wider">{key}:</span> {value}
-                  </span>
+                  <span key={key} className="tabular-nums">{value}</span>
                 ))}
               </div>
             )}
@@ -155,17 +142,12 @@ export function OutputDocumentGroup({
  */
 export function OutputDocumentSkeleton() {
   return (
-    <div className="bg-white border border-[var(--ui-border)]/40 rounded-xl overflow-hidden animate-pulse">
-      <div className="px-6 py-4 border-b border-[var(--ui-border)]/20 bg-zinc-50/50">
-        <div className="flex items-center justify-between">
-          <div className="h-5 bg-zinc-200 rounded w-1/3" />
-          <div className="h-5 bg-zinc-200 rounded w-16" />
-        </div>
-      </div>
-      <div className="px-6 py-5 space-y-3">
-        <div className="h-4 bg-zinc-100 rounded w-full" />
-        <div className="h-4 bg-zinc-100 rounded w-4/5" />
-        <div className="h-4 bg-zinc-100 rounded w-3/5" />
+    <div className="pl-8 opacity-40">
+      <div className="h-4 bg-zinc-200 rounded w-1/4 mb-4" />
+      <div className="space-y-2">
+        <div className="h-3 bg-zinc-100 rounded w-full" />
+        <div className="h-3 bg-zinc-100 rounded w-4/5" />
+        <div className="h-3 bg-zinc-100 rounded w-3/5" />
       </div>
     </div>
   );

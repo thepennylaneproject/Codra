@@ -37,18 +37,19 @@ export function ExecutionSurface({
 }: ExecutionSurfaceProps) {
   return (
     <div className="h-full flex flex-col">
-      {/* Execution status bar - only when actively executing */}
+      {/* Execution status - minimal, factual */}
       <AnimatePresence>
         {isExecuting && executionLabel && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="shrink-0 px-8 py-2 bg-zinc-900 border-b border-zinc-800"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.1 }}
+            className="shrink-0 px-8 py-2 border-b border-[var(--ui-border)]/30"
           >
             <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-              <span className="text-xs font-medium text-zinc-300">
+              <div className="w-1 h-1 rounded-full bg-zinc-400" />
+              <span className="text-[11px] text-text-soft">
                 {executionLabel}
               </span>
             </div>
@@ -61,8 +62,8 @@ export function ExecutionSurface({
         {isEmpty ? (
           <EmptyWorkState />
         ) : (
-          <div className="max-w-[900px] mx-auto py-12 px-8">
-            <div className="space-y-8">
+          <div className="max-w-[860px] mx-auto py-16 px-10">
+            <div className="space-y-12">
               {children}
             </div>
           </div>
@@ -73,21 +74,14 @@ export function ExecutionSurface({
 }
 
 /**
- * Empty state - "No work exists yet"
- * Deliberately NOT prompting for input
+ * Empty state - factual, not instructional
  */
 function EmptyWorkState() {
   return (
     <div className="h-full flex items-center justify-center">
-      <div className="text-center max-w-sm px-8">
-        <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-zinc-100 flex items-center justify-center">
-          <FileText size={24} className="text-zinc-400" />
-        </div>
-        <p className="text-sm text-text-soft font-medium mb-2">
-          No work exists yet.
-        </p>
-        <p className="text-xs text-text-soft/60 leading-relaxed">
-          Outputs will appear here as documents once execution begins.
+      <div className="text-center">
+        <p className="text-sm text-text-soft/50">
+          No outputs
         </p>
       </div>
     </div>
