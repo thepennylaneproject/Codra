@@ -43,3 +43,15 @@ export {
   type AdversaryOutput,
   type AdversaryProvider,
 } from './adversary';
+
+export {
+  createAISynthesizer,
+  synthesizeLocally,
+  synthesizerOutputToProposal,
+  SYNTHESIZER_SYSTEM_PROMPT,
+  buildSynthesizerUserPrompt,
+  type SynthesizerInput,
+  type SynthesizedModule,
+  type SynthesizerOutput,
+  type SynthesizerProvider,
+} from './synthesizer';
