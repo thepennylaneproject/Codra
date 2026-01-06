@@ -21,3 +21,14 @@ export {
   type ExplorerOutput,
   type ExplorerProvider,
 } from './explorer';
+
+export {
+  createAICritic,
+  critiqueLocally,
+  CRITIC_SYSTEM_PROMPT,
+  buildCriticUserPrompt,
+  type Risk,
+  type RiskSeverity,
+  type CriticOutput,
+  type CriticProvider,
+} from './critic';
