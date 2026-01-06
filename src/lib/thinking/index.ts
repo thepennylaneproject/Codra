@@ -82,3 +82,17 @@ export {
   type ReflectionOutput,
   type ReflectionProvider,
 } from './lyra-reflection';
+
+// Document verification
+export {
+  createAIDocumentVerifier,
+  verifyDocumentLocally,
+  buildVerificationContext,
+  VERIFIER_SYSTEM_PROMPT as DOCUMENT_VERIFIER_SYSTEM_PROMPT,
+  buildVerifierUserPrompt as buildDocumentVerifierUserPrompt,
+  type VerificationContext,
+  type DocumentVerifierProvider,
+} from './document-verifier';
+
+// Multi-model debate system
+export * from './debate';
