@@ -55,3 +55,15 @@ export {
   type SynthesizerOutput,
   type SynthesizerProvider,
 } from './synthesizer';
+
+export {
+  createAIVerifier,
+  verifyLocally,
+  verifyModuleLocally,
+  VERIFIER_SYSTEM_PROMPT,
+  buildVerifierUserPrompt,
+  type CostBreakdown,
+  type ModuleVerification,
+  type VerifierOutput,
+  type VerifierProvider,
+} from './verifier';
