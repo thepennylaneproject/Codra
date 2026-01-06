@@ -56,3 +56,16 @@ export {
   type SynthesisResult,
   type SynthesizerProvider,
 } from './shadow-synthesizer';
+
+// Lyra AI observer
+export {
+  createAIObserver,
+  createHybridObserver,
+  observerResultsToLyraObservations,
+  generateReflectionStatement,
+  OBSERVER_SYSTEM_PROMPT,
+  buildObserverUserPrompt,
+  type ObserverResult,
+  type ObserverProvider,
+  type HybridObserverConfig,
+} from './lyra-observer';
