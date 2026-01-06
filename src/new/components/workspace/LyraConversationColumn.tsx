@@ -22,10 +22,7 @@
 
 import React, { useState, useCallback, FormEvent, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Send, Sparkles } from 'lucide-react';
 import { useLyraOptional } from '../../../lib/lyra';
-import { LyraAvatar } from '../LyraAvatar';
-import { Button } from '@/components/ui/Button';
 
 interface ConversationMessage {
   id: string;
@@ -110,12 +107,8 @@ export function LyraConversationColumn({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header - receded */}
-      <div className="px-4 py-2 border-b border-[var(--ui-border)]/20">
-        <span className="text-[9px] text-text-soft/40 uppercase tracking-widest">
-          Lyra
-        </span>
-      </div>
+      {/* Header - silent divider only */}
+      <div className="h-px bg-[var(--ui-border)]/15" />
 
       {/* Conversation Thread - margin notes feel */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5">
@@ -159,7 +152,7 @@ export function LyraConversationColumn({
 
       {/* Context Summary - quiet */}
       {contextSummary && (
-        <div className="px-4 py-3 border-t border-[var(--ui-border)]/20">
+        <div className="px-4 py-3 border-t border-[var(--ui-border)]/15">
           <p className="text-[11px] text-text-soft/50 leading-relaxed line-clamp-2">
             {contextSummary}
           </p>
@@ -174,9 +167,9 @@ export function LyraConversationColumn({
         </div>
       )}
 
-      {/* Input - borderless, minimal */}
-      <div className="px-4 py-3 border-t border-[var(--ui-border)]/20">
-        <form onSubmit={handleSubmit} className="relative">
+      {/* Input - borderless, no button */}
+      <div className="px-4 py-3 border-t border-[var(--ui-border)]/15">
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             value={input}
@@ -184,13 +177,6 @@ export function LyraConversationColumn({
             placeholder="..."
             className="w-full px-0 py-1 bg-transparent border-0 text-[12px] text-text-primary placeholder:text-text-soft/30 focus:outline-none"
           />
-          <Button
-            type="submit"
-            disabled={!input.trim()}
-            className="absolute right-0 top-1/2 -translate-y-1/2 p-1 text-text-soft/40 hover:text-text-soft disabled:opacity-20 transition-colors"
-          >
-            <Send size={12} />
-          </Button>
         </form>
       </div>
     </div>

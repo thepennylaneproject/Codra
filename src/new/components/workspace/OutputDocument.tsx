@@ -70,7 +70,7 @@ export function OutputDocument({
               </p>
             )}
           </div>
-          <span className={`text-[10px] ${statusColorClass.replace('bg-', '').split(' ')[0]}`}>
+          <span className={`text-[10px] ${statusColorClass}`}>
             {statusLabel}
           </span>
         </div>
@@ -83,7 +83,7 @@ export function OutputDocument({
 
       {/* Document Footer - only if metadata present */}
       {(timestamp || metadata) && (
-        <footer className="mt-6 pt-4 border-t border-[var(--ui-border)]/20">
+        <footer className="mt-6 pt-4 border-t border-[var(--ui-border)]/15">
           <div className="flex items-center justify-between text-[10px] text-text-soft/40">
             {timestamp && (
               <span className="tabular-nums">

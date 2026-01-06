@@ -71,7 +71,7 @@ export function ProofPanel({
   return (
     <div className="h-full flex flex-col bg-white">
       {/* Header - minimal */}
-      <div className="h-8 px-4 flex items-center justify-between border-b border-[var(--ui-border)]/20 shrink-0">
+      <div className="h-8 px-4 flex items-center justify-between border-b border-[var(--ui-border)]/15 shrink-0">
         <span className="text-[9px] text-text-soft/40 uppercase tracking-widest">
           Checks
         </span>
@@ -99,7 +99,7 @@ export function ProofPanel({
         )}
 
         {conflicts.length > 0 && (
-          <div className="space-y-2 mb-4 pt-4 border-t border-[var(--ui-border)]/10">
+          <div className="space-y-2 mb-4 pt-4 border-t border-[var(--ui-border)]/15">
             {conflicts.map((conflict) => (
               <ConflictItem key={conflict.id} conflict={conflict} />
             ))}
@@ -107,7 +107,7 @@ export function ProofPanel({
         )}
 
         {synthesisNotes.length > 0 && (
-          <div className="space-y-2 pt-4 border-t border-[var(--ui-border)]/10">
+          <div className="space-y-2 pt-4 border-t border-[var(--ui-border)]/15">
             {synthesisNotes.map((note) => (
               <SynthesisItem key={note.id} note={note} />
             ))}
