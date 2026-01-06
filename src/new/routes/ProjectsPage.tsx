@@ -70,7 +70,16 @@ export function ProjectsPage() {
         <div className="min-h-screen flex flex-col bg-[#FFFAF0] text-[#1A1A1A]">
             {/* Header */}
             <header className="border-b border-[#1A1A1A]/15 px-8 py-8">
-                <h1 className="font-semibold tracking-tight text-[#1A1A1A]" style={{ fontSize: '24px' }}>Projects</h1>
+                <div className="flex items-center justify-between">
+                    <h1 className="font-semibold tracking-tight text-[#1A1A1A]" style={{ fontSize: '24px' }}>Projects</h1>
+                    <button
+                        onClick={() => navigate('/new')}
+                        className="font-normal text-[#1A1A1A] border border-[#1A1A1A]/15 px-3 py-1.5"
+                        style={{ fontSize: '14px' }}
+                    >
+                        Create project
+                    </button>
+                </div>
             </header>
 
             {/* Content */}
@@ -86,16 +95,43 @@ export function ProjectsPage() {
                         {displayProjects.map((project) => {
                             const status = statusMap.get(project.id) ?? 'Idle';
                             const updatedAt = new Date(project.updatedAt).toLocaleString();
+                            const logoUrl = project.brandConstraints?.logoUrl;
+                            const monogram = project.name.split(' ').slice(0, 2).map(word => word[0]).join('').toUpperCase();
+
                             return (
-                                <div key={project.id} className="flex items-center justify-between gap-8 py-3 border-b border-[#1A1A1A]/15 last:border-b-0">
+                                <div key={project.id} className="flex items-center gap-4 py-3 border-b border-[#1A1A1A]/15 last:border-b-0">
+                                    {/* Thumbnail */}
+                                    <div className="flex-shrink-0">
+                                        {logoUrl ? (
+                                            <img
+                                                src={logoUrl}
+                                                alt={project.name}
+                                                className="w-8 h-8 object-cover border border-[#1A1A1A]/15"
+                                                style={{ borderRadius: '2px' }}
+                                            />
+                                        ) : (
+                                            <div
+                                                className="w-8 h-8 border border-[#1A1A1A]/15 flex items-center justify-center font-normal text-[#1A1A1A] opacity-35"
+                                                style={{ borderRadius: '2px', fontSize: '10px' }}
+                                            >
+                                                {monogram.slice(0, 1)}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Project Info */}
                                     <div className="flex-1 min-w-0">
                                         <div className="font-normal text-[#1A1A1A] truncate" style={{ fontSize: '14px' }}>{project.name}</div>
                                         <div className="font-normal text-[#1A1A1A] opacity-35 mt-1" style={{ fontSize: '11px' }}>{updatedAt}</div>
                                     </div>
-                                    <div className="font-normal text-[#1A1A1A] opacity-35" style={{ fontSize: '11px' }}>{status}</div>
+
+                                    {/* Status */}
+                                    <div className="font-normal text-[#1A1A1A] opacity-35 flex-shrink-0" style={{ fontSize: '11px' }}>{status}</div>
+
+                                    {/* Action */}
                                     <button
                                         onClick={() => navigate(`/p/${project.id}/workspace`)}
-                                        className="font-normal text-[#1A1A1A] border border-[#1A1A1A]/15 px-3 py-1.5"
+                                        className="font-normal text-[#1A1A1A] border border-[#1A1A1A]/15 px-3 py-1.5 flex-shrink-0"
                                         style={{ fontSize: '14px' }}
                                     >
                                         Open
@@ -105,8 +141,15 @@ export function ProjectsPage() {
                         })}
                     </div>
                 ) : (
-                    <div className="py-12">
+                    <div className="py-12 space-y-4">
                         <p className="font-normal text-[#1A1A1A] opacity-35" style={{ fontSize: '11px' }}>No projects.</p>
+                        <button
+                            onClick={() => navigate('/new')}
+                            className="font-normal text-[#1A1A1A] border border-[#1A1A1A]/15 px-3 py-1.5"
+                            style={{ fontSize: '14px' }}
+                        >
+                            Create project
+                        </button>
                     </div>
                 )}
             </main>
