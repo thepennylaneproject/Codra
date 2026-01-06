@@ -32,3 +32,14 @@ export {
   type CriticOutput,
   type CriticProvider,
 } from './critic';
+
+export {
+  createAIAdversary,
+  challengeLocally,
+  ADVERSARY_SYSTEM_PROMPT,
+  buildAdversaryUserPrompt,
+  type Contradiction,
+  type PressurePoint,
+  type AdversaryOutput,
+  type AdversaryProvider,
+} from './adversary';
