@@ -25,8 +25,11 @@ export function ExecutionDeskHeader({
 }: ExecutionDeskHeaderProps) {
   return (
     <header className="flex items-center justify-between bg-transparent">
-      {/* Left: Project name only */}
-      <div className="flex items-center gap-3">
+      {/* Left: Environment + Project name */}
+      <div className="flex flex-col gap-1">
+        <p className="font-normal text-[#1A1A1A]" style={{ fontSize: '11px', opacity: 0.6 }}>
+          Execution Desk
+        </p>
         <h1 className="font-normal text-[#1A1A1A]" style={{ fontSize: '14px' }}>{projectName}</h1>
       </div>
 

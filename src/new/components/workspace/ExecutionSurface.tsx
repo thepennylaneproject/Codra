@@ -54,7 +54,7 @@ function EmptyWorkState() {
   return (
     <div className="h-full flex items-center justify-center">
       <p className="font-normal text-[#1A1A1A] opacity-35" style={{ fontSize: '14px' }}>
-        Awaiting execution.
+        Output documents appear here.
       </p>
     </div>
   );

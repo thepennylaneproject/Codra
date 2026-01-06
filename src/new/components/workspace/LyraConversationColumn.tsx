@@ -105,6 +105,13 @@ export function LyraConversationColumn({
 
   return (
     <div className="h-full flex flex-col">
+      {/* Label - what this column is */}
+      <div className="px-4 py-3">
+        <p className="font-normal text-[#1A1A1A]" style={{ fontSize: '11px', opacity: 0.6 }}>
+          Conversation
+        </p>
+      </div>
+
       {/* Header - silent divider only */}
       <div className="h-px bg-[var(--ui-border)]/15" />
 
