@@ -31,3 +31,17 @@ export {
   selectObservationsToSurface,
   updateShadowFromPatterns,
 } from './lyra-pattern-detector';
+
+// AI-powered classification
+export {
+  createAIClassifier,
+  createHybridClassifier,
+  CLASSIFICATION_SYSTEM_PROMPT,
+  buildClassificationUserPrompt,
+  type AIFragmentType,
+  type AIFragmentStrength,
+  type AIFragmentDomain,
+  type AIClassificationResult,
+  type ClassifierProvider,
+  type HybridClassifierConfig,
+} from './ai-classifier';
