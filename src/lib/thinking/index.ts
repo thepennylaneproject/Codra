@@ -69,3 +69,16 @@ export {
   type ObserverProvider,
   type HybridObserverConfig,
 } from './lyra-observer';
+
+// Lyra reflection (voice)
+export {
+  createAIReflector,
+  reflectLocally,
+  buildIntervention,
+  cleanReflection,
+  validateReflection,
+  REFLECTION_SYSTEM_PROMPT,
+  buildReflectionUserPrompt,
+  type ReflectionOutput,
+  type ReflectionProvider,
+} from './lyra-reflection';
