@@ -31,3 +31,68 @@ export {
   selectObservationsToSurface,
   updateShadowFromPatterns,
 } from './lyra-pattern-detector';
+
+// AI-powered classification
+export {
+  createAIClassifier,
+  createHybridClassifier,
+  CLASSIFICATION_SYSTEM_PROMPT,
+  buildClassificationUserPrompt,
+  type AIFragmentType,
+  type AIFragmentStrength,
+  type AIFragmentDomain,
+  type AIClassificationResult,
+  type ClassifierProvider,
+  type HybridClassifierConfig,
+} from './ai-classifier';
+
+// Shadow project synthesis
+export {
+  createAISynthesizer,
+  synthesizeLocally,
+  synthesisToShadowProject,
+  SYNTHESIS_SYSTEM_PROMPT,
+  buildSynthesisUserPrompt,
+  type SynthesisResult,
+  type SynthesizerProvider,
+} from './shadow-synthesizer';
+
+// Lyra AI observer
+export {
+  createAIObserver,
+  createHybridObserver,
+  observerResultsToLyraObservations,
+  generateReflectionStatement,
+  OBSERVER_SYSTEM_PROMPT,
+  buildObserverUserPrompt,
+  type ObserverResult,
+  type ObserverProvider,
+  type HybridObserverConfig,
+} from './lyra-observer';
+
+// Lyra reflection (voice)
+export {
+  createAIReflector,
+  reflectLocally,
+  buildIntervention,
+  cleanReflection,
+  validateReflection,
+  REFLECTION_SYSTEM_PROMPT,
+  buildReflectionUserPrompt,
+  type ReflectionOutput,
+  type ReflectionProvider,
+} from './lyra-reflection';
+
+// Document verification
+export {
+  createAIDocumentVerifier,
+  verifyDocumentLocally,
+  buildVerificationContext,
+  VERIFIER_SYSTEM_PROMPT as DOCUMENT_VERIFIER_SYSTEM_PROMPT,
+  buildVerifierUserPrompt as buildDocumentVerifierUserPrompt,
+  type VerificationContext,
+  type DocumentVerifierProvider,
+} from './document-verifier';
+
+// Multi-model debate system
+export * from './debate';
