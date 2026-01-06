@@ -16,9 +16,8 @@
  * - Needs review
  */
 
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import { OutputStatus, getOutputStatusLabel, getOutputStatusColor } from './ExecutionSurface';
 
 interface OutputDocumentProps {
@@ -42,7 +41,6 @@ export function OutputDocument({
   metadata,
   isActive = false,
 }: OutputDocumentProps) {
-  const StatusIcon = getStatusIcon(status);
   const statusLabel = getOutputStatusLabel(status);
   const statusColorClass = getOutputStatusColor(status);
 
@@ -153,14 +151,4 @@ export function OutputDocumentSkeleton() {
   );
 }
 
-function getStatusIcon(status: OutputStatus) {
-  switch (status) {
-    case 'verified':
-      return CheckCircle2;
-    case 'needs_review':
-      return AlertCircle;
-    case 'draft':
-    default:
-      return Clock;
-  }
-}
+

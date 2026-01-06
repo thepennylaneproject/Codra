@@ -16,7 +16,7 @@
  * └──────────┴────────────────────────────┴──────────┘
  */
 
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { useFlowStore } from '../../../lib/store/useFlowStore';
 
 // Layout constants
@@ -36,7 +36,6 @@ interface ExecutionDeskProps {
 }
 
 export function ExecutionDesk({
-  projectId,
   children,
   lyraContent,
   proofContent,
@@ -44,7 +43,7 @@ export function ExecutionDesk({
   footerContent,
   proofTrigger = null,
 }: ExecutionDeskProps) {
-  const { layout, updateLayout, toggleDock } = useFlowStore();
+  const { layout, toggleDock } = useFlowStore();
 
   // Proof panel only opens on exceptions or explicit user action
   const [proofVisible, setProofVisible] = useState(false);

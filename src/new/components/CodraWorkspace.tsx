@@ -41,7 +41,6 @@ interface CodraWorkspaceProps {
     pastMemories?: Array<{ title: string; memory: string }>;
     executionMode: ExecutionMode;
     onExecutionModeChange: (mode: ExecutionMode) => void;
-    taskRunModes: Record<string, ExecutionMode>;
     taskRunStates: Record<string, 'running' | 'complete' | 'failed'>;
     onRunTask: (taskId: string, mode: ExecutionMode) => void;
     onCancel?: () => void;
@@ -58,7 +57,6 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
     children,
     executionMode,
     onExecutionModeChange,
-    taskRunModes,
     taskRunStates,
     onRunTask,
     onCancel,
@@ -66,12 +64,12 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
     onSetDeskModel,
     globalModelId
 }) => {
-    const runMode = activeTask ? taskRunModes[activeTask.id] || executionMode : executionMode;
+    // const runMode = activeTask ? taskRunModes[activeTask.id] || executionMode : executionMode;
     const runState = activeTask ? taskRunStates[activeTask.id] : undefined;
     const derivedState = runState
         || (activeTask?.status === 'in-progress' ? 'running' : activeTask?.status === 'complete' ? 'complete' : undefined);
     const executionStatusLabel = activeTask
-        ? getExecutionStatusLabel(derivedState, runMode)
+        ? getExecutionStatusLabel(derivedState)
         : '';
     const previewGuardrail = activeTask ? getPreviewGuardrail(activeTask) : { blocked: false, matches: [] };
     const previewBlocked = executionMode === 'preview' && previewGuardrail.blocked;
@@ -294,7 +292,7 @@ export const CodraWorkspace: React.FC<CodraWorkspaceProps> = ({
     );
 };
 
-function getExecutionStatusLabel(status: 'running' | 'complete' | 'failed' | undefined, mode: ExecutionMode) {
+function getExecutionStatusLabel(status: 'running' | 'complete' | 'failed' | undefined) {
     if (!status) return '';
     if (status === 'complete') return 'Complete';
     if (status === 'failed') return 'Failed';

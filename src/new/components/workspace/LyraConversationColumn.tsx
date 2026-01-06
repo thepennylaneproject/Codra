@@ -20,7 +20,7 @@
  * - No cards, no "chat bubbles"
  */
 
-import React, { useState, useCallback, FormEvent, useRef, useEffect } from 'react';
+import { useState, useCallback, FormEvent, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLyraOptional } from '../../../lib/lyra';
 
@@ -41,8 +41,6 @@ interface LyraConversationColumnProps {
 }
 
 export function LyraConversationColumn({
-  spreadId,
-  deskId,
   onSendMessage,
   contextSummary,
   onEditContext,
@@ -103,7 +101,7 @@ export function LyraConversationColumn({
     );
   }
 
-  const { state } = lyra;
+  // Lyra context is available
 
   return (
     <div className="h-full flex flex-col">

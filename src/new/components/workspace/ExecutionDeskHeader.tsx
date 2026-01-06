@@ -6,7 +6,7 @@
  * Functional, not decorative.
  */
 
-import React from 'react';
+
 import { PanelLeft, Settings } from 'lucide-react';
 import { IconButton } from '@/components/ui/Button';
 
@@ -20,8 +20,6 @@ interface ExecutionDeskHeaderProps {
 
 export function ExecutionDeskHeader({
   projectName,
-  projectId,
-  lyraVisible,
   onToggleLyra,
   onOpenSettings,
 }: ExecutionDeskHeaderProps) {

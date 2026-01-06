@@ -54,7 +54,7 @@
     timeout = 10
 
 [dev]
-  port = 5173       # Netlify Dev server port
+  port = 5175       # Netlify Dev server port
   targetPort = 4444 # Vite server port (from vite.config.ts)
   command = "npm run dev" 
   framework = "#custom"

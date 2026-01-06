@@ -11,7 +11,7 @@ import {
     Upload,
 } from 'lucide-react';
 import { getProjects, createProject, deleteProject } from '../../domain/projects';
-import { Project, PRODUCTION_DESKS, ProductionDeskId } from '../../domain/types';
+import { Project, ProductionDeskId } from '../../domain/types';
 import { useToast } from '../components/Toast';
 import { FirstRunModal } from '../components/FirstRunModal';
 import { Button } from '@/components/ui/Button';
@@ -87,6 +87,7 @@ export function ProjectsPage() {
         p.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    /*
     const handleCreateExecutionWorkspace = async () => {
         const playgroundProject = await createProject({
             projectName: 'Execution workspace',
@@ -100,6 +101,7 @@ export function ProjectsPage() {
         });
         navigate(`/p/${playgroundProject.id}/workspace`);
     };
+    */
 
     const handleImportProject = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -201,7 +203,7 @@ export function ProjectsPage() {
     }, [projects]);
 
     return (
-        <div className="min-h-screen bg-[#FFFAF0] text-text-primary font-sans selection:bg-zinc-300/40">
+        <div className="min-h-screen flex flex-col bg-[#FFFAF0] text-text-primary font-sans selection:bg-zinc-300/40">
             {/* First-Run Welcome Modal */}
             <FirstRunModal />
 

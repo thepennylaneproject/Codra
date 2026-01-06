@@ -6,8 +6,7 @@
  * Cost and lock moments are explicit and rare.
  */
 
-import React from 'react';
-import { DollarSign, Lock } from 'lucide-react';
+
 
 interface ExecutionDeskFooterProps {
   completedTasks?: number;
@@ -23,7 +22,6 @@ export function ExecutionDeskFooter({
   isLocked = false,
 }: ExecutionDeskFooterProps) {
   const hasProgress = totalTasks > 0;
-  const progressPercent = hasProgress ? (completedTasks / totalTasks) * 100 : 0;
 
   return (
     <footer className="h-full flex items-center justify-between px-6 bg-transparent">

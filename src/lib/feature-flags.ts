@@ -26,5 +26,7 @@ export function isFeatureEnabled(flag: FeatureFlag): boolean {
  * Get all active feature flags.
  */
 export function getActiveFlags(): string[] {
-  return posthog.getFeatureFlagPayloads() ? Object.keys(posthog.getFeatureFlagPayloads()) : [];
+  // posthog.getFeatureFlags() is not available in all versions or typed differently
+  // Since this is currently unused and causing build errors, we'll return an empty array for now.
+  return [];
 }
