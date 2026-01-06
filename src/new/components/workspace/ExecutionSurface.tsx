@@ -36,8 +36,8 @@ export function ExecutionSurface({
         {isEmpty ? (
           <EmptyWorkState />
         ) : (
-          <div className="max-w-[860px] mx-auto py-16 px-10">
-            <div className="space-y-12">
+          <div className="mx-auto py-16" style={{ maxWidth: '720px', paddingLeft: '32px', paddingRight: '32px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
               {children}
             </div>
           </div>
@@ -53,7 +53,7 @@ export function ExecutionSurface({
 function EmptyWorkState() {
   return (
     <div className="h-full flex items-center justify-center">
-      <p className="text-sm text-text-soft/30">
+      <p className="font-normal text-[#1A1A1A] opacity-35" style={{ fontSize: '14px' }}>
         Awaiting execution.
       </p>
     </div>
@@ -82,17 +82,17 @@ export function getOutputStatusLabel(status: OutputStatus): string {
 }
 
 /**
- * Get status color for visual indicators - text only, no backgrounds
+ * Get status color for visual indicators - text only, ink with opacity only
  */
 export function getOutputStatusColor(status: OutputStatus): string {
   switch (status) {
     case 'draft':
-      return 'text-zinc-400';
+      return 'text-[#1A1A1A] opacity-35';
     case 'verified':
-      return 'text-emerald-600/70';
+      return 'text-[#1A1A1A] opacity-60';
     case 'needs_review':
-      return 'text-amber-600/70';
+      return 'text-[#1A1A1A] opacity-35';
     default:
-      return 'text-zinc-400';
+      return 'text-[#1A1A1A] opacity-35';
   }
 }

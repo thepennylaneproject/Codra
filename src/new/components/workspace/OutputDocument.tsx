@@ -50,39 +50,36 @@ export function OutputDocument({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.12 }}
       id={`output-${id}`}
-      className={`
-        output-document
-        ${isActive ? 'border-l-2 border-l-zinc-300 pl-6' : 'pl-8'}
-      `}
+      className="output-document"
     >
-      {/* Document Header - minimal */}
-      <header className="mb-4">
+      {/* Document Header */}
+      <header style={{ marginBottom: '24px' }}>
         <div className="flex items-baseline justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <h2 className="text-[15px] font-medium text-text-primary">
+            <h2 className="font-medium text-[#1A1A1A]" style={{ fontSize: '16px' }}>
               {title}
             </h2>
             {source && (
-              <p className="text-[10px] text-text-soft/40 mt-1 uppercase tracking-wider">
+              <p className="font-normal text-[#1A1A1A] opacity-35 mt-1" style={{ fontSize: '11px' }}>
                 {source}
               </p>
             )}
           </div>
-          <span className={`text-[10px] ${statusColorClass}`}>
+          <span className={`font-normal ${statusColorClass}`} style={{ fontSize: '11px' }}>
             {statusLabel}
           </span>
         </div>
       </header>
 
       {/* Document Body */}
-      <div className="prose prose-sm max-w-none text-text-primary leading-relaxed">
+      <div className="font-normal text-[#1A1A1A] leading-relaxed" style={{ fontSize: '14px', lineHeight: '1.6' }}>
         {children}
       </div>
 
       {/* Document Footer - only if metadata present */}
       {(timestamp || metadata) && (
-        <footer className="mt-6 pt-4 border-t border-[var(--ui-border)]/15">
-          <div className="flex items-center justify-between text-[10px] text-text-soft/40">
+        <footer style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid rgba(26, 26, 26, 0.15)' }}>
+          <div className="flex items-center justify-between font-normal text-[#1A1A1A] opacity-35" style={{ fontSize: '11px' }}>
             {timestamp && (
               <span className="tabular-nums">
                 {timestamp.toLocaleDateString()}
