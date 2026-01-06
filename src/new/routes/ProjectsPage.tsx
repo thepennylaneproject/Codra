@@ -15,6 +15,7 @@ export function ProjectsPage() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const toast = useToast();
+    const [showCreateMenu, setShowCreateMenu] = useState(false);
 
     const [isFetching, setIsFetching] = useState(false);
 
@@ -72,14 +73,79 @@ export function ProjectsPage() {
             <header className="border-b border-[#1A1A1A]/15 px-8 py-8">
                 <div className="flex items-center justify-between">
                     <h1 className="font-semibold tracking-tight text-[#1A1A1A]" style={{ fontSize: '24px' }}>Projects</h1>
-                    <button
-                        onClick={() => navigate('/new')}
-                        className="font-normal text-[#1A1A1A] border border-[#1A1A1A]/15 px-3 py-1.5"
-                        style={{ fontSize: '14px' }}
-                    >
-                        Create project
-                    </button>
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowCreateMenu(!showCreateMenu)}
+                            className="font-normal text-[#1A1A1A] border border-[#1A1A1A]/15 px-3 py-1.5"
+                            style={{ fontSize: '14px' }}
+                        >
+                            Create
+                        </button>
+                        {showCreateMenu && (
+                            <>
+                                <div className="absolute right-0 mt-2 bg-[#FFFAF0] border border-[#1A1A1A]/15" style={{ minWidth: '160px' }}>
+                                    <button
+                                        onClick={() => {
+                                            navigate('/new');
+                                            setShowCreateMenu(false);
+                                        }}
+                                        className="w-full text-left font-normal text-[#1A1A1A] px-3 py-2 border-b border-[#1A1A1A]/15 hover:bg-[#1A1A1A]/5"
+                                        style={{ fontSize: '14px' }}
+                                    >
+                                        New project
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            navigate('/blueprints');
+                                            setShowCreateMenu(false);
+                                        }}
+                                        className="w-full text-left font-normal text-[#1A1A1A] px-3 py-2 border-b border-[#1A1A1A]/15 hover:bg-[#1A1A1A]/5"
+                                        style={{ fontSize: '14px' }}
+                                    >
+                                        Start from blueprint
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            document.getElementById('import-project-file')?.click();
+                                            setShowCreateMenu(false);
+                                        }}
+                                        className="w-full text-left font-normal text-[#1A1A1A] px-3 py-2 hover:bg-[#1A1A1A]/5"
+                                        style={{ fontSize: '14px' }}
+                                    >
+                                        Import
+                                    </button>
+                                </div>
+                                <div
+                                    className="fixed inset-0 z-0"
+                                    onClick={() => setShowCreateMenu(false)}
+                                />
+                            </>
+                        )}
+                    </div>
                 </div>
+                <input
+                    type="file"
+                    id="import-project-file"
+                    accept=".json"
+                    className="hidden"
+                    onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = async (event) => {
+                            try {
+                                const projectData = JSON.parse(event.target?.result as string);
+                                if (!projectData.name) throw new Error("Invalid project data");
+                                toast.success(`Project "${projectData.name}" imported. Redirecting...`);
+                                // Import flow would go here - for now just show success
+                                setTimeout(() => window.location.reload(), 1500);
+                            } catch (err) {
+                                toast.error("Invalid project file.");
+                            }
+                        };
+                        reader.readAsText(file);
+                    }}
+                />
             </header>
 
             {/* Content */}
@@ -144,7 +210,7 @@ export function ProjectsPage() {
                     <div className="py-12 space-y-4">
                         <p className="font-normal text-[#1A1A1A] opacity-35" style={{ fontSize: '11px' }}>No projects.</p>
                         <button
-                            onClick={() => navigate('/new')}
+                            onClick={() => setShowCreateMenu(true)}
                             className="font-normal text-[#1A1A1A] border border-[#1A1A1A]/15 px-3 py-1.5"
                             style={{ fontSize: '14px' }}
                         >

@@ -24,11 +24,11 @@ export function ExecutionDeskFooter({
   const hasProgress = totalTasks > 0;
 
   return (
-    <footer className="h-full flex items-center justify-between px-6 bg-transparent">
+    <footer className="flex items-center justify-between bg-transparent">
       {/* Left: Progress - factual */}
       <div className="flex items-center">
         {hasProgress && (
-          <span className="text-[10px] text-text-soft/40 tabular-nums">
+          <span className="font-normal text-[#1A1A1A] opacity-35 tabular-nums" style={{ fontSize: '11px' }}>
             {completedTasks} of {totalTasks}
           </span>
         )}
@@ -37,13 +37,13 @@ export function ExecutionDeskFooter({
       {/* Right: Cost & Lock - factual */}
       <div className="flex items-center gap-4">
         {sessionCost > 0 && (
-          <span className="text-[10px] text-text-soft/40 tabular-nums">
+          <span className="font-normal text-[#1A1A1A] opacity-35 tabular-nums" style={{ fontSize: '11px' }}>
             ${sessionCost.toFixed(4)}
           </span>
         )}
 
         {isLocked && (
-          <span className="text-[10px] text-text-soft/60">
+          <span className="font-normal text-[#1A1A1A]" style={{ fontSize: '11px', opacity: '0.6' }}>
             Locked
           </span>
         )}

@@ -20,10 +20,10 @@ import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { useFlowStore } from '../../../lib/store/useFlowStore';
 
 // Layout constants
-const LYRA_COLUMN_WIDTH = 240;
+const LYRA_COLUMN_WIDTH = 220;
 const PROOF_COLUMN_WIDTH = 320;
 const MIN_LYRA_WIDTH = 200;
-const MAX_LYRA_WIDTH = 320;
+const MAX_LYRA_WIDTH = 280;
 
 interface ExecutionDeskProps {
   projectId: string;
@@ -108,7 +108,7 @@ export function ExecutionDesk({
     >
       {/* Header - minimal chrome */}
       {headerContent && (
-        <header className="h-10 shrink-0 border-b border-[var(--ui-border)]/15">
+        <header className="shrink-0 border-b px-8 py-4" style={{ borderBottomColor: 'rgba(26, 26, 26, 0.15)' }}>
           {headerContent}
         </header>
       )}
@@ -119,14 +119,15 @@ export function ExecutionDesk({
         {/* LEFT: Lyra Column - receded */}
         {layout.leftDockVisible && (
           <aside
-            className="h-full shrink-0 relative flex flex-col border-r border-[var(--ui-border)]/15 bg-zinc-50/50"
-            style={{ width: lyraWidth }}
+            className="h-full shrink-0 relative flex flex-col border-r"
+            style={{ width: lyraWidth, borderRightColor: 'rgba(26, 26, 26, 0.15)', backgroundColor: '#FFFAF0' }}
           >
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto p-6">
               {lyraContent}
             </div>
             <div
-              className="absolute right-0 top-0 w-px h-full cursor-col-resize hover:bg-zinc-200 transition-colors"
+              className="absolute right-0 top-0 w-px h-full cursor-col-resize"
+              style={{ backgroundColor: 'rgba(26, 26, 26, 0.05)' }}
               onMouseDown={() => setIsResizing(true)}
             />
           </aside>
@@ -142,8 +143,8 @@ export function ExecutionDesk({
         {/* RIGHT: Proof Panel - collapsed by default */}
         {proofVisible && proofContent && (
           <aside
-            className="h-full shrink-0 border-l border-[var(--ui-border)]/15 bg-zinc-50/30"
-            style={{ width: PROOF_COLUMN_WIDTH }}
+            className="h-full shrink-0 border-l p-6 overflow-y-auto"
+            style={{ width: PROOF_COLUMN_WIDTH, borderLeftColor: 'rgba(26, 26, 26, 0.15)', backgroundColor: '#FFFAF0' }}
           >
             {proofContent}
           </aside>
