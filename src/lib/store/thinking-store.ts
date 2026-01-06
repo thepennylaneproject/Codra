@@ -141,7 +141,7 @@ interface ThinkingActions {
 
 export const useThinkingStore = create<ThinkingWorkspaceState & ThinkingActions>()(
   persist(
-    immer((set, get) => ({
+    immer((set) => ({
       ...initialState,
 
       // ========================================================================
@@ -621,7 +621,7 @@ export const selectDocumentsNeedingAttention = (state: ThinkingWorkspaceState) =
   state.documents.filter((d) => d.state === 'attention');
 
 export const selectIsReadyForProposal = (state: ThinkingWorkspaceState) =>
-  state.shadowProject?.readinessScore ?? 0 >= 0.7 &&
+  (state.shadowProject?.readinessScore ?? 0) >= 0.7 &&
   state.fragments.length >= 5 &&
   state.fragments.some((f) => f.strength === 'core');
 

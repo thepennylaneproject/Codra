@@ -12,7 +12,7 @@
  * It's the final check before a proposal is presented.
  */
 
-import type { Proposal, ProposalModule, CostRange, CostDriver, ScopeReduction } from '../types';
+import type { ProposalModule, CostRange, CostDriver, ScopeReduction } from '../types';
 import type { SynthesizerOutput, SynthesizedModule } from './synthesizer';
 
 // ============================================================================

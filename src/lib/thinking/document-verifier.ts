@@ -17,7 +17,6 @@ import type {
   Conflict,
   ConflictType,
   ConflictSeverity,
-  ThoughtFragment,
   ShadowProject,
   Proposal,
 } from './types';
@@ -218,8 +217,6 @@ export function verifyDocumentLocally(
   const checks: VerificationCheck[] = [];
   const conflicts: Conflict[] = [];
   const notes: string[] = [];
-
-  const contentLower = document.content.toLowerCase();
 
   // Check against constraints
   for (const constraint of context.constraints) {

@@ -7,7 +7,6 @@
  * Shows: fragment count, phase, cost (when applicable), thinking state.
  */
 
-import React from 'react';
 import { useThinkingStore } from '../../../lib/store/thinking-store';
 
 export function StatusBar() {
@@ -19,7 +18,6 @@ export function StatusBar() {
     totalEstimatedCost,
     debateInProgress,
     documents,
-    verifications,
   } = useThinkingStore();
 
   const phaseLabel = getPhaseLabel(currentPhase);

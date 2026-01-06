@@ -34,6 +34,8 @@ export interface ThoughtFragment {
   confidence: number; // 0-1, how core is this belief
 }
 
+export type Fragment = ThoughtFragment;
+
 export interface FragmentClassification {
   type: FragmentType;
   strength: FragmentStrength;
@@ -131,6 +133,60 @@ export interface ReasoningOutput {
   cost: number;
 }
 
+export interface DebateModelPlan {
+  role: ReasoningRole;
+  provider?: string;
+  model?: string;
+}
+
+export interface CostEstimateBasis {
+  inputChars: number;
+  shadowChars: number;
+  fragmentCount: number;
+  modelCount: number;
+  perModelOverheadTokens: number;
+  outputTokenBase: number;
+  outputTokenPerFragment: number;
+}
+
+export interface CostEstimate {
+  tokensIn: number;
+  tokensOut: number;
+  tokensTotal: number;
+  costUnits: number;
+  basis: CostEstimateBasis;
+  models: DebateModelPlan[];
+  estimateHash: string;
+  createdAt: Date;
+}
+
+export interface DebateConsent {
+  approved: boolean;
+  approvedAt?: string;
+  approvedBy?: string;
+  estimateHash?: string;
+}
+
+export type DebateDecision = 'approve' | 'reject' | 'needs-review';
+
+export interface DebateModelUsage {
+  role: ReasoningRole;
+  provider?: string;
+  model?: string;
+  tokensUsed?: number;
+  cost?: number;
+}
+
+export interface ProposalMetadata {
+  timing: {
+    startedAt: Date;
+    completedAt: Date;
+    durationMs: number;
+  };
+  modelUsage: DebateModelUsage[];
+  partialFailures: string[];
+}
+
 export interface DebateRound {
   round: number;
   outputs: Map<ReasoningRole, ReasoningOutput>;
@@ -204,6 +260,7 @@ export interface Proposal {
   id: string;
   derivedFrom: string; // ShadowProject ID
   createdAt: Date;
+  decision: DebateDecision;
 
   // The shape of the work
   modules: ProposalModule[];
@@ -211,6 +268,10 @@ export interface Proposal {
   // Transparency
   knownUnknowns: string[];
   assumptions: Assumption[];
+  changeSet: ChangeRequest[];
+  citations: string[];
+  verifierNotes: string[];
+  metadata: ProposalMetadata;
 
   // Cost
   estimatedCost: CostRange;

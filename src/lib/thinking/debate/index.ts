@@ -62,8 +62,18 @@ export {
   verifyModuleLocally,
   VERIFIER_SYSTEM_PROMPT,
   buildVerifierUserPrompt,
-  type CostBreakdown,
   type ModuleVerification,
   type VerifierOutput,
   type VerifierProvider,
 } from './verifier';
+
+export {
+  conductDebate,
+  DebateOrchestratorError,
+  type DebateOptions,
+} from './orchestrator';
+
+export {
+  estimateDebateCost,
+  type DebatePreflightOptions,
+} from './cost-preflight';

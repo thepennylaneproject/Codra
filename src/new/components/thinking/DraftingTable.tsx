@@ -8,14 +8,11 @@
  * You are not punished for this mess.
  */
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef } from 'react';
 import { FragmentCard } from './FragmentCard';
 import { FragmentInput } from './FragmentInput';
 import { useThinkingStore } from '../../../lib/store/thinking-store';
-import {
-  normalizeFragment,
-  classifyFragmentType,
-} from '../../../lib/thinking/fragment-normalizer';
+import { normalizeFragment } from '../../../lib/thinking/fragment-normalizer';
 
 export function DraftingTable() {
   const {

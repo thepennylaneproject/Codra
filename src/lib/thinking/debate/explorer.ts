@@ -76,7 +76,7 @@ export function createAIExplorer(
 
       try {
         const response = await complete(EXPLORER_SYSTEM_PROMPT, userPrompt);
-        return parseExplorerResponse(response, shadow);
+        return parseExplorerResponse(response);
       } catch (error) {
         console.warn('AI exploration failed:', error);
         return exploreLocally(shadow);
@@ -88,10 +88,7 @@ export function createAIExplorer(
 /**
  * Parse explorer response.
  */
-function parseExplorerResponse(
-  response: string,
-  shadow: ShadowProject
-): ExplorerOutput {
+function parseExplorerResponse(response: string): ExplorerOutput {
   const directions: ExplorerDirection[] = [];
   const expansionNotes: string[] = [];
 

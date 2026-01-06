@@ -50,7 +50,7 @@ export function OutputDocument({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.12 }}
       id={`output-${id}`}
-      className="output-document"
+      className={`output-document${isActive ? ' output-document--active' : ''}`}
     >
       {/* Document Header */}
       <header style={{ marginBottom: '24px' }}>
@@ -147,5 +147,3 @@ export function OutputDocumentSkeleton() {
     </div>
   );
 }
-
-

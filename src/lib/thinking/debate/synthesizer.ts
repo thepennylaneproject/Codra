@@ -14,9 +14,9 @@
  * and the Adversary's contradictions — and finds coherence.
  */
 
-import type { ShadowProject, Proposal, ProposalModule, CostRange, Assumption } from '../types';
+import type { ShadowProject, Proposal, CostRange, Assumption } from '../types';
 import type { ExplorerOutput } from './explorer';
-import type { CriticOutput, Risk } from './critic';
+import type { CriticOutput } from './critic';
 import type { AdversaryOutput } from './adversary';
 
 // ============================================================================
@@ -388,10 +388,13 @@ export function synthesizerOutputToProposal(
   output: SynthesizerOutput,
   shadowProjectId: string
 ): Proposal {
+  const now = new Date();
+
   return {
     id: crypto.randomUUID(),
     derivedFrom: shadowProjectId,
     createdAt: new Date(),
+    decision: 'needs-review',
     modules: output.modules.map((m, i) => ({
       id: crypto.randomUUID(),
       name: m.name,
@@ -407,6 +410,18 @@ export function synthesizerOutputToProposal(
     })),
     knownUnknowns: output.knownUnknowns,
     assumptions: output.assumptions,
+    changeSet: [],
+    citations: [],
+    verifierNotes: [],
+    metadata: {
+      timing: {
+        startedAt: now,
+        completedAt: now,
+        durationMs: 0,
+      },
+      modelUsage: [],
+      partialFailures: [],
+    },
     estimatedCost: calculateTotalCost(output.modules),
     costDrivers: [],
     scopeReductionOptions: [],

@@ -163,8 +163,7 @@ export function detectEmotionalWeight(
  * Detect significant gaps — things that should probably be mentioned but haven't been.
  */
 export function detectMissingPieces(
-  fragments: ThoughtFragment[],
-  shadowProject: ShadowProject | null
+  fragments: ThoughtFragment[]
 ): LyraObservation[] {
   const observations: LyraObservation[] = [];
 
@@ -242,14 +241,13 @@ export function detectPivotPoints(
  */
 export function detectAllPatterns(
   fragments: ThoughtFragment[],
-  shadowProject: ShadowProject | null,
   config: DetectionConfig = DEFAULT_CONFIG
 ): LyraObservation[] {
   const allObservations: LyraObservation[] = [
     ...detectRecurringThemes(fragments, config),
     ...detectContradictions(fragments),
     ...detectEmotionalWeight(fragments),
-    ...detectMissingPieces(fragments, shadowProject),
+    ...detectMissingPieces(fragments),
     ...detectPivotPoints(fragments),
   ];
 
@@ -271,14 +269,13 @@ export function detectAllPatterns(
  * Lyra says: "You've mentioned trust more than features. Is that intentional?"
  */
 export function generateReflection(
-  observation: LyraObservation,
-  fragments: ThoughtFragment[]
+  observation: LyraObservation
 ): ReflectiveIntervention {
   const templates = REFLECTION_TEMPLATES[observation.type];
   const template = templates[Math.floor(Math.random() * templates.length)];
 
-  const statement = fillReflectionTemplate(template.statement, observation, fragments);
-  const implicit = fillReflectionTemplate(template.implicit, observation, fragments);
+  const statement = fillReflectionTemplate(template.statement, observation);
+  const implicit = fillReflectionTemplate(template.implicit, observation);
 
   return {
     id: '',
@@ -302,7 +299,7 @@ const REFLECTION_TEMPLATES: Record<ObservationType, ReflectionTemplate[]> = {
   'recurring-theme': [
     {
       statement: `You've mentioned "{theme}" {count} times now. That's not incidental.`,
-      implicit: 'Is this a core part of what you're building?',
+      implicit: "Is this a core part of what you're building?",
       requiresResponse: false,
     },
     {
@@ -381,8 +378,7 @@ const REFLECTION_TEMPLATES: Record<ObservationType, ReflectionTemplate[]> = {
 
 function fillReflectionTemplate(
   template: string,
-  observation: LyraObservation,
-  fragments: ThoughtFragment[]
+  observation: LyraObservation
 ): string {
   let filled = template;
 
@@ -469,7 +465,6 @@ function deduplicateObservations(
  * Update shadow project based on new patterns detected.
  */
 export function updateShadowFromPatterns(
-  current: ShadowProject | null,
   fragments: ThoughtFragment[],
   observations: LyraObservation[]
 ): Partial<ShadowProject> {

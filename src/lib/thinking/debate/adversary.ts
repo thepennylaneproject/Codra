@@ -98,7 +98,7 @@ export function createAIAdversary(
 
       try {
         const response = await complete(ADVERSARY_SYSTEM_PROMPT, userPrompt);
-        return parseAdversaryResponse(response, fragments);
+        return parseAdversaryResponse(response);
       } catch (error) {
         console.warn('AI adversary failed:', error);
         return challengeLocally(shadow, fragments);
@@ -110,10 +110,7 @@ export function createAIAdversary(
 /**
  * Parse adversary response.
  */
-function parseAdversaryResponse(
-  response: string,
-  fragments: ThoughtFragment[]
-): AdversaryOutput {
+function parseAdversaryResponse(response: string): AdversaryOutput {
   const contradictions: Contradiction[] = [];
   const pressurePoints: PressurePoint[] = [];
   let caseAgainst = '';

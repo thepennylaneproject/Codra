@@ -243,10 +243,7 @@ export function generateReflectionStatement(observation: ObserverResult): string
 // HYBRID OBSERVER (Local + AI)
 // ============================================================================
 
-import {
-  detectAllPatterns,
-  selectObservationsToSurface,
-} from './lyra-pattern-detector';
+import { detectAllPatterns } from './lyra-pattern-detector';
 
 export interface HybridObserverConfig {
   /** Use AI when fragment count exceeds this */
@@ -274,7 +271,7 @@ export function createHybridObserver(
   return {
     async observe(fragments: ThoughtFragment[]): Promise<ObserverResult[]> {
       // Always run local detection first
-      const localObservations = detectAllPatterns(fragments, null);
+      const localObservations = detectAllPatterns(fragments);
 
       // Convert to observer results
       const localResults: ObserverResult[] = localObservations.map((obs) => ({

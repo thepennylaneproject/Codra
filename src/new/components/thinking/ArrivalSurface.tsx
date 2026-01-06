@@ -8,7 +8,7 @@
  * It assumes you don't fully know what you're building yet.
  */
 
-import React, { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { DraftingTable } from './DraftingTable';
 import { LyraPresence } from './LyraPresence';
 import { StatusBar } from './StatusBar';
@@ -21,9 +21,7 @@ import '../../../styles/thinking-workspace.css';
 
 export function ArrivalSurface() {
   const {
-    currentPhase,
     fragments,
-    shadowProject,
     lyraMode,
     observations,
     addObservation,
@@ -35,7 +33,7 @@ export function ArrivalSurface() {
   useEffect(() => {
     if (fragments.length >= 3) {
       // Detect patterns
-      const newObservations = detectAllPatterns(fragments, shadowProject);
+      const newObservations = detectAllPatterns(fragments);
 
       // Add observations that don't already exist
       const existingIds = new Set(observations.map((o) => o.content));
@@ -47,7 +45,6 @@ export function ArrivalSurface() {
 
       // Update shadow project
       const shadowUpdates = updateShadowFromPatterns(
-        shadowProject,
         fragments,
         [...observations, ...newObservations]
       );

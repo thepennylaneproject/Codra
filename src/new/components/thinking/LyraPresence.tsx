@@ -11,8 +11,8 @@
  * You feel seen, not guided.
  */
 
-import React, { useMemo, useCallback } from 'react';
-import { useThinkingStore, selectUnsurfacedObservations } from '../../../lib/store/thinking-store';
+import { useMemo, useCallback, useEffect } from 'react';
+import { useThinkingStore } from '../../../lib/store/thinking-store';
 import {
   generateReflection,
   selectObservationsToSurface,
@@ -24,9 +24,7 @@ export function LyraPresence() {
     lyraMode,
     observations,
     interventions,
-    fragments,
     surfaceObservation,
-    dismissObservation,
     addIntervention,
     markInterventionDelivered,
   } = useThinkingStore();
@@ -47,15 +45,15 @@ export function LyraPresence() {
   const handleSurfaceObservation = useCallback(
     (observation: LyraObservation) => {
       surfaceObservation(observation.id);
-      const reflection = generateReflection(observation, fragments);
+      const reflection = generateReflection(observation);
       addIntervention(reflection);
       markInterventionDelivered(reflection.id);
     },
-    [fragments, surfaceObservation, addIntervention, markInterventionDelivered]
+    [surfaceObservation, addIntervention, markInterventionDelivered]
   );
 
   // Auto-surface observations when ready
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       lyraMode === 'reflecting' &&
       observationsToSurface.length > 0 &&
