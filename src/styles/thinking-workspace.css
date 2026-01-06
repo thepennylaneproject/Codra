@@ -1,0 +1,828 @@
+/**
+ * Thinking Workspace Design System
+ *
+ * Visual DNA: Adobe InDesign 2001
+ *
+ * Philosophy:
+ * - Work deserves a drafting table, not a dashboard
+ * - Muted chrome, warm paper surface
+ * - Typography over color for hierarchy
+ * - No gradients, no shadows on UI
+ * - Professional, calm, precise
+ */
+
+/* ============================================================================
+   DESIGN TOKENS
+   ============================================================================ */
+
+:root {
+  /* ---------------------------------------------------------------------
+     WORKSPACE CHROME (InDesign pasteboard gray)
+     --------------------------------------------------------------------- */
+  --chrome-bg: #3c3c3c;
+  --chrome-bg-elevated: #464646;
+  --chrome-bg-inset: #333333;
+  --chrome-border: #2a2a2a;
+  --chrome-border-subtle: #3f3f3f;
+  --chrome-text: #b8b8b8;
+  --chrome-text-muted: #8a8a8a;
+  --chrome-text-active: #ffffff;
+  --chrome-text-label: #999999;
+
+  /* ---------------------------------------------------------------------
+     DOCUMENT SURFACE (Warm cream paper)
+     --------------------------------------------------------------------- */
+  --surface-document: #fffef5;
+  --surface-document-hover: #fffdf0;
+  --surface-margin: #f5f4ef;
+  --surface-bleed: #eeedea;
+  --surface-pasteboard: #e5e4e0;
+
+  /* ---------------------------------------------------------------------
+     INK (Typography hierarchy)
+     --------------------------------------------------------------------- */
+  --ink-body: #2c2c2c;
+  --ink-heading: #1a1a1a;
+  --ink-secondary: #6b6b6b;
+  --ink-tertiary: #8a8a8a;
+  --ink-ghost: #a0a0a0;
+  --ink-placeholder: #b8b8b8;
+
+  /* ---------------------------------------------------------------------
+     SEMANTIC STATES (Muted, professional)
+     --------------------------------------------------------------------- */
+  --state-thinking: #7b68a6;      /* Lyra thinking — muted violet */
+  --state-thinking-subtle: #9b8bc6;
+  --state-verified: #4a7c59;      /* Verified — forest green */
+  --state-verified-subtle: #6a9c79;
+  --state-attention: #b8860b;     /* Needs attention — dark gold */
+  --state-attention-subtle: #d8a62b;
+  --state-conflict: #8b4049;      /* Conflict — muted wine */
+  --state-conflict-subtle: #ab6069;
+  --state-pending: #6b6b6b;       /* Pending — neutral gray */
+
+  /* ---------------------------------------------------------------------
+     COST INDICATORS (Critical visibility)
+     --------------------------------------------------------------------- */
+  --cost-normal: #6b6b6b;
+  --cost-approaching: #b8860b;
+  --cost-exceeded: #8b4049;
+  --cost-saved: #4a7c59;
+
+  /* ---------------------------------------------------------------------
+     TYPOGRAPHY
+     --------------------------------------------------------------------- */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-reading: 'Georgia', 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+
+  /* Type scale (based on 16px base) */
+  --text-xs: 0.6875rem;    /* 11px */
+  --text-sm: 0.75rem;      /* 12px */
+  --text-base: 0.875rem;   /* 14px */
+  --text-md: 1rem;         /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+
+  /* Line heights */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+
+  /* Letter spacing */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+  --tracking-caps: 0.08em;
+
+  /* ---------------------------------------------------------------------
+     SPACING (Based on 4px grid)
+     --------------------------------------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ---------------------------------------------------------------------
+     LAYOUT
+     --------------------------------------------------------------------- */
+  --panel-width-sm: 200px;
+  --panel-width-md: 280px;
+  --panel-width-lg: 360px;
+  --status-bar-height: 28px;
+  --ruler-size: 20px;
+
+  /* ---------------------------------------------------------------------
+     BORDERS (Sharp, professional — no radius)
+     --------------------------------------------------------------------- */
+  --border-width: 1px;
+  --border-style: solid;
+
+  /* ---------------------------------------------------------------------
+     TIMING (Subtle, not playful)
+     --------------------------------------------------------------------- */
+  --duration-instant: 0ms;
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 400ms;
+  --duration-materialize: 800ms;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* ============================================================================
+   BASE STYLES
+   ============================================================================ */
+
+.thinking-workspace {
+  background: var(--chrome-bg);
+  color: var(--chrome-text);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ============================================================================
+   CHROME COMPONENTS (Panels, status bar, rulers)
+   ============================================================================ */
+
+.chrome-panel {
+  background: var(--chrome-bg-elevated);
+  border: var(--border-width) var(--border-style) var(--chrome-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.chrome-panel__header {
+  background: var(--chrome-bg-inset);
+  border-bottom: var(--border-width) var(--border-style) var(--chrome-border);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  color: var(--chrome-text-label);
+  user-select: none;
+}
+
+.chrome-panel__content {
+  flex: 1;
+  padding: var(--space-3);
+  overflow-y: auto;
+}
+
+.chrome-panel--collapsible.collapsed .chrome-panel__content {
+  display: none;
+}
+
+
+/* Status Bar */
+.status-bar {
+  height: var(--status-bar-height);
+  background: var(--chrome-bg-inset);
+  border-top: var(--border-width) var(--border-style) var(--chrome-border);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--chrome-text-muted);
+  gap: var(--space-4);
+}
+
+.status-bar__section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.status-bar__divider {
+  width: 1px;
+  height: 14px;
+  background: var(--chrome-border);
+}
+
+.status-bar__indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--state-pending);
+}
+
+.status-bar__indicator--thinking {
+  background: var(--state-thinking);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.status-bar__indicator--verified {
+  background: var(--state-verified);
+}
+
+.status-bar__indicator--attention {
+  background: var(--state-attention);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+
+/* Rulers */
+.ruler {
+  background: var(--chrome-bg-elevated);
+  border: var(--border-width) var(--border-style) var(--chrome-border);
+}
+
+.ruler--horizontal {
+  height: var(--ruler-size);
+  border-left: none;
+  border-right: none;
+}
+
+.ruler--vertical {
+  width: var(--ruler-size);
+  border-top: none;
+  border-bottom: none;
+}
+
+
+/* ============================================================================
+   DOCUMENT SURFACE (The drafting table)
+   ============================================================================ */
+
+.document-surface {
+  flex: 1;
+  background: var(--surface-pasteboard);
+  padding: var(--space-8);
+  overflow: auto;
+}
+
+.document-surface__canvas {
+  background: var(--surface-document);
+  min-height: 100%;
+  padding: var(--space-8);
+  position: relative;
+}
+
+
+/* ============================================================================
+   FRAGMENT CARDS (Thoughts placed on table)
+   ============================================================================ */
+
+.fragment-card {
+  background: var(--surface-document);
+  border: var(--border-width) var(--border-style) var(--chrome-border-subtle);
+  padding: var(--space-4);
+  max-width: 320px;
+  font-family: var(--font-reading);
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: var(--ink-body);
+  position: relative;
+  transition: box-shadow var(--duration-normal) var(--ease-out);
+}
+
+.fragment-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.fragment-card__type {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--ink-ghost);
+  text-transform: lowercase;
+}
+
+.fragment-card--constraint {
+  border-left: 3px solid var(--state-attention);
+}
+
+.fragment-card--anxiety {
+  border-left: 3px solid var(--state-conflict-subtle);
+}
+
+.fragment-card--signal {
+  border-left: 3px solid var(--state-thinking);
+}
+
+.fragment-card--core {
+  background: var(--surface-margin);
+}
+
+
+/* ============================================================================
+   LYRA PRESENCE (Not a chat, a presence)
+   ============================================================================ */
+
+.lyra-presence {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.lyra-mode-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--chrome-text-muted);
+}
+
+.lyra-mode-indicator__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--chrome-text-muted);
+}
+
+.lyra-mode-indicator__dot--observing {
+  background: var(--state-thinking);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.lyra-mode-indicator__dot--reflecting {
+  background: var(--state-thinking);
+  animation: pulse 0.8s ease-in-out infinite;
+}
+
+.lyra-mode-indicator__dot--present {
+  background: var(--state-verified);
+}
+
+.lyra-reflection {
+  font-family: var(--font-reading);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  color: var(--chrome-text);
+  font-style: italic;
+  padding: var(--space-3) 0;
+  border-top: var(--border-width) var(--border-style) var(--chrome-border);
+  border-bottom: var(--border-width) var(--border-style) var(--chrome-border);
+}
+
+
+/* ============================================================================
+   PROPOSAL MODULE CARDS
+   ============================================================================ */
+
+.module-card {
+  background: var(--surface-document);
+  border: var(--border-width) var(--border-style) var(--chrome-border);
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
+}
+
+.module-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-3);
+}
+
+.module-card__number {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--ink-tertiary);
+  margin-right: var(--space-2);
+}
+
+.module-card__title {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--ink-heading);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+.module-card__cost {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--cost-normal);
+  text-align: right;
+}
+
+.module-card__risk {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  padding: var(--space-1) var(--space-2);
+}
+
+.module-card__risk--low {
+  color: var(--state-verified);
+}
+
+.module-card__risk--medium {
+  color: var(--state-attention);
+}
+
+.module-card__risk--high {
+  color: var(--state-conflict);
+}
+
+.module-card__divider {
+  height: 1px;
+  background: var(--chrome-border-subtle);
+  margin: var(--space-3) 0;
+}
+
+.module-card__objective {
+  font-family: var(--font-reading);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  color: var(--ink-body);
+  margin-bottom: var(--space-3);
+}
+
+.module-card__outcome {
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+}
+
+.module-card__outcome-label {
+  font-weight: 500;
+  color: var(--ink-tertiary);
+  margin-right: var(--space-2);
+}
+
+.module-card__verification {
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.module-card__verification-icon {
+  color: var(--state-verified);
+}
+
+.module-card--foundational {
+  border-left: 3px solid var(--state-attention);
+}
+
+.module-card--foundational::before {
+  content: 'FOUNDATIONAL';
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  color: var(--state-attention);
+  margin-bottom: var(--space-2);
+}
+
+
+/* ============================================================================
+   PLACED DOCUMENTS (Execution output)
+   ============================================================================ */
+
+.placed-document {
+  background: var(--surface-document);
+  border: var(--border-width) var(--border-style) var(--chrome-border-subtle);
+  padding: var(--space-5);
+  position: relative;
+}
+
+.placed-document__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width) var(--border-style) var(--chrome-border-subtle);
+}
+
+.placed-document__title {
+  font-weight: 600;
+  color: var(--ink-heading);
+}
+
+.placed-document__state {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.placed-document__state-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.placed-document__state--verified .placed-document__state-dot {
+  background: var(--state-verified);
+}
+
+.placed-document__state--pending .placed-document__state-dot {
+  background: var(--state-pending);
+}
+
+.placed-document__state--attention .placed-document__state-dot {
+  background: var(--state-attention);
+}
+
+.placed-document__content {
+  font-family: var(--font-reading);
+  line-height: var(--leading-relaxed);
+  color: var(--ink-body);
+}
+
+/* Materialization animation */
+.placed-document--materializing {
+  animation: materialize var(--duration-materialize) var(--ease-out);
+}
+
+@keyframes materialize {
+  0% {
+    opacity: 0;
+    transform: scale(0.98);
+    outline: 1px solid var(--state-thinking);
+    outline-offset: 4px;
+  }
+  50% {
+    opacity: 0.6;
+    outline-offset: 2px;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    outline: none;
+  }
+}
+
+
+/* ============================================================================
+   VERIFICATION & CONFLICT DISPLAY (Calm, not dramatic)
+   ============================================================================ */
+
+.conflict-display {
+  background: var(--surface-margin);
+  border: var(--border-width) var(--border-style) var(--chrome-border-subtle);
+  border-left: 3px solid var(--state-conflict);
+  padding: var(--space-4);
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.conflict-display__indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--state-conflict);
+  font-weight: 500;
+  margin-bottom: var(--space-2);
+}
+
+.conflict-display__description {
+  color: var(--ink-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-3);
+}
+
+.conflict-display__related {
+  font-size: var(--text-xs);
+  color: var(--ink-tertiary);
+}
+
+.conflict-display__actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: var(--border-width) var(--border-style) var(--chrome-border-subtle);
+}
+
+
+/* ============================================================================
+   COST DISPLAY
+   ============================================================================ */
+
+.cost-display {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.cost-display__range {
+  color: var(--cost-normal);
+}
+
+.cost-display__expected {
+  font-weight: 600;
+}
+
+.cost-display--approaching .cost-display__range {
+  color: var(--cost-approaching);
+}
+
+.cost-display--exceeded .cost-display__range {
+  color: var(--cost-exceeded);
+}
+
+.cost-breakdown {
+  background: var(--surface-margin);
+  border: var(--border-width) var(--border-style) var(--chrome-border-subtle);
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.cost-breakdown__title {
+  font-weight: 500;
+  color: var(--ink-heading);
+  margin-bottom: var(--space-3);
+}
+
+.cost-breakdown__row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-1) 0;
+  color: var(--ink-secondary);
+}
+
+.cost-breakdown__row--total {
+  border-top: var(--border-width) var(--border-style) var(--chrome-border-subtle);
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  font-weight: 600;
+  color: var(--ink-body);
+}
+
+
+/* ============================================================================
+   BUTTONS (Professional, minimal)
+   ============================================================================ */
+
+.btn {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-width) var(--border-style) var(--chrome-border);
+  background: transparent;
+  color: var(--chrome-text);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.btn:hover {
+  background: var(--chrome-bg-elevated);
+  color: var(--chrome-text-active);
+}
+
+.btn--primary {
+  background: var(--ink-heading);
+  color: var(--surface-document);
+  border-color: var(--ink-heading);
+}
+
+.btn--primary:hover {
+  background: var(--ink-body);
+}
+
+.btn--subtle {
+  border-color: transparent;
+  color: var(--chrome-text-muted);
+}
+
+.btn--subtle:hover {
+  border-color: var(--chrome-border-subtle);
+  color: var(--chrome-text);
+}
+
+
+/* ============================================================================
+   INPUT (For fragment entry)
+   ============================================================================ */
+
+.thinking-input {
+  background: transparent;
+  border: none;
+  border-bottom: var(--border-width) var(--border-style) var(--chrome-border-subtle);
+  font-family: var(--font-reading);
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: var(--ink-body);
+  padding: var(--space-3) 0;
+  width: 100%;
+  outline: none;
+  resize: none;
+}
+
+.thinking-input::placeholder {
+  color: var(--ink-placeholder);
+  font-style: italic;
+}
+
+.thinking-input:focus {
+  border-bottom-color: var(--state-thinking);
+}
+
+
+/* ============================================================================
+   COMPLETION STATE (Quiet, verified)
+   ============================================================================ */
+
+.completion-summary {
+  background: var(--surface-document);
+  border: var(--border-width) var(--border-style) var(--chrome-border);
+  padding: var(--space-6);
+}
+
+.completion-summary__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-4);
+}
+
+.completion-summary__title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--state-verified);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+}
+
+.completion-summary__cost {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+}
+
+.completion-summary__modules {
+  margin-bottom: var(--space-4);
+}
+
+.completion-summary__module {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-2) 0;
+  border-bottom: var(--border-width) var(--border-style) var(--chrome-border-subtle);
+  font-size: var(--text-sm);
+}
+
+.completion-summary__module:last-child {
+  border-bottom: none;
+}
+
+.completion-summary__module-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--state-verified);
+}
+
+.completion-summary__stats {
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: var(--border-width) var(--border-style) var(--chrome-border-subtle);
+}
+
+.completion-summary__note {
+  font-family: var(--font-reading);
+  font-style: italic;
+  color: var(--ink-tertiary);
+  margin-top: var(--space-4);
+}
+
+
+/* ============================================================================
+   UTILITY CLASSES
+   ============================================================================ */
+
+.text-mono { font-family: var(--font-mono); }
+.text-reading { font-family: var(--font-reading); }
+.text-muted { color: var(--ink-secondary); }
+.text-ghost { color: var(--ink-ghost); }
+.text-verified { color: var(--state-verified); }
+.text-attention { color: var(--state-attention); }
+.text-conflict { color: var(--state-conflict); }
+.text-thinking { color: var(--state-thinking); }
+
+.uppercase { text-transform: uppercase; letter-spacing: var(--tracking-caps); }
+.italic { font-style: italic; }
+
+.border-t { border-top: var(--border-width) var(--border-style) var(--chrome-border-subtle); }
+.border-b { border-bottom: var(--border-width) var(--border-style) var(--chrome-border-subtle); }
