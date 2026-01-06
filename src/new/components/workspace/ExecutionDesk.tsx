@@ -109,7 +109,7 @@ export function ExecutionDesk({
     >
       {/* Header - minimal chrome */}
       {headerContent && (
-        <header className="h-10 shrink-0 border-b border-[var(--ui-border)]/20">
+        <header className="h-10 shrink-0 border-b border-[var(--ui-border)]/15">
           {headerContent}
         </header>
       )}
@@ -120,7 +120,7 @@ export function ExecutionDesk({
         {/* LEFT: Lyra Column - receded */}
         {layout.leftDockVisible && (
           <aside
-            className="h-full shrink-0 relative flex flex-col border-r border-[var(--ui-border)]/10 bg-zinc-50/50"
+            className="h-full shrink-0 relative flex flex-col border-r border-[var(--ui-border)]/15 bg-zinc-50/50"
             style={{ width: lyraWidth }}
           >
             <div className="flex-1 overflow-y-auto">
@@ -143,7 +143,7 @@ export function ExecutionDesk({
         {/* RIGHT: Proof Panel - collapsed by default */}
         {proofVisible && proofContent && (
           <aside
-            className="h-full shrink-0 border-l border-[var(--ui-border)]/10 bg-zinc-50/30"
+            className="h-full shrink-0 border-l border-[var(--ui-border)]/15 bg-zinc-50/30"
             style={{ width: PROOF_COLUMN_WIDTH }}
           >
             {proofContent}
@@ -153,7 +153,7 @@ export function ExecutionDesk({
 
       {/* Footer - factual status */}
       {footerContent && (
-        <footer className="h-8 shrink-0 border-t border-[var(--ui-border)]/10">
+        <footer className="h-8 shrink-0 border-t border-[var(--ui-border)]/15">
           {footerContent}
         </footer>
       )}
