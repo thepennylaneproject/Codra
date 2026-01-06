@@ -5,9 +5,9 @@
  * Fails the build if metrics exceed targets.
  */
 
-const { execSync } = require('child_process');
+import { execSync } from 'child_process';
 
-module.exports = {
+export default {
   onPreBuild: async ({ utils }) => {
     console.log('Running Codra metrics audit...\n');
 

@@ -47,6 +47,7 @@
         "npm:eslint-plugin-storybook@^10.1.11",
         "npm:eslint@^8.57.0",
         "npm:framer-motion@^12.23.26",
+        "npm:glob@11",
         "npm:html2canvas@^1.4.1",
         "npm:immer@^11.0.1",
         "npm:jsonpath-plus@^10.3.0",

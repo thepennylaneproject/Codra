@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Spread, ProductionDeskId, PRODUCTION_DESKS } from '../../domain/types';
+import { Spread, ProductionDeskId } from '../../domain/types';
 import { Code2, Image as ImageIcon, FileText, ChevronRight, ExternalLink, Download } from 'lucide-react';
 import { SpreadSection } from './SpreadSection';
 import { ArtifactFeedbackBar } from './ArtifactFeedbackBar';

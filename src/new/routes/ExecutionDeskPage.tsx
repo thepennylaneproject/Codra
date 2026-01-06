@@ -20,24 +20,24 @@
  * - Cost and lock moments are explicit and rare
  */
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Project, Spread, CodraEscalation } from '../../domain/types';
 import { getProjectById } from '../../domain/projects';
 import { generateSpreadFromProfile } from '../../domain/spread/engine';
 import { ExtendedOnboardingProfile } from '../../domain/onboarding-types';
 import { LyraProvider } from '../../lib/lyra';
-import { TaskExecutor, ExecutionMode } from '../../lib/ai/execution/task-executor';
-import { SpreadTask, TaskQueue } from '../../domain/task-queue';
-import { generateTaskQueue, updateTaskStatus } from '../../domain/spread/task-queue-engine';
-import { generatePromptForTask, buildPromptContext, PromptContext } from '../../lib/lyra/LyraPromptEngine';
-import { checkGuardrails, shouldEscalate, createEscalation, getBudgetSummary, getTodaysBudget } from '../../lib/codra/codra-guardrails';
+// import { TaskExecutor, ExecutionMode } from '../../lib/ai/execution/task-executor';
+import { TaskQueue } from '../../domain/task-queue';
+import { generateTaskQueue } from '../../domain/spread/task-queue-engine';
+// import { generatePromptForTask, buildPromptContext } from '../../lib/lyra/LyraPromptEngine';
+import { getBudgetSummary } from '../../lib/codra/codra-guardrails';
 import { useSupabaseSpread } from '../../hooks/useSupabaseSpread';
-import { useProviderRegistry } from '../../lib/ai/registry/useProviderRegistry';
-import { selectModelForTask } from '../../domain/model-selector';
-import { behaviorTracker } from '../../lib/smart-defaults/inference-engine';
-import { supabase } from '../../lib/supabase';
-import { useToast } from '../components/Toast';
+// import { useProviderRegistry } from '../../lib/ai/registry/useProviderRegistry';
+// import { selectModelForTask } from '../../domain/model-selector';
+// import { behaviorTracker } from '../../lib/smart-defaults/inference-engine';
+// import { supabase } from '../../lib/supabase';
+// import { useToast } from '../components/Toast';
 import { useFlowStore } from '../../lib/store/useFlowStore';
 import { useContextRevisions } from '@/hooks/useContextRevisions';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -60,11 +60,11 @@ import { ContextModal } from '@/components/context/ContextModal';
 import { SpreadSection } from '../components/SpreadSection';
 
 // Types
-import type { OutputStatus, VerificationResult, Conflict, SynthesisNote } from '../components/workspace';
+import type { OutputStatus, VerificationResult } from '../components/workspace';
 
 export function ExecutionDeskPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  const toast = useToast();
+  // const toast = useToast();
 
   // Store state
   const {
@@ -72,7 +72,7 @@ export function ExecutionDeskPage() {
     toggleDock,
     activeSectionId,
     setActiveSection,
-    addToSessionCost,
+    // addToSessionCost,
     sessionCost,
   } = useFlowStore();
 
@@ -81,14 +81,14 @@ export function ExecutionDeskPage() {
   const [spread, setSpread] = useState<Spread | null>(null);
   const [extendedProfile, setExtendedProfile] = useState<ExtendedOnboardingProfile | null>(null);
   const [taskQueue, setTaskQueue] = useState<TaskQueue | null>(null);
-  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+  const [activeTaskId] = useState<string | null>(null);
   const [escalations, setEscalations] = useState<CodraEscalation[]>([]);
 
   // Execution state
-  const [taskExecutor] = useState(() => new TaskExecutor());
-  const [executionMode, setExecutionMode] = useState<ExecutionMode>('preview');
-  const [taskRunStates, setTaskRunStates] = useState<Record<string, 'running' | 'complete' | 'failed'>>({});
-  const [deskModels, setDeskModels] = useState<Record<string, { modelId: string; providerId: string }>>({});
+  // const [taskExecutor] = useState(() => new TaskExecutor());
+  // const [executionMode, setExecutionMode] = useState<ExecutionMode>('preview');
+  // const [taskRunStates] = useState<Record<string, 'running' | 'complete' | 'failed'>>({});
+  // const [deskModels] = useState<Record<string, { modelId: string; providerId: string }>>({});
 
   // UI state
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -96,9 +96,9 @@ export function ExecutionDeskPage() {
   const [proofTrigger, setProofTrigger] = useState<'verification_failed' | 'conflict_detected' | 'user_opened' | null>(null);
 
   // Model selection
-  const { providers } = useProviderRegistry();
-  const [selectedModelId] = useState('gpt-4o');
-  const [selectedProviderId] = useState('openai');
+  // const { providers } = useProviderRegistry();
+  // const [selectedModelId] = useState('gpt-4o');
+  // const [selectedProviderId] = useState('openai');
 
   // Data persistence
   const {
@@ -198,6 +198,7 @@ export function ExecutionDeskPage() {
   );
 
   // Handle task execution
+  /*
   const handleRunTask = useCallback(
     async (taskId: string, mode: ExecutionMode) => {
       if (!taskQueue || !spread || !project) return;
@@ -323,6 +324,7 @@ export function ExecutionDeskPage() {
       activeTask,
     ]
   );
+  */
 
   // Handle escalation resolution
   const handleResolveEscalation = (id: string, confirmed: boolean) => {
@@ -335,7 +337,6 @@ export function ExecutionDeskPage() {
 
   // Computed values
   const hasOutputs = Boolean(taskQueue?.tasks.some((task) => task.status === 'complete' || Boolean(task.output)));
-  const isRunning = Object.values(taskRunStates).includes('running') || activeTask?.status === 'in-progress';
   const contextSummary = currentRevision?.summary?.trim() || '';
   const blockingEscalation = escalations.find((e) => e.severity === 'blocking' && !e.resolved);
 
@@ -395,7 +396,6 @@ export function ExecutionDeskPage() {
               lyraVisible={layout.leftDockVisible}
               onToggleLyra={() => toggleDock('left')}
               onOpenSettings={() => setIsSettingsOpen(true)}
-              statusLabel={isRunning ? 'Running' : hasOutputs ? 'Complete' : undefined}
             />
           }
           footerContent={
@@ -425,8 +425,6 @@ export function ExecutionDeskPage() {
           {/* CENTER: Execution Surface - PRIMARY */}
           <ExecutionSurface
             isEmpty={!hasOutputs}
-            isExecuting={isRunning}
-            executionLabel={activeTask?.title}
           >
             {/* Outputs as documents */}
             {spread?.sections.map((section) => (

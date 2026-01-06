@@ -22,9 +22,7 @@
  * - Quiet, informational only
  */
 
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, AlertTriangle, XCircle, Info } from 'lucide-react';
+
 
 export type VerificationStatus = 'passed' | 'failed' | 'warning' | 'pending';
 
@@ -63,10 +61,7 @@ export function ProofPanel({
   synthesisNotes = [],
   onClose,
 }: ProofPanelProps) {
-  const hasVerificationIssues = verificationResults.some(
-    (v) => v.status === 'failed' || v.status === 'warning'
-  );
-  const hasConflicts = conflicts.length > 0;
+
 
   return (
     <div className="h-full flex flex-col bg-white">
@@ -152,18 +147,7 @@ function SynthesisItem({ note }: { note: SynthesisNote }) {
   );
 }
 
-function getStatusIcon(status: VerificationStatus) {
-  switch (status) {
-    case 'passed':
-      return CheckCircle2;
-    case 'failed':
-      return XCircle;
-    case 'warning':
-      return AlertTriangle;
-    default:
-      return Info;
-  }
-}
+
 
 function getStatusColor(status: VerificationStatus): string {
   switch (status) {

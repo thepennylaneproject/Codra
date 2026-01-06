@@ -13,7 +13,7 @@ import {
     Zap
 } from 'lucide-react';
 import { getProjects, createProject, deleteProject } from '../../domain/projects';
-import { Project, PRODUCTION_DESKS, ProductionDeskId } from '../../domain/types';
+import { Project, ProductionDeskId } from '../../domain/types';
 import { useToast } from '../components/Toast';
 import { FirstRunModal } from '../components/FirstRunModal';
 import { Button } from '@/components/ui/Button';
@@ -90,6 +90,7 @@ export function ProjectsPage() {
         p.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    /*
     const handleCreateExecutionWorkspace = async () => {
         const playgroundProject = await createProject({
             projectName: 'Execution workspace',
@@ -103,6 +104,7 @@ export function ProjectsPage() {
         });
         navigate(`/p/${playgroundProject.id}/workspace`);
     };
+    */
 
     const handleImportProject = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -208,13 +210,14 @@ export function ProjectsPage() {
     }, [projects]);
 
     return (
-        <div className="min-h-screen bg-[#FFFAF0] text-text-primary font-sans selection:bg-zinc-300/40">
+        <div className="min-h-screen flex flex-col bg-[#FFFAF0] text-text-primary font-sans selection:bg-zinc-300/40">
             {/* First-Run Welcome Modal */}
             <FirstRunModal />
 
             {/* Masthead */}
-            <header className="page-gutter border-b border-[#1A1A1A]/5">
-                <div className="page-container flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
+            {/* Dashboard spacing intentionally uses local padding; workspace gutters are not applied here. */}
+            <header className="px-8 py-14 border-b border-[#1A1A1A]/5">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
                     <div>
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-2 h-2 rounded-full bg-zinc-600" />
@@ -347,8 +350,9 @@ export function ProjectsPage() {
             </header>
 
             {/* Grid */}
-            <main className="page-gutter">
-                <div className="page-container">
+            {/* Dashboard spacing intentionally uses local padding; keep original density. */}
+            <main className="flex-1 px-8 py-12">
+                <div className="max-w-7xl mx-auto">
                     <div className="mb-8 flex items-center justify-between gap-4 rounded-xl border border-zinc-200 bg-white px-4 py-3">
                         <div className="text-body text-text-secondary">
                             {configurationStatus}
@@ -412,7 +416,8 @@ export function ProjectsPage() {
             </main>
 
             {/* Legal Footer */}
-            <footer className="page-container page-gutter border-t border-[#1A1A1A]/5 flex flex-col md:flex-row items-center justify-between gap-6 opacity-30">
+            {/* Dashboard spacing intentionally uses local padding; exclude workspace gutters. */}
+            <footer className="max-w-7xl mx-auto px-8 py-10 border-t border-[#1A1A1A]/5 flex flex-col md:flex-row items-center justify-between gap-6 opacity-30">
                 <div className="flex items-center gap-2">
                     <span className="text-xs font-medium text-text-soft">
                         © 2025 Codra Production Lab

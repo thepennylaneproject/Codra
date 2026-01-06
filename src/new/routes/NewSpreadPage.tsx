@@ -866,7 +866,6 @@ export function NewSpreadPage() {
                                                 pastMemories={taskQueue?.tasks.filter(t => (t.status as string) === 'complete').map(t => ({ title: t.title, memory: t.memory || '' }))}
                                                 executionMode={executionMode}
                                                 onExecutionModeChange={setExecutionMode}
-                                                taskRunModes={taskRunModes}
                                                 taskRunStates={taskRunStates}
                                                 onRunTask={handleRunTask}
                                                 onCancel={() => setActiveTaskId(null)}

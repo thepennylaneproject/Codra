@@ -18,7 +18,7 @@
  * NOT: "Type something."
  */
 
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 interface ExecutionSurfaceProps {
   children?: ReactNode;

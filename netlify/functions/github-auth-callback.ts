@@ -3,7 +3,7 @@ import type { Handler } from '@netlify/functions';
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-const BASE_URL = process.env.URL || 'http://localhost:8888';
+const BASE_URL = process.env.URL || 'http://localhost:5175';
 
 export const handler: Handler = async (event) => {
     const code = event.queryStringParameters?.code;
