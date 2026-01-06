@@ -45,3 +45,14 @@ export {
   type ClassifierProvider,
   type HybridClassifierConfig,
 } from './ai-classifier';
+
+// Shadow project synthesis
+export {
+  createAISynthesizer,
+  synthesizeLocally,
+  synthesisToShadowProject,
+  SYNTHESIS_SYSTEM_PROMPT,
+  buildSynthesisUserPrompt,
+  type SynthesisResult,
+  type SynthesizerProvider,
+} from './shadow-synthesizer';
