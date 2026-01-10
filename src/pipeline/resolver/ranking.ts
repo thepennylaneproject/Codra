@@ -2,10 +2,57 @@
  * Deterministic Ranking Algorithms
  *
  * Strict ordering for asset resolution. Same inputs = same output.
+ *
+ * IMPORTANT: Weights are VERSIONED. If you change weights, increment the version
+ * and create new constants. This preserves historical determinism.
  */
 
 import type { AssetMetadata } from '../types/metadata';
 import type { SlotDescriptor, AspectRatioConstraint } from '../types/slot';
+
+// ============================================================================
+// Ranking Weight Versions
+// ============================================================================
+
+/**
+ * RASTER_RANKING_WEIGHTS_V1
+ *
+ * Versioned weight schema for raster asset ranking.
+ * Created: 2026-01-10
+ *
+ * DO NOT MODIFY. To change weights, create V2 and update CURRENT_WEIGHTS.
+ */
+export const RASTER_RANKING_WEIGHTS_V1 = {
+  version: 1,
+  energy: 0.3,        // 30% - Primary energy match
+  palette: 0.3,       // 30% - Palette mode match
+  aspect: 0.2,        // 20% - Aspect ratio fit
+  resolution: 0.2,    // 20% - Resolution constraints
+  crop_penalty: 0.5,  // Penalty multiplier for >20% crop
+} as const;
+
+/**
+ * VECTOR_RANKING_WEIGHTS_V1
+ *
+ * Versioned weight schema for vector asset ranking.
+ * Created: 2026-01-10
+ *
+ * DO NOT MODIFY. To change weights, create V2 and update CURRENT_WEIGHTS.
+ */
+export const VECTOR_RANKING_WEIGHTS_V1 = {
+  version: 1,
+  role: 0.4,        // 40% - Role-specific scoring
+  palette: 0.3,     // 30% - Palette mode (less critical for vectors)
+  complexity: 0.3,  // 30% - Complexity preference
+} as const;
+
+/**
+ * Current active weight versions
+ *
+ * Change these to use new weight schemas (e.g., _V2)
+ */
+export const CURRENT_RASTER_WEIGHTS = RASTER_RANKING_WEIGHTS_V1;
+export const CURRENT_VECTOR_WEIGHTS = VECTOR_RANKING_WEIGHTS_V1;
 
 // ============================================================================
 // Scoring System
@@ -22,6 +69,7 @@ export interface RankingScore {
     crop_penalty: number;
     tie_breaker: number;
   };
+  weights_version?: number; // Track which weight version was used
 }
 
 // ============================================================================
@@ -211,23 +259,24 @@ export function rankRasterAssets(
     // 5. Stable tie-breaker (lexical sort by public_id)
     breakdown.tie_breaker = 0; // computed later
 
-    // Calculate total score
-    // Weights: energy (30%), palette (30%), aspect (20%), resolution (20%)
+    // Calculate total score using versioned weights
+    const weights = CURRENT_RASTER_WEIGHTS;
     let totalScore =
-      breakdown.energy_match * 0.3 +
-      breakdown.palette_match * 0.3 +
-      breakdown.aspect_match * 0.2 +
-      breakdown.resolution_match * 0.2;
+      breakdown.energy_match * weights.energy +
+      breakdown.palette_match * weights.palette +
+      breakdown.aspect_match * weights.aspect +
+      breakdown.resolution_match * weights.resolution;
 
     // Apply crop penalty (deduct from total)
     if (breakdown.crop_penalty > 20) {
-      totalScore -= breakdown.crop_penalty * 0.5; // harsh penalty for >20% crop
+      totalScore -= breakdown.crop_penalty * weights.crop_penalty;
     }
 
     return {
       asset,
       score: totalScore,
       breakdown,
+      weights_version: weights.version,
     };
   });
 
@@ -300,17 +349,18 @@ export function rankVectorAssets(
     const complexityScore = asset.complexity === 'low' ? 100 : asset.complexity === 'medium' ? 70 : 40;
     breakdown.aspect_match = complexityScore;
 
-    // Calculate total score
-    // Weights: role (40%), palette (30%), complexity (30%)
+    // Calculate total score using versioned weights
+    const weights = CURRENT_VECTOR_WEIGHTS;
     const totalScore =
-      breakdown.energy_match * 0.4 +
-      breakdown.palette_match * 0.3 +
-      breakdown.aspect_match * 0.3;
+      breakdown.energy_match * weights.role +
+      breakdown.palette_match * weights.palette +
+      breakdown.aspect_match * weights.complexity;
 
     return {
       asset,
       score: totalScore,
       breakdown,
+      weights_version: weights.version,
     };
   });
 

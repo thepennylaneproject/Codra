@@ -30,6 +30,81 @@ export interface PromotionResult {
 }
 
 // ============================================================================
+// Field Classification: Core vs Extended
+// ============================================================================
+
+/**
+ * CORE REQUIRED FIELDS
+ *
+ * These fields are CRITICAL for:
+ * - Asset resolution (resolver must have these)
+ * - Lifecycle promotion (cannot approve without these)
+ * - System determinism (same inputs → same outputs)
+ *
+ * Missing any of these = validation error = cannot promote to approved
+ */
+export const CORE_REQUIRED_FIELDS = [
+  'asset_class',      // Immutable: raster | vector
+  'asset_role',       // Primary classification
+  'lifecycle_status', // Draft | Approved | Deprecated
+  'funnel_stage',     // Awareness | Consideration | Conversion | Retention
+  'energy',           // Derived deterministically, persisted
+  'palette_mode',     // Derived deterministically, persisted
+  'enrichment_version', // Must be >= 1 (enrichment completed)
+] as const;
+
+/**
+ * CORE VECTOR FIELDS
+ *
+ * Required for vectors (when asset_class = 'vector')
+ */
+export const CORE_VECTOR_FIELDS = [
+  'complexity', // Low | Medium | High
+] as const;
+
+/**
+ * EXTENDED RECOMMENDED FIELDS
+ *
+ * These fields enhance ranking, governance, and debugging but are NOT
+ * promotion blockers. Missing these = warning, not error.
+ */
+export const EXTENDED_RECOMMENDED_FIELDS = [
+  // Enrichment-derived (enhance ranking)
+  'tone',
+  'palette_primary',
+  'usage_notes',
+
+  // Placement & governance (optional targeting)
+  'placement',
+  'role_variant',
+
+  // Vector-specific (enhance vector ranking)
+  'vector_type',
+  'is_themable',
+  'is_invertible',
+
+  // Debugging & analytics
+  'content_hash',
+  'enriched_at',
+] as const;
+
+/**
+ * Field classification helper
+ */
+export function classifyField(fieldName: string): 'core' | 'core_vector' | 'extended' | 'unknown' {
+  if ((CORE_REQUIRED_FIELDS as readonly string[]).includes(fieldName)) {
+    return 'core';
+  }
+  if ((CORE_VECTOR_FIELDS as readonly string[]).includes(fieldName)) {
+    return 'core_vector';
+  }
+  if ((EXTENDED_RECOMMENDED_FIELDS as readonly string[]).includes(fieldName)) {
+    return 'extended';
+  }
+  return 'unknown';
+}
+
+// ============================================================================
 // Validation Rules
 // ============================================================================
 
@@ -42,44 +117,43 @@ export function validateCoreMetadata(
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  // Required fields
+  // CORE REQUIRED FIELDS (errors if missing)
   if (!metadata.asset_class) {
-    errors.push('Missing required field: asset_class');
+    errors.push('Missing core field: asset_class');
   }
   if (!metadata.asset_role) {
-    errors.push('Missing required field: asset_role');
+    errors.push('Missing core field: asset_role');
   }
   if (!metadata.funnel_stage) {
-    errors.push('Missing required field: funnel_stage');
+    errors.push('Missing core field: funnel_stage');
   }
   if (!metadata.lifecycle_status) {
-    errors.push('Missing required field: lifecycle_status');
+    errors.push('Missing core field: lifecycle_status');
   }
-
-  // Enrichment fields (required for approval)
   if (!metadata.energy) {
-    errors.push('Missing enrichment field: energy');
+    errors.push('Missing core field: energy (must be derived & persisted)');
   }
   if (!metadata.palette_mode) {
-    errors.push('Missing enrichment field: palette_mode');
+    errors.push('Missing core field: palette_mode (must be derived & persisted)');
   }
+  if (!metadata.enrichment_version || metadata.enrichment_version < 1) {
+    errors.push('Missing core field: enrichment_version (asset not enriched)');
+  }
+
+  // EXTENDED RECOMMENDED FIELDS (warnings only, not promotion blockers)
   if (!metadata.tone) {
-    warnings.push('Missing recommended field: tone');
+    warnings.push('Missing recommended field: tone (enhances ranking)');
   }
   if (!metadata.palette_primary) {
-    warnings.push('Missing recommended field: palette_primary');
+    warnings.push('Missing recommended field: palette_primary (enhances ranking)');
   }
-
-  // Placement should be specified
   if (!metadata.placement || metadata.placement.length === 0) {
-    warnings.push('No placement specified');
+    warnings.push('Missing recommended field: placement (limits targeting)');
   }
 
-  // Enrichment version
-  if (!metadata.enrichment_version || metadata.enrichment_version < 1) {
-    errors.push('Asset has not been enriched (enrichment_version < 1)');
-  }
-
+  // Validation result
+  // valid = no errors (warnings are acceptable)
+  // canPromote = valid AND no warnings (ideal state)
   const valid = errors.length === 0;
   const canPromote = valid && warnings.length === 0;
 
@@ -156,24 +230,24 @@ export function canPromoteToApproved(
     };
   }
 
-  // Must pass validation
+  // Must pass validation (no errors)
   const validation = validateAsset(metadata);
   if (!validation.valid) {
     return {
       can: false,
-      reason: `Validation failed: ${validation.errors.join(', ')}`,
+      reason: `Validation failed (missing core fields): ${validation.errors.join(', ')}`,
     };
   }
 
-  // Warnings are acceptable but should be noted
+  // Valid = can promote (warnings are acceptable, not blockers)
   if (validation.warnings.length > 0) {
     return {
       can: true,
-      reason: `Promotable with warnings: ${validation.warnings.join(', ')}`,
+      reason: `Promotable (core fields complete, ${validation.warnings.length} optional fields missing)`,
     };
   }
 
-  return { can: true, reason: 'All validation checks passed' };
+  return { can: true, reason: 'All fields complete (core + extended)' };
 }
 
 /**
