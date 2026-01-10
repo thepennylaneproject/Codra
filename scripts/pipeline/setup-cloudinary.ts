@@ -29,10 +29,12 @@ async function setupCloudinaryMetadata() {
       // Check if field already exists
       let exists = false;
       try {
-        await cloudinary.api.metadata_field(field.external_id);
+        // Cloudinary SDK: get_metadata_field() throws 404 if not found
+        await cloudinary.api.get_metadata_field(field.external_id);
         exists = true;
       } catch (error: any) {
-        if (error.http_code !== 404) {
+        // 404 = field doesn't exist (expected for new fields)
+        if (error.http_code !== 404 && error.error?.http_code !== 404) {
           throw error;
         }
       }
