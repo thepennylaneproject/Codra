@@ -5,9 +5,13 @@ node_modules/
 dist/
 build/
 .out/
+out/
 .next/
 src/styles/generated-tokens.css
 tailwind.config.generated.js
+
+# Pipeline cache
+.cache/
 
 # Environment
 .env
