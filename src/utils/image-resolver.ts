@@ -13,7 +13,7 @@ import {
     type ProductFamily,
     type EnergyLevel,
     type AspectClass
-} from '../lib/image-policy/types';
+} from '../lib/image-policy';
 import { DEFAULT_IMAGE_POLICY, mergeWithDefaults } from '../lib/image-policy/defaults';
 
 export interface ResolveOptions {
