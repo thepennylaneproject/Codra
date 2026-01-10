@@ -24,7 +24,12 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "tokens:generate": "tsx scripts/generate-css-tokens.ts && tsx scripts/generate-tailwind-config.ts",
-    "tokens:check": "npm run tokens:generate && git diff --exit-code src/styles/generated-tokens.css tailwind.config.generated.js"
+    "tokens:check": "npm run tokens:generate && git diff --exit-code src/styles/generated-tokens.css tailwind.config.generated.js",
+    "pipeline:setup": "tsx scripts/pipeline/setup-cloudinary.ts",
+    "pipeline:enrich": "tsx scripts/pipeline/enrich-assets.ts",
+    "pipeline:index": "tsx scripts/pipeline/generate-index.ts --materialize-slots",
+    "pipeline:validate": "tsx scripts/pipeline/validate-assets.ts --report",
+    "pipeline:all": "npm run pipeline:enrich && npm run pipeline:validate && npm run pipeline:index"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
