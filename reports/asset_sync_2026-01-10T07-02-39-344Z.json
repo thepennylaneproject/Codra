@@ -1,0 +1,71 @@
+{
+  "summary": {
+    "total": 10,
+    "success": 10,
+    "failed": 0,
+    "isDryRun": true,
+    "timestamp": "2026-01-10T07-02-39-344Z"
+  },
+  "records": [
+    {
+      "asset_id": "016e933862ca2388",
+      "public_id": "Pro_SpotIllustration_Light_1x1_v04_ac2fas",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, gradient-heavy, 3d, cool-palette, teal-accent, tech, saas, innovative, sophisticated, abstract-shapes] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=innovative}"
+    },
+    {
+      "asset_id": "3372192c9e5ac961",
+      "public_id": "Pro_SpotIllustration_Light_1x1_v03_ep3yei",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, gradient-heavy, 3d, cool-palette, translucent, tech, innovative, sophisticated, circles, flowing] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=innovative}"
+    },
+    {
+      "asset_id": "fd7cd83dd47f111a",
+      "public_id": "Pro_SpotIllustration_Light_1x1_v02_ptaitx",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, 3d, cool-palette, tech, saas, corporate, innovative, trustworthy, sophisticated, abstract-shapes, circles, flowing] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "6a23d3a18ee9a264",
+      "public_id": "Pro_SpotIllustration_Light_1x1_v01_b2xjva",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, geometric, gradient-heavy, 3d, cool-palette, tech, saas, professional, innovative, circles, geometric-patterns] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "64ca0ce7ef326477",
+      "public_id": "Pro_SpotIllustration_Dark_1x1_v04_efoicq",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, 3d, gradient-heavy, cool-palette, tech, saas, professional, innovative, flowing] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "ffc03633264bddd4",
+      "public_id": "Pro_SpotIllustration_Dark_1x1_v03_zacqft",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, 3d, gradient-heavy, cool-palette, tech, saas, innovative, sophisticated, flowing] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=innovative}"
+    },
+    {
+      "asset_id": "0ff9d63483cd6b50",
+      "public_id": "Pro_SpotIllustration_Dark_1x1_v02_f9bfxi",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, 3d, gradient-heavy, cool-palette, monochrome, sophisticated, technology] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "c7243dbd0021ba4c",
+      "public_id": "Premium_FeatureCard_Light_4x5_v04_dpgxow",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, 3d, cool-palette, translucent, tech, saas, professional, innovative, flowing] AND metadata: {product_family=relevnt_core, image_role=feature-card, energy=medium, aspect_class=landscape, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "aa3ec13bbe4cca33",
+      "public_id": "Pro_SpotIllustration_Dark_1x1_v01_by0zbp",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, gradient-heavy, 3d, cool-palette, tech, saas, professional, innovative, flowing] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "eed55092ff76588b",
+      "public_id": "Premium_FeatureCard_Light_4x5_v03_kduast",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, tech, saas, professional, sophisticated, abstract-shapes, lines, geometric-patterns] AND metadata: {product_family=relevnt_core, image_role=feature-card, energy=medium, aspect_class=landscape, is_transparent=false, mood=professional}"
+    }
+  ]
+}

@@ -5,8 +5,8 @@
  */
 
 import type {
-  CostEstimate,
-  CostEstimateBasis,
+  CreditEstimate,
+  CreditEstimateBasis,
   DebateModelPlan,
   ReasoningRole,
   ShadowProject,
@@ -31,7 +31,7 @@ export function estimateDebateCost(
   shadow: ShadowProject,
   fragments: ThoughtFragment[],
   options: DebatePreflightOptions = {}
-): CostEstimate {
+): CreditEstimate {
   const modelPlan = options.modelPlan?.length ? options.modelPlan : DEFAULT_MODEL_PLAN;
 
   const inputText = [
@@ -75,9 +75,9 @@ export function estimateDebateCost(
   const tokensIn = tokensInPerModel * modelCount;
   const tokensOut = tokensOutPerModel * modelCount;
   const tokensTotal = tokensIn + tokensOut;
-  const costUnits = tokensTotal / 1000;
+  const creditsTotal = tokensTotal / 1000;
 
-  const basis: CostEstimateBasis = {
+  const basis: CreditEstimateBasis = {
     inputChars,
     shadowChars,
     fragmentCount,
@@ -98,7 +98,7 @@ export function estimateDebateCost(
     tokensIn,
     tokensOut,
     tokensTotal,
-    costUnits,
+    creditsTotal,
     basis,
     models: modelPlan,
     estimateHash,
@@ -110,7 +110,7 @@ function hashEstimateInputs(input: {
   shadow: ShadowProject;
   fragments: ThoughtFragment[];
   modelPlan: DebateModelPlan[];
-  basis: CostEstimateBasis;
+  basis: CreditEstimateBasis;
 }): string {
   const payload = JSON.stringify({
     shadow: {

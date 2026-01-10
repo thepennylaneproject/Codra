@@ -1,0 +1,311 @@
+{
+  "summary": {
+    "total": 50,
+    "success": 50,
+    "failed": 0,
+    "isDryRun": true,
+    "timestamp": "2026-01-10T07-04-07-516Z"
+  },
+  "records": [
+    {
+      "asset_id": "016e933862ca2388",
+      "public_id": "Pro_SpotIllustration_Light_1x1_v04_ac2fas",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, gradient-heavy, 3d, cool-palette, teal-accent, tech, saas, innovative, sophisticated, abstract-shapes] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=innovative}"
+    },
+    {
+      "asset_id": "3372192c9e5ac961",
+      "public_id": "Pro_SpotIllustration_Light_1x1_v03_ep3yei",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, gradient-heavy, 3d, cool-palette, translucent, tech, innovative, sophisticated, circles, flowing] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=innovative}"
+    },
+    {
+      "asset_id": "fd7cd83dd47f111a",
+      "public_id": "Pro_SpotIllustration_Light_1x1_v02_ptaitx",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, 3d, cool-palette, tech, saas, corporate, innovative, trustworthy, sophisticated, abstract-shapes, circles, flowing] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "6a23d3a18ee9a264",
+      "public_id": "Pro_SpotIllustration_Light_1x1_v01_b2xjva",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, geometric, gradient-heavy, 3d, cool-palette, tech, saas, professional, innovative, circles, geometric-patterns] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "64ca0ce7ef326477",
+      "public_id": "Pro_SpotIllustration_Dark_1x1_v04_efoicq",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, 3d, gradient-heavy, cool-palette, tech, saas, professional, innovative, flowing] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "ffc03633264bddd4",
+      "public_id": "Pro_SpotIllustration_Dark_1x1_v03_zacqft",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, 3d, gradient-heavy, cool-palette, tech, saas, innovative, sophisticated, flowing] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=innovative}"
+    },
+    {
+      "asset_id": "0ff9d63483cd6b50",
+      "public_id": "Pro_SpotIllustration_Dark_1x1_v02_f9bfxi",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, 3d, gradient-heavy, cool-palette, monochrome, sophisticated, technology] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "c7243dbd0021ba4c",
+      "public_id": "Premium_FeatureCard_Light_4x5_v04_dpgxow",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, 3d, cool-palette, translucent, tech, saas, professional, innovative, flowing] AND metadata: {product_family=relevnt_core, image_role=feature-card, energy=medium, aspect_class=landscape, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "aa3ec13bbe4cca33",
+      "public_id": "Pro_SpotIllustration_Dark_1x1_v01_by0zbp",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, gradient-heavy, 3d, cool-palette, tech, saas, professional, innovative, flowing] AND metadata: {product_family=pro, image_role=spot-illustration, energy=medium, aspect_class=landscape, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "eed55092ff76588b",
+      "public_id": "Premium_FeatureCard_Light_4x5_v03_kduast",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, tech, saas, professional, sophisticated, abstract-shapes, lines, geometric-patterns] AND metadata: {product_family=relevnt_core, image_role=feature-card, energy=medium, aspect_class=landscape, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "563ebc5baf4dfde7",
+      "public_id": "Premium_FeatureCard_Light_4x5_v02_aubavw",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, 3d, monochrome, professional, technology, geometric-patterns, spacious] AND metadata: {product_family=relevnt_core, image_role=feature-card, energy=medium, aspect_class=landscape, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "f7611c76569864b3",
+      "public_id": "Premium_FeatureCard_Light_4x5_v01_chzzjn",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, geometric, gradient-heavy, 3d, neutral-palette, tech, saas, professional, sophisticated, abstract-shapes] AND metadata: {product_family=relevnt_core, image_role=feature-card, energy=medium, aspect_class=landscape, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "c730a03fe5960e75",
+      "public_id": "Premium_FeatureCard_Dark_4x5_v03_iczsi9",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, 3d, cool-palette, monochrome, professional, technology, glass-effect, spacious] AND metadata: {product_family=relevnt_core, image_role=feature-card, energy=medium, aspect_class=landscape, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "c82a5fe63e1c0265",
+      "public_id": "Premium_FeatureCard_Dark_4x5_v04_ljqppw",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, 3d, cool-palette, monochrome, tech, professional, sophisticated, abstract-shapes] AND metadata: {product_family=relevnt_core, image_role=feature-card, energy=medium, aspect_class=landscape, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "c9c163c5cc7c1847",
+      "public_id": "Premium_FeatureCard_Dark_4x5_v02_sideuo",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, 3d, cool-palette, monochrome, tech, professional, sophisticated, abstract-shapes, technology] AND metadata: {product_family=relevnt_core, image_role=feature-card, energy=medium, aspect_class=landscape, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "a81d24ce7b213d37",
+      "public_id": "Premium_FeatureCard_Dark_4x5_v01_uwprhs",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, 3d, monochrome, tech, professional, sophisticated, abstract-shapes, technology, glass-effect, glow] AND metadata: {product_family=relevnt_core, image_role=feature-card, energy=medium, aspect_class=landscape, is_transparent=false, mood=innovative}"
+    },
+    {
+      "asset_id": "a1842b78a184e934",
+      "public_id": "Gemini_Generated_Image_l05f2el05f2el05f_qhmavy",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, monochrome, cool-palette, tech, professional, innovative, abstract-shapes, lines, geometric-patterns] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "3ed2a21f1a914563",
+      "public_id": "Gemini_Generated_Image_c981v6c981v6c981_xvtuas",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, abstract, line-art, monochrome, flowing, technology, geometric-patterns, spacious] AND metadata: {product_family=relevnt_core, image_role=background-soft, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "bc691fe7320ed162",
+      "public_id": "Gemini_Generated_Image_tvaxrgtvaxrgtvax_3_fy5nkw",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, neutral-palette, spacious, centered, abstract-shapes, technology, professional, trustworthy] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "eb8301e936583f03",
+      "public_id": "Gemini_Generated_Image_tvaxrgtvaxrgtvax_1_kufoas",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, cool-palette, monochrome, corporate, professional, calm, glass-effect, flowing, spacious] AND metadata: {product_family=relevnt_core, image_role=other, energy=low, aspect_class=square, is_transparent=false, mood=serene}"
+    },
+    {
+      "asset_id": "8722c54cb46fe854",
+      "public_id": "Gemini_Generated_Image_qvx5yxqvx5yxqvx5_qsvpwh",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, geometric, gradient-heavy, 3d, cool-palette, tech, saas, professional, innovative, technology, network, circles, lines, geometric-patterns, data-visualization] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "563ea2af3a50296b",
+      "public_id": "Gemini_Generated_Image_m9ylrm9ylrm9ylrm_vw0iys",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, geometric, gradient-heavy, 3d, monochrome, tech, saas, professional, innovative, circles, lines, data-visualization, spacious] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "598f70b0c4d46336",
+      "public_id": "Gemini_Generated_Image_k4htgwk4htgwk4ht_zyziso",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, 3d, gradient-heavy, geometric, technology, network, glass-effect, glow, circles, lines, geometric-patterns, data-visualization, spacious, flowing] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=innovative}"
+    },
+    {
+      "asset_id": "93fdbd8413b7ab86",
+      "public_id": "Gemini_Generated_Image_oi0qgxoi0qgxoi0q_z1cysu",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, monochrome, tech, professional, sophisticated, abstract-shapes, spacious] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=contemplative}"
+    },
+    {
+      "asset_id": "cc82cee95cfef596",
+      "public_id": "Gemini_Generated_Image_mvsz4fmvsz4fmvsz_slpc6a",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, gradient-heavy, monochrome, tech, professional, sophisticated, abstract-shapes, spacious] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=calm}"
+    },
+    {
+      "asset_id": "f444d552afd6dddc",
+      "public_id": "Gemini_Generated_Image_6c729m6c729m6c72_tkehur",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, monochrome, professional, tech, saas, corporate, geometric-patterns, abstract-shapes, spacious] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "1fe5a7565ab58535",
+      "public_id": "Gemini_Generated_Image_8lz1ki8lz1ki8lz1_6_ymwwyf",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, minimal, monochrome, tech, saas, professional, innovative, glass-effect, geometric-patterns] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "ba930cef71fd70f9",
+      "public_id": "Gemini_Generated_Image_c3za3qc3za3qc3za_zlsije",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, neutral-palette, tech, professional, calm, glass-effect, glow, geometric-patterns, spacious] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "f502eef6b7156695",
+      "public_id": "Gemini_Generated_Image_plg9bpplg9bpplg9_ylvxmv",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, gradient-heavy, 3d, tech, saas, professional, innovative, technology, network, glass-effect, geometric-patterns, flowing] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "61472cc2bacf329f",
+      "public_id": "Gemini_Generated_Image_ylgbtlylgbtlylgb_ayxebl",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, geometric, gradient-heavy, cool-palette, tech, saas, professional, sophisticated, technology, network, geometric-patterns] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "c8b6415dd63502d5",
+      "public_id": "Gemini_Generated_Image_ddfiwaddfiwaddfi_qepnb9",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, gradient-heavy, tech, saas, professional, data-visualization, circles, lines, geometric-patterns, spacious, layered] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "83c2ef887e5d5f56",
+      "public_id": "Gemini_Generated_Image_i2y5li2y5li2y5li_mtiqjv",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, abstract, gradient-heavy, geometric, monochrome, flowing, spacious, tech, professional, sophisticated] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "b3bc7df08bf3d338",
+      "public_id": "Gemini_Generated_Image_tvaxrgtvaxrgtvax_ejw3ck",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, geometric, gradient-heavy, neutral-palette, professional, tech, saas, spacious, centered] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "de55ca8d4ae6c5d1",
+      "public_id": "Gemini_Generated_Image_u8zmllu8zmllu8zm_wbdp2p",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, gradient-heavy, 3d, modern, vibrant, technology, network, glass-effect, glow, circles, lines, geometric-patterns, spacious] AND metadata: {product_family=relevnt_core, image_role=other, energy=high, aspect_class=square, is_transparent=false, mood=innovative}"
+    },
+    {
+      "asset_id": "98b8def6f4f88fbe",
+      "public_id": "Gemini_Generated_Image_hyn1gehyn1gehyn1_8_rs6ipo",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, minimal, geometric, monochrome, professional, tech, saas, corporate, spacious] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "e9276f837d97d89c",
+      "public_id": "Gemini_Generated_Image_hyn1gehyn1gehyn1_7_c0wqvw",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, cool-palette, tech, professional, sophisticated, abstract-shapes, spacious] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "4710561c0a5ebe5c",
+      "public_id": "Gemini_Generated_Image_cvabj1cvabj1cvab_qitd1t",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, geometric, gradient-heavy, 3d, cool-palette, tech, saas, professional, innovative, glass-effect, glow, circles, lines, spacious, layered] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "fb9b6472bb18c01c",
+      "public_id": "Gemini_Generated_Image_2u61vj2u61vj2u61_tyjra2",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, gradient-heavy, tech, saas, professional, innovative, data-visualization, geometric-patterns, circles, lines, spacious] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "a289a79914a47f28",
+      "public_id": "Gemini_Generated_Image_iclid4iclid4icli_1_ldwlmn",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, monochrome, professional, tech, saas, glass-effect, circles, lines, layered] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "934107f51adaafbe",
+      "public_id": "Gemini_Generated_Image_ddfiwaddfiwaddfi_5_wdqtuj",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, 3d, monochrome, professional, technology] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "38b7abd3935af89e",
+      "public_id": "Gemini_Generated_Image_867pec867pec867p_htflbg",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, spacious, layered, technology, glass-effect, neutral-palette, professional, sophisticated] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "712b4900c3a7d297",
+      "public_id": "Gemini_Generated_Image_ddfiwaddfiwaddfi_1_ewj0rk",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, gradient-heavy, cool-palette, tech, saas, professional, data-visualization] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "3f2d70516c424c8c",
+      "public_id": "Gemini_Generated_Image_hyn1gehyn1gehyn1_6_bwuhi1",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, minimal, abstract, geometric, gradient-heavy, neutral-palette, tech, professional, calm, abstract-shapes, spacious] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "222d39103309a8e4",
+      "public_id": "Gemini_Generated_Image_iclid4iclid4icli_2_tyegqb",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [modern, abstract, geometric, gradient-heavy, cool-palette, tech, professional, innovative, abstract-shapes, spacious] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "034c9f66c60b9ed1",
+      "public_id": "Gemini_Generated_Image_hyn1gehyn1gehyn1_9_tbhpu6",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, geometric, gradient-heavy, modern, minimal, neutral-palette, sophisticated, flowing, layered] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "259612aade4b0361",
+      "public_id": "Gemini_Generated_Image_ddfiwaddfiwaddfi_2_ogwfch",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, gradient-heavy, tech, saas, professional, innovative, data-visualization, glass-effect, geometric-patterns] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "3ae45ea226f981ca",
+      "public_id": "Gemini_Generated_Image_iclid4iclid4icli_fbqdxi",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [abstract, gradient-heavy, 3d, geometric, modern, tech, professional, innovative, geometric-patterns, flowing] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "77e4e84b0d7f3a8f",
+      "public_id": "Gemini_Generated_Image_8lz1ki8lz1ki8lz1_2_dkyyf2",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, gradient-heavy, 3d, neutral-palette, tech, professional, sophisticated, abstract-shapes, layered] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=sophisticated}"
+    },
+    {
+      "asset_id": "61576b3449d2c61f",
+      "public_id": "Gemini_Generated_Image_iclid4iclid4icli_3_kinob2",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, gradient-heavy, tech, saas, professional, data-visualization, centered] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    },
+    {
+      "asset_id": "a5282785a793beeb",
+      "public_id": "Gemini_Generated_Image_mu1619mu1619mu16_yanhk3",
+      "status": "success",
+      "message": "[DRY RUN] Would set tags: [minimal, modern, abstract, geometric, monochrome, spacious, technology, abstract-shapes, lines, geometric-patterns] AND metadata: {product_family=relevnt_core, image_role=other, energy=medium, aspect_class=square, is_transparent=false, mood=professional}"
+    }
+  ]
+}

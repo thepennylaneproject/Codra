@@ -53,6 +53,10 @@
   [functions."user-profile"]
     timeout = 10
 
+  # Scheduled function for nightly asset analysis
+  [functions."analyze-new-assets"]
+    timeout = 26  # Max timeout for processing multiple assets
+
 [dev]
   port = 5175       # Netlify Dev server port
   targetPort = 4444 # Vite server port (from vite.config.ts)

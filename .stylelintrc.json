@@ -10,5 +10,9 @@
     "selector-max-specificity": "0,3,0",
     "declaration-no-important": true,
     "function-disallowed-list": ["rgb", "rgba", "hsl", "hsla"]
-  }
+  },
+  "ignoreFiles": [
+    "src/styles/generated-tokens.css",
+    "tailwind.config.generated.js"
+  ]
 }

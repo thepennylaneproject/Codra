@@ -1,0 +1,32 @@
+[
+    {
+        "id": "coding_edit_001",
+        "name": "Simple variable rename",
+        "prompt": "Refactor this code by renaming the variable 'x' to 'count':\n\n```javascript\nlet x = 0;\nfor (let i = 0; i < 10; i++) {\n    x++;\n}\nconsole.log(x);\n```\n\nReturn only the refactored code block.",
+        "validators": [
+            { "type": "contains", "value": "let count = 0" },
+            { "type": "contains", "value": "count++" },
+            { "type": "contains", "value": "console.log(count)" },
+            { "type": "not_contains", "value": "let x" }
+        ]
+    },
+    {
+        "id": "coding_edit_002",
+        "name": "Add null check",
+        "prompt": "Add null/undefined checking to this function:\n\n```javascript\nfunction getLength(str) {\n    return str.length;\n}\n```\n\nReturn only the refactored code block.",
+        "validators": [
+            { "type": "contains_any", "values": ["str === null", "str == null", "!str", "str?.length", "typeof str"] },
+            { "type": "contains", "value": "return" }
+        ]
+    },
+    {
+        "id": "coding_edit_003",
+        "name": "Convert to arrow function",
+        "prompt": "Convert this function to an arrow function:\n\n```javascript\nfunction add(a, b) {\n    return a + b;\n}\n```\n\nReturn only the arrow function.",
+        "validators": [
+            { "type": "contains", "value": "=>" },
+            { "type": "contains_any", "values": ["const add", "let add", "add ="] },
+            { "type": "not_contains", "value": "function add" }
+        ]
+    }
+]

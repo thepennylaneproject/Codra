@@ -26,7 +26,7 @@ import {
   estimateDebateCost,
 } from '../../../src/lib/thinking/debate';
 import { synthesizeLocally, synthesisToShadowProject } from '../../../src/lib/thinking/shadow-synthesizer';
-import type { CostEstimate, DebateConsent, DebateModelPlan, DebateModelUsage, Fragment, ShadowProject } from '../../../src/lib/thinking/types';
+import type { CreditEstimate, DebateConsent, DebateModelPlan, DebateModelUsage, Fragment, ShadowProject } from '../../../src/lib/thinking/types';
 
 const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
@@ -89,6 +89,7 @@ const headers = {
 };
 
 export const handler: Handler = async (event) => {
+  let lastEstimate: CreditEstimate | null = null;
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers };
   }
@@ -134,6 +135,7 @@ export const handler: Handler = async (event) => {
     const shadow = resolveShadow(fragments, body.shadow, body.projectId);
     const modelPlan = buildModelPlan(body);
     const estimate = estimateDebateCost(shadow, fragments, { modelPlan });
+    lastEstimate = estimate;
     const consent = buildConsent(body, estimate);
     const modelUsage: DebateModelUsage[] = [];
 
@@ -161,10 +163,15 @@ export const handler: Handler = async (event) => {
     }
 
     if (isDebateOrchestratorError(error)) {
+      const details =
+        lastEstimate && (!error.details || !('receipt' in error.details))
+          ? { ...error.details, receipt: buildReceiptStub(lastEstimate) }
+          : error.details;
+
       return jsonError(400, {
         code: error.code,
         message: error.message,
-        details: error.details,
+        details,
       });
     }
 
@@ -190,11 +197,12 @@ function parseRequest(body: string | null): ArriveRequest {
 
 function buildConsent(
   body: ArriveRequest,
-  estimate: CostEstimate
+  estimate: CreditEstimate
 ): DebateConsent {
   if (!body.consent?.approved) {
     throw new ApiRequestError('consent_required', 'Debate consent is required', {
       estimate,
+      receipt: buildReceiptStub(estimate),
       next: 'resubmit_with_consent',
     });
   }
@@ -202,6 +210,7 @@ function buildConsent(
   if (!body.consent.estimateHash) {
     throw new ApiRequestError('consent_invalid', 'consent.estimateHash is required', {
       estimate,
+      receipt: buildReceiptStub(estimate),
       next: 'resubmit_with_consent',
     });
   }
@@ -209,6 +218,7 @@ function buildConsent(
   if (body.consent.estimateHash !== estimate.estimateHash) {
     throw new ApiRequestError('consent_invalid', 'Consent estimate hash mismatch', {
       estimate,
+      receipt: buildReceiptStub(estimate),
       expectedHash: estimate.estimateHash,
       providedHash: body.consent.estimateHash,
       next: 'resubmit_with_consent',
@@ -337,6 +347,16 @@ function buildModelPlan(body: ArriveRequest): DebateModelPlan[] {
     model,
     provider,
   }));
+}
+
+function buildReceiptStub(estimate: CreditEstimate) {
+  return {
+    estimate,
+    actual: {
+      durationMs: 0,
+      steps: [{ step: 'preflight', success: true }],
+    },
+  };
 }
 
 async function buildRouter(userId: string, provider?: string): Promise<AIRouter> {

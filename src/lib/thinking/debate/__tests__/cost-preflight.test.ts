@@ -40,7 +40,7 @@ describe('estimateDebateCost', () => {
     const estimateB = estimateDebateCost(shadow, fragments);
 
     expect(estimateA.tokensTotal).toBe(estimateB.tokensTotal);
-    expect(estimateA.costUnits).toBe(estimateB.costUnits);
+    expect(estimateA.creditsTotal).toBe(estimateB.creditsTotal);
     expect(estimateA.estimateHash).toBe(estimateB.estimateHash);
   });
 
@@ -61,5 +61,24 @@ describe('estimateDebateCost', () => {
     const newEstimate = estimateDebateCost(shadow, [...fragments, ...createFragments(1, 40)]);
 
     expect(baseEstimate.estimateHash).not.toBe(newEstimate.estimateHash);
+  });
+
+  it('keeps estimateHash stable for identical inputs', () => {
+    const shadow = createShadow('s-4');
+    const fragments = createFragments(5, 30);
+    const estimateA = estimateDebateCost(shadow, fragments);
+    const estimateB = estimateDebateCost(shadow, fragments);
+
+    expect(estimateA.estimateHash).toBe(estimateB.estimateHash);
+  });
+
+  it('changes estimateHash for meaningful input changes', () => {
+    const shadow = createShadow('s-5');
+    const fragments = createFragments(5, 30);
+    const estimateA = estimateDebateCost(shadow, fragments);
+    const changedShadow = { ...shadow, readinessScore: 0.9 };
+    const estimateB = estimateDebateCost(changedShadow, fragments);
+
+    expect(estimateA.estimateHash).not.toBe(estimateB.estimateHash);
   });
 });

@@ -1,0 +1,35 @@
+[
+    {
+        "id": "tool_use_001",
+        "name": "Simple calculator tool call",
+        "prompt": "You have access to a calculator tool. Use it to add 42 and 58.\n\nTool definition:\n{\n  \"name\": \"calculator\",\n  \"parameters\": {\n    \"operation\": \"string (add, subtract, multiply, divide)\",\n    \"a\": \"number\",\n    \"b\": \"number\"\n  }\n}\n\nRespond with ONLY the tool call JSON.",
+        "validators": [
+            { "type": "valid_json", "value": true },
+            { "type": "json_path", "path": "$.name", "equals": "calculator" },
+            { "type": "json_path_any", "path": "$.parameters.operation", "equals": ["add", "addition", "+"] },
+            { "type": "json_path", "path": "$.parameters.a", "equals": 42 },
+            { "type": "json_path", "path": "$.parameters.b", "equals": 58 }
+        ]
+    },
+    {
+        "id": "tool_use_002",
+        "name": "Search tool with query",
+        "prompt": "You have access to a web search tool. Search for 'TypeScript generics'.\n\nTool definition:\n{\n  \"name\": \"web_search\",\n  \"parameters\": {\n    \"query\": \"string\",\n    \"max_results\": \"number (optional)\"\n  }\n}\n\nRespond with ONLY the tool call JSON.",
+        "validators": [
+            { "type": "valid_json", "value": true },
+            { "type": "json_path", "path": "$.name", "equals": "web_search" },
+            { "type": "json_path_contains", "path": "$.parameters.query", "contains": "TypeScript" }
+        ]
+    },
+    {
+        "id": "tool_use_003",
+        "name": "File write tool",
+        "prompt": "You have a file writing tool. Write 'Hello, World!' to a file called 'greeting.txt'.\n\nTool definition:\n{\n  \"name\": \"write_file\",\n  \"parameters\": {\n    \"path\": \"string\",\n    \"content\": \"string\"\n  }\n}\n\nRespond with ONLY the tool call JSON.",
+        "validators": [
+            { "type": "valid_json", "value": true },
+            { "type": "json_path", "path": "$.name", "equals": "write_file" },
+            { "type": "json_path_contains", "path": "$.parameters.path", "contains": "greeting" },
+            { "type": "json_path_contains", "path": "$.parameters.content", "contains": "Hello" }
+        ]
+    }
+]

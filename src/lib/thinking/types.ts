@@ -139,7 +139,7 @@ export interface DebateModelPlan {
   model?: string;
 }
 
-export interface CostEstimateBasis {
+export interface CreditEstimateBasis {
   inputChars: number;
   shadowChars: number;
   fragmentCount: number;
@@ -149,12 +149,12 @@ export interface CostEstimateBasis {
   outputTokenPerFragment: number;
 }
 
-export interface CostEstimate {
+export interface CreditEstimate {
   tokensIn: number;
   tokensOut: number;
   tokensTotal: number;
-  costUnits: number;
-  basis: CostEstimateBasis;
+  creditsTotal: number;
+  basis: CreditEstimateBasis;
   models: DebateModelPlan[];
   estimateHash: string;
   createdAt: Date;
@@ -165,6 +165,21 @@ export interface DebateConsent {
   approvedAt?: string;
   approvedBy?: string;
   estimateHash?: string;
+}
+
+export interface DebateReceiptStep {
+  step: ReasoningRole | 'preflight';
+  success: boolean;
+  error?: string;
+}
+
+export interface DebateReceipt {
+  estimate: CreditEstimate;
+  actual: {
+    durationMs: number;
+    steps: DebateReceiptStep[];
+    tokensUsedTotal?: number;
+  };
 }
 
 export type DebateDecision = 'approve' | 'reject' | 'needs-review';
@@ -185,6 +200,7 @@ export interface ProposalMetadata {
   };
   modelUsage: DebateModelUsage[];
   partialFailures: string[];
+  receipt?: DebateReceipt;
 }
 
 export interface DebateRound {

@@ -1,0 +1,101 @@
+{
+  "ok": false,
+  "inputs": {
+    "inputFile": "/Users/sarahsahl/Desktop/codra/out/assets-index-enriched.json",
+    "totalAssets": 1395,
+    "model": "claude-3-haiku",
+    "concurrency": 1
+  },
+  "outputs": {
+    "outDir": "/Users/sarahsahl/Desktop/codra/out",
+    "resultsJson": "/Users/sarahsahl/Desktop/codra/out/assets-analysis-results.json"
+  },
+  "results": {
+    "succeeded": 1052,
+    "failed": 343
+  },
+  "failures": [
+    {
+      "publicId": "Starter_SpotIllustration_Light_1x1_v04_kghvr2",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRr7PUhYk7H3GJexgAi\"}"
+    },
+    {
+      "publicId": "Starter_SpotIllustration_Light_1x1_v03_copy_qaomyg",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRr9WiqPpXAtE5a7Krz\"}"
+    },
+    {
+      "publicId": "Playful_SpotIllustration_Dark_1x1_v03_fsm1gj",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRrDsuNZwrT2PCQ9djs\"}"
+    },
+    {
+      "publicId": "Starter_SpotIllustration_Light_1x1_v01_copy_z9xyiz",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRrHxxrPD7aiCzuajYV\"}"
+    },
+    {
+      "publicId": "Starter_SpotIllustration_Light_1x1_v02_copy_pnkzgy",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRrN335WfCa686LrLcB\"}"
+    },
+    {
+      "publicId": "Playful_SpotIllustration_Dark_1x1_v04_h0my1r",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRrR476XxQb1cYSCKqQ\"}"
+    },
+    {
+      "publicId": "Playful_SpotIllustration_Dark_1x1_v02_hy1xaj",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRrUZCcaXbKj1pgvMYy\"}"
+    },
+    {
+      "publicId": "Playful_SpotIllustration_Dark_1x1_v01_krlwso",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRrXqQ1t6H7edNVSzLs\"}"
+    },
+    {
+      "publicId": "64_mkrxd7",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRrc2ARVvX5jy5Ynuoc\"}"
+    },
+    {
+      "publicId": "63_bouqwd",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRrg1GyBTst3Lk1VSnP\"}"
+    },
+    {
+      "publicId": "65_yzybm1",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRrmUgU6a1KK4xjAuQy\"}"
+    },
+    {
+      "publicId": "66_xxzbjy",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRrqzYTeqFdW5uEHU3x\"}"
+    },
+    {
+      "publicId": "23_yujtcw",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRrw87jpgpwsghZg3Rh\"}"
+    },
+    {
+      "publicId": "38_gwovby",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRs3PtquJwkVRLUXamb\"}"
+    },
+    {
+      "publicId": "37_gl4fjs",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRs7YRxrQkjTsmx3av3\"}"
+    },
+    {
+      "publicId": "36_a2ozdi",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRsBQMVYzvw93K4K4mM\"}"
+    },
+    {
+      "publicId": "21_nqluou",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRsFbce2g3psxZqtqm5\"}"
+    },
+    {
+      "publicId": "35_xkb12l",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRsJsoznezva6EhGfSJ\"}"
+    },
+    {
+      "publicId": "34_fqflcr",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRsMzb5MoisAXiDWp5F\"}"
+    },
+    {
+      "publicId": "33_yqeh7w",
+      "reason": "Claude API error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64.media_type: Input should be 'image/jpeg', 'image/png', 'image/gif' or 'image/webp'\"},\"request_id\":\"req_011CWvRsRNUzRNNA42F6X5Ug\"}"
+    }
+  ],
+  "durationMs": 34858910,
+  "analyzedAt": "2026-01-09T04:34:59.225Z"
+}

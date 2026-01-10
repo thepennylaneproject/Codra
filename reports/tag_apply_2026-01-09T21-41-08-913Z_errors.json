@@ -1,0 +1,22 @@
+[
+  {
+    "asset_id": "e12345b0efc00c0fcf",
+    "error": "Illegal id",
+    "details": {
+      "details": {
+        "message": "Illegal id",
+        "http_code": 400
+      }
+    }
+  },
+  {
+    "asset_id": "f67890a5c7c00c0f12",
+    "error": "Illegal id",
+    "details": {
+      "details": {
+        "message": "Illegal id",
+        "http_code": 400
+      }
+    }
+  }
+]

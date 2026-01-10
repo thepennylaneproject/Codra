@@ -1,0 +1,12 @@
+[
+  {
+    "asset_id": "016e933862ca2388",
+    "error": "Illegal id",
+    "details": {
+      "details": {
+        "message": "Illegal id",
+        "http_code": 400
+      }
+    }
+  }
+]

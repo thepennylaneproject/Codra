@@ -86,10 +86,18 @@ export async function conductDebate(
   const expectedEstimate = estimateDebateCost(shadow, fragments, {
     modelPlan: options.modelPlan,
   });
+  const receiptStub = {
+    estimate: expectedEstimate,
+    actual: {
+      durationMs: 0,
+      steps: [{ step: 'preflight', success: true }],
+    },
+  };
 
   if (!options.consent || options.consent.approved !== true) {
     throw new DebateOrchestratorError('consent_required', 'Debate consent is required.', {
       estimate: expectedEstimate,
+      receipt: receiptStub,
       next: 'resubmit_with_consent',
     });
   }
@@ -97,6 +105,7 @@ export async function conductDebate(
   if (!options.consent.estimateHash) {
     throw new DebateOrchestratorError('consent_required', 'Debate cost estimate is required.', {
       estimate: expectedEstimate,
+      receipt: receiptStub,
       next: 'resubmit_with_consent',
     });
   }
@@ -104,6 +113,7 @@ export async function conductDebate(
   if (expectedEstimate.estimateHash !== options.consent.estimateHash) {
     throw new DebateOrchestratorError('consent_invalid', 'Debate consent does not match estimate.', {
       estimate: expectedEstimate,
+      receipt: receiptStub,
       expected: expectedEstimate.estimateHash,
       provided: options.consent.estimateHash,
       next: 'resubmit_with_consent',
@@ -113,6 +123,10 @@ export async function conductDebate(
   const providers = validateProviders(options);
   const startedAt = new Date();
   const partialFailures: string[] = [];
+
+  const steps: { step: DebateModelPlan['role'] | 'preflight'; success: boolean; error?: string }[] = [
+    { step: 'preflight', success: true },
+  ];
 
   const [explorerResult, criticResult, adversaryResult] = await Promise.allSettled([
     providers.explorer.explore(shadow),
@@ -124,19 +138,22 @@ export async function conductDebate(
     'explorer',
     explorerResult,
     () => exploreLocally(shadow),
-    partialFailures
+    partialFailures,
+    steps
   );
   const critic = resolveSettledOutput(
     'critic',
     criticResult,
     () => critiqueLocally(shadow),
-    partialFailures
+    partialFailures,
+    steps
   );
   const adversary = resolveSettledOutput(
     'adversary',
     adversaryResult,
     () => challengeLocally(shadow, fragments),
-    partialFailures
+    partialFailures,
+    steps
   );
 
   const synthesisInput: SynthesizerInput = {
@@ -150,7 +167,8 @@ export async function conductDebate(
     'synthesizer',
     () => providers.synthesizer.synthesize(synthesisInput),
     () => synthesizeLocally(synthesisInput),
-    partialFailures
+    partialFailures,
+    steps
   );
 
   if (!synthesis || synthesis.modules.length === 0) {
@@ -161,7 +179,8 @@ export async function conductDebate(
     'verifier',
     () => providers.verifier.verify(synthesis),
     () => verifyLocally(synthesis),
-    partialFailures
+    partialFailures,
+    steps
   );
 
   if (!verification) {
@@ -180,6 +199,7 @@ export async function conductDebate(
   const changeSet = buildChangeSet(normalizedModules, verification);
 
   const completedAt = new Date();
+  const tokensUsedTotal = options.modelUsage?.reduce((sum, entry) => sum + (entry.tokensUsed ?? 0), 0);
 
   return {
     ...baseProposal,
@@ -196,6 +216,14 @@ export async function conductDebate(
       },
       modelUsage: options.modelUsage ?? [],
       partialFailures,
+      receipt: {
+        estimate: expectedEstimate,
+        actual: {
+          durationMs: completedAt.getTime() - startedAt.getTime(),
+          steps,
+          tokensUsedTotal: tokensUsedTotal && tokensUsedTotal > 0 ? tokensUsedTotal : undefined,
+        },
+      },
     },
     estimatedCost: verification.totalCost,
     costDrivers: flattenCostDrivers(verification),
@@ -227,9 +255,11 @@ function resolveSettledOutput<T>(
   role: string,
   result: PromiseSettledResult<T>,
   fallback: () => T,
-  partialFailures: string[]
+  partialFailures: string[],
+  steps: { step: DebateModelPlan['role'] | 'preflight'; success: boolean; error?: string }[]
 ): T {
   if (result.status === 'fulfilled' && result.value) {
+    steps.push({ step: role as DebateModelPlan['role'], success: true });
     return result.value;
   }
 
@@ -239,6 +269,7 @@ function resolveSettledOutput<T>(
       : new Error(`Empty output for ${role}.`);
 
   partialFailures.push(formatFailure(role, error));
+  steps.push({ step: role as DebateModelPlan['role'], success: false, error: formatFailure(role, error) });
 
   try {
     return fallback();
@@ -256,16 +287,19 @@ async function runWithFallback<T>(
   role: string,
   run: () => Promise<T>,
   fallback: () => T,
-  partialFailures: string[]
+  partialFailures: string[],
+  steps: { step: DebateModelPlan['role'] | 'preflight'; success: boolean; error?: string }[]
 ): Promise<T> {
   try {
     const result = await run();
     if (result) {
+      steps.push({ step: role as DebateModelPlan['role'], success: true });
       return result;
     }
     throw new Error(`Empty output for ${role}.`);
   } catch (error) {
     partialFailures.push(formatFailure(role, error));
+    steps.push({ step: role as DebateModelPlan['role'], success: false, error: formatFailure(role, error) });
     try {
       return fallback();
     } catch (fallbackError) {

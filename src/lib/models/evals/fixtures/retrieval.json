@@ -1,0 +1,32 @@
+[
+    {
+        "id": "retrieval_001",
+        "name": "Extract email from document",
+        "context": "Meeting Notes - Q4 Planning\n\nDate: October 15, 2024\nAttendees: John Smith, Sarah Johnson, Mike Brown\n\nDiscussion Points:\n1. Budget review for next quarter\n2. New hiring plan\n3. Product roadmap updates\n\nAction Items:\n- John to prepare budget report by Oct 20\n- Sarah to schedule interviews for engineering positions\n- Mike to update roadmap document\n\nContact: For questions, email planning@company.com or call 555-0123.\n\nNext meeting: October 22, 2024 at 2:00 PM",
+        "prompt": "What is the email address mentioned in this document?",
+        "expected": "planning@company.com",
+        "validators": [
+            { "type": "contains_exact", "value": "planning@company.com" }
+        ]
+    },
+    {
+        "id": "retrieval_002",
+        "name": "Extract specific date",
+        "context": "Project Timeline:\n\n- Phase 1 (Research): January 5, 2024 - February 15, 2024\n- Phase 2 (Development): February 16, 2024 - May 30, 2024\n- Phase 3 (Testing): June 1, 2024 - July 15, 2024\n- Phase 4 (Launch): July 20, 2024\n\nKey Milestones:\n- Alpha release: March 1, 2024\n- Beta release: June 15, 2024\n- Public launch: July 20, 2024",
+        "prompt": "When is the Beta release scheduled?",
+        "expected": "June 15, 2024",
+        "validators": [
+            { "type": "contains_any", "values": ["June 15, 2024", "June 15 2024", "15 June 2024", "2024-06-15"] }
+        ]
+    },
+    {
+        "id": "retrieval_003",
+        "name": "Extract numerical value",
+        "context": "Annual Performance Report 2024\n\nCompany: TechCorp Inc.\nEmployees: 1,247\nRevenue: $45.2 million\nGrowth Rate: 23.5%\n\nDepartment Breakdown:\n- Engineering: 456 employees\n- Sales: 312 employees\n- Marketing: 189 employees\n- Operations: 290 employees\n\nTop performer bonus pool: $2.3 million",
+        "prompt": "How many employees work in the Engineering department?",
+        "expected": "456",
+        "validators": [
+            { "type": "contains", "value": "456" }
+        ]
+    }
+]

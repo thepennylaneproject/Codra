@@ -1,0 +1,37 @@
+[
+    {
+        "id": "json_validity_001",
+        "name": "Generate user profile JSON",
+        "prompt": "Generate a JSON object representing a user profile with the following fields:\n- name (string)\n- age (number)\n- email (string)\n- active (boolean)\n\nRespond with ONLY valid JSON, no markdown or explanation.",
+        "validators": [
+            { "type": "valid_json", "value": true },
+            { "type": "json_has_keys", "keys": ["name", "age", "email", "active"] },
+            { "type": "json_type", "path": "$.name", "expected_type": "string" },
+            { "type": "json_type", "path": "$.age", "expected_type": "number" },
+            { "type": "json_type", "path": "$.active", "expected_type": "boolean" }
+        ]
+    },
+    {
+        "id": "json_validity_002",
+        "name": "Generate array of items",
+        "prompt": "Generate a JSON array with exactly 3 product objects. Each product should have:\n- id (number)\n- name (string)\n- price (number)\n\nRespond with ONLY valid JSON, no markdown or explanation.",
+        "validators": [
+            { "type": "valid_json", "value": true },
+            { "type": "json_is_array", "value": true },
+            { "type": "json_array_length", "min": 3, "max": 3 },
+            { "type": "json_array_items_have_keys", "keys": ["id", "name", "price"] }
+        ]
+    },
+    {
+        "id": "json_validity_003",
+        "name": "Nested JSON structure",
+        "prompt": "Generate a JSON object for an API response with:\n- success (boolean, must be true)\n- data (object with 'items' array and 'total' number)\n- meta (object with 'timestamp' string)\n\nRespond with ONLY valid JSON, no markdown or explanation.",
+        "validators": [
+            { "type": "valid_json", "value": true },
+            { "type": "json_path", "path": "$.success", "equals": true },
+            { "type": "json_path_exists", "path": "$.data.items" },
+            { "type": "json_path_exists", "path": "$.data.total" },
+            { "type": "json_path_exists", "path": "$.meta.timestamp" }
+        ]
+    }
+]

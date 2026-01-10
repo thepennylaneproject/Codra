@@ -1,0 +1,83 @@
+{
+  "summary": {
+    "total": 5,
+    "success": 0,
+    "failed": 5,
+    "skipped_noop": 0,
+    "skipped_missing": 0,
+    "isDryRun": true,
+    "timestamp": "2026-01-09T21-43-54-440Z"
+  },
+  "records": [
+    {
+      "asset_id": "016e933862ca2388",
+      "status": "failed",
+      "operation_type": "unknown",
+      "before_tags": [],
+      "after_tags": [],
+      "message": "Illegal id",
+      "error_details": {
+        "details": {
+          "message": "Illegal id",
+          "http_code": 400
+        }
+      }
+    },
+    {
+      "asset_id": "64ca0ce7ef326477",
+      "status": "failed",
+      "operation_type": "unknown",
+      "before_tags": [],
+      "after_tags": [],
+      "message": "Illegal id",
+      "error_details": {
+        "details": {
+          "message": "Illegal id",
+          "http_code": 400
+        }
+      }
+    },
+    {
+      "asset_id": "6a23d3a18ee9a264",
+      "status": "failed",
+      "operation_type": "unknown",
+      "before_tags": [],
+      "after_tags": [],
+      "message": "Illegal id",
+      "error_details": {
+        "details": {
+          "message": "Illegal id",
+          "http_code": 400
+        }
+      }
+    },
+    {
+      "asset_id": "fd7cd83dd47f111a",
+      "status": "failed",
+      "operation_type": "unknown",
+      "before_tags": [],
+      "after_tags": [],
+      "message": "Illegal id",
+      "error_details": {
+        "details": {
+          "message": "Illegal id",
+          "http_code": 400
+        }
+      }
+    },
+    {
+      "asset_id": "3372192c9e5ac961",
+      "status": "failed",
+      "operation_type": "unknown",
+      "before_tags": [],
+      "after_tags": [],
+      "message": "Illegal id",
+      "error_details": {
+        "details": {
+          "message": "Illegal id",
+          "http_code": 400
+        }
+      }
+    }
+  ]
+}
