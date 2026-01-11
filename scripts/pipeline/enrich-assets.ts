@@ -16,6 +16,10 @@
  *   --dry-run              Show what would be done without executing
  */
 
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+dotenv.config();
+
 import { EnrichmentEngine } from '../../src/pipeline/enrichment/engine';
 import { getCloudinary } from '../../src/pipeline/config/cloudinary';
 
@@ -90,23 +94,36 @@ async function enrichAssets() {
     process.exit(1);
   }
 
-  // Fetch assets from Cloudinary
+  // Fetch ALL assets from Cloudinary (with pagination)
   console.log('[Enrichment] Fetching assets from Cloudinary...');
   const cloudinary = getCloudinary();
 
-  const resources = await cloudinary.api.resources({
-    type: 'upload',
-    resource_type: 'image',
-    prefix: options.folder,
-    max_results: 500,
-    metadata: true,
-    tags: true,
-  });
+  let assets: any[] = [];
+  let nextCursor: string | undefined = undefined;
+  let batchNum = 0;
 
-  let assets = resources.resources;
+  do {
+    batchNum++;
+    const response: any = await cloudinary.api.resources({
+      type: 'upload',
+      resource_type: 'image',
+      prefix: options.folder,
+      max_results: 500,
+      metadata: true,
+      tags: true,
+      next_cursor: nextCursor,
+    });
+
+    const batch = response.resources;
+    assets.push(...batch);
+    nextCursor = response.next_cursor;
+    
+    console.log(`  Batch ${batchNum}: fetched ${batch.length} assets (${assets.length} total)`);
+  } while (nextCursor);
 
   // Filter to rasters only (skip vectors for AI)
   assets = assets.filter((r: any) => r.format !== 'svg');
+  console.log(`  Filtered to ${assets.length} raster assets (SVGs excluded)`);
 
   // Apply limit
   if (options.limit > 0) {

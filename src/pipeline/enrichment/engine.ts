@@ -146,7 +146,7 @@ export class EnrichmentEngine {
 
       // Add system fields
       enrichedMetadata.enrichment_version = this.enrichmentVersion;
-      enrichedMetadata.enriched_at = new Date().toISOString();
+      enrichedMetadata.enriched_at = new Date().toISOString().split('T')[0]; // Cloudinary date: YYYY-MM-DD
       enrichedMetadata.content_hash = contentHash;
 
       // Update Cloudinary

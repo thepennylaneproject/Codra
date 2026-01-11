@@ -180,8 +180,12 @@ export class AIEnricher {
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
 
     try {
+      // Apply Cloudinary transformation to resize image for AI analysis (max 5MB limit)
+      // Transform: resize to max 2000px, quality 80, auto format
+      const optimizedUrl = this.applyAIOptimization(imageUrl);
+      
       // Fetch image and convert to base64
-      const imageResponse = await fetch(imageUrl);
+      const imageResponse = await fetch(optimizedUrl);
       if (!imageResponse.ok) {
         throw new Error(`Failed to fetch image: ${imageResponse.status}`);
       }
@@ -332,5 +336,46 @@ export class AIEnricher {
       requestsFailed: 0,
       totalCost: 0,
     };
+  }
+
+  /**
+   * Apply Cloudinary transformations to optimize image for AI analysis.
+   * Ensures image stays under Anthropic's 5MB limit.
+   * 
+   * Transformation: w_2000,h_2000,c_limit,q_80,f_jpg
+   * - Max 2000px on longest side
+   * - Quality 80 (good balance of size vs quality)
+   * - Convert to JPEG (smaller than PNG)
+   */
+  private applyAIOptimization(imageUrl: string): string {
+    // Check if it's a Cloudinary URL
+    const cloudinaryPattern = /https:\/\/res\.cloudinary\.com\/([^/]+)\/image\/upload\/(.*)/;
+    const match = imageUrl.match(cloudinaryPattern);
+    
+    if (!match) {
+      // Not a Cloudinary URL, return as-is
+      console.log(`[AIEnricher] Non-Cloudinary URL, using original: ${imageUrl}`);
+      return imageUrl;
+    }
+    
+    const cloudName = match[1];
+    let pathAfterUpload = match[2];
+    
+    // Remove any existing transformations (everything before the public_id)
+    // Cloudinary URLs: /upload/[transformations]/[version]/public_id
+    // We need to find where the public_id starts
+    
+    // If there's a version (v1234...), keep it and everything after
+    const versionMatch = pathAfterUpload.match(/(v\d+\/.*)/);
+    if (versionMatch) {
+      pathAfterUpload = versionMatch[1];
+    }
+    
+    // Insert our optimization transformation
+    const transformation = 'w_2000,h_2000,c_limit,q_80,f_jpg';
+    const optimizedUrl = `https://res.cloudinary.com/${cloudName}/image/upload/${transformation}/${pathAfterUpload}`;
+    
+    console.log(`[AIEnricher] Optimized image URL for AI: ${optimizedUrl}`);
+    return optimizedUrl;
   }
 }

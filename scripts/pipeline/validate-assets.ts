@@ -13,6 +13,10 @@
  *   --report          Generate detailed report (default: false)
  */
 
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+dotenv.config();
+
 import { loadRegistryFromFile } from '../../src/pipeline/registry/index-generator';
 import {
   validateAssets,
