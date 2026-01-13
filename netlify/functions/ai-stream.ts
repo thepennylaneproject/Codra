@@ -1,61 +1,57 @@
 /**
  * Netlify Function: AI Stream Endpoint
- * Returns SSE (Server-Sent Events) stream
  */
 
 import { Handler } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
-import { AimlApiProvider } from '../../../../src/lib/ai/providers/aimlapi';
-import { DeepSeekProvider } from '../../../../src/lib/ai/providers/deepseek';
-import { GeminiProvider } from '../../../../src/lib/ai/providers/gemini';
-import { OpenAIProvider } from '../../../../src/lib/ai/providers/openai';
-import { MistralProvider } from '../../../../src/lib/ai/providers/mistral';
-import { CohereProvider } from '../../../../src/lib/ai/providers/cohere';
-import { HuggingFaceProvider } from '../../../../src/lib/ai/providers/huggingface';
-import { AIRouter } from '../../../../src/lib/ai/router';
-import type { AICompletionRequest } from '../../../../src/lib/ai/types';
+import { AimlApiProvider } from '../../src/lib/ai/providers/aimlapi';
+import { DeepSeekProvider } from '../../src/lib/ai/providers/deepseek';
+import { GeminiProvider } from '../../src/lib/ai/providers/gemini';
+import { OpenAIProvider } from '../../src/lib/ai/providers/openai';
+import { MistralProvider } from '../../src/lib/ai/providers/mistral';
+import { CohereProvider } from '../../src/lib/ai/providers/cohere';
+import { HuggingFaceProvider } from '../../src/lib/ai/providers/huggingface';
+import { AIRouter } from '../../src/lib/ai/router';
+import type { AICompletionRequest } from '../../src/lib/ai/types';
 
 const supabase = createClient(
-    process.env.SUPABASE_URL || '',
-    process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+    process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '',
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || ''
 );
 
-async function getCredentialForProvider(userId: string, provider: string): Promise<string> {
-    // Same decryption logic as complete.ts
-    const { data, error } = await supabase
-        .from('api_credentials')
-        .select('encrypted_key, iv, auth_tag')
-        .eq('user_id', userId)
-        .eq('provider', provider)
-        .eq('environment', process.env.NODE_ENV || 'development')
-        .single();
+/**
+ * Get API key for a provider from Codra's platform environment variables.
+ * Codra uses a platform-key model where all users share Codra's API keys,
+ * and usage is tracked per-user for billing purposes.
+ */
+function getCredentialForProvider(provider: string): string {
+    const envVarMap: Record<string, string> = {
+        'aimlapi': 'AIMLAPI_API_KEY',
+        'deepseek': 'DEEPSEEK_API_KEY',
+        'gemini': 'GEMINI_API_KEY',
+        'openai': 'OPENAI_API_KEY',
+        'anthropic': 'ANTHROPIC_API_KEY',
+        'mistral': 'MISTRAL_API_KEY',
+        'cohere': 'COHERE_API_KEY_PROD',
+        'huggingface': 'HUGGINGFACE_API_KEY',
+        'deepai': 'DEEPAI_API_KEY',
+    };
 
-    if (error || !data) {
-        throw new Error(`No credentials found for provider: ${provider}`);
+    const envVarName = envVarMap[provider];
+    if (!envVarName) {
+        throw new Error(`Unknown provider: ${provider}`);
     }
 
-    const crypto = require('crypto');
-    const userSecret = process.env.SUPABASE_USER_SECRET || '';
-    const decryptionKey = crypto
-        .createHash('sha256')
-        .update(`${userId}:${userSecret}`)
-        .digest();
+    const apiKey = process.env[envVarName];
+    if (!apiKey) {
+        throw new Error(`Missing environment variable: ${envVarName}`);
+    }
 
-    const decipher = crypto.createDecipheriv(
-        'aes-256-gcm',
-        decryptionKey,
-        Buffer.from(data.iv, 'hex')
-    );
-
-    decipher.setAuthTag(Buffer.from(data.auth_tag, 'hex'));
-
-    let decrypted = decipher.update(data.encrypted_key, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-
-    return decrypted;
+    return apiKey;
 }
 
-const handler: Handler = async (event, context) => {
+
+export const handler: Handler = async (event, context) => {
     const headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -103,65 +99,56 @@ const handler: Handler = async (event, context) => {
 
         const body: AICompletionRequest = JSON.parse(event.body || '{}');
 
-        if (!body.model || !body.messages) {
-            return {
-                statusCode: 400,
-                headers,
-                body: 'data: {"error":"Missing required fields"}\n\n',
-            };
-        }
-
-        // Initialize router
         const router = new AIRouter({
             primaryProvider: body.provider || 'aimlapi',
             fallbackProviders: ['openai', 'deepseek', 'gemini'],
         });
 
-        // Register providers
+        // Register providers with Codra's platform API keys
         try {
-            const aimlKey = await getCredentialForProvider(user.id, 'aimlapi');
+            const aimlKey = getCredentialForProvider('aimlapi');
             router.registerProvider(new AimlApiProvider(aimlKey));
         } catch (e) {
             console.warn('aimlapi not available:', e);
         }
 
         try {
-            const deepseekKey = await getCredentialForProvider(user.id, 'deepseek');
+            const deepseekKey = getCredentialForProvider('deepseek');
             router.registerProvider(new DeepSeekProvider(deepseekKey));
         } catch (e) {
             console.warn('DeepSeek not available:', e);
         }
 
         try {
-            const geminiKey = await getCredentialForProvider(user.id, 'gemini');
+            const geminiKey = getCredentialForProvider('gemini');
             router.registerProvider(new GeminiProvider(geminiKey));
         } catch (e) {
             console.warn('Gemini not available:', e);
         }
 
         try {
-            const openaiKey = await getCredentialForProvider(user.id, 'openai');
+            const openaiKey = getCredentialForProvider('openai');
             router.registerProvider(new OpenAIProvider(openaiKey));
         } catch (e) {
             console.warn('OpenAI not available:', e);
         }
 
         try {
-            const mistralKey = await getCredentialForProvider(user.id, 'mistral');
+            const mistralKey = getCredentialForProvider('mistral');
             router.registerProvider(new MistralProvider(mistralKey));
         } catch (e) {
             console.warn('Mistral not available:', e);
         }
 
         try {
-            const cohereKey = await getCredentialForProvider(user.id, 'cohere');
+            const cohereKey = getCredentialForProvider('cohere');
             router.registerProvider(new CohereProvider(cohereKey));
         } catch (e) {
             console.warn('Cohere not available:', e);
         }
 
         try {
-            const hfKey = await getCredentialForProvider(user.id, 'huggingface');
+            const hfKey = getCredentialForProvider('huggingface');
             router.registerProvider(new HuggingFaceProvider(hfKey));
         } catch (e) {
             console.warn('HuggingFace not available:', e);
@@ -183,6 +170,7 @@ const handler: Handler = async (event, context) => {
         })) {
             if (chunk.type === 'start') {
                 body_to_return += 'data: {"type":"start"}\n\n';
+                usedProvider = chunk.provider || usedProvider;
             } else if (chunk.type === 'content' && chunk.content) {
                 body_to_return += `data: ${JSON.stringify({ type: 'content', content: chunk.content })}\n\n`;
             } else if (chunk.type === 'end') {
@@ -224,5 +212,3 @@ const handler: Handler = async (event, context) => {
         };
     }
 };
-
-export { handler };

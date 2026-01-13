@@ -14,11 +14,9 @@ import { rankRasterAssets, rankVectorAssets } from './ranking';
 
 export class AssetResolver {
   private registry: AssetMetadata[];
-  private registryVersion: string;
 
-  constructor(registry: AssetMetadata[], registryVersion: string = 'latest') {
+  constructor(registry: AssetMetadata[], _registryVersion: string = 'latest') {
     this.registry = registry;
-    this.registryVersion = registryVersion;
   }
 
   /**
@@ -52,7 +50,7 @@ export class AssetResolver {
       asset: {
         public_id: best.asset.public_id,
         cloudinary_url: best.asset.cloudinary_url,
-        metadata: best.asset,
+        metadata: best.asset as unknown as Record<string, unknown>,
       },
       reason: this.explainSelection(best, descriptor, candidates.length),
       confidence,
@@ -96,7 +94,7 @@ export class AssetResolver {
       if (descriptor.placement) {
         if (
           !asset.placement ||
-          !asset.placement.includes(descriptor.placement)
+          !asset.placement.includes(descriptor.placement as any)
         ) {
           return false;
         }

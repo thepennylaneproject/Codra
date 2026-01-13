@@ -2,6 +2,7 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertCircle, RefreshCcw, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
+import { analytics } from '@/lib/analytics';
 
 interface Props {
     children: ReactNode;
@@ -30,6 +31,13 @@ export class ErrorBoundary extends Component<Props, State> {
 
     public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
         console.error(`[ErrorBoundary:${this.props.name || 'Global'}] uncaught error:`, error, errorInfo);
+        
+        // Track error in analytics
+        analytics.track('execution_desk_crash', {
+            component: this.props.name || 'Global',
+            error: error.message,
+            stack: error.stack?.slice(0, 500),
+        });
     }
 
     private handleReset = () => {

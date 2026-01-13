@@ -33,6 +33,8 @@ interface ExecutionDeskProps {
   headerContent?: ReactNode;
   footerContent?: ReactNode;
   proofTrigger?: 'verification_failed' | 'conflict_detected' | 'user_opened' | null;
+  proofVisible?: boolean;
+  onToggleProof?: (visible: boolean) => void;
 }
 
 export function ExecutionDesk({
@@ -42,20 +44,20 @@ export function ExecutionDesk({
   headerContent,
   footerContent,
   proofTrigger = null,
+  proofVisible = false,
+  onToggleProof,
 }: ExecutionDeskProps) {
   const { layout, toggleDock } = useFlowStore();
 
-  // Proof panel only opens on exceptions or explicit user action
-  const [proofVisible, setProofVisible] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [lyraWidth, setLyraWidth] = useState(LYRA_COLUMN_WIDTH);
 
   // Auto-open proof panel on trigger
   useEffect(() => {
     if (proofTrigger === 'verification_failed' || proofTrigger === 'conflict_detected') {
-      setProofVisible(true);
+      onToggleProof?.(true);
     }
-  }, [proofTrigger]);
+  }, [proofTrigger, onToggleProof]);
 
   // Handle Lyra column resize
   const handleMouseMove = useCallback((e: MouseEvent) => {
@@ -94,13 +96,13 @@ export function ExecutionDesk({
       // Cmd/Ctrl + / : Toggle Proof panel
       if ((e.metaKey || e.ctrlKey) && e.key === '/') {
         e.preventDefault();
-        setProofVisible(prev => !prev);
+        onToggleProof?.(!proofVisible);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toggleDock]);
+  }, [toggleDock, proofVisible, onToggleProof]);
 
   return (
     <div

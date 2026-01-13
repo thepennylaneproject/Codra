@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useOnboarding, FileUpload } from '../hooks/useOnboarding';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useOnboarding, FileUpload, OnboardingProjectState } from '../hooks/useOnboarding';
 import { ArrowLeft, ArrowRight, Upload, X, FileText, Image as ImageIcon } from 'lucide-react';
 import { analytics } from '@/lib/analytics';
 import { Button } from '@/components/ui/Button';
@@ -10,8 +10,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { useFeatureFlag } from '@/hooks/useFeatureFlag';
 import { FEATURE_FLAGS } from '@/lib/feature-flags';
 
+const ONBOARDING_PROJECT_KEY = 'codra:onboardingProject';
+
 export const StepAddContext = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const projectId = searchParams.get('projectId');
     const { data, addFile, removeFile, updateData } = useOnboarding();
     const { user } = useAuth();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -22,8 +26,26 @@ export const StepAddContext = () => {
     const showSmartImport = useFeatureFlag(FEATURE_FLAGS.SMART_CONTEXT_IMPORT);
 
     useEffect(() => {
-        analytics.track('onboarding_step_viewed', { step: 2, stepName: 'context' });
-    }, []);
+        analytics.track('onboarding_step_viewed', { step: 2, stepName: 'context', projectId });
+    }, [projectId]);
+    
+    // Update localStorage step when landing on this page
+    useEffect(() => {
+        if (projectId) {
+            try {
+                const saved = localStorage.getItem(ONBOARDING_PROJECT_KEY);
+                if (saved) {
+                    const projectState: OnboardingProjectState = JSON.parse(saved);
+                    if (projectState.projectId === projectId) {
+                        projectState.step = 'context';
+                        localStorage.setItem(ONBOARDING_PROJECT_KEY, JSON.stringify(projectState));
+                    }
+                }
+            } catch {
+                // Ignore localStorage errors
+            }
+        }
+    }, [projectId]);
     
     const handleBack = () => {
         navigate('/new');
@@ -34,8 +56,11 @@ export const StepAddContext = () => {
             step: 2,
             stepName: 'context',
             durationMs: Date.now() - startTime,
+            projectId,
         });
-        navigate('/new?step=generating');
+        // Update localStorage to generating step
+        updateLocalStorageStep('generating');
+        navigate(`/new?step=generating&projectId=${projectId}`);
     };
     
     const handleContinue = () => {
@@ -45,8 +70,24 @@ export const StepAddContext = () => {
             durationMs: Date.now() - startTime,
             fileCount: data.contextFiles.length,
             fileTypes: data.contextFiles.map(f => f.type),
+            projectId,
         });
-        navigate('/new?step=generating');
+        // Update localStorage to generating step
+        updateLocalStorageStep('generating');
+        navigate(`/new?step=generating&projectId=${projectId}`);
+    };
+    
+    const updateLocalStorageStep = (step: OnboardingProjectState['step']) => {
+        try {
+            const saved = localStorage.getItem(ONBOARDING_PROJECT_KEY);
+            if (saved) {
+                const projectState: OnboardingProjectState = JSON.parse(saved);
+                projectState.step = step;
+                localStorage.setItem(ONBOARDING_PROJECT_KEY, JSON.stringify(projectState));
+            }
+        } catch {
+            // Ignore localStorage errors
+        }
     };
     
     const handleImportClick = (context: ImportedContext) => {

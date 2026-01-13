@@ -108,13 +108,13 @@ export class EnrichmentEngine {
         // Update Cloudinary with cached metadata
         await this.updateCloudinaryMetadata(
           publicId,
-          cachedEnrichment.metadata as Partial<AssetMetadata>,
+          cachedEnrichment.metadata as unknown as Partial<AssetMetadata>,
         );
 
         return {
           public_id: publicId,
           success: true,
-          metadata: cachedEnrichment.metadata as AssetMetadata,
+          metadata: cachedEnrichment.metadata as unknown as AssetMetadata,
           cached: true,
         };
       }
@@ -158,7 +158,7 @@ export class EnrichmentEngine {
         public_id: publicId,
         enriched_at: enrichedMetadata.enriched_at,
         enrichment_version: this.enrichmentVersion,
-        metadata: enrichedMetadata,
+        metadata: enrichedMetadata as unknown as Record<string, unknown>,
       });
 
       this.stats.enriched++;
@@ -206,11 +206,7 @@ export class EnrichmentEngine {
   /**
    * Get statistics
    */
-  getStats(): {
-    engine: typeof this.stats;
-    ai: ReturnType<typeof this.aiEnricher.getStats>;
-    cache: ReturnType<typeof this.cache.getStats>;
-  } {
+  getStats() {
     return {
       engine: { ...this.stats },
       ai: this.aiEnricher.getStats(),
@@ -295,12 +291,12 @@ export class EnrichmentEngine {
         ? cloudinaryMeta.width / cloudinaryMeta.height
         : undefined;
 
-    const aspectClass = Rules.classifyAspectRatio(
+    Rules.classifyAspectRatio(
       cloudinaryMeta.width,
       cloudinaryMeta.height,
     );
 
-    const transparency = Rules.analyzeTransparency({
+    Rules.analyzeTransparency({
       has_alpha: cloudinaryMeta.has_alpha,
       format: cloudinaryMeta.format,
     });
@@ -484,7 +480,7 @@ export class EnrichmentEngine {
     });
 
     // Size classification
-    const sizeClass = Rules.classifySizeClass(
+    Rules.classifySizeClass(
       cloudinaryMeta.width,
       cloudinaryMeta.height,
       cheapMetadata.asset_role,

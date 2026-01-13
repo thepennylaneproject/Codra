@@ -79,7 +79,7 @@ export class ClientExecutor {
   async *executeStream(options: ExecutionOptions): AsyncGenerator<{
     type: string;
     content?: string;
-    usage?: { promptTokens: number; completionTokens: number };
+    usage?: { promptTokens: number; completionTokens: number; totalTokens: number };
     cost?: number;
   }> {
     const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [];

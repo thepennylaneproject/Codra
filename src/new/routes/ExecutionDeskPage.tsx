@@ -20,27 +20,29 @@
  * - Cost and lock moments are explicit and rare
  */
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Project, Spread, CodraEscalation } from '../../domain/types';
 import { getProjectById } from '../../domain/projects';
 import { generateSpreadFromProfile } from '../../domain/spread/engine';
 import { ExtendedOnboardingProfile } from '../../domain/onboarding-types';
 import { LyraProvider } from '../../lib/lyra';
-// import { TaskExecutor, ExecutionMode } from '../../lib/ai/execution/task-executor';
-import { TaskQueue } from '../../domain/task-queue';
-import { generateTaskQueue } from '../../domain/spread/task-queue-engine';
-// import { generatePromptForTask, buildPromptContext } from '../../lib/lyra/LyraPromptEngine';
+import { TaskExecutor, ExecutionMode } from '../../lib/ai/execution/task-executor';
+import { TaskQueue, SpreadTask } from '../../domain/task-queue';
+import { generateTaskQueue, updateTaskStatus } from '../../domain/spread/task-queue-engine';
+import { generatePromptForTask, buildPromptContext } from '../../lib/lyra/LyraPromptEngine';
 import { getBudgetSummary } from '../../lib/codra/codra-guardrails';
 import { useSupabaseSpread } from '../../hooks/useSupabaseSpread';
-// import { useProviderRegistry } from '../../lib/ai/registry/useProviderRegistry';
-// import { selectModelForTask } from '../../domain/model-selector';
-// import { behaviorTracker } from '../../lib/smart-defaults/inference-engine';
-// import { supabase } from '../../lib/supabase';
-// import { useToast } from '../components/Toast';
+import { useAuth } from '../../hooks/useAuth';
+import { selectModelForTask } from '../../domain/model-selector';
+import { behaviorTracker } from '../../lib/smart-defaults/inference-engine';
+import { supabase } from '../../lib/supabase';
+import { useToast } from '../components/Toast';
 import { useFlowStore } from '../../lib/store/useFlowStore';
 import { useContextRevisions } from '@/hooks/useContextRevisions';
+import { useUserPreferences } from '@/hooks/useUserPreferences';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { analytics } from '@/lib/analytics';
 
 // Workspace Components
 import {
@@ -51,6 +53,7 @@ import {
   OutputDocument,
   ExecutionDeskHeader,
   ExecutionDeskFooter,
+  TaskQueuePanel,
 } from '../components/workspace';
 
 // Existing components for reuse
@@ -58,13 +61,16 @@ import { CodraEscalationModal } from '../components/CodraEscalation';
 import { SettingsModal } from '@/components/settings/SettingsModal';
 import { ContextModal } from '@/components/context/ContextModal';
 import { SpreadSection } from '../components/SpreadSection';
+import { SpreadGenerationErrorBanner } from '../components/SpreadGenerationErrorBanner';
+import { ConflictDialog } from '../../components/ConflictDialog';
 
 // Types
 import type { OutputStatus, VerificationResult } from '../components/workspace';
 
 export function ExecutionDeskPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  // const toast = useToast();
+  const toast = useToast();
+  const { user } = useAuth();
 
   // Store state
   const {
@@ -72,7 +78,7 @@ export function ExecutionDeskPage() {
     toggleDock,
     activeSectionId,
     setActiveSection,
-    // addToSessionCost,
+    addToSessionCost,
     sessionCost,
   } = useFlowStore();
 
@@ -85,20 +91,26 @@ export function ExecutionDeskPage() {
   const [escalations, setEscalations] = useState<CodraEscalation[]>([]);
 
   // Execution state
-  // const [taskExecutor] = useState(() => new TaskExecutor());
-  // const [executionMode, setExecutionMode] = useState<ExecutionMode>('preview');
-  // const [taskRunStates] = useState<Record<string, 'running' | 'complete' | 'failed'>>({});
-  // const [deskModels] = useState<Record<string, { modelId: string; providerId: string }>>({});
+  const [taskExecutor] = useState(() => new TaskExecutor());
+  const [taskRunStates, setTaskRunStates] = useState<Record<string, 'running' | 'complete' | 'failed'>>({});
+  const [deskModels] = useState<Record<string, { modelId: string; providerId: string }>>({});
+  const [executingTaskId, setExecutingTaskId] = useState<string | null>(null);
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const countdownRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  // User preferences for timeout
+  const { preferences } = useUserPreferences();
 
   // UI state
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isContextModalOpen, setIsContextModalOpen] = useState(false);
+  const [isProofVisible, setIsProofVisible] = useState(false);
   const [proofTrigger, setProofTrigger] = useState<'verification_failed' | 'conflict_detected' | 'user_opened' | null>(null);
 
-  // Model selection
-  // const { providers } = useProviderRegistry();
-  // const [selectedModelId] = useState('gpt-4o');
-  // const [selectedProviderId] = useState('openai');
+  // Spread generation error state
+  const [spreadError, setSpreadError] = useState<string | null>(null);
+  const [isRetryingSpread, setIsRetryingSpread] = useState(false);
 
   // Data persistence
   const {
@@ -107,6 +119,10 @@ export function ExecutionDeskPage() {
     loading: dbLoading,
     saveSpread: persistSpread,
     saveTaskQueue: persistTaskQueue,
+    conflict,
+    setConflict,
+    resolveConflict,
+    version: currentVersion,
   } = useSupabaseSpread(projectId);
 
   const budgetSummary = project?.budgetPolicy ? getBudgetSummary(project.id, project.budgetPolicy) : null;
@@ -125,8 +141,46 @@ export function ExecutionDeskPage() {
   useEffect(() => {
     if (dbTaskQueue) {
       setTaskQueue(dbTaskQueue);
+      // Auto-open if we have pending tasks
+      const hasPending = dbTaskQueue.tasks.some(t => t.status === 'pending');
+      if (hasPending) {
+        setIsProofVisible(true);
+      }
     }
   }, [dbTaskQueue]);
+
+  // Real-time subscription for other people's updates
+  useEffect(() => {
+    if (!projectId || !spread?.id) return;
+
+    const subscription = supabase
+      .channel('spread-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'spreads',
+          filter: `id=eq.${spread.id}`,
+        },
+        (payload) => {
+          const updated = payload.new as any;
+          if (updated.version !== currentVersion && updated.last_modified_by !== user?.id) {
+             toast.info("Teammate updated this project. Changes are available.");
+             analytics.track('spread_updated_by_other_user', {
+               projectId,
+               spreadId: spread.id,
+               newVersion: updated.version,
+             });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, [projectId, spread?.id, currentVersion, toast]);
 
   // Load project
   useEffect(() => {
@@ -149,18 +203,80 @@ export function ExecutionDeskPage() {
   // Generate task queue if none exists
   useEffect(() => {
     if (!project || !projectId || taskQueue || dbLoading) return;
-    const newQueue = generateTaskQueue(project, extendedProfile || (undefined as any), 1);
+    const newQueue = generateTaskQueue(project, extendedProfile || null, 1);
     setTaskQueue(newQueue);
     persistTaskQueue(newQueue);
   }, [project, projectId, extendedProfile, taskQueue, dbLoading, persistTaskQueue]);
 
+  // Create fallback spread when generation fails
+  const createFallbackSpread = useCallback((proj: Project): Spread => {
+    const now = new Date().toISOString();
+    return {
+      id: `fallback-${proj.id}`,
+      projectId: proj.id,
+      sections: [],
+      toc: [],
+      version: 1,
+      lastModifiedBy: '',
+      lastModifiedAt: now,
+      createdAt: now,
+      updatedAt: now,
+    };
+  }, []);
+
   // Generate spread if none exists
   useEffect(() => {
     if (!project || spread || dbLoading) return;
-    const newSpread = generateSpreadFromProfile(project, extendedProfile || (undefined as any), []);
-    setSpread(newSpread);
-    persistSpread(newSpread);
-  }, [project, spread, dbLoading, extendedProfile, persistSpread]);
+    try {
+      const newSpread = generateSpreadFromProfile(project, extendedProfile || null, []);
+      setSpread(newSpread);
+      setSpreadError(null);
+      persistSpread(newSpread);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Spread generation failed:', error);
+      setSpreadError(errorMessage);
+      
+      // Track error in analytics
+      analytics.track('spread_generation_error', {
+        projectId,
+        errorMessage,
+        function: 'generateSpreadFromProfile',
+      });
+      
+      // Set fallback spread so page doesn't show blank
+      setSpread(createFallbackSpread(project));
+    }
+  }, [project, spread, dbLoading, extendedProfile, persistSpread, projectId, createFallbackSpread]);
+
+  // Retry spread generation
+  const handleRetrySpreadGeneration = useCallback(async () => {
+    if (!project) return;
+    setIsRetryingSpread(true);
+    
+    // Small delay for UX feedback
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    try {
+      const newSpread = generateSpreadFromProfile(project, extendedProfile || null, []);
+      setSpread(newSpread);
+      setSpreadError(null);
+      persistSpread(newSpread);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Spread generation retry failed:', error);
+      setSpreadError(errorMessage);
+      
+      analytics.track('spread_generation_error', {
+        projectId,
+        errorMessage,
+        function: 'generateSpreadFromProfile',
+        isRetry: true,
+      });
+    } finally {
+      setIsRetryingSpread(false);
+    }
+  }, [project, extendedProfile, persistSpread, projectId]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -184,7 +300,7 @@ export function ExecutionDeskPage() {
 
   // Handle section update
   const handleSectionUpdate = useCallback(
-    (sectionId: string, content: Record<string, unknown>) => {
+    async (sectionId: string, content: Record<string, unknown>) => {
       if (!spread) return;
       const updatedSpread = {
         ...spread,
@@ -192,15 +308,19 @@ export function ExecutionDeskPage() {
         updatedAt: new Date().toISOString(),
       };
       setSpread(updatedSpread);
-      persistSpread(updatedSpread);
+      await persistSpread(updatedSpread);
     },
     [spread, persistSpread]
   );
 
   // Handle task execution
-  /*
   const handleRunTask = useCallback(
     async (taskId: string, mode: ExecutionMode) => {
+      // Single-flight guard: prevent concurrent executions
+      if (executingTaskId) {
+        toast.info('A task is already running. Please wait.');
+        return;
+      }
       if (!taskQueue || !spread || !project) return;
 
       const task = taskQueue.tasks.find((t) => t.id === taskId);
@@ -208,13 +328,85 @@ export function ExecutionDeskPage() {
 
       const validation = taskExecutor.validateTask(task);
       if (!validation.valid) {
-        console.error('[Task Validation Failed]', validation.error);
+        toast.error(`Task validation failed: ${validation.error || 'Unknown error'}`);
         return;
       }
 
+      // Start execution tracking
+      const startedAt = performance.now();
+      const startedAtMs = Date.now();
+      setExecutingTaskId(taskId);
       setTaskRunStates((prev) => ({ ...prev, [taskId]: 'running' }));
 
-      // Track behavior
+      // Set up timeout and countdown
+      const timeoutMinutes = preferences.taskTimeoutMinutes ?? 30;
+      const timeoutMs = timeoutMinutes * 60 * 1000;
+      setTimeRemaining(timeoutMinutes * 60);
+
+      // Timeout timer
+      timeoutRef.current = setTimeout(() => {
+        // Clear countdown
+        if (countdownRef.current) {
+          clearInterval(countdownRef.current);
+          countdownRef.current = null;
+        }
+
+        // Update task status to timed-out
+        if (taskQueue) {
+          const timedOutQueue = updateTaskStatus(taskQueue, taskId, 'timed-out');
+          setTaskQueue(timedOutQueue);
+          persistTaskQueue(timedOutQueue);
+        }
+
+        setExecutingTaskId(null);
+        setTimeRemaining(null);
+        setTaskRunStates((prev) => ({ ...prev, [taskId]: 'failed' }));
+
+        toast.error(`Task timed out after ${timeoutMinutes} minutes. Retry?`, 8000);
+
+        analytics.track('task_timeout', {
+          taskId,
+          projectId,
+          timeoutMinutes,
+          durationMs: Date.now() - startedAtMs,
+        });
+      }, timeoutMs);
+
+      // Countdown timer (updates every second)
+      countdownRef.current = setInterval(() => {
+        const elapsed = Date.now() - startedAtMs;
+        const remaining = Math.max(0, Math.ceil((timeoutMs - elapsed) / 1000));
+        setTimeRemaining(remaining);
+      }, 1000);
+
+      // Dynamic model selection
+      const deskOverride = deskModels[task.deskId];
+      let effectiveModelId: string;
+      let effectiveProviderId: string;
+      let smartRouting;
+
+      if (deskOverride) {
+        effectiveModelId = deskOverride.modelId;
+        effectiveProviderId = deskOverride.providerId;
+        smartRouting = { modelId: effectiveModelId, providerId: effectiveProviderId, reason: 'Manual Desk Override', isAutoRouted: false };
+      } else {
+        const smartMatch = selectModelForTask(task.deskId, task.title);
+        effectiveModelId = smartMatch.modelId;
+        effectiveProviderId = smartMatch.providerId;
+        smartRouting = { modelId: effectiveModelId, providerId: effectiveProviderId, reason: smartMatch.reason, isAutoRouted: true };
+      }
+
+      // Analytics: task started
+      analytics.track('flow_task_began', {
+        taskId,
+        taskType: task.deskId,
+        deskId: task.deskId,
+        spreadId: spread.id,
+        modelId: effectiveModelId,
+        providerId: effectiveProviderId,
+      });
+
+      // Track behavior for reruns
       if (mode === 'execute' && task.status === 'complete') {
         try {
           const {
@@ -234,36 +426,26 @@ export function ExecutionDeskPage() {
       }
 
       let updatedQueue = updateTaskStatus(taskQueue, taskId, 'in-progress');
+      // Also store startedAt
+      updatedQueue = {
+        ...updatedQueue,
+        tasks: updatedQueue.tasks.map((t: SpreadTask) =>
+          t.id === taskId ? { ...t, startedAt: startedAtMs } : t
+        ),
+      };
       setTaskQueue(updatedQueue);
       if (mode === 'execute') persistTaskQueue(updatedQueue);
 
       try {
         const promptContext = buildPromptContext(
           spread,
-          extendedProfile || (undefined as any),
+          extendedProfile || null,
           activeSectionId || undefined,
           taskQueue.tasks,
           activeTask || undefined
         );
 
         const promptResult = generatePromptForTask(task, promptContext);
-
-        // Model selection
-        const deskOverride = deskModels[task.deskId];
-        let effectiveModelId = selectedModelId;
-        let effectiveProviderId = selectedProviderId;
-        let smartRouting;
-
-        if (deskOverride) {
-          effectiveModelId = deskOverride.modelId;
-          effectiveProviderId = deskOverride.providerId;
-          smartRouting = { modelId: effectiveModelId, providerId: effectiveProviderId, reason: 'Manual Desk Override', isAutoRouted: false };
-        } else {
-          const smartMatch = selectModelForTask(task.deskId, task.title);
-          effectiveModelId = smartMatch.modelId;
-          effectiveProviderId = smartMatch.providerId;
-          smartRouting = { modelId: effectiveModelId, providerId: effectiveProviderId, reason: smartMatch.reason, isAutoRouted: true };
-        }
 
         const result = await taskExecutor.executeTask({
           task,
@@ -296,7 +478,18 @@ export function ExecutionDeskPage() {
         if (mode === 'execute') addToSessionCost(result.cost);
 
         setTaskRunStates((prev) => ({ ...prev, [taskId]: 'complete' }));
-        toast.success(`${mode === 'preview' ? 'Preview' : 'Execution'} complete`);
+
+        // Analytics: task completed
+        analytics.track('flow_task_completed', {
+          taskId,
+          taskType: task.deskId,
+          deskId: task.deskId,
+          modelUsed: result.modelUsed,
+          cost: result.cost,
+          durationMs: Math.round(performance.now() - startedAt),
+        });
+
+        toast.success(`${mode === 'preview' ? 'Preview' : 'Execution'} complete • ${result.tokensUsed} tokens`);
       } catch (error) {
         console.error('[AI Task Execution Failed]', error);
         updatedQueue = updateTaskStatus(taskQueue, taskId, 'pending');
@@ -305,7 +498,31 @@ export function ExecutionDeskPage() {
 
         setTaskRunStates((prev) => ({ ...prev, [taskId]: 'failed' }));
         setProofTrigger('verification_failed');
-        toast.error(`Execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+        // Analytics: task failed
+        analytics.track('flow_task_failed', {
+          taskId,
+          taskType: task.deskId,
+          deskId: task.deskId,
+          error: errorMessage.slice(0, 100),
+          durationMs: Math.round(performance.now() - startedAt),
+        });
+
+        toast.error(`Execution failed: ${errorMessage}`, 8000);
+      } finally {
+        // Clear timers
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
+        if (countdownRef.current) {
+          clearInterval(countdownRef.current);
+          countdownRef.current = null;
+        }
+        setTimeRemaining(null);
+        setExecutingTaskId(null);
       }
     },
     [
@@ -316,15 +533,78 @@ export function ExecutionDeskPage() {
       activeSectionId,
       taskExecutor,
       deskModels,
-      selectedModelId,
-      selectedProviderId,
       persistTaskQueue,
       addToSessionCost,
       toast,
       activeTask,
+      executingTaskId,
+      preferences.taskTimeoutMinutes,
+      projectId,
     ]
   );
-  */
+
+  // Handle task cancellation
+  const handleCancelTask = useCallback(async (taskId: string) => {
+    if (!executingTaskId || executingTaskId !== taskId) {
+      return;
+    }
+
+    const startTime = taskQueue?.tasks.find(t => t.id === taskId)?.startedAt || Date.now();
+
+    try {
+      // Call backend cancel endpoint
+      const response = await fetch('/.netlify/functions/task-cancel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ projectId, taskId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to cancel task');
+      }
+
+      // Clear timers
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      if (countdownRef.current) {
+        clearInterval(countdownRef.current);
+        countdownRef.current = null;
+      }
+
+      // Update task status
+      const cancelledAt = Date.now();
+      if (taskQueue) {
+        const updatedQueue = updateTaskStatus(taskQueue, taskId, 'cancelled');
+        const finalTasks = updatedQueue.tasks.map((t: SpreadTask) =>
+          t.id === taskId ? { ...t, cancelledAt } : t
+        );
+        const finalQueue = { ...updatedQueue, tasks: finalTasks };
+        setTaskQueue(finalQueue);
+        persistTaskQueue(finalQueue);
+      }
+
+      setExecutingTaskId(null);
+      setTimeRemaining(null);
+      setTaskRunStates((prev) => ({ ...prev, [taskId]: 'failed' }));
+
+      toast.info('Task cancelled');
+
+      // Analytics
+      analytics.track('task_cancelled', {
+        taskId,
+        projectId,
+        durationMs: cancelledAt - startTime,
+      });
+    } catch (error) {
+      console.error('Failed to cancel task:', error);
+      toast.error('Failed to cancel task');
+    }
+  }, [executingTaskId, projectId, taskQueue, persistTaskQueue, toast]);
+
 
   // Handle escalation resolution
   const handleResolveEscalation = (id: string, confirmed: boolean) => {
@@ -389,12 +669,15 @@ export function ExecutionDeskPage() {
         <ExecutionDesk
           projectId={projectId || ''}
           proofTrigger={proofTrigger}
+          proofVisible={isProofVisible}
+          onToggleProof={(visible) => setIsProofVisible(visible)}
           headerContent={
             <ExecutionDeskHeader
               projectName={project.name}
               projectId={projectId || ''}
               lyraVisible={layout.leftDockVisible}
               onToggleLyra={() => toggleDock('left')}
+              onToggleProof={() => setIsProofVisible(!isProofVisible)}
               onOpenSettings={() => setIsSettingsOpen(true)}
             />
           }
@@ -406,26 +689,55 @@ export function ExecutionDeskPage() {
             />
           }
           lyraContent={
-            <LyraConversationColumn
-              spreadId={spread?.id}
-              deskId={activeTask?.deskId}
-              contextSummary={contextSummary}
-              onEditContext={() => setIsContextModalOpen(true)}
-            />
+            <div data-tour="lyra-assistant">
+              <LyraConversationColumn
+                spreadId={spread?.id}
+                deskId={activeTask?.deskId}
+                contextSummary={contextSummary}
+                onEditContext={() => setIsContextModalOpen(true)}
+              />
+            </div>
           }
           proofContent={
-            <ProofPanel
-              verificationResults={verificationResults}
-              conflicts={[]}
-              synthesisNotes={[]}
-              onClose={() => setProofTrigger(null)}
-            />
+            <div className="flex flex-col h-full">
+              <div data-tour="task-queue">
+                <TaskQueuePanel
+                  tasks={taskQueue?.tasks || []}
+                  executingTaskId={executingTaskId}
+                  taskRunStates={taskRunStates}
+                  onRunTask={handleRunTask}
+                  onCancelTask={handleCancelTask}
+                  canExecute={!executingTaskId}
+                  timeRemaining={timeRemaining}
+                />
+              </div>
+              <div className="border-t border-[var(--ui-border)]/15">
+                <ProofPanel
+                  verificationResults={verificationResults}
+                  conflicts={[]}
+                  synthesisNotes={[]}
+                  onClose={() => {
+                    setProofTrigger(null);
+                    setIsProofVisible(false);
+                  }}
+                />
+              </div>
+            </div>
           }
         >
           {/* CENTER: Execution Surface - PRIMARY */}
           <ExecutionSurface
-            isEmpty={!hasOutputs}
+            isEmpty={!hasOutputs && !spreadError}
           >
+            {/* Error Banner for spread generation failures */}
+            {spreadError && (
+              <SpreadGenerationErrorBanner
+                errorMessage={spreadError}
+                onRetry={handleRetrySpreadGeneration}
+                isRetrying={isRetryingSpread}
+              />
+            )}
+
             {/* Outputs as documents */}
             {spread?.sections.map((section) => (
               <OutputDocument
@@ -458,6 +770,14 @@ export function ExecutionDeskPage() {
         />
 
         <ContextModal isOpen={isContextModalOpen} onClose={() => setIsContextModalOpen(false)} projectId={projectId || undefined} />
+
+        <ConflictDialog
+          conflict={conflict}
+          onMerge={() => resolveConflict('merge', projectId || '', spread?.id || '', spread!)}
+          onUseMine={() => resolveConflict('mine', projectId || '', spread?.id || '', spread!)}
+          onUseTheirs={() => resolveConflict('theirs', projectId || '', spread?.id || '', spread!)}
+          onClose={() => setConflict(null)}
+        />
       </LyraProvider>
     </ErrorBoundary>
   );

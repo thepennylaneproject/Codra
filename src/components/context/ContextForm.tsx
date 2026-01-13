@@ -1,10 +1,18 @@
+import { useMemo } from 'react';
 import type { ProjectContextFormState } from '@/lib/validation/projectBrief';
+import { validateField, isFieldValid } from '@/lib/validation/projectBrief';
 import { SectionHeader } from '@/components/ui/SectionHeader';
+import { ValidatedInput } from '@/components/ui/ValidatedInput';
+import { ValidatedTextarea } from '@/components/ui/ValidatedTextarea';
 
 interface ContextFormProps {
   value: ProjectContextFormState;
   onChange: (value: ProjectContextFormState) => void;
   errors?: Record<string, string>;
+  /** Field errors from real-time validation */
+  fieldErrors?: Record<string, string | null>;
+  /** Called when a field's validation state changes */
+  onFieldValidate?: (fieldName: string, error: string | null) => void;
 }
 
 const splitLines = (value: string) =>
@@ -15,127 +23,146 @@ const splitLines = (value: string) =>
 
 const joinLines = (values?: string[]) => (values && values.length > 0 ? values.join('\n') : '');
 
-export function ContextForm({ value, onChange, errors = {} }: ContextFormProps) {
+export function ContextForm({ 
+  value, 
+  onChange, 
+  errors = {},
+  fieldErrors = {},
+  onFieldValidate 
+}: ContextFormProps) {
+  // Compute validity for each field
+  const fieldValidity = useMemo(() => ({
+    'audience.primary': isFieldValid('audience.primary', value.audience.primary),
+    'brand.voiceGuidelines': isFieldValid('brand.voiceGuidelines', value.brand.voiceGuidelines),
+    'success.definitionOfDone': isFieldValid('success.definitionOfDone', value.success.definitionOfDone),
+    'guardrails.mustAvoid': isFieldValid('guardrails.mustAvoid', value.guardrails.mustAvoid),
+  }), [value]);
+
+  const handleFieldChange = (fieldName: string, fieldValue: string | string[]) => {
+    // Validate on change
+    if (onFieldValidate) {
+      const error = validateField(fieldName, fieldValue);
+      onFieldValidate(fieldName, error);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <section>
         <SectionHeader title="Audience" meta="Who this work is for." className="mt-0" />
         <div className="space-y-3">
-          <div>
-            <label className="text-xs font-semibold text-text-soft">Primary audience</label>
-            <input
-              type="text"
-              value={value.audience.primary}
-              onChange={(e) => onChange({ ...value, audience: { ...value.audience, primary: e.target.value } })}
-              className="mt-2 w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 focus-standard"
-            />
-            {errors.audience && <p className="text-xs text-rose-500 mt-1">{errors.audience}</p>}
-          </div>
+          <ValidatedInput
+            label="Primary audience"
+            required
+            value={value.audience.primary}
+            onChange={(newValue) => {
+              onChange({ ...value, audience: { ...value.audience, primary: newValue } });
+              handleFieldChange('audience.primary', newValue);
+            }}
+            error={fieldErrors['audience.primary'] || errors.audience}
+            isValid={fieldValidity['audience.primary']}
+          />
           <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-xs font-semibold text-text-soft">Segment</label>
-              <input
-                type="text"
-                value={value.audience.context?.segment || ''}
-                onChange={(e) =>
-                  onChange({
-                    ...value,
-                    audience: {
-                      ...value.audience,
-                      context: { ...value.audience.context, segment: e.target.value },
-                    },
-                  })
-                }
-                className="mt-2 w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 focus-standard"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-semibold text-text-soft">Sophistication</label>
-              <input
-                type="text"
-                value={value.audience.context?.sophistication || ''}
-                onChange={(e) =>
-                  onChange({
-                    ...value,
-                    audience: {
-                      ...value.audience,
-                      context: { ...value.audience.context, sophistication: e.target.value },
-                    },
-                  })
-                }
-                className="mt-2 w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 focus-standard"
-              />
-            </div>
+            <ValidatedInput
+              label="Segment"
+              value={value.audience.context?.segment || ''}
+              onChange={(newValue) =>
+                onChange({
+                  ...value,
+                  audience: {
+                    ...value.audience,
+                    context: { ...value.audience.context, segment: newValue },
+                  },
+                })
+              }
+            />
+            <ValidatedInput
+              label="Sophistication"
+              value={value.audience.context?.sophistication || ''}
+              onChange={(newValue) =>
+                onChange({
+                  ...value,
+                  audience: {
+                    ...value.audience,
+                    context: { ...value.audience.context, sophistication: newValue },
+                  },
+                })
+              }
+            />
           </div>
         </div>
       </section>
 
       <section>
         <SectionHeader title="Brand voice" meta="Tone, style, and constraints." />
-        <div>
-          <label className="text-xs font-semibold text-text-soft">Voice guidelines</label>
-          <textarea
-            value={value.brand.voiceGuidelines || ''}
-            onChange={(e) =>
-              onChange({
-                ...value,
-                brand: { ...value.brand, voiceGuidelines: e.target.value },
-              })
-            }
-            className="mt-2 w-full min-h-[120px] px-3 py-2 text-sm rounded-lg border border-zinc-200 focus-standard"
-          />
-          {errors.brand && <p className="text-xs text-rose-500 mt-1">{errors.brand}</p>}
-        </div>
+        <ValidatedTextarea
+          label="Voice guidelines"
+          required
+          value={value.brand.voiceGuidelines || ''}
+          onChange={(newValue) => {
+            onChange({
+              ...value,
+              brand: { ...value.brand, voiceGuidelines: newValue },
+            });
+            handleFieldChange('brand.voiceGuidelines', newValue);
+          }}
+          error={fieldErrors['brand.voiceGuidelines'] || errors.brand}
+          isValid={fieldValidity['brand.voiceGuidelines']}
+          className="min-h-[120px]"
+        />
       </section>
 
       <section>
         <SectionHeader title="Success criteria" meta="Definition of done." />
-        <div>
-          <label className="text-xs font-semibold text-text-soft">Key outcomes (one per line)</label>
-          <textarea
-            value={joinLines(value.success.definitionOfDone)}
-            onChange={(e) =>
-              onChange({
-                ...value,
-                success: { ...value.success, definitionOfDone: splitLines(e.target.value) },
-              })
-            }
-            className="mt-2 w-full min-h-[120px] px-3 py-2 text-sm rounded-lg border border-zinc-200 focus-standard"
-          />
-          {errors.success && <p className="text-xs text-rose-500 mt-1">{errors.success}</p>}
-        </div>
+        <ValidatedTextarea
+          label="Key outcomes (one per line)"
+          required
+          value={joinLines(value.success.definitionOfDone)}
+          onChange={(newValue) => {
+            const items = splitLines(newValue);
+            onChange({
+              ...value,
+              success: { ...value.success, definitionOfDone: items },
+            });
+            handleFieldChange('success.definitionOfDone', items);
+          }}
+          error={fieldErrors['success.definitionOfDone'] || errors.success}
+          isValid={fieldValidity['success.definitionOfDone']}
+          className="min-h-[120px]"
+          helperText="Enter each criterion on a new line"
+        />
       </section>
 
       <section>
         <SectionHeader title="Guardrails" meta="Constraints and exclusions." />
         <div className="space-y-4">
-          <div>
-            <label className="text-xs font-semibold text-text-soft">Must avoid (one per line)</label>
-            <textarea
-              value={joinLines(value.guardrails.mustAvoid)}
-              onChange={(e) =>
-                onChange({
-                  ...value,
-                  guardrails: { ...value.guardrails, mustAvoid: splitLines(e.target.value) },
-                })
-              }
-              className="mt-2 w-full min-h-[100px] px-3 py-2 text-sm rounded-lg border border-zinc-200 focus-standard"
-            />
-            {errors.guardrails && <p className="text-xs text-rose-500 mt-1">{errors.guardrails}</p>}
-          </div>
-          <div>
-            <label className="text-xs font-semibold text-text-soft">Competitors (optional)</label>
-            <textarea
-              value={joinLines(value.guardrails.competitors)}
-              onChange={(e) =>
-                onChange({
-                  ...value,
-                  guardrails: { ...value.guardrails, competitors: splitLines(e.target.value) },
-                })
-              }
-              className="mt-2 w-full min-h-[80px] px-3 py-2 text-sm rounded-lg border border-zinc-200 focus-standard"
-            />
-          </div>
+          <ValidatedTextarea
+            label="Must avoid (one per line)"
+            required
+            value={joinLines(value.guardrails.mustAvoid)}
+            onChange={(newValue) => {
+              const items = splitLines(newValue);
+              onChange({
+                ...value,
+                guardrails: { ...value.guardrails, mustAvoid: items },
+              });
+              handleFieldChange('guardrails.mustAvoid', items);
+            }}
+            error={fieldErrors['guardrails.mustAvoid'] || errors.guardrails}
+            isValid={fieldValidity['guardrails.mustAvoid']}
+            className="min-h-[100px]"
+          />
+          <ValidatedTextarea
+            label="Competitors (optional)"
+            value={joinLines(value.guardrails.competitors)}
+            onChange={(newValue) =>
+              onChange({
+                ...value,
+                guardrails: { ...value.guardrails, competitors: splitLines(newValue) },
+              })
+            }
+            className="min-h-[80px]"
+          />
         </div>
       </section>
     </div>

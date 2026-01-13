@@ -29,7 +29,7 @@ export const architectApi = {
             // netlify/functions/api/architect/decompose.ts -> /.netlify/functions/api-architect-decompose
             // But typically projects use a rewrite like /api/* -> /.netlify/functions/api
             // For now, we will try the likely path based on the file structure requested
-            const response = await fetch('/.netlify/functions/api-architect-decompose', {
+            const response = await fetch('/api/architect/decompose', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

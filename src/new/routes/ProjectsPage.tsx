@@ -1,8 +1,12 @@
 import { useNavigate, Link } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { getProjects } from '../../domain/projects';
 import { Project } from '../../domain/types';
 import { useToast } from '../components/Toast';
+import { useFeatureGate } from '@/lib/hooks/useFeatureGate';
+import { UpgradeModal } from '../components/UpgradeModal';
+import { FirstRunExperience } from '@/components/fre';
+import { useFREStatus } from '@/hooks/useFREStatus';
 
 /**
  * PROJECTS PAGE
@@ -16,6 +20,27 @@ export function ProjectsPage() {
     const [loading, setLoading] = useState(true);
     const toast = useToast();
     const [showCreateMenu, setShowCreateMenu] = useState(false);
+
+    // Feature gate for project creation
+    const { allowed: canCreateProject, showUpgrade, upgradeModalOpen, closeUpgradeModal, tier, reason } = useFeatureGate('projects');
+
+    // First-Run Experience
+    const { shouldShowFRE } = useFREStatus();
+    const [showFRE, setShowFRE] = useState(false);
+    const [freDismissed, setFreDismissed] = useState(false);
+
+    // Show FRE when status indicates it should be shown
+    useEffect(() => {
+        if (shouldShowFRE && !loading && !freDismissed) {
+            setShowFRE(true);
+        }
+    }, [shouldShowFRE, loading, freDismissed]);
+
+    const handleFREComplete = useCallback(() => {
+        setShowFRE(false);
+        setFreDismissed(true);
+        toast.success('Great job! You\'re ready to create amazing things.');
+    }, [toast]);
 
     const [isFetching, setIsFetching] = useState(false);
 
@@ -75,8 +100,11 @@ export function ProjectsPage() {
                     <h1 className="font-semibold tracking-tight text-[#1A1A1A]" style={{ fontSize: '24px' }}>Projects</h1>
                     <div className="relative">
                         <button
-                            onClick={() => setShowCreateMenu(!showCreateMenu)}
-                            className="font-normal text-[#1A1A1A] border border-[#1A1A1A]/15 px-3 py-1.5"
+                            data-tour="create-button"
+                            onClick={() => canCreateProject ? setShowCreateMenu(!showCreateMenu) : showUpgrade()}
+                            disabled={!canCreateProject}
+                            title={!canCreateProject ? reason : 'Create a new project'}
+                            className={`font-normal text-[#1A1A1A] border border-[#1A1A1A]/15 px-3 py-1.5 ${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''}`}
                             style={{ fontSize: '14px' }}
                         >
                             Create
@@ -228,6 +256,22 @@ export function ProjectsPage() {
                     <Link to="/privacy" className="hover:opacity-40">Privacy</Link>
                 </div>
             </footer>
+
+            {/* Upgrade Modal */}
+            <UpgradeModal
+                isOpen={upgradeModalOpen}
+                onClose={closeUpgradeModal}
+                feature="projects"
+                currentTier={tier}
+            />
+
+            {/* First-Run Experience */}
+            {showFRE && (
+                <FirstRunExperience
+                    onComplete={handleFREComplete}
+                    onSkip={handleFREComplete}
+                />
+            )}
         </div>
     );
 }

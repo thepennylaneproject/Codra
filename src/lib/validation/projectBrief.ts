@@ -36,6 +36,90 @@ export interface ValidationResult {
 }
 
 /**
+ * Field validation rules for inline validation
+ */
+export interface FieldRule {
+    minChars?: number;
+    maxChars?: number;
+    minItems?: number;
+    required: boolean;
+    message: string;
+}
+
+export const FIELD_RULES: Record<string, FieldRule> = {
+    'audience.primary': { 
+        minChars: 3, 
+        maxChars: 100,
+        required: true, 
+        message: 'Primary Segment required (3-100 chars)' 
+    },
+    'brand.voiceGuidelines': { 
+        minChars: 10, 
+        required: true, 
+        message: 'Voice Guidelines required (10+ chars)' 
+    },
+    'success.definitionOfDone': { 
+        minItems: 1, 
+        required: true, 
+        message: 'At least 1 success criterion required' 
+    },
+    'guardrails.mustAvoid': { 
+        minItems: 1, 
+        required: true, 
+        message: 'At least 1 guardrail required' 
+    },
+};
+
+/**
+ * Validates a single field for inline validation
+ * Returns null if valid, error message if invalid
+ */
+export function validateField(fieldName: string, value: string | string[] | undefined): string | null {
+    const rules = FIELD_RULES[fieldName];
+    if (!rules) return null;
+
+    // Handle array fields (definition of done, guardrails)
+    if (rules.minItems !== undefined) {
+        const items = Array.isArray(value) ? value.filter(item => item?.trim()) : [];
+        if (rules.required && items.length < rules.minItems) {
+            return rules.message;
+        }
+        return null;
+    }
+
+    // Handle string fields
+    const strValue = typeof value === 'string' ? value.trim() : '';
+    
+    if (rules.required && !strValue) {
+        return rules.message;
+    }
+
+    if (strValue && rules.minChars && strValue.length < rules.minChars) {
+        return rules.message;
+    }
+
+    if (strValue && rules.maxChars && strValue.length > rules.maxChars) {
+        return `Maximum ${rules.maxChars} characters allowed`;
+    }
+
+    return null;
+}
+
+/**
+ * Checks if a field value is valid (for showing green checkmark)
+ */
+export function isFieldValid(fieldName: string, value: string | string[] | undefined): boolean {
+    const error = validateField(fieldName, value);
+    if (error) return false;
+
+    // Also check that the field has actual content
+    if (Array.isArray(value)) {
+        return value.filter(item => item?.trim()).length > 0;
+    }
+    return typeof value === 'string' && value.trim().length > 0;
+}
+
+/**
  * Validates the project context form data for required fields.
  * 
  * Required fields:
@@ -47,30 +131,31 @@ export interface ValidationResult {
 export function validateProjectContext(data: ProjectContextFormState): ValidationResult {
     const errors: Record<string, string> = {};
 
-    // Check Target Audience
-    const audiencePrimary = data.audience?.primary?.trim() || '';
-    if (!audiencePrimary || audiencePrimary.toLowerCase() === 'self' || audiencePrimary === 'N/A') {
-        errors.audience = 'Target audience required.';
+    // Check Target Audience with minChars
+    const audienceError = validateField('audience.primary', data.audience?.primary);
+    if (audienceError || !data.audience?.primary?.trim() || 
+        data.audience.primary.toLowerCase() === 'self' || 
+        data.audience.primary === 'N/A') {
+        errors.audience = audienceError || 'Target audience required.';
     }
 
-    // Check Brand Constraints (Voice & Tone)
-    const voiceGuidelines = data.brand?.voiceGuidelines?.trim() || '';
-    if (!voiceGuidelines || voiceGuidelines === 'N/A') {
-        errors.brand = 'Brand voice and tone required.';
+    // Check Brand Constraints (Voice & Tone) with minChars
+    const brandError = validateField('brand.voiceGuidelines', data.brand?.voiceGuidelines);
+    if (brandError || !data.brand?.voiceGuidelines?.trim() || 
+        data.brand.voiceGuidelines === 'N/A') {
+        errors.brand = brandError || 'Brand voice and tone required.';
     }
 
     // Check Success Criteria (Definition of Done)
-    const definitionOfDone = data.success?.definitionOfDone || [];
-    const validCriteria = definitionOfDone.filter(item => item?.trim());
-    if (validCriteria.length === 0) {
-        errors.success = 'At least one success criterion required.';
+    const successError = validateField('success.definitionOfDone', data.success?.definitionOfDone);
+    if (successError) {
+        errors.success = successError;
     }
 
     // Check Guardrails (Must Avoid)
-    const mustAvoid = data.guardrails?.mustAvoid || [];
-    const validGuardrails = mustAvoid.filter(item => item?.trim());
-    if (validGuardrails.length === 0) {
-        errors.guardrails = 'At least one guardrail or constraint required.';
+    const guardrailsError = validateField('guardrails.mustAvoid', data.guardrails?.mustAvoid);
+    if (guardrailsError) {
+        errors.guardrails = guardrailsError;
     }
 
     return {
@@ -102,3 +187,4 @@ export function getValidationSummary(errors: Record<string, string>): string {
 
     return `Complete the following sections: ${fieldNames.join(', ')}.`;
 }
+

@@ -79,7 +79,7 @@ class RateLimiter {
 export class AIEnricher {
   private apiKey: string;
   private model: string;
-  private limiter: pLimit.Limit;
+  private limiter: ReturnType<typeof pLimit>;
   private rateLimiter: RateLimiter;
   private retryAttempts: number;
   private timeoutMs: number;

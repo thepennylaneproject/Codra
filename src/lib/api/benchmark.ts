@@ -13,7 +13,7 @@ import type {
   ListBenchmarksResponse,
 } from '../ai/types-benchmark';
 
-const API_BASE = '/.netlify/functions/api/benchmark';
+const API_BASE = '/api/benchmark';
 
 async function getAuthHeaders(): Promise<HeadersInit> {
   const { data: { session } } = await supabase.auth.getSession();

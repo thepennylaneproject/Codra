@@ -33,8 +33,8 @@ export function selectModelForTask(
 
     if (isTechnical) {
         return { 
-            modelId: 'claude-3-5-sonnet', 
-            providerId: 'anthropic', 
+            modelId: 'claude-sonnet-4-20250514', 
+            providerId: 'aimlapi', 
             tier: 'premium',
             reason: 'Optimized for complex reasoning and technical precision'
         };
@@ -50,8 +50,8 @@ export function selectModelForTask(
             };
         }
         return { 
-            modelId: 'claude-3-5-sonnet', 
-            providerId: 'anthropic', 
+            modelId: 'claude-sonnet-4-20250514', 
+            providerId: 'aimlapi', 
             tier: 'premium',
             reason: 'High-fidelity creative generation'
         };

@@ -182,6 +182,9 @@ export function generateSpreadFromProfile(
         sections,
         toc,
         lyraState,
+        version: 1,
+        lastModifiedBy: '',
+        lastModifiedAt: now,
         createdAt: now,
         updatedAt: now,
     };

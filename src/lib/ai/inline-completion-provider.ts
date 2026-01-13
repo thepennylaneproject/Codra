@@ -22,7 +22,7 @@ async function getAICompletion(
     model: string = 'deepseek-coder'
 ): Promise<string | null> {
     try {
-        const response = await fetch('/.netlify/functions/api/ai/complete', {
+        const response = await fetch('/api/ai/complete', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -140,7 +140,9 @@ export class AimlApiProvider implements AIProvider {
             });
 
             if (!response.ok) {
-                throw new Error(`aimlapi error: ${response.status} ${response.statusText}`);
+                const errorBody = await response.text();
+                console.error(`[AIMLAPI] Error ${response.status} ${response.statusText}:`, errorBody);
+                throw new Error(`aimlapi error: ${response.status} ${response.statusText} - ${errorBody.slice(0, 200)}`);
             }
 
             const data: AimlApiResponse = await response.json();

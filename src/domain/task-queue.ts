@@ -18,7 +18,9 @@ export type TaskStatus =
     | 'ready'        // Dependencies met, can be executed
     | 'in-progress'  // Currently being generated
     | 'complete'     // Artifact generated successfully
-    | 'blocked';     // Waiting on dependencies or guardrail
+    | 'blocked'      // Waiting on dependencies or guardrail
+    | 'cancelled'    // User cancelled the task
+    | 'timed-out';   // Task exceeded timeout limit
 
 // ============================================
 // Task Priority
@@ -124,6 +126,15 @@ export interface SpreadTask {
 
     /** Timestamp when task was completed */
     completedAt?: string;
+
+    /** Timestamp when task started execution (epoch ms) */
+    startedAt?: number;
+
+    /** Timestamp when task was cancelled (epoch ms) */
+    cancelledAt?: number;
+
+    /** Estimated duration in seconds (for ETA display) */
+    estimatedDurationSeconds?: number;
 
     /** Metadata captured upon completion */
     completionMetadata?: TaskCompletionMetadata;
@@ -296,6 +307,8 @@ export function getTasksByStatus(queue: TaskQueue): Record<TaskStatus, SpreadTas
         'in-progress': [],
         complete: [],
         blocked: [],
+        cancelled: [],
+        'timed-out': [],
     };
 
     for (const task of queue.tasks) {

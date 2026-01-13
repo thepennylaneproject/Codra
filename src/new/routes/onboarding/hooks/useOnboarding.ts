@@ -21,10 +21,18 @@ export interface StreamlinedOnboardingData {
     contextFiles: FileUpload[];
 }
 
+export interface OnboardingProjectState {
+    projectId: string | null;
+    projectName: string;
+    step: OnboardingStep;
+    createdAt: number;
+}
+
 interface OnboardingFlowState {
     currentStep: OnboardingStep;
     data: StreamlinedOnboardingData;
     sessionStartTime: number | null;
+    projectId: string | null;
     
     // Actions
     setStep: (step: OnboardingStep) => void;
@@ -33,6 +41,7 @@ interface OnboardingFlowState {
     removeFile: (fileId: string) => void;
     reset: () => void;
     startSession: () => void;
+    setProjectId: (id: string | null) => void;
     
     // Validation
     canProceedFromProjectInfo: () => boolean;
@@ -51,6 +60,7 @@ export const useOnboarding = create<OnboardingFlowState>()(
             currentStep: 'project-info',
             data: INITIAL_DATA,
             sessionStartTime: null,
+            projectId: null,
             
             setStep: (step) => set({ currentStep: step }),
             
@@ -75,7 +85,8 @@ export const useOnboarding = create<OnboardingFlowState>()(
             reset: () => set({
                 currentStep: 'project-info',
                 data: INITIAL_DATA,
-                sessionStartTime: null
+                sessionStartTime: null,
+                projectId: null,
             }),
 
             startSession: () => {
@@ -83,6 +94,8 @@ export const useOnboarding = create<OnboardingFlowState>()(
                     set({ sessionStartTime: Date.now() });
                 }
             },
+            
+            setProjectId: (id) => set({ projectId: id }),
             
             canProceedFromProjectInfo: () => {
                 const { data } = get();
@@ -94,6 +107,7 @@ export const useOnboarding = create<OnboardingFlowState>()(
             partialize: (state) => ({
                 data: state.data,
                 currentStep: state.currentStep,
+                projectId: state.projectId,
             }),
         }
     )

@@ -50,6 +50,7 @@ import { ToastContainer } from './new/components/Toast';
 import CoherenceScanPage from './new/routes/CoherenceScanPage';
 import { WorkspaceShellDemo } from './new/routes/WorkspaceShellDemo';
 import { MetricsDashboard } from './pages/Admin/MetricsDashboard';
+import { ConnectionIndicator } from './components/ConnectionIndicator';
 
 // ============================================================
 // App Component
@@ -250,6 +251,10 @@ export function App() {
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                   <ToastContainer />
+                  {/* Global connection status indicator */}
+                  <div className="fixed top-4 right-4 z-[9998]">
+                    <ConnectionIndicator />
+                  </div>
                 </MotionProvider>
               </PlacementProvider>
             </AtmosphereProvider>

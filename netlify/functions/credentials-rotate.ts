@@ -9,8 +9,8 @@ import { createClient } from '@supabase/supabase-js';
 import { deriveUserEncryptionKey, encryptApiKey } from '../../src/lib/api/encryption';
 
 const supabase = createClient(
-  process.env.VITE_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
+  process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || ''
 );
 
 interface RotateRequest {
@@ -77,7 +77,10 @@ export const handler: Handler = async (event) => {
     }
 
     // Encrypt the new API key
-    const appSecret = process.env.CODRA_APP_SECRET!;
+    const appSecret = process.env.CODRA_APP_SECRET || process.env.ENCRYPTION_APP_SECRET;
+    if (!appSecret) {
+      throw new Error('Missing encryption app secret (CODRA_APP_SECRET or ENCRYPTION_APP_SECRET)');
+    }
     const encryptionKey = await deriveUserEncryptionKey(user.id, appSecret);
     const encryptedKey = await encryptApiKey(newApiKey, encryptionKey);
 

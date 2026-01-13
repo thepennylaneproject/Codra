@@ -7,8 +7,6 @@
 import { supabase } from '../supabase';
 import { AICompletionRequest, AICompletionResponse, AIStreamChunk } from './types';
 
-const API_BASE = '/.netlify/functions/api/ai';
-
 // Type alias for compatibility
 export type StreamChunk = AIStreamChunk;
 
@@ -23,7 +21,7 @@ async function getAuthToken(): Promise<string> {
 export async function complete(request: AICompletionRequest): Promise<AICompletionResponse> {
   const token = await getAuthToken();
 
-  const response = await fetch(`${API_BASE}/complete`, {
+  const response = await fetch('/api/ai/complete', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -46,7 +44,7 @@ export async function* streamComplete(
 ): AsyncGenerator<StreamChunk> {
   const token = await getAuthToken();
 
-  const response = await fetch(`${API_BASE}/stream`, {
+  const response = await fetch('/api/ai/stream', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

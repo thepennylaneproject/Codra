@@ -68,6 +68,7 @@
         "npm:react@^18.3.1",
         "npm:recharts@^3.5.1",
         "npm:sharp@~0.34.5",
+        "npm:shepherd.js@^14.5.1",
         "npm:storybook@^10.1.11",
         "npm:stripe@20",
         "npm:stylelint-config-standard@36",
