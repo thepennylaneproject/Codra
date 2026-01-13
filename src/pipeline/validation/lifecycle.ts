@@ -7,8 +7,8 @@
 
 import type {
   AssetMetadata,
-  CoreMetadata,
-  VectorMetadata,
+  CoreMetadata as _CoreMetadata,
+  VectorMetadata as _VectorMetadata,
 } from '../types/metadata';
 
 // ============================================================================

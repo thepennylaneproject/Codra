@@ -7,7 +7,7 @@
  */
 
 
-import { PanelLeft, Settings } from 'lucide-react';
+import { PanelLeft, PanelRight, Settings } from 'lucide-react';
 import { IconButton } from '@/components/ui/Button';
 
 interface ExecutionDeskHeaderProps {
@@ -15,12 +15,14 @@ interface ExecutionDeskHeaderProps {
   projectId: string;
   lyraVisible: boolean;
   onToggleLyra: () => void;
+  onToggleProof: () => void;
   onOpenSettings?: () => void;
 }
 
 export function ExecutionDeskHeader({
   projectName,
   onToggleLyra,
+  onToggleProof,
   onOpenSettings,
 }: ExecutionDeskHeaderProps) {
   return (
@@ -44,6 +46,17 @@ export function ExecutionDeskHeader({
           className="text-[#1A1A1A]"
         >
           <PanelLeft size={14} />
+        </IconButton>
+
+        <IconButton
+          variant="ghost"
+          size="sm"
+          onClick={onToggleProof}
+          title="Toggle Task Queue (Cmd+/)"
+          aria-label="Toggle Task Queue panel"
+          className="text-[#1A1A1A]"
+        >
+          <PanelRight size={14} />
         </IconButton>
 
         {onOpenSettings && (

@@ -9,6 +9,10 @@
  *   tsx scripts/pipeline/setup-cloudinary.ts
  */
 
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+dotenv.config();
+
 import { getCloudinary } from '../../src/pipeline/config/cloudinary';
 import { CLOUDINARY_METADATA_SCHEMA } from '../../src/pipeline/types/metadata';
 
@@ -29,12 +33,12 @@ async function setupCloudinaryMetadata() {
       // Check if field already exists
       let exists = false;
       try {
-        // Cloudinary SDK: get_metadata_field() throws 404 if not found
-        await cloudinary.api.get_metadata_field(field.external_id);
+        await cloudinary.api.metadata_field_by_field_id(field.external_id);
         exists = true;
       } catch (error: any) {
-        // 404 = field doesn't exist (expected for new fields)
-        if (error.http_code !== 404 && error.error?.http_code !== 404) {
+        // Check for 404 (field not found)
+        const httpCode = error.http_code || error?.error?.http_code;
+        if (httpCode !== 404) {
           throw error;
         }
       }

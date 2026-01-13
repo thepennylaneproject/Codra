@@ -16,7 +16,7 @@ export function SaveIndicator({ state, onRetry }: SaveIndicatorProps) {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
-          className="flex items-center gap-1.5 text-xs text-zinc-500"
+          className="flex items-center gap-1.5 text-xs text-amber-600"
         >
           <Loader2 className="w-3 h-3 animate-spin" />
           <span>Saving...</span>
@@ -57,7 +57,8 @@ export function SaveIndicator({ state, onRetry }: SaveIndicatorProps) {
           type="button"
         >
           <X className="w-3 h-3" />
-          <span>Run retry</span>
+          <span>Save failed.</span>
+          {onRetry && <span className="underline ml-1">Retry</span>}
         </motion.button>
       )}
       

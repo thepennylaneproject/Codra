@@ -13,6 +13,22 @@ export default defineConfig({
   server: {
     port: 4444,
     host: true,
+    proxy: {
+      '/.netlify/functions': {
+        target: 'http://localhost:8881',
+        changeOrigin: true,
+      },
+      '/api': {
+        target: 'http://localhost:8881',
+        changeOrigin: true,
+        rewrite: (path) => {
+          if (path.startsWith('/api/ai/')) {
+            return path.replace(/^\/api\/ai\//, '/.netlify/functions/ai-');
+          }
+          return path.replace(/^\/api/, '/.netlify/functions/api');
+        },
+      },
+    },
   },
   build: {
     outDir: 'dist',

@@ -14,7 +14,7 @@ import type {
   CredentialFilter,
 } from './types';
 
-const API_BASE = '/.netlify/functions';
+const API_BASE = '/api';
 
 /**
  * Credentials adapter - updated for your schema
@@ -30,8 +30,8 @@ export const credentialsAdapter = {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      // Call Netlify function to encrypt key
-      const response = await fetch(`${API_BASE}/api/credentials/create`, {
+      // Call Netlify function via proxy
+      const response = await fetch(`${API_BASE}/credentials/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -148,7 +148,7 @@ export const credentialsAdapter = {
         throw new Error('Not authenticated');
       }
 
-      const response = await fetch(`${API_BASE}/api/credentials/test`, {
+      const response = await fetch(`${API_BASE}/credentials/test`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -190,7 +190,7 @@ export const credentialsAdapter = {
     newApiKey: string
   ): Promise<RotateCredentialResult> {
     try {
-      const response = await fetch(`${API_BASE}/api/credentials/rotate`, {
+      const response = await fetch(`${API_BASE}/credentials/rotate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -6,7 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Zap, CircleDollarSign, Palette, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Zap, CircleDollarSign, Palette, RotateCcw, Play, BookOpen } from 'lucide-react';
 import { SettingRow } from './SettingRow';
 import { SettingEditor } from './SettingEditor';
 import { useAccountSettings } from '../../lib/smart-defaults/hooks/useAccountSettings';
@@ -14,6 +14,8 @@ import { SETTINGS_LABELS, SETTINGS_DESCRIPTIONS } from '../../domain/smart-defau
 import type { QualityPriority, SpendingStrategy, AutonomyLevel, ThemePreference } from '../../domain/smart-defaults-types';
 import { behaviorTracker } from '../../lib/smart-defaults/inference-engine';
 import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../lib/auth/AuthProvider';
+import { FirstRunExperience } from '@/components/fre';
 
 import { Heading, Text, Label } from '../../new/components';
 import { Button } from '@/components/ui/Button';
@@ -32,6 +34,8 @@ export function SettingsPage() {
 
     const [editorOpen, setEditorOpen] = useState<EditorType>(null);
     const [userId, setUserId] = useState<string | null>(null);
+    const [showReplayTour, setShowReplayTour] = useState(false);
+    const { refreshProfile } = useAuth();
 
     // Get current user ID for behavior tracking
     useEffect(() => {
@@ -204,6 +208,40 @@ export function SettingsPage() {
                         </div>
                     </section>
 
+                    {/* Onboarding */}
+                    <section>
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                                <BookOpen size={20} />
+                            </div>
+                            <div>
+                                <Heading size="lg">Onboarding</Heading>
+                                <Label variant="muted">Guided tour and help</Label>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div className="p-4 bg-white border border-[var(--ui-border)] rounded-2xl">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <Text className="font-medium">Replay Welcome Tour</Text>
+                                        <Label variant="muted">Watch the guided tour again to learn about Codra&apos;s features</Label>
+                                    </div>
+                                    <Button
+                                        variant="secondary"
+                                        onClick={() => setShowReplayTour(true)}
+                                        size="sm"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <Play size={14} />
+                                            Replay Tour
+                                        </div>
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                     {/* Reset */}
                     <section className="pt-8 border-t border-[var(--ui-border)]">
                         <Button
@@ -324,6 +362,17 @@ export function SettingsPage() {
                     Codra Smart Defaults System
                 </Label>
             </footer>
+
+            {/* Replay Tour Modal */}
+            {showReplayTour && (
+                <FirstRunExperience
+                    onComplete={() => {
+                        setShowReplayTour(false);
+                        refreshProfile();
+                    }}
+                    onSkip={() => setShowReplayTour(false)}
+                />
+            )}
         </div>
     );
 }

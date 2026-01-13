@@ -41,6 +41,7 @@ export interface UserPreferences {
     tabSize: number;
     wordWrap: boolean;
   };
+  taskTimeoutMinutes: number; // default 30, range 5-120
 }
 
 export type UserPlan = 'free' | 'pro' | 'team' | 'enterprise';

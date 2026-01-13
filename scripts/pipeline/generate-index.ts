@@ -16,6 +16,10 @@
  *   --materialize-slots         Also generate slot mappings (default: false)
  */
 
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+dotenv.config();
+
 import { generateRegistryIndex } from '../../src/pipeline/registry/index-generator';
 import { materializeSlots } from '../../src/pipeline/registry/slot-materializer';
 import { loadRegistryFromFile } from '../../src/pipeline/registry/index-generator';

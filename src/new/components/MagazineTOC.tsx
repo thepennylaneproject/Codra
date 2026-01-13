@@ -10,7 +10,7 @@
  * - Minimal color palette with bold accent on active
  */
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 import { SpreadTask, TaskStatus } from '../../domain/task-queue';
 import { TOCEntry, EnhancedTOCEntry, ProductionDeskId, PRODUCTION_DESKS } from '../../domain/types';
 import { Button } from '@/components/ui/Button';
@@ -20,6 +20,8 @@ import {
     Clock,
     AlertCircle,
     PlayCircle,
+    XCircle,
+    Timer,
 } from 'lucide-react';
 
 // ============================================
@@ -161,6 +163,8 @@ const STATUS_ICONS: Record<TaskStatus, typeof Circle> = {
     'in-progress': Clock,
     complete: CheckCircle2,
     blocked: AlertCircle,
+    cancelled: XCircle,
+    'timed-out': Timer,
 };
 
 const STATUS_COLORS: Record<TaskStatus, string> = {
@@ -169,6 +173,8 @@ const STATUS_COLORS: Record<TaskStatus, string> = {
     'in-progress': 'text-amber-500',
     complete: 'text-emerald-600',
     blocked: 'text-rose-400',
+    cancelled: 'text-zinc-400',
+    'timed-out': 'text-amber-600',
 };
 
 // ============================================
@@ -206,7 +212,7 @@ export function MagazineTOC({
     enableKeyboard = true,
 }: MagazineTOCProps) {
     // Use tasks if provided, otherwise fall back to entries
-    const items = tasks || entries || [];
+    const items = useMemo(() => tasks || entries || [], [tasks, entries]);
     const isTaskMode = !!tasks && tasks.length > 0;
 
     // Calculate progress for task mode

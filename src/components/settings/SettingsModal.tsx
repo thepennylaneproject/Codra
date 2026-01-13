@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Timer } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { ScopeSelector, type SettingsScope } from './ScopeSelector';
@@ -10,6 +10,7 @@ import { useToast } from '@/new/components/Toast';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { useProjectSettings } from '@/lib/smart-defaults/hooks/useProjectSettings';
 import { useFlowStore } from '@/lib/store/useFlowStore';
+import { useUserPreferences } from '@/hooks/useUserPreferences';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ interface SettingsModalProps {
 
 interface SettingsFormState extends AIPreferencesValue {
   dailyLimit: number;
+  taskTimeoutMinutes: number;
 }
 
 const SCOPE_LABELS: Record<SettingsScope, string> = {
@@ -55,6 +57,7 @@ export function SettingsModal({
   const { getProjectSettings, updateProjectSettings } = useProjectSettings();
   const taskSettings = useFlowStore((state) => (taskId ? state.taskSettings[taskId] : undefined));
   const setTaskSettings = useFlowStore((state) => state.setTaskSettings);
+  const { preferences: userPreferences, updatePreference } = useUserPreferences();
 
   const projectSettings = projectId ? getProjectSettings(projectId) : undefined;
 
@@ -64,7 +67,8 @@ export function SettingsModal({
     qualityPriority: aiDefaults.qualityPriority,
     smartMode: aiDefaults.smartMode,
     dailyLimit: budgetDefaults.dailyBudgetLimit,
-  }), [aiDefaults, budgetDefaults, modelDefaults]);
+    taskTimeoutMinutes: userPreferences.taskTimeoutMinutes ?? 30,
+  }), [aiDefaults, budgetDefaults, modelDefaults, userPreferences.taskTimeoutMinutes]);
 
   const [formState, setFormState] = useState<SettingsFormState>(defaultFormState);
 
@@ -82,6 +86,7 @@ export function SettingsModal({
         qualityPriority: taskSettings.ai.qualityPriority ?? aiDefaults.qualityPriority,
         smartMode: taskSettings.ai.smartMode ?? aiDefaults.smartMode,
         dailyLimit: taskSettings.budget.dailyBudgetLimit ?? budgetDefaults.dailyBudgetLimit,
+        taskTimeoutMinutes: userPreferences.taskTimeoutMinutes ?? 30,
       });
       return;
     }
@@ -92,6 +97,7 @@ export function SettingsModal({
         qualityPriority: projectSettings.qualityPriority ?? aiDefaults.qualityPriority,
         smartMode: projectSettings.smartMode ?? aiDefaults.smartMode,
         dailyLimit: projectSettings.dailyBudget ?? budgetDefaults.dailyBudgetLimit,
+        taskTimeoutMinutes: userPreferences.taskTimeoutMinutes ?? 30,
       });
       return;
     }
@@ -105,6 +111,7 @@ export function SettingsModal({
     modelDefaults,
     defaultFormState,
     isOpen,
+    userPreferences.taskTimeoutMinutes,
   ]);
 
   const updateForm = (updates: Partial<SettingsFormState>) => {
@@ -152,6 +159,8 @@ export function SettingsModal({
       });
       updateBudgetDefaults({ dailyBudgetLimit: formState.dailyLimit });
       updateModelDefaults({ modelId: formState.modelId, providerId: formState.providerId });
+      // Save task timeout to user preferences
+      updatePreference('taskTimeoutMinutes', formState.taskTimeoutMinutes).catch(console.error);
     }
 
     localStorage.setItem('codra-settings-changed', 'true'); // Track for onboarding checklist
@@ -212,6 +221,49 @@ export function SettingsModal({
                 sessionSpend={sessionSpend}
                 todaySpend={todaySpend}
               />
+            </section>
+
+            <section>
+              <SectionHeader title="Task Execution" meta="Configure timeout behavior for AI tasks." />
+              <div className="rounded-lg border border-zinc-200 bg-zinc-50/60 p-4 space-y-3">
+                <div className="flex items-center gap-3">
+                  <Timer size={16} className="text-zinc-500" />
+                  <div className="flex-1">
+                    <label className="text-xs font-medium text-text-primary" htmlFor="timeout-input">
+                      Task Timeout
+                    </label>
+                    <p className="text-xs text-text-soft mt-0.5">
+                      Tasks will auto-cancel if they exceed this duration.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      id="timeout-input"
+                      type="number"
+                      min={5}
+                      max={120}
+                      value={formState.taskTimeoutMinutes}
+                      onChange={(e) => updateForm({ taskTimeoutMinutes: Math.max(5, Math.min(120, parseInt(e.target.value, 10) || 30)) })}
+                      className="w-16 border border-zinc-300 rounded px-2 py-1 text-xs text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <span className="text-xs text-text-soft">min</span>
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  min={5}
+                  max={120}
+                  step={5}
+                  value={formState.taskTimeoutMinutes}
+                  onChange={(e) => updateForm({ taskTimeoutMinutes: parseInt(e.target.value, 10) })}
+                  className="w-full h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-zinc-900"
+                />
+                <div className="flex justify-between text-xs text-text-soft/60">
+                  <span>5 min</span>
+                  <span>30 min (default)</span>
+                  <span>120 min</span>
+                </div>
+              </div>
             </section>
 
             <section>

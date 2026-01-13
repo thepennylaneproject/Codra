@@ -12,7 +12,34 @@ export type AnalyticsEvent =
   | BlueprintEvent
   | BudgetEvent
   | ApprovalEvent
+  | FeatureGateEvent
+  | FREEvent
+  | NetworkEvent
   | CatchAllEvent;
+
+// FIRST-RUN EXPERIENCE (FRE) EVENTS
+export type FREEvent =
+  | { name: 'fre_started'; properties?: Record<string, unknown> }
+  | { name: 'fre_step_viewed'; properties: FREStepProperties }
+  | { name: 'fre_completed'; properties: FRECompletionProperties }
+  | { name: 'fre_skipped'; properties: FRESkipProperties };
+
+export interface FREStepProperties {
+  step: number;
+  stepId: string;
+  stepTitle: string;
+}
+
+export interface FRECompletionProperties {
+  totalSteps: number;
+  totalDurationMs: number;
+}
+
+export interface FRESkipProperties {
+  stepsCompleted: number;
+  lastStepId: string;
+}
+
 
 // ONBOARDING EVENTS
 export type OnboardingEvent = 
@@ -145,6 +172,63 @@ export type ApprovalEvent =
   | { name: 'artifact_approved'; properties: { versionId: string, artifactId: string, status: string } }
   | { name: 'artifact_rejected'; properties: { versionId: string, artifactId: string, status: string } }
   | { name: 'batch_suggestions_created'; properties: { count: number, desks: string[] } };
+
+// FEATURE GATE EVENTS
+export type FeatureGateEvent =
+  | { name: 'feature_gate_shown'; properties: FeatureGateProperties }
+  | { name: 'upgrade_modal_shown'; properties: UpgradeModalProperties }
+  | { name: 'upgrade_attempted'; properties: UpgradeAttemptProperties };
+
+export interface FeatureGateProperties {
+  feature: string;
+  tier: string;
+  action: 'upgrade_clicked' | 'dismissed';
+}
+
+export interface UpgradeModalProperties {
+  feature: string;
+  tier: string;
+}
+
+export interface UpgradeAttemptProperties {
+  source: 'feature_gate' | 'pricing_page';
+  tier: string;
+}
+
+// NETWORK EVENTS
+export type NetworkEvent =
+  | { name: 'network_failure'; properties: NetworkFailureProperties }
+  | { name: 'network_retry'; properties: NetworkRetryProperties }
+  | { name: 'network_recovery'; properties: NetworkRecoveryProperties }
+  | { name: 'offline_queue_added'; properties: OfflineQueueAddedProperties }
+  | { name: 'offline_queue_flushed'; properties: OfflineQueueFlushedProperties };
+
+export interface NetworkFailureProperties {
+  errorType: 'timeout' | 'auth_expired' | 'forbidden' | 'server_error' | 'network_error' | 'client_error';
+  endpoint: string;
+  status?: number;
+  pageContext: string;
+}
+
+export interface NetworkRetryProperties {
+  attempt: number;
+  endpoint: string;
+}
+
+export interface NetworkRecoveryProperties {
+  endpoint: string;
+  queuedRequestCount: number;
+}
+
+export interface OfflineQueueAddedProperties {
+  endpoint: string;
+  queueSize: number;
+}
+
+export interface OfflineQueueFlushedProperties {
+  successCount: number;
+  failCount: number;
+}
 
 // CATCH-ALL FOR UNTYPED OR LEGACY EVENTS
 export type CatchAllEvent = {

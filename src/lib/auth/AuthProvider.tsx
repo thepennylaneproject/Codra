@@ -26,6 +26,7 @@ import type {
   ProfileUpdateData,
   OAuthProvider,
 } from '../api/auth.types';
+import { useUserTierStore } from '../stores/user-tier';
 
 // ============================================================
 // Context Types
@@ -107,6 +108,10 @@ export function AuthProvider({ children, onAuthStateChange }: AuthProviderProps)
           setSession(initialSession);
           setUser(initialUser);
           await fetchProfile(initialUser.id);
+          // Load user tier for feature gating
+          if (initialSession.access_token) {
+            useUserTierStore.getState().loadUserTier(initialSession.access_token);
+          }
           setStatus('authenticated');
         } else {
           setStatus('unauthenticated');
@@ -131,12 +136,18 @@ export function AuthProvider({ children, onAuthStateChange }: AuthProviderProps)
         setSession(newSession);
         setUser(newSession.user);
         await fetchProfile(newSession.user.id);
+        // Load user tier for feature gating
+        if (newSession.access_token) {
+          useUserTierStore.getState().loadUserTier(newSession.access_token);
+        }
         setStatus('authenticated');
         setError(null);
       } else if (event === 'SIGNED_OUT') {
         setSession(null);
         setUser(null);
         setProfile(null);
+        // Reset user tier store on sign out
+        useUserTierStore.getState().reset();
         setStatus('unauthenticated');
         setError(null);
       } else if (event === 'TOKEN_REFRESHED' && newSession) {

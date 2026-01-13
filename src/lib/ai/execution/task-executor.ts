@@ -5,10 +5,10 @@
 
 import { SpreadTask } from '../../../domain/task-queue';
 import { PromptContext } from '../../lyra/LyraPromptEngine';
-import { getProviderById, getModelWithProvider } from '../registry/provider-registry';
-import { ModelRegistryEntry } from '../registry/types';
-import { AIProvider, AICompletionOptions } from '../types';
+import type { AICompletionOptions as _AICompletionOptions, AIStreamChunk as _AIStreamChunk } from '../types';
 import { analytics } from '@/lib/analytics';
+import { getExecutor } from '../client-executor';
+import type { ModelRegistryEntry as _ModelRegistryEntry } from '../registry/types';
 
 export interface TaskExecutionResult {
   taskId: string;
@@ -50,63 +50,38 @@ export class TaskExecutor {
     }
 
     try {
-      // Get provider from registry
-      const providerEntry = getProviderById(providerId);
-      if (!providerEntry) {
-        throw new Error(`Provider not found: ${providerId}`);
-      }
-
-      // Get model info
-      const modelResult = getModelWithProvider(modelId);
-      const model = modelResult?.model;
-
-      // Get the actual provider instance
-      const provider: AIProvider | undefined  = (providerEntry as any).instance;
-      if (!provider) {
-        throw new Error(`Provider instance not available: ${providerId}`);
-      }
-
-      // Build messages
-      const messages = [
-        {
-          role: 'system' as const,
-          content: this.buildSystemPrompt(task, context)
-        },
-        {
-          role: 'user' as const,
-          content: prompt
-        }
-      ];
-
+      // Use ClientExecutor instead of direct provider instances
+      const executor = getExecutor();
+      
       const temperature = this.getTemperatureForTask(task, mode);
       const maxTokens = 2000; // Default token limit
 
       console.log(`[TaskExecutor] Executing task "${task.title}" with ${modelId} (${providerId})`);
 
-      // Execute via provider
-      const completionOptions: AICompletionOptions = {
+      // Execute via ClientExecutor (which calls Netlify Functions)
+      const result = await executor.execute({
         model: modelId,
-        messages,
+        prompt,
+        systemPrompt: this.buildSystemPrompt(task, context),
         temperature,
         maxTokens,
-      };
-
-      const result = await provider.complete(completionOptions);
+        provider: providerId,
+      });
 
       // Extract memory from output
       const memory = this.extractMemory(result.content, task);
 
-      // Calculate cost
-      const cost = this.calculateCost(result.usage, modelId, model);
+      // Calculate cost (ClientExecutor already returns cost)
+      const cost = result.cost;
 
       const executionResult: TaskExecutionResult = {
         taskId: task.id,
         output: result.content,
         memory,
-        tokensUsed: result.usage?.totalTokens || 0,
+        tokensUsed: result.tokens.total,
         cost,
-        modelUsed: modelId,
-        providerUsed: providerId,
+        modelUsed: result.model,
+        providerUsed: result.provider,
         durationMs: Date.now() - startTime,
       };
 
@@ -121,7 +96,7 @@ export class TaskExecutor {
         });
       }
 
-      console.log(`[TaskExecutor] Task completed: ${result.usage?.totalTokens || 0} tokens, $${cost.toFixed(4)}, ${executionResult.durationMs}ms`);
+      console.log(`[TaskExecutor] Task completed: ${result.tokens.total} tokens, $${cost.toFixed(4)}, ${executionResult.durationMs}ms`);
 
       return executionResult;
     } catch (error) {
@@ -155,59 +130,39 @@ export class TaskExecutor {
     }
 
     try {
-      // Get provider from registry
-      const providerEntry = getProviderById(providerId);
-      if (!providerEntry) {
-        throw new Error(`Provider not found: ${providerId}`);
-      }
-
-      // Get model info
-      const modelResult = getModelWithProvider(modelId);
-      const model = modelResult?.model;
-
-      // Get the actual provider instance
-      const provider: AIProvider | undefined = (providerEntry as any).instance;
-      if (!provider || !provider.streamComplete) {
-        throw new Error(`Provider does not support streaming: ${providerId}`);
-      }
-
-      const messages = [
-        {
-          role: 'system' as const,
-          content: this.buildSystemPrompt(task, context)
-        },
-        {
-          role: 'user' as const,
-          content: prompt
-        }
-      ];
-
+      // Use ClientExecutor instead of direct provider instances
+      const executor = getExecutor();
+      
       const temperature = this.getTemperatureForTask(task, mode);
       const maxTokens = 2000;
 
       let fullOutput = '';
       let totalTokens = 0;
+      let totalCost = 0;
 
-      console.log(`[TaskExecutor] Streaming task "${task.title}" with ${modelId}`);
-
-      // Stream via provider
-      for await (const chunk of provider.streamComplete({
+      // Stream via ClientExecutor
+      for await (const chunk of executor.executeStream({
         model: modelId,
-        messages,
+        prompt,
+        systemPrompt: this.buildSystemPrompt(task, context),
         temperature,
         maxTokens,
+        provider: providerId,
       })) {
-        fullOutput += chunk.content;
-        totalTokens = chunk.usage?.totalTokens || totalTokens;
-        
-        // Call chunk callback for real-time updates
-        if (onChunk) {
-          onChunk(chunk.content || '');
+        if (chunk.type === 'content' && chunk.content) {
+          fullOutput += chunk.content;
+          // Call chunk callback for real-time updates
+          if (onChunk) {
+            onChunk(chunk.content);
+          }
+        } else if (chunk.type === 'end') {
+          totalTokens = chunk.usage?.totalTokens || totalTokens;
+          totalCost = chunk.cost || totalCost;
         }
       }
 
       const memory = this.extractMemory(fullOutput, task);
-      const cost = this.calculateCost({ totalTokens }, modelId, model);
+      const cost = totalCost;
 
       const executionResult: TaskExecutionResult = {
         taskId: task.id,
@@ -313,34 +268,7 @@ Generate the deliverable now.`;
     return `${task.deskId}: ${preview}${output.length > 100 ? '...' : ''}`;
   }
 
-  /**
-   * Calculate cost based on token usage and model pricing
-   */
-  private calculateCost(usage: any, modelId: string, model?: ModelRegistryEntry): number {
-    const tokens = usage?.totalTokens || 0;
-    
-    if (!tokens) return 0;
 
-    // Use model's actual pricing if available
-    if (model?.priceHint?.inputPer1k) {
-      const avgPricePerToken = (model.priceHint.inputPer1k + (model.priceHint.outputPer1k || model.priceHint.inputPer1k)) / 2;
-      return (tokens / 1000) * avgPricePerToken;
-    }
-
-    // Fallback to hardcoded pricing table
-    const costsPerMillion: Record<string, number> = {
-      'gpt-4o': 5.0,
-      'gpt-4o-mini': 0.15,
-      'claude-3-5-sonnet': 3.0,
-      'claude-3-haiku': 0.25,
-      'gemini-1.5-pro': 3.5,
-      'gemini-1.5-flash': 0.075,
-      'deepseek-chat': 0.27,
-    };
-
-    const costPerMillion = costsPerMillion[model?.id || modelId] || 1.0;
-    return (tokens / 1_000_000) * costPerMillion;
-  }
 
   /**
    * Validate task can be executed

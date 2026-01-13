@@ -22,6 +22,16 @@
 
 # API functions redirects
 [[redirects]]
+  from = "/api/ai/*"
+  to = "/.netlify/functions/ai-:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api/credentials/*"
+  to = "/.netlify/functions/credentials-:splat"
+  status = 200
+
+[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
@@ -58,7 +68,7 @@
     timeout = 26  # Max timeout for processing multiple assets
 
 [dev]
-  port = 5175       # Netlify Dev server port
+  port = 8881       # Netlify Dev server port
   targetPort = 4444 # Vite server port (from vite.config.ts)
   command = "npm run dev" 
   framework = "#custom"

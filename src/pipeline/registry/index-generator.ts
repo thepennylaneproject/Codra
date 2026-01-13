@@ -150,7 +150,7 @@ export class RegistryIndexGenerator {
       cloudinary_url: resource.secure_url,
       asset_class: assetClass,
       asset_role: metadata.asset_role || 'hero',
-      placement: this.parseArrayField(metadata.placement) || ['homepage'],
+      placement: (this.parseArrayField(metadata.placement) || ['homepage']) as AssetMetadata['placement'],
       funnel_stage: metadata.funnel_stage || 'awareness',
       lifecycle_status: metadata.lifecycle_status || 'draft',
       energy: metadata.energy || 'medium',

@@ -21,3 +21,4 @@ export type { VerificationResult, VerificationStatus, Conflict, SynthesisNote } 
 export { OutputDocument, OutputDocumentGroup, OutputDocumentSkeleton } from './OutputDocument';
 export { ExecutionDeskHeader } from './ExecutionDeskHeader';
 export { ExecutionDeskFooter } from './ExecutionDeskFooter';
+export { TaskQueuePanel } from './TaskQueuePanel';

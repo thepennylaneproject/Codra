@@ -219,6 +219,9 @@ export interface Spread {
     toc: TOCEntry[];
     taskQueue?: import('./task-queue').TaskQueue;
     lyraState?: LyraState;
+    version: number;
+    lastModifiedBy: string;
+    lastModifiedAt: string;
     createdAt: string;
     updatedAt: string;
 }

@@ -10,8 +10,8 @@ import { deriveUserEncryptionKey, encryptApiKey } from '../../src/lib/api/encryp
 
 // Initialize Supabase (server-side only)
 const supabase = createClient(
-  process.env.VITE_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY! // Use service key for admin access
+  process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || ''
 );
 
 interface CreateCredentialRequest {
@@ -83,7 +83,10 @@ export const handler: Handler = async (event) => {
     }
 
     // Derive encryption key from user ID + app secret
-    const appSecret = process.env.CODRA_APP_SECRET!;
+    const appSecret = process.env.CODRA_APP_SECRET || process.env.ENCRYPTION_APP_SECRET;
+    if (!appSecret) {
+      throw new Error('Missing encryption app secret (CODRA_APP_SECRET or ENCRYPTION_APP_SECRET)');
+    }
     const encryptionKey = await deriveUserEncryptionKey(userId, appSecret);
 
     // Encrypt the API key
