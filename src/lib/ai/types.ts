@@ -43,6 +43,7 @@ export interface AIStreamChunk {
     content?: string;
     usage?: TokenUsage;
     cost?: number;
+    provider?: string;
 }
 
 export interface ModelInfo {

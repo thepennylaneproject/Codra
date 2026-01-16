@@ -105,7 +105,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
 
         // 2. Conflict Detection Logic
         // Skip check if force is true OR if this is a new spread (serverVersion 0)
-        if (!force && serverVersion > 0 && clientVersion !== serverVersion) {
+        if (!force && serverVersion > 0 && clientVersion !== serverVersion && existing) {
             return response(409, {
                 error: 'Conflict detected',
                 serverVersion,
