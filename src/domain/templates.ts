@@ -1,5 +1,5 @@
 import { ProjectType, CreativeGoal } from './onboarding-types';
-import { ProductionDeskId } from './types';
+import { ProjectToolId } from './types';
 
 export interface ProjectBlueprint {
     id: string;
@@ -7,7 +7,7 @@ export interface ProjectBlueprint {
     description: string;
     type: ProjectType;
     goals: CreativeGoal[];
-    desks: ProductionDeskId[];
+    desks: ProjectToolId[];
     category: 'Marketing' | 'Branding' | 'Product' | 'Strategy';
     previewImage?: string;
     difficulty: 'Entry' | 'Intermediate' | 'Advanced';
@@ -33,7 +33,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'Personal showcase for creatives, developers, and designers.',
         type: 'landing-page',
         goals: ['website-app', 'brand-identity'],
-        desks: ['design', 'code', 'write'],
+        desks: ['design', 'code', 'copy'],
         category: 'Product',
         difficulty: 'Entry',
         defaultBrief: {
@@ -49,7 +49,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'High-conversion single page for product launches or lead gen.',
         type: 'marketing-site',
         goals: ['marketing-campaign', 'website-app'],
-        desks: ['design', 'write', 'code'],
+        desks: ['design', 'copy', 'code'],
         category: 'Marketing',
         difficulty: 'Entry',
         defaultBrief: {
@@ -65,7 +65,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'Modernize an existing brand with updated visuals and messaging.',
         type: 'other',
         goals: ['brand-identity', 'print-materials'],
-        desks: ['design', 'write'],
+        desks: ['design', 'copy'],
         category: 'Branding',
         difficulty: 'Intermediate',
         defaultBrief: {
@@ -81,7 +81,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'A comprehensive branding and marketing system for new product rollouts.',
         type: 'marketing-site',
         goals: ['brand-identity', 'marketing-campaign', 'social-content'],
-        desks: ['design', 'write', 'write'],
+        desks: ['design', 'copy', 'copy'],
         category: 'Marketing',
         difficulty: 'Intermediate',
         defaultBrief: {
@@ -96,7 +96,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'Focused investor materials and executive summaries for pre-seed and seed rounds.',
         type: 'other',
         goals: ['pitch-deck', 'print-materials'],
-        desks: ['write', 'design'],
+        desks: ['copy', 'design'],
         category: 'Strategy',
         difficulty: 'Entry',
         defaultBrief: {
@@ -126,7 +126,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'Social-first ad creatives and landing page optimization for retail brands.',
         type: 'marketing-site',
         goals: ['social-content', 'marketing-campaign'],
-        desks: ['design', 'write'],
+        desks: ['design', 'copy'],
         category: 'Marketing',
         difficulty: 'Intermediate'
     },
@@ -136,7 +136,7 @@ export const PROJECT_BLUEPRINTS: ProjectBlueprint[] = [
         description: 'Whitepapers, case studies, and leadership positioning for B2B enterprises.',
         type: 'other',
         goals: ['print-materials', 'pitch-deck'],
-        desks: ['write', 'write'],
+        desks: ['copy', 'copy'],
         category: 'Strategy',
         difficulty: 'Intermediate'
     }

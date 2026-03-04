@@ -7,7 +7,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import { ProductionDeskId } from '../../domain/types';
+import { ProjectToolId } from '../../domain/types';
 import type { AIPreferencesData } from '../../domain/types';
 import type { BudgetPreferencesData } from '../../domain/onboarding-types';
 
@@ -45,7 +45,7 @@ interface TaskScopedSettings {
 
 interface FlowState {
     // Current Context
-    activeDeskId: ProductionDeskId | null;
+    activeDeskId: ProjectToolId | null;
     activeSectionId: string | null;
     studioEnabled: boolean;
 
@@ -64,7 +64,7 @@ interface FlowState {
     history: InteractionEvent[];
 
     // Actions
-    setActiveDesk: (deskId: ProductionDeskId | null) => void;
+    setActiveDesk: (deskId: ProjectToolId | null) => void;
     setActiveSection: (sectionId: string | null) => void;
     setStudioEnabled: (enabled: boolean) => void;
 

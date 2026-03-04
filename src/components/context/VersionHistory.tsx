@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, RotateCcw, X } from 'lucide-react';
-import type { TearSheetRevision } from '@/domain/types';
+import type { ProjectContextRevision } from '@/domain/types';
 import { Button } from '@/components/ui/Button';
 
 export interface VersionHistoryProps {
-  revisions: TearSheetRevision[];
+  revisions: ProjectContextRevision[];
   currentRevisionId: string | null;
   onRestore: (revisionId: string) => void;
   onClose: () => void;

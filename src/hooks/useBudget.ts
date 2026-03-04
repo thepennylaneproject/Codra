@@ -44,8 +44,15 @@ export function useBudget() {
             const currentDay = Math.max(1, now.getDate());
             const forecast = (spent / currentDay) * daysInMonth;
 
+            // Calculate Today's Spend
+            const todayStr = now.toISOString().split('T')[0];
+            const spentToday = (runs || [])
+                .filter(r => r.created_at.startsWith(todayStr))
+                .reduce((sum, r) => sum + (r.actual_cost_usd || 0), 0);
+
             return {
                 spent,
+                spentToday,
                 limit,
                 percentage,
                 byDesk,
@@ -59,6 +66,7 @@ export function useBudget() {
 
     const budget = data || {
         spent: 0,
+        spentToday: 0, // Fallback
         limit: budgetLimit || 50,
         percentage: 0,
         byDesk: {},

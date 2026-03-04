@@ -18,7 +18,6 @@ import { useAuth } from '../../lib/auth/AuthProvider';
 import { FirstRunExperience } from '@/components/fre';
 
 import { Heading, Text, Label } from '../../new/components';
-import { Button } from '@/components/ui/Button';
 
 type EditorType = 'qualityPriority' | 'autonomyLevel' | 'maxSteps' | 'riskTolerance' | 'dailyLimit' | 'strategy' | 'theme' | null;
 
@@ -90,38 +89,72 @@ export function SettingsPage() {
     return (
         <div className="min-h-screen bg-[var(--ui-bg)] text-text-primary font-sans selection:bg-[var(--brand-ink)]/10">
             {/* Header */}
-            <header className="sticky top-0 z-50 glass-panel-light border-0 border-b border-[var(--ui-border)] rounded-none bg-[var(--ui-bg)]/80 px-8 h-20 flex items-center justify-between">
+            <header className="sticky top-0 z-50 border-b border-[var(--ui-border)] bg-[var(--ui-bg)] px-8 h-16 flex items-center justify-between">
                 <div className="flex items-center gap-6">
-                    <Button
-                        variant="ghost"
+                    <button
                         onClick={() => navigate('/projects')}
-                        size="sm"
-                        className="group"
+                        className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-text-secondary hover:text-text-primary transition-colors flex items-center gap-2"
                     >
-                        <ArrowLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
-                    </Button>
+                        <ArrowLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+                        Back
+                    </button>
                     <div>
-                        <Heading size="lg" className="tracking-tight">Settings</Heading>
-                        <Label variant="muted">Account Defaults</Label>
+                        <Heading size="lg" className="tracking-tight">Account Settings</Heading>
+                        <Label variant="muted">Global defaults for every workspace</Label>
                     </div>
                 </div>
             </header>
 
             <main className="max-w-4xl mx-auto py-12 px-8">
-                {/* Intro */}
-                <div className="mb-12 p-8 bg-white border border-[var(--ui-border)] rounded-3xl">
-                    <Heading size="lg" className="mb-3">Smart Defaults</Heading>
-                    <Text variant="muted">
-                        These are your account-level defaults. They&apos;re designed to be right 80% of the time.
-                        You can override them per-project in the project settings.
-                    </Text>
+                {/* Scope */}
+                <div className="mb-12 border-t border-[var(--ui-border)] pt-6 flex items-start justify-between gap-6">
+                    <div>
+                        <Heading size="lg" className="mb-3">Settings scope</Heading>
+                        <Text variant="muted">
+                            Account settings apply to every workspace. Project settings live inside a workspace and override these defaults.
+                        </Text>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <span className="text-xs uppercase tracking-[0.2em] text-text-primary border-b-2 border-text-primary">
+                            Account
+                        </span>
+                        <button
+                            onClick={() => navigate('/projects')}
+                            className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-text-secondary hover:text-text-primary"
+                        >
+                            Project
+                        </button>
+                    </div>
                 </div>
 
                 <div className="space-y-12">
+                    {/* Project Settings */}
+                    <section>
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-10 h-10 border border-[var(--ui-border)] flex items-center justify-center text-text-primary">
+                                <BookOpen size={20} />
+                            </div>
+                            <div>
+                                <Heading size="lg">Project Settings</Heading>
+                                <Label variant="muted">Per‑workspace overrides</Label>
+                            </div>
+                        </div>
+                        <div className="pt-4 border-t border-[var(--ui-border)] space-y-4">
+                            <Text variant="muted">
+                                Open a workspace to edit project‑level overrides (budget, autonomy, model choices).
+                            </Text>
+                            <button
+                                onClick={() => navigate('/projects')}
+                                className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-text-primary"
+                            >
+                                Open project registry
+                            </button>
+                        </div>
+                    </section>
                     {/* AI Behavior */}
                     <section>
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
+                            <div className="w-10 h-10 border border-[var(--ui-border)] flex items-center justify-center text-text-primary">
                                 <Zap size={20} />
                             </div>
                             <div>
@@ -161,7 +194,7 @@ export function SettingsPage() {
                     {/* Budget */}
                     <section>
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                            <div className="w-10 h-10 border border-[var(--ui-border)] flex items-center justify-center text-text-primary">
                                 <CircleDollarSign size={20} />
                             </div>
                             <div>
@@ -189,7 +222,7 @@ export function SettingsPage() {
                     {/* Visual */}
                     <section>
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500">
+                            <div className="w-10 h-10 border border-[var(--ui-border)] flex items-center justify-center text-text-primary">
                                 <Palette size={20} />
                             </div>
                             <div>
@@ -211,7 +244,7 @@ export function SettingsPage() {
                     {/* Onboarding */}
                     <section>
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                            <div className="w-10 h-10 border border-[var(--ui-border)] flex items-center justify-center text-text-primary">
                                 <BookOpen size={20} />
                             </div>
                             <div>
@@ -221,22 +254,21 @@ export function SettingsPage() {
                         </div>
 
                         <div className="space-y-4">
-                            <div className="p-4 bg-white border border-[var(--ui-border)] rounded-2xl">
+                            <div className="pt-4 border-t border-[var(--ui-border)]">
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <Text className="font-medium">Replay Welcome Tour</Text>
                                         <Label variant="muted">Watch the guided tour again to learn about Codra&apos;s features</Label>
                                     </div>
-                                    <Button
-                                        variant="secondary"
+                                    <button
                                         onClick={() => setShowReplayTour(true)}
-                                        size="sm"
+                                        className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-text-primary"
                                     >
                                         <div className="flex items-center gap-2">
                                             <Play size={14} />
                                             Replay Tour
                                         </div>
-                                    </Button>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -244,17 +276,13 @@ export function SettingsPage() {
 
                     {/* Reset */}
                     <section className="pt-8 border-t border-[var(--ui-border)]">
-                        <Button
-                            variant="secondary"
+                        <button
                             onClick={resetToDefaults}
-                            className="w-full p-8"
-                            size="lg"
+                            className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-text-primary flex items-center gap-3"
                         >
-                            <div className="flex items-center gap-3">
-                                <RotateCcw size={16} />
-                                Reset All to Defaults
-                            </div>
-                        </Button>
+                            <RotateCcw size={16} />
+                            Reset All to Defaults
+                        </button>
                     </section>
                 </div>
             </main>
@@ -357,7 +385,7 @@ export function SettingsPage() {
             />
 
             {/* Footer */}
-            <footer className="mt-12 py-12 border-t border-[var(--ui-border)] bg-white/50 text-center">
+            <footer className="mt-12 py-12 border-t border-[var(--ui-border)] bg-[var(--ui-bg)] text-center">
                 <Label variant="muted" className="text-xs font-mono text-zinc-400">
                     Codra Smart Defaults System
                 </Label>

@@ -6,13 +6,13 @@
  */
 
 import { TaskQueue } from '../../domain/task-queue';
-import { ProductionDeskId } from '../../domain/types';
+import { ProjectToolId } from '../../domain/types';
 
 export interface TaskInsight {
     type: 'pattern' | 'efficiency' | 'bottleneck';
     title: string;
     description: string;
-    deskId?: ProductionDeskId;
+    deskId?: ProjectToolId;
     severity: 'info' | 'warning' | 'positive';
 }
 
@@ -68,7 +68,7 @@ export function analyzeTaskPatterns(queue: TaskQueue): TaskInsight[] {
 /**
  * Predict duration for a task type based on history
  */
-export function predictNextTaskDuration(queue: TaskQueue, deskId: ProductionDeskId): number {
+export function predictNextTaskDuration(queue: TaskQueue, deskId: ProjectToolId): number {
     const deskTasks = queue.tasks.filter(t => t.deskId === deskId && t.status === 'complete');
     if (deskTasks.length === 0) return 30000; // Default 30s
 

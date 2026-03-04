@@ -8,19 +8,19 @@ export function BudgetBadge() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const colorClasses = 
-        percentage < 50 ? 'bg-emerald-50 border-emerald-100 text-emerald-700' :
-        percentage < 80 ? 'bg-amber-50 border-amber-100 text-amber-700' :
-        'bg-rose-50 border-rose-100 text-rose-700';
+        percentage < 80 ? 'bg-white border-[#1A1A1A]/10 text-[#1A1A1A]' : // Normal (Ink)
+        percentage < 100 ? 'bg-[#FFFAF0] border-[#D93025]/30 text-[#D93025]' : // Warning (Amber-ish equivalent -> Red Text)
+        'bg-[#D93025] border-[#D93025] text-white'; // Critical (Vermilion)
 
     const iconClasses = 
-        percentage < 50 ? 'text-emerald-600' :
-        percentage < 80 ? 'text-amber-600' :
-        'text-rose-600';
+        percentage < 80 ? 'text-[#1A1A1A]/50' :
+        percentage < 100 ? 'text-[#D93025]' :
+        'text-white';
 
     const textClasses = 
-        percentage < 50 ? 'text-emerald-600' :
-        percentage < 80 ? 'text-amber-600' :
-        'text-rose-600';
+        percentage < 80 ? 'text-[#1A1A1A]' :
+        percentage < 100 ? 'text-[#D93025]' :
+        'text-white';
 
     return (
         <>

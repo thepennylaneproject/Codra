@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ProductionDeskId } from '../../../../domain/types';
+import { ProjectToolId } from '../../../../domain/types';
 import { useDeskState } from './useDeskState';
 import { useFlowStore } from '../../../../lib/store/useFlowStore';
 import { behaviorTracker } from '../../../../lib/smart-defaults/inference-engine';
@@ -13,8 +13,8 @@ import { supabase } from '../../../../lib/supabase';
 import { analytics } from '@/lib/analytics';
 
 interface UseDeskSwitchingReturn {
-  activeDesk: ProductionDeskId;
-  switchDesk: (deskId: ProductionDeskId, method?: 'click' | 'keyboard') => void;
+  activeDesk: ProjectToolId;
+  switchDesk: (deskId: ProjectToolId, method?: 'click' | 'keyboard') => void;
 }
 
 export function useDeskSwitching(projectId: string): UseDeskSwitchingReturn {
@@ -22,10 +22,10 @@ export function useDeskSwitching(projectId: string): UseDeskSwitchingReturn {
   const { getDeskState, updateDeskState } = useDeskState();
   const { setActiveDesk } = useFlowStore();
   
-  // Get active desk from URL query param, default to 'write'
-  const activeDesk = (searchParams.get('desk') as ProductionDeskId) || 'write';
+  // Get active desk from URL query param, default to 'copy'
+  const activeDesk = (searchParams.get('desk') as ProjectToolId) || 'copy';
   
-  const switchDesk = useCallback(async (deskId: ProductionDeskId, method: 'click' | 'keyboard' = 'click') => {
+  const switchDesk = useCallback(async (deskId: ProjectToolId, method: 'click' | 'keyboard' = 'click') => {
     if (deskId === activeDesk) return;
 
     analytics.track('desk_switched', {
@@ -84,11 +84,11 @@ export function useDeskSwitching(projectId: string): UseDeskSwitchingReturn {
         
         if (isInput) return;
 
-        const deskMap: Record<string, ProductionDeskId> = {
-          '1': 'write',
+        const deskMap: Record<string, ProjectToolId> = {
+          '1': 'copy',
           '2': 'design',
           '3': 'code',
-          '4': 'analyze',
+          '4': 'data',
         };
         
         if (deskMap[e.key]) {

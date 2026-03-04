@@ -6,7 +6,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { ProductionDeskId } from '../../../../domain/types';
+import { ProjectToolId } from '../../../../domain/types';
 
 export interface DeskState {
   scrollPosition: number;
@@ -19,9 +19,9 @@ interface DeskStateStore {
   // Record<"projectId-deskId", DeskState>
   states: Record<string, DeskState>;
   
-  getDeskState: (projectId: string, deskId: ProductionDeskId) => DeskState;
-  updateDeskState: (projectId: string, deskId: ProductionDeskId, updates: Partial<DeskState>) => void;
-  resetDeskState: (projectId: string, deskId: ProductionDeskId) => void;
+  getDeskState: (projectId: string, deskId: ProjectToolId) => DeskState;
+  updateDeskState: (projectId: string, deskId: ProjectToolId, updates: Partial<DeskState>) => void;
+  resetDeskState: (projectId: string, deskId: ProjectToolId) => void;
 }
 
 const DEFAULT_DESK_STATE: DeskState = {
@@ -36,12 +36,12 @@ export const useDeskState = create<DeskStateStore>()(
     (set, get) => ({
       states: {},
       
-      getDeskState: (projectId: string, deskId: ProductionDeskId) => {
+      getDeskState: (projectId: string, deskId: ProjectToolId) => {
         const key = `${projectId}-${deskId}`;
         return get().states[key] || { ...DEFAULT_DESK_STATE };
       },
       
-      updateDeskState: (projectId: string, deskId: ProductionDeskId, updates: Partial<DeskState>) => {
+      updateDeskState: (projectId: string, deskId: ProjectToolId, updates: Partial<DeskState>) => {
         const key = `${projectId}-${deskId}`;
         set((state) => ({
           states: {
@@ -55,7 +55,7 @@ export const useDeskState = create<DeskStateStore>()(
         }));
       },
       
-      resetDeskState: (projectId: string, deskId: ProductionDeskId) => {
+      resetDeskState: (projectId: string, deskId: ProjectToolId) => {
         const key = `${projectId}-${deskId}`;
         set((state) => {
           const newStates = { ...state.states };

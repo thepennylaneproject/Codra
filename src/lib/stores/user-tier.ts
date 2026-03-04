@@ -99,8 +99,21 @@ export const useUserTierStore = create<UserTierState>()(
                         },
                     });
 
+                    const contentType = response.headers.get('content-type') || '';
+                    const isJson = contentType.includes('application/json');
+
                     if (!response.ok) {
-                        throw new Error('Failed to fetch user tier');
+                        if (isJson) {
+                            const errorData = await response.json().catch(() => null);
+                            throw new Error(errorData?.error || 'Failed to fetch user tier');
+                        }
+
+                        const errorText = await response.text().catch(() => '');
+                        throw new Error(errorText || 'Failed to fetch user tier');
+                    }
+
+                    if (!isJson) {
+                        throw new Error('Invalid user tier response');
                     }
 
                     const data = await response.json();

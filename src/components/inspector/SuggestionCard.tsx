@@ -1,5 +1,5 @@
 import { DeskSuggestion } from '@/lib/desk-suggestions';
-import { PRODUCTION_DESKS } from '@/domain/types';
+import { PROJECT_TOOLS } from '@/domain/types';
 
 interface SuggestionCardProps {
   suggestion: DeskSuggestion;
@@ -9,7 +9,7 @@ interface SuggestionCardProps {
 }
 
 export function SuggestionCard({ suggestion, isSelected, onSelect, onEditTitle }: SuggestionCardProps) {
-  const desk = PRODUCTION_DESKS.find(d => d.id === suggestion.deskId);
+  const desk = PROJECT_TOOLS.find(d => d.id === suggestion.deskId);
 
   return (
     <div className={`p-4 rounded-xl border transition-all ${isSelected ? 'border-zinc-900 bg-zinc-50 shadow-sm' : 'border-zinc-200 bg-white hover:border-zinc-300'}`}>

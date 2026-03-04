@@ -4,12 +4,13 @@ import {
     ExtendedOnboardingProfile,
     ContextIntentData,
     VisualDirectionData,
-    TearSheetIntentData,
+    ProjectIntentData,
     AIPreferencesData,
     ProjectImportData,
     BudgetPreferencesData,
     PermissionsData,
     DEFAULT_EXTENDED_PROFILE,
+    DEFAULT_PROJECT_INTENT,
     ProjectType,
 } from '../../../domain/onboarding-types';
 import { OnboardingProfile, BudgetPolicy, EditorialPreferences, MoodboardImage, Project, ProjectContext } from '../../../domain/types';
@@ -22,7 +23,7 @@ export type OnboardingStep =
     | 'ai-preferences'    // Step 2: AI Preferences
     | 'budget'            // Step 3: Budget Preferences
     | 'visual'            // Step 4: Visual Direction (new project only)
-    | 'tear-sheet-intent' // Step 5: Tear Sheet Intent (new project only)
+    | 'project-intent'    // Step 5: Project Intent
     | 'generating'        // Generation Step (automatic)
     | 'complete';         // Done - redirect to tear sheet
 
@@ -74,7 +75,7 @@ export const STEP_METADATA: Record<OnboardingStep, {
         helperText: 'Preferences generate the initial moodboard.',
         progressLabel: 'Visual',
     },
-    'tear-sheet-intent': {
+    'project-intent': {
         title: 'Project Brief',
         description: 'Finalize the purpose and detail of your Project Brief.',
         helperText: 'The Project Brief becomes your source of truth.',
@@ -142,7 +143,7 @@ interface OnboardingState {
     // Profile updates
     updateContext: (updates: Partial<ContextIntentData>) => void;
     updateVisualDirection: (updates: Partial<VisualDirectionData>) => void;
-    updateTearSheetIntent: (updates: Partial<TearSheetIntentData>) => void;
+    updateProjectIntent: (updates: Partial<ProjectIntentData>) => void;
     updateAIPreferences: (updates: Partial<AIPreferencesData>) => void;
     updateImportData: (updates: Partial<ProjectImportData>) => void;
     updateBudgetPreferences: (updates: Partial<BudgetPreferencesData>) => void;
@@ -224,10 +225,10 @@ export const useOnboardingStore = create<OnboardingState>()(
                 }
             })),
 
-            updateTearSheetIntent: (updates) => set((state) => ({
+            updateProjectIntent: (updates) => set((state) => ({
                 profile: {
                     ...state.profile,
-                    tearSheetIntent: { ...state.profile.tearSheetIntent, ...updates }
+                    projectIntent: { ...state.profile.projectIntent, ...updates }
                 }
             })),
 
@@ -311,7 +312,8 @@ export const useOnboardingStore = create<OnboardingState>()(
 
                 const projectName = legacyData.projectName ||
                     (profile.context.firstProjectDescription.split('\n')[0].slice(0, 50) || 'Untitled Project');
-                const summary = profile.tearSheetIntent.storyStatement || profile.context.firstProjectDescription;
+                const intent = profile.projectIntent || DEFAULT_PROJECT_INTENT;
+                const summary = intent.storyStatement || profile.context.firstProjectDescription;
                 const audience = profile.context.primaryAudience || legacyData.audience || 'General';
 
                 // Map onboarding type to domain type
@@ -404,6 +406,12 @@ export const useOnboardingStore = create<OnboardingState>()(
                 legacyData: state.legacyData,
                 step: state.step,
             }),
+            onRehydrateStorage: () => (state) => {
+                if (!state?.profile) return;
+                if (!state.profile.projectIntent) {
+                    state.profile.projectIntent = DEFAULT_PROJECT_INTENT;
+                }
+            },
         }
     )
 );

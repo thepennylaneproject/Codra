@@ -7,6 +7,7 @@
 import { v4 as uuid } from 'uuid';
 import type {
     AuditType,
+    AuditProgress,
     CoherenceScan,
     ScanContext,
     ScanFinding,
@@ -27,14 +28,45 @@ import {
 } from '../../domain/audit-templates';
 import { createRoutingPlan, type RoutingDecision } from './scan-model-router';
 import { canRunScan, recordScanUsage } from './scan-usage-tracker';
-import type { SpreadTask } from '../../domain/task-queue';
+import type { SpecificationTask } from '../../domain/task-queue';
 
 // ============================================
 // Scan State Management
 // ============================================
 
-// In-memory scan storage (would be Supabase in production)
-const scansInProgress = new Map<string, CoherenceScan>();
+const SCAN_STORAGE_KEY = 'codra:coherence-scans';
+
+function loadPersistedScans(): Map<string, CoherenceScan> {
+    if (typeof window === 'undefined') return new Map();
+
+    try {
+        const raw = localStorage.getItem(SCAN_STORAGE_KEY);
+        if (!raw) return new Map();
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return new Map();
+        return new Map(parsed.map((scan: CoherenceScan) => [scan.id, scan]));
+    } catch {
+        return new Map();
+    }
+}
+
+function persistScans(scans: Map<string, CoherenceScan>) {
+    if (typeof window === 'undefined') return;
+    try {
+        const payload = Array.from(scans.values());
+        localStorage.setItem(SCAN_STORAGE_KEY, JSON.stringify(payload));
+    } catch {
+        // Ignore persistence failures
+    }
+}
+
+function saveScan(scan: CoherenceScan) {
+    scansInProgress.set(scan.id, scan);
+    persistScans(scansInProgress);
+}
+
+// In-memory scan storage (hydrated from localStorage)
+const scansInProgress = loadPersistedScans();
 
 // ============================================
 // Service Functions
@@ -63,6 +95,10 @@ export async function initiateScan(
     // Determine which audits to run
     const auditTypes = getAuditsForScanType(scanType);
     const estimatedCost = estimateScanCost(auditTypes);
+    const auditProgress: AuditProgress[] = auditTypes.map((auditType) => ({
+        auditType,
+        status: 'pending',
+    }));
     
     const scan: CoherenceScan = {
         id: uuid(),
@@ -71,12 +107,19 @@ export async function initiateScan(
         scanType,
         status: 'pending',
         auditTypes,
+        auditProgress,
+        progress: {
+            phase: 'queued',
+            percent: 0,
+            completedAudits: 0,
+            totalAudits: auditTypes.length,
+        },
         findings: [],
         estimatedCost,
         createdAt: new Date().toISOString(),
     };
     
-    scansInProgress.set(scan.id, scan);
+    saveScan(scan);
     
     return { scan, allowed: true };
 }
@@ -102,7 +145,13 @@ export async function submitContextAndStartScan(
     
     scan.context = context;
     scan.status = 'queued';
-    scansInProgress.set(scanId, scan);
+    scan.progress = {
+        phase: 'queued',
+        percent: 0,
+        completedAudits: 0,
+        totalAudits: scan.auditTypes.length,
+    };
+    saveScan(scan);
     
     // Start scan execution (in real implementation, this would be async/queued)
     executeScan(scanId).catch(console.error);
@@ -121,7 +170,13 @@ export async function executeScan(scanId: string): Promise<void> {
     
     scan.status = 'scanning';
     scan.startedAt = new Date().toISOString();
-    scansInProgress.set(scanId, scan);
+    scan.progress = {
+        phase: 'running',
+        percent: 0,
+        completedAudits: 0,
+        totalAudits: scan.auditTypes.length,
+    };
+    saveScan(scan);
     
     const routingPlan = createRoutingPlan(scan.auditTypes, scan.scanType);
     const allFindings: ScanFinding[] = [];
@@ -130,12 +185,47 @@ export async function executeScan(scanId: string): Promise<void> {
     try {
         // Run each audit
         for (const decision of routingPlan.decisions) {
+            if (scan.auditProgress) {
+                scan.auditProgress = scan.auditProgress.map((audit) => (
+                    audit.auditType === decision.auditType
+                        ? { ...audit, status: 'running', startedAt: new Date().toISOString() }
+                        : audit
+                ));
+            }
+            scan.progress = {
+                phase: 'running',
+                percent: scan.progress?.percent ?? 0,
+                completedAudits: scan.progress?.completedAudits ?? 0,
+                totalAudits: scan.auditTypes.length,
+                currentAudit: decision.auditType,
+            };
+            saveScan(scan);
+
             const auditFindings = await runAudit(
                 decision,
                 scan.context!
             );
             allFindings.push(...auditFindings.findings);
             actualCost += decision.estimatedCost;
+
+            const completedAudits: number = (scan.progress?.completedAudits ?? 0) + 1;
+            const percent = Math.round((completedAudits / scan.auditTypes.length) * 100);
+
+            if (scan.auditProgress) {
+                scan.auditProgress = scan.auditProgress.map((audit) => (
+                    audit.auditType === decision.auditType
+                        ? { ...audit, status: 'complete', completedAt: new Date().toISOString() }
+                        : audit
+                ));
+            }
+            scan.progress = {
+                phase: 'running',
+                percent,
+                completedAudits,
+                totalAudits: scan.auditTypes.length,
+                currentAudit: decision.auditType,
+            };
+            saveScan(scan);
         }
         
         // Calculate summary
@@ -146,6 +236,12 @@ export async function executeScan(scanId: string): Promise<void> {
         scan.actualCost = actualCost;
         scan.status = 'complete';
         scan.completedAt = new Date().toISOString();
+        scan.progress = {
+            phase: 'complete',
+            percent: 100,
+            completedAudits: scan.auditTypes.length,
+            totalAudits: scan.auditTypes.length,
+        };
         
         // Record usage
         await recordScanUsage(scan.userId, scan.scanType, actualCost);
@@ -153,9 +249,24 @@ export async function executeScan(scanId: string): Promise<void> {
     } catch (error) {
         scan.status = 'failed';
         scan.error = error instanceof Error ? error.message : 'Unknown error';
+        scan.progress = {
+            phase: 'failed',
+            percent: scan.progress?.percent ?? 0,
+            completedAudits: scan.progress?.completedAudits ?? 0,
+            totalAudits: scan.auditTypes.length,
+            currentAudit: scan.progress?.currentAudit,
+        };
     }
     
-    scansInProgress.set(scanId, scan);
+    saveScan(scan);
+}
+
+export async function resumeScan(scanId: string): Promise<void> {
+    const scan = scansInProgress.get(scanId);
+    if (!scan) return;
+    if (scan.status === 'complete' || scan.status === 'failed') return;
+    if (!scan.context) return;
+    await executeScan(scanId);
 }
 
 /**
@@ -237,6 +348,20 @@ export function getScan(scanId: string): CoherenceScan | undefined {
     return scansInProgress.get(scanId);
 }
 
+export function listScans(): CoherenceScan[] {
+    return Array.from(scansInProgress.values()).sort((a, b) => (
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    ));
+}
+
+export function registerScan(scan: CoherenceScan): void {
+    saveScan(scan);
+}
+
+export function getLatestScanForProject(projectId: string): CoherenceScan | undefined {
+    return listScans().find((scan) => scan.projectId === projectId);
+}
+
 /**
  * Toggle finding selection
  */
@@ -248,7 +373,7 @@ export function toggleFindingSelection(scanId: string, findingId: string): void 
     if (finding) {
         finding.selected = !finding.selected;
     }
-    scansInProgress.set(scanId, scan);
+    saveScan(scan);
 }
 
 /**
@@ -257,23 +382,27 @@ export function toggleFindingSelection(scanId: string, findingId: string): void 
 export function convertFindingsToTasks(
     scan: CoherenceScan,
     _projectContext: { projectId: string; title: string }
-): SpreadTask[] {
-    const selectedFindings = scan.findings.filter(f => f.selected);
-    
-    return selectedFindings.map((finding, index) => ({
-        id: uuid(),
-        title: `Fix: ${finding.title}`,
-        description: `${finding.observation}\n\nRecommendation: ${finding.recommendation}`,
-        deskId: categoryToDesk(finding.category),
-        status: 'pending' as const,
-        order: index + 1,
-        priority: severityToPriority(finding.severity),
-        dependencies: [],
-        estimatedCost: 0.10, // Rough estimate for task execution
-        tearSheetAnchor: `coherence-scan:${scan.id}:${finding.id}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-    }));
+): SpecificationTask[] {
+    const selectedFindings = scan.findings.filter((f) => f.selected);
+
+    return selectedFindings.map((finding, index) => {
+        const deskId = categoryToDesk(finding.category);
+        return {
+            id: uuid(),
+            title: `Fix: ${finding.title}`,
+            description: `${finding.observation}\n\nRecommendation: ${finding.recommendation}`,
+            deskId,
+            toolId: deskId,
+            status: 'pending' as const,
+            order: index + 1,
+            priority: severityToPriority(finding.severity),
+            dependencies: [],
+            estimatedCost: 0.1,
+            contextAnchor: `coherence-scan:${scan.id}:${finding.id}`,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        };
+    });
 }
 
 // ============================================

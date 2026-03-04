@@ -18,15 +18,14 @@ export function useAuth() {
     });
 
     useEffect(() => {
-        // Get current user on mount
-        const getCurrentUser = async () => {
+        // ARCH-016 FIX: Get current session (single source of truth)
+        // Derive user from session to prevent race condition
+        const getCurrentSession = async () => {
             try {
-                const user = await authAdapter.getCurrentUser();
-                // Get session from localStorage or Supabase
                 const { session } = await authAdapter.getSession();
 
                 setState({
-                    user,
+                    user: session?.user || null, // User derived from session
                     session,
                     loading: false,
                     error: null,
@@ -41,7 +40,7 @@ export function useAuth() {
             }
         };
 
-        getCurrentUser();
+        getCurrentSession();
 
         // Subscribe to auth changes
         const { unsubscribe } = authAdapter.onAuthStateChange(

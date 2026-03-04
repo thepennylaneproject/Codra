@@ -23,7 +23,7 @@ export function useTaskHistory(taskQueue: TaskQueue | null) {
 
     // Filter by desk
     if (deskFilter) {
-      tasks = tasks.filter(t => t.deskId === deskFilter);
+      tasks = tasks.filter(t => t.toolId === deskFilter);
     }
 
     // Sort

@@ -1,4 +1,4 @@
-import { SpreadTask } from '../../../domain/task-queue';
+import { SpecificationTask } from '../../../domain/task-queue';
 
 const PREVIEW_BLOCKED_KEYWORDS = [
     'deploy',
@@ -18,7 +18,7 @@ const PREVIEW_BLOCKED_KEYWORDS = [
     'billing',
 ];
 
-export function getPreviewGuardrail(task?: SpreadTask | null) {
+export function getPreviewGuardrail(task?: SpecificationTask | null) {
     if (!task) {
         return { blocked: false, matches: [] as string[] };
     }

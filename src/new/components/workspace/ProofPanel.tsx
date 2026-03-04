@@ -61,14 +61,12 @@ export function ProofPanel({
   synthesisNotes = [],
   onClose,
 }: ProofPanelProps) {
-
-
   return (
     <div className="h-full flex flex-col bg-white">
       {/* Header - minimal */}
       <div className="h-8 px-4 flex items-center justify-between border-b border-[var(--ui-border)]/15 shrink-0">
         <span className="text-[9px] text-text-soft/40 uppercase tracking-widest">
-          Checks
+          Proof
         </span>
         {onClose && (
           <button
@@ -86,33 +84,54 @@ export function ProofPanel({
       {/* Content - technical appendix */}
       <div className="flex-1 overflow-y-auto p-4">
         {verificationResults.length > 0 && (
-          <div className="space-y-2 mb-4">
-            {verificationResults.map((result) => (
-              <VerificationItem key={result.id} result={result} />
-            ))}
-          </div>
+          <section className="space-y-3 mb-4">
+            <div className="text-[9px] text-text-soft/40 uppercase tracking-widest">
+              Verification Results
+            </div>
+            <ul className="space-y-2">
+              {verificationResults.map((result) => (
+                <VerificationItem key={result.id} result={result} />
+              ))}
+            </ul>
+          </section>
         )}
 
         {conflicts.length > 0 && (
-          <div className="space-y-2 mb-4 pt-4 border-t border-[var(--ui-border)]/15">
-            {conflicts.map((conflict) => (
-              <ConflictItem key={conflict.id} conflict={conflict} />
-            ))}
-          </div>
+          <section className="space-y-2 mb-4 pt-4 border-t border-[var(--ui-border)]/15">
+            <div className="text-[9px] text-text-soft/40 uppercase tracking-widest">
+              Conflicts
+            </div>
+            <ul className="space-y-2">
+              {conflicts.map((conflict) => (
+                <ConflictItem key={conflict.id} conflict={conflict} />
+              ))}
+            </ul>
+          </section>
         )}
 
         {synthesisNotes.length > 0 && (
-          <div className="space-y-2 pt-4 border-t border-[var(--ui-border)]/15">
-            {synthesisNotes.map((note) => (
-              <SynthesisItem key={note.id} note={note} />
-            ))}
-          </div>
+          <section className="space-y-2 pt-4 border-t border-[var(--ui-border)]/15">
+            <div className="text-[9px] text-text-soft/40 uppercase tracking-widest">
+              Notes
+            </div>
+            <ul className="space-y-2">
+              {synthesisNotes.map((note) => (
+                <SynthesisItem key={note.id} note={note} />
+              ))}
+            </ul>
+          </section>
         )}
 
         {verificationResults.length === 0 && conflicts.length === 0 && synthesisNotes.length === 0 && (
-          <p className="text-[11px] text-text-soft/30">
-            No data
-          </p>
+          <div className="space-y-2">
+            <div className="text-[9px] text-text-soft/40 uppercase tracking-widest">
+              What verification means
+            </div>
+            <p className="text-[11px] text-text-soft/60 leading-relaxed">
+              Proof tracks whether task outputs meet their required checks, sources, and constraints.
+              When a task completes, its verification status and notes appear here.
+            </p>
+          </div>
         )}
       </div>
     </div>
@@ -120,44 +139,62 @@ export function ProofPanel({
 }
 
 function VerificationItem({ result }: { result: VerificationResult }) {
-  const statusColor = getStatusColor(result.status);
-
   return (
-    <div className="flex items-start gap-2 text-[11px]">
-      <span className={`w-1 h-1 mt-1.5 rounded-full shrink-0 ${statusColor.replace('text-', 'bg-')}`} />
-      <p className="text-text-soft/70 truncate">{result.message}</p>
-    </div>
+    <li className="border border-[var(--ui-border)]/20 rounded-md px-2 py-2">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[9px] font-semibold uppercase tracking-widest text-text-soft/70">
+          {getStatusLabel(result.status)}
+        </span>
+        {result.timestamp && (
+          <span className="text-[9px] text-text-soft/40">
+            {result.timestamp.toLocaleTimeString()}
+          </span>
+        )}
+      </div>
+      <p className="mt-1 text-[11px] text-text-soft/70">
+        {result.message}
+      </p>
+      {result.details && (
+        <p className="mt-1 text-[11px] text-text-soft/50">
+          {result.details}
+        </p>
+      )}
+    </li>
   );
 }
 
 function ConflictItem({ conflict }: { conflict: Conflict }) {
   return (
-    <div className="flex items-start gap-2 text-[11px]">
-      <span className="w-1 h-1 mt-1.5 rounded-full shrink-0 bg-amber-400" />
-      <p className="text-text-soft/70 truncate">{conflict.description}</p>
-    </div>
+    <li className="border border-[var(--ui-border)]/20 rounded-md px-2 py-2 text-[11px]">
+      <div className="text-[9px] font-semibold uppercase tracking-widest text-text-soft/70">
+        Conflict
+      </div>
+      <p className="mt-1 text-text-soft/70">
+        {conflict.description}
+      </p>
+    </li>
   );
 }
 
 function SynthesisItem({ note }: { note: SynthesisNote }) {
   return (
-    <p className="text-[11px] text-text-soft/50 leading-relaxed">
+    <li className="text-[11px] text-text-soft/50 leading-relaxed">
       {note.content}
-    </p>
+    </li>
   );
 }
 
 
 
-function getStatusColor(status: VerificationStatus): string {
+function getStatusLabel(status: VerificationStatus): string {
   switch (status) {
     case 'passed':
-      return 'text-emerald-500';
+      return 'Passed';
     case 'failed':
-      return 'text-red-500';
+      return 'Failed';
     case 'warning':
-      return 'text-amber-500';
+      return 'Warning';
     default:
-      return 'text-zinc-400';
+      return 'Pending';
   }
 }

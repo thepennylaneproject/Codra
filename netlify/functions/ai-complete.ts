@@ -13,6 +13,7 @@ import { CohereProvider } from '../../src/lib/ai/providers/cohere';
 import { HuggingFaceProvider } from '../../src/lib/ai/providers/huggingface';
 import { AIRouter } from '../../src/lib/ai/router';
 import type { AICompletionRequest, AICompletionResponse } from '../../src/lib/ai/types';
+import { logAIRunStart, logAIRunComplete } from './utils/telemetry-helpers';
 
 // Initialize Supabase
 const supabase = createClient(
@@ -180,6 +181,36 @@ export const handler: Handler = async (event, context) => {
             registrationErrors.push(msg);
         }
 
+        // ARCH-006: Check if ALL providers failed to register
+        // There are 7 providers configured in the try-catch blocks above
+        if (registrationErrors.length >= 7) {
+            return {
+                statusCode: 503,
+                headers,
+                body: JSON.stringify({
+                    success: false,
+                    error: 'All AI providers unavailable',
+                    details: registrationErrors,
+                }),
+            };
+        }
+
+        // Log Run Start
+        const runId = await logAIRunStart({
+            userId: user.id,
+            workspaceId: null, // TODO: Extract from headers if available
+            taskType: 'completion',
+            grounded: false,
+            providerId: router.primaryProvider,
+            modelId: body.model,
+            // ARCH-007: Safe token estimation handling array content
+            estTokens: (body.messages || []).reduce((acc, m) => {
+                const content = typeof m.content === 'string' ? m.content : JSON.stringify(m.content);
+                return acc + content.length / 4;
+            }, 0),
+            sourcesCount: 0,
+        });
+
         // Execute completion
         let result;
         try {
@@ -191,20 +222,33 @@ export const handler: Handler = async (event, context) => {
                 provider: body.provider,
             });
         } catch (e) {
+            // ARCH-008: Log partial cost if available
+            const partialCost = (e as any).partialCost || 0;
+            const partialPromptTokens = (e as any).promptTokens || 0;
+
+            if (runId) {
+                await logAIRunComplete(runId, {
+                    actualPromptTokens: partialPromptTokens,
+                    actualCompletionTokens: 0,
+                    actualCostUsd: partialCost,
+                    latencyMs: 0,
+                    success: false,
+                    errorMessageSafe: e instanceof Error ? e.message : String(e),
+                });
+            }
             throw new Error(`AI Router Error: ${e instanceof Error ? e.message : String(e)}. Registration Errors: ${registrationErrors.join(' | ')}`);
         }
 
-        // Log usage
-        await supabase.from('usage_logs').insert({
-            user_id: user.id,
-            provider: result.provider,
-            model: result.model,
-            requests: 1,
-            prompt_tokens: result.usage.promptTokens,
-            completion_tokens: result.usage.completionTokens,
-            cost: result.cost,
-            timestamp: new Date().toISOString(),
-        });
+        // Log Run Completion
+        if (runId) {
+            await logAIRunComplete(runId, {
+                actualPromptTokens: result.usage.promptTokens,
+                actualCompletionTokens: result.usage.completionTokens,
+                actualCostUsd: result.cost,
+                latencyMs: 0, // Router doesn't return latency yet, defaulting
+                success: true,
+            });
+        }
 
         const response: AICompletionResponse = {
             success: true,

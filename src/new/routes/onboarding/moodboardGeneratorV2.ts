@@ -263,7 +263,7 @@ export function generateMoodboard(data: OnboardingProfile): MoodboardImage[] {
             mustAvoid: '',
             existingAssets: null,
         },
-        tearSheetIntent: {
+        projectIntent: {
             storyStatement: null,
             coreMessage: '',
             useCase: null,

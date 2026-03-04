@@ -3,8 +3,8 @@ import { useParams, Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { getProjectById } from '../../domain/projects';
 import { Project, MoodboardImage } from '../../domain/types';
 import { ExtendedOnboardingProfile } from '../../domain/onboarding-types';
-import { generateSpreadFromProfile, saveSpread } from '../../domain/spread';
-import { FileText, LayoutTemplate, Plus, TrendingUp, ShieldAlert, Palette, CheckCircle, AlertTriangle, Download, Share2, Clock } from 'lucide-react';
+import { generateSpecificationFromProfile, saveSpecification } from '../../domain/specification/engine';
+import { FileText, LayoutTemplate, Plus, TrendingUp, ShieldAlert, Palette, CheckCircle, AlertTriangle } from 'lucide-react';
 import { CodraSignature } from '../components/CodraSignature';
 import { cn } from '../../lib/utils';
 import { analytics } from '@/lib/analytics';
@@ -18,6 +18,7 @@ import { SaveIndicator } from '@/components/ui/SaveIndicator';
 import { VersionHistory } from '@/components/context/VersionHistory';
 import { useContextRevisions } from '@/hooks/useContextRevisions';
 import { AnimatePresence } from 'framer-motion';
+import { storageAdapter } from '@/lib/storage/StorageKeyAdapter';
 
 export function ProjectContextPage() {
     const { projectId } = useParams<{ projectId: string }>();
@@ -153,21 +154,17 @@ export function ProjectContextPage() {
         approveRevision(activeRevision.data || {}, 'Approved context');
 
         // 2. Load extended profile
-        const profileStr = localStorage.getItem(`codra:onboardingProfile:${projectId}`);
-        let extendedProfile: ExtendedOnboardingProfile | null = null;
-        try {
-            extendedProfile = profileStr ? JSON.parse(profileStr) : null;
-        } catch { /* ignore */ }
+        const extendedProfile = storageAdapter.getOnboardingProfile(projectId) as ExtendedOnboardingProfile | null;
 
-        // 3. Generate and Save Spread
+        // 3. Generate and Save Specification
         const moodboard = activeRevision.data?.moodboard || [];
-        const spread = generateSpreadFromProfile(
+        const specification = generateSpecificationFromProfile(
             project,
             extendedProfile,
             moodboard,
             activeRevision.data as any
         );
-        saveSpread(spread);
+        saveSpecification(specification);
 
         // 4. Default Layout
         const defaultLayout = {
@@ -176,7 +173,7 @@ export function ProjectContextPage() {
                 right: { width: 320, visible: true, activeTab: 'context' }
             }
         };
-        localStorage.setItem(`codra:spread:${projectId}:layout`, JSON.stringify(defaultLayout));
+        localStorage.setItem(`codra:specification:${projectId}:layout`, JSON.stringify(defaultLayout));
 
         navigate(`/p/${projectId}/workspace`);
     };
@@ -249,9 +246,9 @@ export function ProjectContextPage() {
     };
 
     return (
-        <div className={`min-h-screen bg-zinc-50 text-zinc-900 font-sans selection:bg-zinc-200 ${isDraft ? 'pb-12' : ''}`}>
+        <div className={`min-h-screen bg-[var(--color-ivory)] text-zinc-900 font-sans selection:bg-zinc-200 ${isDraft ? 'pb-12' : ''}`}>
             {/* Nav Header */}
-            <header className="h-12 glass-panel-light border-0 border-b border-zinc-200 rounded-none bg-white/80 sticky top-0 z-20 flex items-center justify-between px-6">
+            <header className="h-12 border-b border-[var(--ui-border)] bg-[var(--color-ivory)] sticky top-0 z-20 flex items-center justify-between px-6">
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                         <div className={`w-2 h-2 rounded-full ${isDraft ? 'bg-zinc-300' : 'bg-zinc-600'}`} />
@@ -261,15 +258,15 @@ export function ProjectContextPage() {
                     </div>
                 </div>
 
-                <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 bg-zinc-100 p-1 rounded-full border border-zinc-200 shadow-sm">
-                    <Link to={`/p/${projectId}/workspace`} className="px-4 py-1 rounded-full text-xs font-medium text-zinc-500 hover:text-zinc-900 hover:bg-white transition-all flex items-center gap-2">
+                <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-6">
+                    <Link to={`/p/${projectId}/workspace`} className="px-1 py-1 text-xs uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-900 border-b-2 border-transparent hover:border-[var(--ui-border)] transition-all flex items-center gap-2">
                         <LayoutTemplate size={12} />
                         Workspace
                     </Link>
-                    <Button className="px-4 py-1 rounded-full bg-white text-xs font-medium text-zinc-900 shadow-sm flex items-center gap-2 ring-1 ring-zinc-200">
-                        <FileText size={12} className="text-zinc-400" />
+                    <span className="px-1 py-1 text-xs uppercase tracking-[0.2em] text-zinc-900 border-b-2 border-zinc-900 flex items-center gap-2">
+                        <FileText size={12} className="text-zinc-500" />
                         Context
-                    </Button>
+                    </span>
                 </nav>
 
                 <div className="flex items-center gap-3">
@@ -279,11 +276,11 @@ export function ProjectContextPage() {
 
                     <div className="h-4 w-[1px] bg-zinc-200 mx-3" />
 
-                    <div className="flex items-center gap-2 bg-zinc-100 rounded-lg p-0 border border-zinc-200">
+                    <div className="flex items-center gap-2 border-b border-zinc-300">
                         <select
                             value={currentRevisionId || ''}
                             onChange={(e) => setCurrentRevisionId(e.target.value)}
-                            className="bg-transparent border-none text-xs font-medium text-zinc-500 focus:ring-0 pl-3 pr-8 py-1"
+                            className="bg-transparent border-none text-xs font-medium text-zinc-600 focus:ring-0 pl-1 pr-6 py-1"
                         >
                             {revisions.map(rev => (
                                 <option key={rev.id} value={rev.id}>v{rev.version} {rev.status === 'draft' ? '(Draft)' : ''}</option>
@@ -293,35 +290,64 @@ export function ProjectContextPage() {
 
                     <div className="h-4 w-[1px] bg-zinc-200 mx-1" />
 
-                    <Button
+                    <button
                         onClick={() => setVersionHistoryOpen(!versionHistoryOpen)}
                         className={cn(
-                            "p-1 rounded-full transition-colors",
-                            versionHistoryOpen ? "text-rose-500 bg-rose-50" : "text-zinc-400 hover:text-zinc-900"
+                            "text-xs uppercase tracking-[0.2em] underline underline-offset-4 transition-colors",
+                            versionHistoryOpen ? "text-zinc-900" : "text-zinc-500 hover:text-zinc-900"
                         )}
                         title="Version History"
                     >
-                        <Clock size={14} />
-                    </Button>
+                        History
+                    </button>
 
-                    <Button
+                    <button
                         onClick={handleShareLink}
-                        className="p-1 rounded-full text-zinc-400 hover:text-zinc-900 transition-colors"
+                        className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-zinc-500 hover:text-zinc-900 transition-colors"
                         title="Copy Share Link"
                     >
-                        <Share2 size={14} />
-                    </Button>
-                    <Button
+                        Share
+                    </button>
+                    <button
                         onClick={() => setIsExportModalOpen(true)}
-                        className="p-1 rounded-full text-zinc-400 hover:text-zinc-900 transition-colors disabled:opacity-50"
+                        className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-zinc-500 hover:text-zinc-900 transition-colors disabled:opacity-50"
                         title="Export"
                     >
-                        <Download size={14} />
-                    </Button>
+                        Export
+                    </button>
                 </div>
             </header>
 
             <main className="max-w-5xl mx-auto py-12 px-8">
+                {/* Revision Ledger */}
+                <div className="mb-10 border-y border-zinc-200 py-4 flex items-start justify-between gap-6">
+                    <div>
+                        <div className="text-[10px] uppercase tracking-[0.2em] text-zinc-400">Revision ledger</div>
+                        <div className="mt-2 text-sm text-zinc-900">
+                            v{currentRevision?.version ?? 1} {currentRevision?.status === 'draft' ? '(Draft)' : '(Approved)'}
+                        </div>
+                        <div className="text-xs text-zinc-500">
+                            {currentRevision?.createdAt ? new Date(currentRevision.createdAt).toLocaleString() : 'No timestamp available'}
+                        </div>
+                        {currentRevision?.summary && (
+                            <div className="mt-2 text-xs text-zinc-600 max-w-2xl">
+                                {currentRevision.summary}
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                        <button
+                            onClick={() => setVersionHistoryOpen(true)}
+                            className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-zinc-500 hover:text-zinc-900 transition-colors"
+                        >
+                            Open history
+                        </button>
+                        <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-400">
+                            Drafts are not live
+                        </span>
+                    </div>
+                </div>
+
                 {/* Identity Header */}
                 <div className="mb-12 border-b border-zinc-200 pb-12 relative group">
                     <div className="flex items-center gap-3 mb-4">
@@ -356,18 +382,18 @@ export function ProjectContextPage() {
                                 />
                             </div>
                             <div className="flex gap-4">
-                                <Button
+                                <button
                                     onClick={() => handleSaveSection('identity')}
-                                    className="px-6 py-2 bg-zinc-900 text-white text-xs font-semibold rounded-lg hover:bg-zinc-600 transition-colors"
+                                    className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-zinc-900"
                                 >
                                     Save changes
-                                </Button>
-                                <Button
+                                </button>
+                                <button
                                     onClick={handleCancelEdit}
-                                    className="px-6 py-2 text-zinc-400 text-xs font-semibold hover:text-zinc-900 transition-colors"
+                                    className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-zinc-500 hover:text-zinc-900 transition-colors"
                                 >
                                     Cancel
-                                </Button>
+                                </button>
                             </div>
                         </div>
                     ) : (
@@ -378,7 +404,7 @@ export function ProjectContextPage() {
                                 </h1>
                                 <Button
                                     onClick={() => handleStartEdit('identity', displayData.identity)}
-                                    className="opacity-0 group-hover:opacity-100 p-2 text-zinc-300 hover:text-zinc-900 transition-all"
+                                    className="opacity-0 group-hover:opacity-100 p-2 text-zinc-400 hover:text-zinc-900 transition-all"
                                     title="Edit Identity"
                                 >
                                     <Plus className="rotate-45" size={18} />
@@ -405,7 +431,7 @@ export function ProjectContextPage() {
                         renderEdit={() => (
                             <div className="space-y-4">
                                 {(tempData as any[]).map((d, i) => (
-                                    <div key={i} className="flex gap-4 items-start bg-white p-3 border border-zinc-100 rounded-sm">
+                                    <div key={i} className="flex gap-4 items-start border-b border-zinc-200 py-3">
                                         <div className="flex-1 grid grid-cols-2 gap-3">
                                             <input
                                                 type="text"
@@ -437,44 +463,44 @@ export function ProjectContextPage() {
                                                 <option value="design">design</option>
                                             </select>
                                         </div>
-                                        <Button
+                                        <button
                                             onClick={() => {
                                                 const next = (tempData as any[]).filter((_, idx) => idx !== i);
                                                 setTempData(next);
                                             }}
-                                            className="text-zinc-300 hover:text-rose-500 p-1"
+                                            className="text-zinc-400 hover:text-zinc-900 p-1"
                                         >
                                             <Plus className="rotate-45" size={14} />
-                                        </Button>
+                                        </button>
                                     </div>
                                 ))}
-                                <Button
+                                <button
                                     onClick={() => setTempData([...(tempData as any[]), { id: `deliv-${Date.now()}`, name: '', type: 'design', status: 'planned' }])}
-                                    className="w-full py-3 border border-dashed border-zinc-200 text-xs text-zinc-400 hover:text-zinc-900 transition-colors flex items-center justify-center gap-2"
+                                    className="w-full py-3 text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-zinc-500 hover:text-zinc-900 transition-colors flex items-center justify-center gap-2"
                                 >
                                     <Plus size={14} /> Add Deliverable
-                                </Button>
+                                </button>
                             </div>
                         )}
                     >
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {displayData.deliverables.map((d, i) => (
-                                <div key={d.id || i} className="p-4 bg-white border border-zinc-200 rounded-sm group hover:border-zinc-900 transition-colors">
+                                <div key={d.id || i} className="py-4 border-b border-zinc-200 group">
                                     <div className="flex items-center justify-between mb-2">
-                                        <span className="text-xs font-semibold text-zinc-400">{d.type}</span>
-                                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-200 group-hover:bg-rose-500 transition-colors" />
+                                        <span className="text-xs font-semibold text-zinc-500 uppercase tracking-[0.18em]">{d.type}</span>
+                                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-300 group-hover:bg-zinc-700 transition-colors" />
                                     </div>
                                     <h4 className="text-sm font-medium text-zinc-900 mb-1">{d.name}</h4>
                                     <p className="text-xs text-zinc-400 font-semibold tracking-tight">{d.status}</p>
                                 </div>
                             ))}
                             {isDraft && (
-                                <Button
+                                <button
                                     onClick={() => handleStartEdit('deliverables', displayData.deliverables)}
-                                    className="p-4 border border-dashed border-zinc-300 rounded-sm flex items-center justify-center gap-2 text-xs text-zinc-400 hover:text-zinc-900 hover:border-zinc-900 transition-all"
+                                    className="py-4 border-b border-zinc-200 flex items-center justify-center gap-2 text-xs uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-900 transition-all"
                                 >
                                     <Plus size={14} /> Add Deliverable
-                                </Button>
+                                </button>
                             )}
                         </div>
                     </ContextSection>
@@ -823,10 +849,10 @@ export function ProjectContextPage() {
 
             {/* Confirmation Gate Footer */}
             {isDraft && (
-                <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-zinc-200 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-50">
+                <div className="fixed bottom-0 left-0 right-0 bg-[var(--color-ivory)] border-t border-zinc-200 z-50">
                     <div className="max-w-5xl mx-auto px-8 py-6 flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center text-amber-500 shrink-0">
+                            <div className="w-10 h-10 border border-zinc-200 rounded-full flex items-center justify-center text-zinc-700 shrink-0">
                                 <AlertTriangle size={20} />
                             </div>
                             <div>
@@ -836,18 +862,18 @@ export function ProjectContextPage() {
                         </div>
 
                         <div className="flex items-center gap-3">
-                            <Button
+                            <button
                                 onClick={() => navigate('/new')}
-                                className="px-6 py-2 text-xs font-semibold text-zinc-500 hover:text-zinc-900 transition-colors"
+                                className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-zinc-500 hover:text-zinc-900 transition-colors"
                             >
                                 Open intake
-                            </Button>
-                            <Button
+                            </button>
+                            <button
                                 onClick={handleApproveAndLaunch}
-                                className="px-8 py-2 bg-zinc-900 text-white text-xs font-semibold hover:bg-rose-500 transition-all rounded-sm shadow-xl"
+                                className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-zinc-900"
                             >
                                 Execute approval
-                            </Button>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -911,16 +937,16 @@ function ContextSection({
 }) {
     return (
         <section className={cn("space-y-6 relative group", error && "section-error", className)}>
-            <div className={cn("flex items-center justify-between border-b pb-3", error ? "border-rose-200" : "border-zinc-200")}>
+            <div className={cn("flex items-center justify-between border-b pb-3", error ? "border-zinc-300" : "border-zinc-200")}>
                 <h3 className="text-xs font-semibold text-zinc-900 flex items-center gap-2">
-                    <span className={error ? "text-rose-500" : "text-rose-500"}>{icon}</span>
+                    <span className={error ? "text-zinc-900" : "text-zinc-700"}>{icon}</span>
                     {title}
                     {isRequired && <span className="required-indicator">*</span>}
                 </h3>
                 {!isEditing && onEdit && (
                     <Button
                         onClick={onEdit}
-                        className="opacity-0 group-hover:opacity-100 text-zinc-300 hover:text-zinc-900 transition-all"
+                        className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-zinc-900 transition-all"
                     >
                         <Plus className="rotate-45" size={14} />
                     </Button>
@@ -930,19 +956,19 @@ function ContextSection({
             {isEditing && renderEdit ? (
                 <div className="space-y-6">
                     {renderEdit()}
-                    <div className="flex gap-4 pt-4 border-t border-zinc-100">
-                        <Button
+                    <div className="flex gap-4 pt-4 border-t border-zinc-200">
+                        <button
                             onClick={onSave}
-                            className="bg-zinc-900 text-white text-xs font-semibold px-4 py-1 rounded-sm hover:bg-rose-500 transition-colors"
+                            className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-zinc-900"
                         >
                             Save
-                        </Button>
-                        <Button
+                        </button>
+                        <button
                             onClick={onCancel}
-                            className="text-zinc-400 text-xs font-semibold hover:text-zinc-900 transition-colors px-4 py-1"
+                            className="text-xs uppercase tracking-[0.2em] underline underline-offset-4 text-zinc-500 hover:text-zinc-900 transition-colors"
                         >
                             Cancel
-                        </Button>
+                        </button>
                     </div>
                 </div>
             ) : (

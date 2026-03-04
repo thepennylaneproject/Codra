@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ProductionDeskId } from '../../../domain/types';
+import { ProjectToolId } from '../../../domain/types';
 
 // Import canvas components (we'll create these next)
 import { WriteCanvas } from './WriteCanvas';
@@ -14,7 +14,7 @@ import { CodeCanvas } from './CodeCanvas';
 import { AnalyzeCanvas } from './AnalyzeCanvas';
 
 interface DeskCanvasProps {
-  activeDesk: ProductionDeskId;
+  activeDesk: ProjectToolId;
   projectId: string;
 }
 
@@ -29,10 +29,10 @@ export const DeskCanvas: React.FC<DeskCanvasProps> = ({ activeDesk, projectId })
         transition={{ duration: 0.15, ease: 'easeOut' }}
         className="w-full h-full"
       >
-        {activeDesk === 'write' && <WriteCanvas projectId={projectId} />}
+        {activeDesk === 'copy' && <WriteCanvas projectId={projectId} />}
         {activeDesk === 'design' && <DesignCanvas projectId={projectId} />}
         {activeDesk === 'code' && <CodeCanvas projectId={projectId} />}
-        {activeDesk === 'analyze' && <AnalyzeCanvas projectId={projectId} />}
+        {activeDesk === 'data' && <AnalyzeCanvas projectId={projectId} />}
       </motion.div>
     </AnimatePresence>
   );

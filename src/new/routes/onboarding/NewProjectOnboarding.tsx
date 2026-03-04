@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
-import { useOnboardingStore } from './store';
+import { useEffect, useMemo } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useOnboardingStore, type OnboardingStep, STEP_METADATA } from './store';
 import { ModeSelectionStep } from './steps/ModeSelectionStep';
 import { ContextIntentStep } from './steps/ContextIntentStep';
 import { ProjectImportStep } from './steps/ProjectImportStep';
@@ -29,12 +30,47 @@ import { GeneratingStep } from './steps/GeneratingStep';
  * 4. Generation → Redirect to Tear Sheet for confirmation
  */
 export const NewProjectOnboarding = () => {
-    const { step, profile, reset } = useOnboardingStore();
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const { step, profile, setStep } = useOnboardingStore();
+    const stepParam = searchParams.get('step');
+    const isValidStep = useMemo(() => {
+        if (!stepParam) return false;
+        return Object.prototype.hasOwnProperty.call(STEP_METADATA, stepParam);
+    }, [stepParam]);
 
-    // Reset store on mount for fresh start
     useEffect(() => {
-        reset();
-    }, []);
+        if (searchParams.get('mode') !== 'detailed') {
+            const next = new URLSearchParams(searchParams);
+            next.set('mode', 'detailed');
+            if (!stepParam) {
+                next.set('step', 'mode');
+            }
+            navigate(`/new?${next.toString()}`, { replace: true });
+        }
+    }, [searchParams, navigate, stepParam]);
+
+    useEffect(() => {
+        if (!stepParam || !isValidStep) {
+            const next = new URLSearchParams(searchParams);
+            next.set('mode', 'detailed');
+            next.set('step', 'mode');
+            navigate(`/new?${next.toString()}`, { replace: true });
+            return;
+        }
+        if (stepParam !== step) {
+            setStep(stepParam as OnboardingStep);
+        }
+    }, [stepParam, step, isValidStep, navigate, searchParams, setStep]);
+
+    useEffect(() => {
+        if (!isValidStep) return;
+        if (step === stepParam) return;
+        const next = new URLSearchParams(searchParams);
+        next.set('mode', 'detailed');
+        next.set('step', step);
+        navigate(`/new?${next.toString()}`, { replace: true });
+    }, [step, stepParam, isValidStep, navigate, searchParams]);
 
     const renderStep = (): React.ReactNode => {
         switch (step) {

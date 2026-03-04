@@ -1,5 +1,6 @@
 
 import { getUsage } from './usage';
+import { costService } from './cost-service';
 
 export interface BudgetConfig {
     limit: number;
@@ -61,7 +62,7 @@ export class BudgetController {
         // Simulation: Get token usage count and multiply by avg cost of GPT-3.5
         // This is a placeholder until we have real cost tracking in DB
         const usage = await getUsage(workspaceId); // Assuming userId same as workspaceId for simplicity
-        const avgCostPerRequest = 0.01; // $0.01
+        const avgCostPerRequest = costService.getDefaultRequestCost();
         currentSpend = usage.count * avgCostPerRequest;
 
         // Or use Supabase aggregation if table exists

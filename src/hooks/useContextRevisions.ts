@@ -1,26 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { ProjectContext, TearSheetRevision } from '@/domain/types';
+import type { ProjectContext, ProjectContextRevision } from '@/domain/types';
+import { storageAdapter } from '@/lib/storage/StorageKeyAdapter';
 
-const STORAGE_PREFIX = 'codra:tearSheet:';
-
-function getStorageKey(projectId: string) {
-  return `${STORAGE_PREFIX}${projectId}`;
+function loadRevisions(projectId: string): ProjectContextRevision[] {
+  return storageAdapter.getContextRevisions(projectId) as ProjectContextRevision[];
 }
 
-function loadRevisions(projectId: string): TearSheetRevision[] {
-  if (typeof window === 'undefined') return [];
-  const stored = localStorage.getItem(getStorageKey(projectId));
-  if (!stored) return [];
-  try {
-    return JSON.parse(stored) as TearSheetRevision[];
-  } catch {
-    return [];
-  }
-}
-
-function persistRevisions(projectId: string, revisions: TearSheetRevision[]) {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem(getStorageKey(projectId), JSON.stringify(revisions));
+function persistRevisions(projectId: string, revisions: ProjectContextRevision[]) {
+  storageAdapter.saveContextRevisions(projectId, revisions);
 }
 
 function notifyRevisionUpdate(projectId: string) {
@@ -38,7 +25,7 @@ function createRevision({
   status: 'draft' | 'approved';
   summary: string;
   data?: Partial<ProjectContext>;
-}): TearSheetRevision {
+}): ProjectContextRevision {
   return {
     id: crypto.randomUUID(),
     version,
@@ -52,7 +39,7 @@ function createRevision({
 }
 
 export function useContextRevisions(projectId?: string) {
-  const [revisions, setRevisions] = useState<TearSheetRevision[]>([]);
+  const [revisions, setRevisions] = useState<ProjectContextRevision[]>([]);
   const [currentRevisionId, setCurrentRevisionId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -72,7 +59,9 @@ export function useContextRevisions(projectId?: string) {
       setRevisions(refreshed);
     };
     const handleStorage = (event: StorageEvent) => {
-      if (event.key === getStorageKey(projectId)) {
+      const canonicalKey = storageAdapter.getCanonicalKey('contextRevisions', projectId);
+      const legacyKey = storageAdapter.getLegacyKey('contextRevisions', projectId);
+      if (event.key === canonicalKey || event.key === legacyKey) {
         const refreshed = loadRevisions(projectId);
         setRevisions(refreshed);
       }
@@ -97,7 +86,7 @@ export function useContextRevisions(projectId?: string) {
     }
   }, [revisions, currentRevisionId]);
 
-  const saveAll = (nextRevisions: TearSheetRevision[]) => {
+  const saveAll = (nextRevisions: ProjectContextRevision[]) => {
     if (!projectId) return;
     // Limit to last 20 revisions, always keep approved ones
     const limitedRevisions = limitRevisions(nextRevisions, 20);
@@ -182,7 +171,7 @@ export function useContextRevisions(projectId?: string) {
 }
 
 // Helper: Limit revisions, keeping approved ones
-function limitRevisions(revisions: TearSheetRevision[], maxCount: number): TearSheetRevision[] {
+function limitRevisions(revisions: ProjectContextRevision[], maxCount: number): ProjectContextRevision[] {
   if (revisions.length <= maxCount) return revisions;
   
   const approved = revisions.filter(r => r.status === 'approved');

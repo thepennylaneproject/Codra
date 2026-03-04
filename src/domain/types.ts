@@ -19,6 +19,7 @@ export interface Project {
     goals?: string[]; // Legacy - still used for backwards compatibility
     boundaries?: string[]; // Legacy - still used for backwards compatibility
     activeDesks?: string[];
+    activeTools?: ProjectToolId[];
     budgetPolicy?: BudgetPolicy;
     assets?: Asset[];
     moodboard?: MoodboardImage[];
@@ -85,7 +86,7 @@ export interface ImpactSummary {
     workflowChanges: string[];
 }
 
-export interface TearSheetRevision {
+export interface ProjectContextRevision {
     id: string;
     version: number;
     createdAt: string;
@@ -97,6 +98,10 @@ export interface TearSheetRevision {
     // Snapshot of project state for the revision
     data?: Partial<ProjectContext>;
 }
+
+
+// TearSheet alias removed
+
 
 export interface BudgetPolicy {
     maxCostPerRun: number;
@@ -171,10 +176,11 @@ export interface OnboardingProfile {
 }
 
 // ============================================
-// Spread Types
+// ============================================
+// Specification Types
 // ============================================
 
-export type SpreadSectionType =
+export type SpecificationSectionType =
     | 'overview'
     | 'audience'
     | 'goals'
@@ -185,17 +191,17 @@ export type SpreadSectionType =
     | 'components_or_assets'
     | 'notes';
 
-export type SpreadSectionStatus = 'draft' | 'ready' | 'locked';
+export type SpecificationSectionStatus = 'draft' | 'ready' | 'locked';
 
-export type SpreadSectionSource = 'onboarding' | 'tear_sheet' | 'moodboard' | 'inferred' | 'manual';
+export type SpecificationSectionSource = 'onboarding' | 'context' | 'moodboard' | 'inferred' | 'manual';
 
-export interface SpreadSection {
+export interface SpecificationSection {
     id: string;
-    type: SpreadSectionType;
+    type: SpecificationSectionType;
     title: string;
     description: string;
-    status: SpreadSectionStatus;
-    source: SpreadSectionSource;
+    status: SpecificationSectionStatus;
+    source: SpecificationSectionSource;
     editable: boolean;
     collapsed?: boolean;
     content: Record<string, unknown>;
@@ -212,13 +218,13 @@ export interface TOCEntry {
     order: number;
 }
 
-export interface Spread {
+export interface ProjectSpecification {
     id: string;
     projectId: string;
-    sections: SpreadSection[];
+    sections: SpecificationSection[];
     toc: TOCEntry[];
     taskQueue?: import('./task-queue').TaskQueue;
-    lyraState?: LyraState;
+    assistantState?: AssistantState;
     version: number;
     lastModifiedBy: string;
     lastModifiedAt: string;
@@ -227,22 +233,23 @@ export interface Spread {
 }
 
 // ============================================
-// Lyra Types
+// ============================================
+// Assistant Types
 // ============================================
 
-export type LyraBodyShape = 'athletic' | 'curvy' | 'slender' | 'broad' | 'soft';
-export type LyraSkinTone = 'fair' | 'tan' | 'warm' | 'deep' | 'ebony';
-export type LyraExpression = 'neutral' | 'focused' | 'inspired' | 'thoughtful' | 'playful';
+export type AssistantBodyShape = 'athletic' | 'curvy' | 'slender' | 'broad' | 'soft';
+export type AssistantSkinTone = 'fair' | 'tan' | 'warm' | 'deep' | 'ebony';
+export type AssistantExpression = 'neutral' | 'focused' | 'inspired' | 'thoughtful' | 'playful';
 
-export interface LyraBase {
+export interface AssistantBase {
     id: string;
     label: string;
-    bodyShape: LyraBodyShape;
-    skinTone: LyraSkinTone;
+    bodyShape: AssistantBodyShape;
+    skinTone: AssistantSkinTone;
     assetUrl: string;
 }
 
-export interface LyraVisualLayer {
+export interface AssistantVisualLayer {
     id: string;
     category: 'hair' | 'clothing' | 'accessory';
     label: string;
@@ -250,15 +257,15 @@ export interface LyraVisualLayer {
     incompatibleWith?: string[]; // IDs of other layers this can't work with
 }
 
-export interface LyraAppearance {
+export interface AssistantAppearance {
     baseId: string;
-    expression: LyraExpression;
+    expression: AssistantExpression;
     layers: Record<'hair' | 'clothing' | 'accessory', string | null>;
 }
 
-export interface LyraState {
+export interface AssistantState {
     visible: boolean;
-    appearance: LyraAppearance;
+    appearance: AssistantAppearance;
     currentPrompt?: string;
     suggestedArtifacts: string[];
     confidence: number;
@@ -296,26 +303,27 @@ export interface CodraGuardrail {
 }
 
 // ============================================
-// Production Desk Types
+// ============================================
+// Project Tool Types
 // ============================================
 
-export type ProductionDeskId =
-    | 'write'
+export type ProjectToolId =
+    | 'copy'
     | 'design'
     | 'code'
-    | 'analyze';
+    | 'data';
 
-export interface ProductionDesk {
-    id: ProductionDeskId;
+export interface ProjectTool {
+    id: ProjectToolId;
     label: string;
     description: string;
 }
 
-export const PRODUCTION_DESKS: ProductionDesk[] = [
-    { id: 'write', label: 'Write', description: 'Copy, content, and marketing materials' },
+export const PROJECT_TOOLS: ProjectTool[] = [
+    { id: 'copy', label: 'Copy', description: 'Copy, content, and marketing materials' },
     { id: 'design', label: 'Design', description: 'Visual assets and design systems' },
     { id: 'code', label: 'Code', description: 'Engineering and technical implementation' },
-    { id: 'analyze', label: 'Analyze', description: 'Data, research, and insights' },
+    { id: 'data', label: 'Data', description: 'Data, research, and insights' },
 ];
 
 // ============================================
@@ -327,6 +335,7 @@ export type TOCSectionCategory =
     | 'editorial_direction'
     | 'visual_direction'
     | 'production_desk'
+    | 'project_tool'
     | 'open_questions';
 
 export interface EnhancedTOCEntry extends TOCEntry {

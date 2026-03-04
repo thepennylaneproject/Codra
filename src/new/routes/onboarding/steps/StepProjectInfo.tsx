@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useOnboarding, OnboardingProjectState } from '../hooks/useOnboarding';
+import { createProjectOnServer } from '@/domain/projects';
 import { analytics } from '@/lib/analytics';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
@@ -14,9 +15,45 @@ const PROJECT_TYPE_OPTIONS = [
 ];
 
 const ONBOARDING_PROJECT_KEY = 'codra:onboardingProject';
+const PROJECTS_STORAGE_KEY = 'codra:projects';
+
+const projectTypeMap: Record<string, 'campaign' | 'content' | 'product' | 'brand-identity'> = {
+    campaign: 'campaign',
+    content: 'content',
+    product: 'product',
+    custom: 'brand-identity',
+};
+
+function upsertLocalProject(projectId: string, name: string, description: string, type: string) {
+    if (typeof window === 'undefined') return;
+
+    const nextProject = {
+        id: projectId,
+        name,
+        description: description || undefined,
+        type: projectTypeMap[type] || undefined,
+        updatedAt: new Date().toISOString(),
+    };
+
+    try {
+        const stored = localStorage.getItem(PROJECTS_STORAGE_KEY);
+        const parsed = stored ? JSON.parse(stored) : [];
+        const projects = Array.isArray(parsed) ? parsed : [];
+        const existingIndex = projects.findIndex((project: { id?: string }) => project.id === projectId);
+        if (existingIndex >= 0) {
+            projects[existingIndex] = { ...projects[existingIndex], ...nextProject };
+        } else {
+            projects.push(nextProject);
+        }
+        localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
+    } catch {
+        // Ignore storage failures
+    }
+}
 
 export const StepProjectInfo = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { data, updateData, canProceedFromProjectInfo, startSession, setProjectId } = useOnboarding();
     const { session } = useAuth();
     const toast = useToast();
@@ -38,27 +75,21 @@ export const StepProjectInfo = () => {
         setIsCreating(true);
         
         try {
-            // Call API to create project
-            const response = await fetch('/.netlify/functions/projects-create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${session?.access_token}`,
-                },
-                body: JSON.stringify({
-                    name: data.projectName,
-                    type: data.projectType,
-                    summary: data.description || undefined,
-                }),
-            });
-            
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to create project');
+            if (!session?.access_token) {
+                throw new Error('You must be signed in to create a project.');
             }
-            
-            const { projectId } = await response.json();
-            
+
+            // Call API to create project
+            // Call API to create project (with robust fallback)
+            const { projectId } = await createProjectOnServer({
+                userId: session.user.id,
+                name: data.projectName,
+                type: data.projectType || 'custom',
+                summary: data.description || undefined,
+            });
+
+            upsertLocalProject(projectId, data.projectName, data.description, data.projectType || 'custom');
+
             // Store in localStorage
             const projectState: OnboardingProjectState = {
                 projectId,
@@ -85,7 +116,12 @@ export const StepProjectInfo = () => {
             toast.success(`Project "${data.projectName}" created!`);
             
             // Navigate with projectId
-            navigate(`/new?step=context&projectId=${projectId}`);
+            const nextParams = new URLSearchParams();
+            const modeParam = searchParams.get('mode');
+            if (modeParam) nextParams.set('mode', modeParam);
+            nextParams.set('step', 'context');
+            nextParams.set('projectId', projectId);
+            navigate(`/new?${nextParams.toString()}`);
         } catch (error) {
             console.error('Error creating project:', error);
             toast.error(error instanceof Error ? error.message : 'Failed to create project');

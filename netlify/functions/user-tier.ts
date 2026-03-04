@@ -8,21 +8,21 @@ import type { Handler, HandlerEvent } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
 
 // Environment variables
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// Validate env vars
-if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error('Missing required environment variables');
-}
+const createSupabaseAdmin = () => {
+    if (!supabaseUrl || !supabaseServiceKey) {
+        return null;
+    }
 
-// Create Supabase admin client
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-    auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-    },
-});
+    return createClient(supabaseUrl, supabaseServiceKey, {
+        auth: {
+            autoRefreshToken: false,
+            persistSession: false,
+        },
+    });
+};
 
 // CORS headers
 const corsHeaders = {
@@ -42,7 +42,10 @@ const response = (statusCode: number, body: object) => ({
 });
 
 // Extract and verify JWT from Authorization header
-async function verifyAuth(event: HandlerEvent): Promise<{ userId: string } | null> {
+async function verifyAuth(
+    event: HandlerEvent,
+    supabaseAdmin: ReturnType<typeof createClient>
+): Promise<{ userId: string } | null> {
     const authHeader = event.headers.authorization || event.headers.Authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -90,8 +93,19 @@ export const handler: Handler = async (event: HandlerEvent) => {
         return response(405, { error: 'Method not allowed' });
     }
 
+    const supabaseAdmin = createSupabaseAdmin();
+    if (!supabaseAdmin) {
+        return response(500, {
+            error: 'Server misconfiguration',
+            missing: [
+                ...(supabaseUrl ? [] : ['SUPABASE_URL']),
+                ...(supabaseServiceKey ? [] : ['SUPABASE_SERVICE_ROLE_KEY']),
+            ],
+        });
+    }
+
     // Verify authentication
-    const auth = await verifyAuth(event);
+    const auth = await verifyAuth(event, supabaseAdmin);
     if (!auth) {
         return response(401, { error: 'Unauthorized' });
     }
@@ -99,24 +113,59 @@ export const handler: Handler = async (event: HandlerEvent) => {
     const { userId } = auth;
 
     try {
-        // Get user profile with plan
+        // ARCH-004 FIX: Query subscription status to enforce downgrade on past_due
+        // ARCH-017 FIX: Only default to free on PGRST116 error, fail on other errors
+        
         const { data: profile, error: profileError } = await supabaseAdmin
             .from('profiles')
             .select('plan')
             .eq('id', userId)
             .single();
 
-        // Normalize tier (map enterprise to team, handle legacy values)
-        let tier: UserTier = 'free';
-        
+        // ARCH-017: Check error type before defaulting
         if (profileError) {
-            if (profileError.code !== 'PGRST116') {
+            if (profileError.code === 'PGRST116') {
+                // Missing profile (not found) - default to free tier
+                console.log(`Profile not found for user ${userId}, defaulting to free tier`);
+            } else {
+                // Other error (e.g., RLS policy, network) - return error
                 console.error('Error fetching profile:', profileError);
                 return response(500, { error: 'Failed to fetch user profile' });
             }
-            // If missing (PGRST116), just stay on 'free' tier
-        } else {
-            const rawPlan = profile?.plan || 'free';
+        }
+
+        // Get subscription status
+        const { data: subscription, error: subError } = await supabaseAdmin
+            .from('subscriptions')
+            .select('status, plan_id')
+            .eq('user_id', userId)
+            .single();
+
+        // Normalize tier (map variants to standard tiers)
+        let tier: UserTier = 'free';
+        
+        if (subscription && !subError) {
+            // ARCH-004: Check subscription status
+            const status = subscription.status;
+            const planId = subscription.plan_id;
+
+            // Downgrade to free if subscription is not active
+            if (status === 'past_due' || status === 'canceled' || status === 'unpaid' || status === 'incomplete_expired') {
+                console.log(`User ${userId} subscription status is ${status}, downgrading to free tier`);
+                tier = 'free';
+            } else {
+                // Active subscription - use plan_id
+                if (planId === 'pro' || planId === 'starter') {
+                    tier = 'pro';
+                } else if (planId === 'team' || planId === 'enterprise' || planId === 'agency') {
+                    tier = 'team';
+                } else {
+                    tier = 'free';
+                }
+            }
+        } else if (profile) {
+            // Fallback to profile.plan if no subscription record
+            const rawPlan = profile.plan || 'free';
             if (rawPlan === 'pro' || rawPlan === 'starter') {
                 tier = 'pro';
             } else if (rawPlan === 'team' || rawPlan === 'enterprise' || rawPlan === 'agency') {

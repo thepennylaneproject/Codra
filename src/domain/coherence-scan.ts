@@ -6,7 +6,7 @@
  */
 
 import type { TaskPriority } from './task-queue';
-import type { ProductionDeskId } from './types';
+import type { ProjectToolId } from './types';
 
 // ============================================
 // Audit Types
@@ -128,6 +128,15 @@ export type ScanStatus =
     | 'scanning'    // Audits running
     | 'complete'    // Report ready
     | 'failed';     // Error occurred
+
+export type AuditStatus = 'pending' | 'running' | 'complete' | 'failed';
+
+export interface AuditProgress {
+    auditType: AuditType;
+    status: AuditStatus;
+    startedAt?: string;
+    completedAt?: string;
+}
 
 // ============================================
 // Finding Types
@@ -286,6 +295,9 @@ export interface CoherenceScan {
     /** Project context from clarifying questions */
     context?: ScanContext;
 
+    /** Audit progress list */
+    auditProgress?: AuditProgress[];
+
     /** All findings from scan */
     findings: ScanFinding[];
 
@@ -305,6 +317,15 @@ export interface CoherenceScan {
     createdAt: string;
     startedAt?: string;
     completedAt?: string;
+
+    /** Scan progress tracking */
+    progress?: {
+        phase: 'queued' | 'running' | 'finalizing' | 'complete' | 'failed';
+        percent: number;
+        completedAudits: number;
+        totalAudits: number;
+        currentAudit?: AuditType;
+    };
 
     /** If this is a coherence loop, reference to original scan */
     originalScanId?: string;
@@ -360,14 +381,14 @@ export function severityToPriority(severity: FindingSeverity): TaskPriority {
 /**
  * Map finding category to production desk
  */
-export function categoryToDesk(category: FindingCategory): ProductionDeskId {
-    const mapping: Record<FindingCategory, ProductionDeskId> = {
+export function categoryToDesk(category: FindingCategory): ProjectToolId {
+    const mapping: Record<FindingCategory, ProjectToolId> = {
         // UX/UI issues → Art & Design
         'workflow-completeness': 'code',
         'feature-visibility': 'design',
         'cognitive-load': 'design',
         'visual-consistency': 'design',
-        'copy-voice': 'write',
+        'copy-voice': 'copy',
         'information-architecture': 'code',
         'state-feedback-trust': 'code',
         'onboarding': 'design',
@@ -377,7 +398,7 @@ export function categoryToDesk(category: FindingCategory): ProductionDeskId {
         'builder-bias': 'code',
         'success-definition': 'code',
         'risk-avoidance': 'code',
-        'narrative-blindspot': 'write',
+        'narrative-blindspot': 'copy',
         // Technical/Feature issues
         'feature-value-cost': 'code',
         'redundancy': 'code',
@@ -385,9 +406,9 @@ export function categoryToDesk(category: FindingCategory): ProductionDeskId {
         'timing': 'code',
         'conceptual-integrity': 'code',
         // Opportunity issues
-        'missed-opportunity': 'write',
-        'underutilized-feature': 'write',
-        'hidden-win': 'write',
+        'missed-opportunity': 'copy',
+        'underutilized-feature': 'copy',
+        'hidden-win': 'copy',
     };
     return mapping[category] ?? 'code';
 }

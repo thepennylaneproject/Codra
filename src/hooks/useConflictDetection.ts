@@ -1,15 +1,17 @@
 import { useState, useCallback } from 'react';
-import { Spread } from '../domain/types';
+import { ProjectSpecification } from '../domain/types';
 import { analytics } from '@/lib/analytics';
 import { useAuth } from './useAuth';
+import isEqual from 'lodash.isequal';
 
 export interface ConflictState {
   yourChanges: string[];
   theirChanges: string[];
   overlap: string[];
   canAutoMerge: boolean;
-  serverData: Partial<Spread>;
+  serverData: Partial<ProjectSpecification>;
   serverVersion: number;
+  baseData?: ProjectSpecification; // ARCH-011: Store base for context
 }
 
 export function useConflictDetection() {
@@ -17,46 +19,51 @@ export function useConflictDetection() {
   const [conflict, setConflict] = useState<ConflictState | null>(null);
 
   /**
-   * Simple field-based diff for spread sections.
-   * Compares section content by stringifying.
+   * Helper to identify changed sections between two revisions
    */
-  const diffSections = (base: Spread, other: Spread): string[] => {
+  const getChangedSections = (base: ProjectSpecification | undefined, current: Partial<ProjectSpecification>): string[] => {
+    if (!base) return [];
+    
     const changed: string[] = [];
-    
-    // Compare sections by title/id
     const baseSections = base.sections || [];
-    const otherSections = other.sections || [];
+    const currentSections = current.sections || [];
     
-    // Map of section id to content
-    const baseData: Record<string, string> = {};
-    baseSections.forEach(s => { baseData[s.id] = JSON.stringify(s.content); });
+    // Map by ID
+    const baseMap = new Map(baseSections.map(s => [s.id, s]));
+    const currentMap = new Map(currentSections.map(s => [s.id, s]));
     
-    const otherData: Record<string, string> = {};
-    otherSections.forEach(s => { otherData[s.id] = JSON.stringify(s.content); });
-
-    // Check for changes/additions in other
-    otherSections.forEach(s => {
-      if (baseData[s.id] !== otherData[s.id]) {
-        changed.push(s.title || s.id);
-      }
+    // Check for modifications and additions
+    currentSections.forEach(s => {
+        const baseSection = baseMap.get(s.id);
+        if (!baseSection) {
+            changed.push(s.title || 'New Section');
+        } else if (!isEqual(baseSection.content, s.content)) {
+            changed.push(s.title || s.id);
+        }
     });
 
-    // Check for deletions (sections in base but not in other)
+    // Check for deletions
     baseSections.forEach(s => {
-      if (!otherData[s.id]) {
-        changed.push(`${s.title || s.id} (removed)`);
-      }
+        if (!currentMap.has(s.id)) {
+            changed.push(`${s.title || s.id} (removed)`);
+        }
     });
 
     return Array.from(new Set(changed));
   };
 
   const saveWithConflictCheck = useCallback(
-    async (projectId: string, spreadId: string, data: Spread, clientVersion: number) => {
+    async (
+        projectId: string, 
+        spreadId: string, 
+        data: ProjectSpecification, 
+        clientVersion: number,
+        baseData?: ProjectSpecification // ARCH-011: Require base data for 3-way diff
+    ) => {
       if (!session?.access_token) return { success: false, error: 'Auth required' };
 
       try {
-        const response = await fetch('/api/spread-save', {
+        const response = await fetch('/api/specification-save', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -64,7 +71,7 @@ export function useConflictDetection() {
           },
           body: JSON.stringify({
             projectId,
-            spreadId,
+            specificationId: spreadId,
             data,
             version: clientVersion
           }),
@@ -73,13 +80,33 @@ export function useConflictDetection() {
         if (response.status === 409) {
           const { serverVersion, serverData } = await response.json();
           
-          const yourChanges = diffSections(serverData, data);
-          const theirChanges = diffSections(data, serverData); // This is slightly wrong in the prompt, it should be diff between common base and server, but we use client vs server for now
-          // A better approach: diff server vs what we thought was the base (clientVersion)
-          // But since we don't store the "base" locally easily after multiple edits, 
-          // we show what's different between what's on server vs what user is trying to save.
+          // ARCH-011: 3-Way Merge Logic
+          // 1. Your Changes: Base -> Client (What you did)
+          // 2. Their Changes: Base -> Server (What they did)
+          // 3. Overlap: Intersection
           
-          const overlap = yourChanges.filter((c) => theirChanges.includes(c));
+          const yourChanges = getChangedSections(baseData, data);
+          const theirChanges = getChangedSections(baseData, serverData);
+          
+          // If we don't have baseData (legacy case), we fall back to Client vs Server
+          // stored in 'theirChanges' variable name but conceptually is just "Difference"
+          // This ensures backward compatibility if caller doesn't provide baseData immediately
+          if (!baseData) {
+               // Fallback: Naive diff
+               const naiveDiff = getChangedSections(serverData as ProjectSpecification, data);
+               setConflict({
+                yourChanges: naiveDiff,
+                theirChanges: ['Unknown (Missing Base)'],
+                overlap: naiveDiff,
+                canAutoMerge: false,
+                serverData,
+                serverVersion
+              });
+              return { success: false, conflict: true, serverVersion, serverData };
+          }
+          
+          // Calculate true overlap
+          const overlap = yourChanges.filter(c => theirChanges.includes(c));
 
           setConflict({
             yourChanges,
@@ -87,13 +114,15 @@ export function useConflictDetection() {
             overlap,
             canAutoMerge: overlap.length === 0,
             serverData,
-            serverVersion
+            serverVersion,
+            baseData
           });
 
           analytics.track('spread_conflict', {
             spreadId,
             projectId,
             overlapCount: overlap.length,
+            autoMergePossible: overlap.length === 0
           });
 
           return { success: false, conflict: true, serverVersion, serverData };
@@ -120,29 +149,49 @@ export function useConflictDetection() {
       strategy: 'merge' | 'mine' | 'theirs',
       projectId: string,
       spreadId: string,
-      clientData: Spread
+      clientData: ProjectSpecification
     ) => {
       if (!conflict || !session?.access_token) return { success: false };
 
-      let resolvedData: Partial<Spread> = conflict.serverData;
+      let resolvedData: Partial<ProjectSpecification> = conflict.serverData;
 
       if (strategy === 'merge' && conflict.canAutoMerge) {
-        // Simple merge: keep server data, overwrite with client sections if they were changed
+        // Safe 3-way merge:
+        // Take Server Data as baseline
+        // Apply Client Changes (which are known non-overlapping)
+        // Since we know they don't overlap, we can just overlay client sections 
+        // that differ from Base onto Server.
+        
+        const baseSections = conflict.baseData?.sections || [];
+        const baseMap = new Map(baseSections.map(s => [s.id, s]));
+        
         const serverSections = [...(conflict.serverData.sections || [])];
+        
         const clientSections = clientData.sections || [];
         
-        // Map of client section id to content
-        const clientSectionMap = new Map();
-        clientSections.forEach(s => clientSectionMap.set(s.id, s));
-
-        const mergedSections = serverSections.map(s => {
-            const clientMatch = clientSectionMap.get(s.id);
-            if (clientMatch && JSON.stringify(clientMatch.content) !== JSON.stringify(s.content)) {
-                return clientMatch;
+        // Start with Server Sections
+        const mergedSections = [...serverSections];
+        
+        // Apply Client changes
+        clientSections.forEach(cSection => {
+            const baseSection = baseMap.get(cSection.id);
+            
+            // If Client changed this section (vs Base)
+            const clientChanged = !baseSection || !isEqual(baseSection.content, cSection.content);
+            
+            if (clientChanged) {
+                // Find index in merged (Server) array
+                const idx = mergedSections.findIndex(s => s.id === cSection.id);
+                if (idx >= 0) {
+                    // Update existing
+                    mergedSections[idx] = cSection;
+                } else {
+                    // Append new
+                    mergedSections.push(cSection);
+                }
             }
-            return s;
         });
-
+        
         resolvedData = {
           ...conflict.serverData,
           sections: mergedSections,
@@ -153,7 +202,9 @@ export function useConflictDetection() {
         resolvedData = conflict.serverData;
       }
 
-      const response = await fetch('/api/spread-save', {
+      // ARCH-012: Robust Force Save
+      // Send force=true to bypass version check
+      const response = await fetch('/api/specification-save', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -161,9 +212,11 @@ export function useConflictDetection() {
         },
         body: JSON.stringify({
           projectId,
-          spreadId,
+          specificationId: spreadId,
           data: resolvedData,
-          force: true // Tell backend to overwrite
+          force: true,
+          // Explicitly send the current server version we are overwriting/merging on top of
+          version: conflict.serverVersion 
         }),
       });
 
@@ -178,7 +231,7 @@ export function useConflictDetection() {
         return { success: true, version: result.version };
       }
       
-      return { success: false };
+      return { success: false, error: 'Failed to resolve conflict' };
     },
     [conflict, session]
   );

@@ -49,7 +49,7 @@ export const TEXT = {
   primary: '#1A1A1A',       // Ink
   muted: '#5A5A5A',         // Muted ink
   soft: '#8A8A8A',          // Lighter gray
-  accent: '#FF6B6B',        // Coral accent (GOVERNED - use semantic tokens instead)
+  accent: '#C7A76A',        // Gold accent (use semantic tokens instead)
 } as const;
 
 /**
@@ -71,7 +71,7 @@ export const STATE = {
   success: '#10B981',       // Emerald - slightly muted
   warning: '#F59E0B',       // Amber
   error: '#EF4444',         // Red
-  info: '#00D9D9',          // Electric teal (from brand palette)
+  info: BRAND.gold,         // Gold info
 } as const;
 
 /**
@@ -288,20 +288,20 @@ export const GOLD_ACCENT = ACCENT;
  * - Sparkle particles (feature removed)
  */
 export const ACCENT_CORAL = {
-  /** Base coral color - DO NOT USE DIRECTLY */
-  base: BRAND.coral,                    // #FF6B6B
+  /** Base vermilion color - Editorial Red */
+  base: '#D93025',                      // Vermilion (was #FF6B6B)
 
-  /** Hover state for interactive coral elements */
-  hover: '#FF5252',                     // Darker coral on hover
+  /** Hover state for interactive elements */
+  hover: '#C12A20',                     // Darker vermilion
 
   /** Active/pressed state */
-  active: '#E64848',                    // Even darker when active
+  active: '#A8251C',                    // Even darker
 
   /** Muted background variant */
-  muted: 'rgba(255, 107, 107, 0.1)',   // 10% opacity for subtle backgrounds
+  muted: 'rgba(217, 48, 37, 0.1)',     // 10% opacity
 
   /** Border variant for selected states */
-  border: 'rgba(255, 107, 107, 0.3)',  // 30% opacity for borders
+  border: 'rgba(217, 48, 37, 0.3)',    // 30% opacity
 
   /**
    * PERMITTED USE TOKENS
@@ -310,36 +310,36 @@ export const ACCENT_CORAL = {
   permitted: {
     /** PRIMARY CTA - Button background fill */
     primaryCta: {
-      bg: BRAND.coral,                  // #FF6B6B
-      bgHover: '#FF5252',
-      bgActive: '#E64848',
-      text: BRAND.ivory,                // High contrast text
+      bg: '#D93025',                    // Vermilion
+      bgHover: '#C12A20',
+      bgActive: '#A8251C',
+      text: '#FFFFFF',                  // Pure white for best contrast on red
       border: 'transparent',
     },
 
     /** ACTIVE PROGRESS - Dot/spinner fill */
     activeProgress: {
-      fill: BRAND.coral,                // #FF6B6B
-      bg: 'rgba(255, 107, 107, 0.1)',  // Subtle background
+      fill: '#D93025',
+      bg: 'rgba(217, 48, 37, 0.1)',
     },
 
     /** SUCCESS STATE - Checkmark, toast */
     success: {
-      fill: BRAND.coral,                // #FF6B6B for icons
-      border: 'rgba(255, 107, 107, 0.3)', // For bordered toasts
-      bg: 'rgba(255, 107, 107, 0.1)',   // For background fills
+      fill: '#D93025',
+      border: 'rgba(217, 48, 37, 0.3)',
+      bg: 'rgba(217, 48, 37, 0.1)',
     },
 
     /** ACTIVE TAB INDICATOR - 2px bottom border */
     activeTab: {
-      borderBottom: `2px solid ${BRAND.coral}`,
-      borderColor: BRAND.coral,
+      borderBottom: `2px solid #D93025`,
+      borderColor: '#D93025',
     },
 
     /** SELECTED OUTPUT - Inspector item left border */
     selectedOutput: {
-      borderLeft: `2px solid ${BRAND.coral}`,
-      borderColor: BRAND.coral,
+      borderLeft: `2px solid #D93025`,
+      borderColor: '#D93025',
     },
   },
 
@@ -640,65 +640,70 @@ export const UI = {
 } as const;
 
 /**
- * Cosmic palette tokens (dark system).
+ * Cosmic palette tokens (dark system) - ALIASED TO INK FOR CONSISTENCY
+ * Keeps legacy variable names but removes the blue/sci-fi tint.
  */
 export const COSMIC = {
-  void: '#050608',
-  voidSoft: '#0A0E12',
-  voidElevated: '#12171D',
-  stardust: '#F8F9FA',
-  stardustWarm: '#FFFDF7',
-  stardustMuted: '#9CA3AF',
-  stardustDim: '#6B7280',
+  void: '#1A1A1A',          // BRAND.ink
+  voidSoft: '#262626',      // Lighter ink
+  voidElevated: '#333333',  // Elevated ink
+  stardust: '#FFFAF0',      // BRAND.ivory (was white)
+  stardustWarm: '#F5F0E6',  // Warm off-white
+  stardustMuted: '#9CA3AF', // Neutral gray
+  stardustDim: '#6B7280',   // Dim gray
 } as const;
 
 /**
  * Shell palette tokens (panel system).
+ * Now uses "Ink Binding" aesthetic (Dark warm gray) instead of "Cosmic" (Blue dark).
  */
 export const SHELL = {
-  surface0: '#0A0A0F',
-  surface1: '#12121A',
-  surface2: '#1A1A24',
-  border: '#2A2A36',
-  textPrimary: '#F5F5F7',
-  textSecondary: '#8A8A9A',
+  surface0: '#1A1A1A',      // Brand Ink - Primary Sidebar
+  surface1: '#222222',      // Slightly lighter - Secondary/Hover
+  surface2: '#2D2D2D',      // Active/ Selected
+  border: 'rgba(255, 255, 255, 0.08)', // Subtle white border
+  textPrimary: '#FFFAF0',   // Ivory text on Ink
+  textSecondary: '#A3A3A3', // Muted gray text
 } as const;
 
 /**
  * Energy spectrum tokens (accent spectrum).
+ * Muted to match the "Ink & Ivory" paper aesthetic.
  */
 export const ENERGY = {
-  teal: '#00D9D9',
-  cyan: '#22D3EE',
-  magenta: '#D81159',
-  rose: '#F43F5E',
-  gold: '#F4D03F',
-  amber: '#F59E0B',
+  teal: '#2A9D8F',          // Muted Teal (was Neon)
+  cyan: '#3B8EA5',          // Muted Cyan
+  magenta: '#D81159',       // Editorial Magenta (Kept, matches ink well)
+  rose: '#E63946',          // Muted Rose
+  gold: '#C7A76A',          // Brand Gold
+  amber: '#D97706',         // Muted Amber
 } as const;
 
 /**
  * Glow tokens (luminous effects).
+ * Greatly reduced intensity for "Paper" feel.
  */
 export const GLOW = {
-  teal: 'rgba(0, 217, 217, 0.5)',
-  tealSoft: 'rgba(0, 217, 217, 0.2)',
-  tealSubtle: 'rgba(0, 217, 217, 0.08)',
-  magenta: 'rgba(216, 17, 89, 0.5)',
-  magentaSoft: 'rgba(216, 17, 89, 0.2)',
-  gold: 'rgba(244, 208, 63, 0.5)',
-  goldSoft: 'rgba(244, 208, 63, 0.15)',
+  teal: 'rgba(42, 157, 143, 0.15)',
+  tealSoft: 'rgba(42, 157, 143, 0.05)',
+  tealSubtle: 'rgba(42, 157, 143, 0.02)',
+  magenta: 'rgba(216, 17, 89, 0.15)',
+  magentaSoft: 'rgba(216, 17, 89, 0.05)',
+  gold: 'rgba(199, 167, 106, 0.15)',
+  goldSoft: 'rgba(199, 167, 106, 0.05)',
 } as const;
 
 /**
  * Glass surface tokens.
+ * Warmer, less "holographic".
  */
 export const GLASS = {
-  bg: 'rgba(18, 23, 29, 0.85)',
-  frosted: 'rgba(18, 23, 29, 0.92)',
-  clear: 'rgba(18, 23, 29, 0.6)',
-  edge: 'rgba(255, 255, 255, 0.08)',
-  edgeBright: 'rgba(255, 255, 255, 0.15)',
-  highlight: 'rgba(255, 255, 255, 0.05)',
+  bg: 'rgba(26, 26, 26, 0.92)',     // Ink glass
+  frosted: 'rgba(26, 26, 26, 0.96)', // Heavy frost
+  clear: 'rgba(26, 26, 26, 0.5)',   // Clear ink
+  edge: 'rgba(255, 255, 255, 0.06)', // Subtle edge
+  edgeBright: 'rgba(255, 255, 255, 0.12)',
+  highlight: 'rgba(255, 255, 255, 0.03)',
 } as const;
 
 /**
@@ -734,18 +739,19 @@ export const DESK = {
 
 /**
  * Extended font sizes for UI utilities.
+ * Harmonic 8-step scale: 12, 14, 16, 20, 24, 32, 40, 48
  */
 export const FONT_SIZE_EXTENDED = {
-  '2xs': FONT_SIZE.sm,
-  xs: FONT_SIZE.sm,
-  sm: FONT_SIZE.base,
-  base: FONT_SIZE.lg,
-  md: FONT_SIZE.lg,
-  lg: FONT_SIZE.lg,
-  xl: FONT_SIZE.xl,
-  '2xl': FONT_SIZE.xl,
-  '3xl': FONT_SIZE.xl,
-  '4xl': FONT_SIZE.xl,
+  '2xs': '12px',  // Meta / Fine print
+  xs: '12px',     // Labels / Captions
+  sm: '14px',     // Body text
+  base: '16px',   // Default body / Large labels
+  md: '16px',     // Same as base (for compatibility)
+  lg: '20px',     // Subheadings
+  xl: '24px',     // Section headings
+  '2xl': '32px',  // Page titles
+  '3xl': '40px',  // Display headings
+  '4xl': '48px',  // Hero text
 } as const;
 
 /**
@@ -850,7 +856,7 @@ export const tokens = {
       'brand-violet': '#7A77FF',
       'brand-magenta': ENERGY.magenta,
       'brand-cream': COSMIC.stardustWarm,
-      'brand-accent': BRAND.coral,
+      'brand-accent': BRAND.gold,
       'color-brand-coral': BRAND.coral,
       'color-ink': BRAND.ink,
       'color-ink-light': TEXT.muted,
@@ -914,23 +920,23 @@ export const tokens = {
       'color-text-muted': TEXT.soft,
       'color-surface': BACKGROUND.elevated,
       'color-surface-dark': SURFACE.glass,
-      'color-primary': ACCENT_CORAL.base,
-      'color-primary-hover': ACCENT_CORAL.hover,
-      'color-primary-active': ACCENT_CORAL.active,
-      'color-accent': ACCENT_CORAL.base,
-      'color-accent-hover': ACCENT_CORAL.hover,
+      'color-primary': ACCENT.primary,
+      'color-primary-hover': ACCENT.primary,
+      'color-primary-active': ACCENT.primary,
+      'color-accent': ACCENT.primary,
+      'color-accent-hover': ACCENT.primary,
       'accent': ACCENT.primary,
       'accent-border': ACCENT.border,
-      'progress-active': ACCENT_CORAL.permitted.activeProgress.fill,
-      'progress-active-bg': ACCENT_CORAL.permitted.activeProgress.bg,
-      'tab-active-border': BRAND.coral,
+      'progress-active': ACCENT.primary,
+      'progress-active-bg': ACCENT.soft,
+      'tab-active-border': TEXT.primary,
       'tab-active-border-width': '2px',
       'tab-hover-bg': UI.borderSoft,
-      'button-primary-bg': ACCENT_CORAL.permitted.primaryCta.bg,
-      'button-primary-bg-hover': ACCENT_CORAL.permitted.primaryCta.bgHover,
-      'button-primary-bg-active': ACCENT_CORAL.permitted.primaryCta.bgActive,
-      'button-primary-text': ACCENT_CORAL.permitted.primaryCta.text,
-      'shell-resize-handle-active': BRAND.coral,
+      'button-primary-bg': ACCENT.primary,
+      'button-primary-bg-hover': ACCENT.primary,
+      'button-primary-bg-active': ACCENT.primary,
+      'button-primary-text': BRAND.ink,
+      'shell-resize-handle-active': BRAND.ink,
       'shell-resize-handle-hover': UI.borderStrong,
       'desk-bg': DESK.bg,
       'desk-surface': DESK.surface,

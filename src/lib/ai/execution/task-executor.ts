@@ -3,8 +3,8 @@
  * Handles real AI execution for Spread tasks
  */
 
-import { SpreadTask } from '../../../domain/task-queue';
-import { PromptContext } from '../../lyra/LyraPromptEngine';
+import { SpecificationTask } from '../../../domain/task-queue';
+import { PromptContext } from '@/lib/assistant/AssistantPromptEngine';
 import type { AICompletionOptions as _AICompletionOptions, AIStreamChunk as _AIStreamChunk } from '../types';
 import { analytics } from '@/lib/analytics';
 import { getExecutor } from '../client-executor';
@@ -24,7 +24,7 @@ export interface TaskExecutionResult {
 export type ExecutionMode = 'preview' | 'execute';
 
 export interface TaskExecutionOptions {
-  task: SpreadTask;
+  task: SpecificationTask;
   prompt: string;
   context: PromptContext;
   modelId: string;
@@ -45,7 +45,7 @@ export class TaskExecutor {
       analytics.track('flow_task_began', {
         taskId: task.id,
         taskType: task.title,
-        deskId: task.deskId,
+        toolId: task.toolId,
       });
     }
 
@@ -89,7 +89,7 @@ export class TaskExecutor {
         analytics.track('flow_task_completed', {
           taskId: task.id,
           taskType: task.title,
-          deskId: task.deskId,
+          toolId: task.toolId,
           durationMs: executionResult.durationMs,
           modelUsed: executionResult.modelUsed,
           cost: executionResult.cost,
@@ -104,7 +104,7 @@ export class TaskExecutor {
         analytics.track('flow_task_failed', {
           taskId: task.id,
           taskType: task.title,
-          deskId: task.deskId,
+          toolId: task.toolId,
           error: error instanceof Error ? error.message : 'Unknown error',
           durationMs: Date.now() - startTime,
         });
@@ -125,7 +125,7 @@ export class TaskExecutor {
       analytics.track('flow_task_began', {
         taskId: task.id,
         taskType: task.title,
-        deskId: task.deskId,
+        toolId: task.toolId,
       });
     }
 
@@ -179,7 +179,7 @@ export class TaskExecutor {
         analytics.track('flow_task_completed', {
           taskId: task.id,
           taskType: task.title,
-          deskId: task.deskId,
+          toolId: task.toolId,
           durationMs: executionResult.durationMs,
           modelUsed: executionResult.modelUsed,
           cost: executionResult.cost,
@@ -192,7 +192,7 @@ export class TaskExecutor {
         analytics.track('flow_task_failed', {
           taskId: task.id,
           taskType: task.title,
-          deskId: task.deskId,
+          toolId: task.toolId,
           error: error instanceof Error ? error.message : 'Unknown error',
           durationMs: Date.now() - startTime,
         });
@@ -205,11 +205,11 @@ export class TaskExecutor {
   /**
    * Build system prompt with project context
    */
-  private buildSystemPrompt(task: SpreadTask, context: PromptContext): string {
+  private buildSystemPrompt(task: SpecificationTask, context: PromptContext): string {
     const brandVoice = context.brand?.voiceGuidelines || 'professional';
     const tone = 'neutral'; // Default tone as it's not in PromptContext directly
 
-    return `You are Codra's ${task.deskId} desk assistant, an expert AI production team member.
+    return `You are Codra's ${task.toolId} assistant, an expert AI production team member.
 
 PROJECT CONTEXT:
 ${JSON.stringify({
@@ -237,16 +237,16 @@ Generate the deliverable now.`;
   /**
    * Determine optimal temperature for task type
    */
-  private getTemperatureForTask(task: SpreadTask, mode: ExecutionMode): number {
+  private getTemperatureForTask(task: SpecificationTask, mode: ExecutionMode): number {
     if (mode === 'preview') {
       return 0;
     }
-    const creativeTasks = ['design', 'write'];
-    const technicalTasks = ['code', 'analyze'];
+    const creativeTasks = ['design', 'copy'];
+    const technicalTasks = ['code', 'data'];
     
-    if (creativeTasks.includes(task.deskId)) {
+    if (creativeTasks.includes(task.toolId)) {
       return 0.8; // Higher temperature for creative tasks
-    } else if (technicalTasks.includes(task.deskId)) {
+    } else if (technicalTasks.includes(task.toolId)) {
       return 0.3; // Lower temperature for technical precision
     }
     
@@ -256,7 +256,7 @@ Generate the deliverable now.`;
   /**
    * Extract memory line from AI output
    */
-  private extractMemory(output: string, task: SpreadTask): string {
+  private extractMemory(output: string, task: SpecificationTask): string {
     // Try to extract MEMORY: line
     const memoryMatch = output.match(/MEMORY:\s*(.+)/i);
     if (memoryMatch) {
@@ -265,7 +265,7 @@ Generate the deliverable now.`;
 
     // Fallback: Generate memory from first 100 chars of output
     const preview = output.substring(0, 100).replace(/\n/g, ' ');
-    return `${task.deskId}: ${preview}${output.length > 100 ? '...' : ''}`;
+    return `${task.toolId}: ${preview}${output.length > 100 ? '...' : ''}`;
   }
 
 
@@ -273,13 +273,13 @@ Generate the deliverable now.`;
   /**
    * Validate task can be executed
    */
-  validateTask(task: SpreadTask): { valid: boolean; error?: string } {
+  validateTask(task: SpecificationTask): { valid: boolean; error?: string } {
     if (!task.id || !task.title) {
       return { valid: false, error: 'Invalid task: missing id or title' };
     }
 
-    if (!task.deskId) {
-      return { valid: false, error: 'Invalid task: missing desk assignment' };
+    if (!task.toolId) {
+      return { valid: false, error: 'Invalid task: missing tool assignment' };
     }
 
     return { valid: true };

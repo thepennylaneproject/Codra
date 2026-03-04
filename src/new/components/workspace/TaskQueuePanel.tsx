@@ -15,13 +15,12 @@
  */
 
 import { Play, RotateCcw, Loader2, Check, AlertCircle, Clock, XCircle, Timer } from 'lucide-react';
-import { SpreadTask, TaskStatus } from '../../../domain/task-queue';
+import { SpecificationTask, TaskStatus } from '../../../domain/task-queue';
 import type { ExecutionMode } from '../../../lib/ai/execution/task-executor';
 import { formatTimeRemaining } from '../../../hooks/useTaskExecution';
-import { Button } from '@/components/ui/Button';
 
 interface TaskQueuePanelProps {
-  tasks: SpreadTask[];
+  tasks: SpecificationTask[];
   executingTaskId: string | null;
   taskRunStates: Record<string, 'running' | 'complete' | 'failed'>;
   onRunTask: (taskId: string, mode: ExecutionMode) => void;
@@ -29,6 +28,8 @@ interface TaskQueuePanelProps {
   canExecute?: boolean;
   /** Time remaining in seconds for the currently executing task */
   timeRemaining?: number | null;
+  /** Timeout in seconds for tasks (used to estimate remaining time on reload) */
+  timeoutSeconds?: number | null;
 }
 
 const statusOrder: Record<TaskStatus, number> = {
@@ -115,6 +116,7 @@ export function TaskQueuePanel({
   onCancelTask,
   canExecute = true,
   timeRemaining,
+  timeoutSeconds,
 }: TaskQueuePanelProps) {
   // Sort tasks: pending → running → failed → complete
   const sortedTasks = [...tasks].sort((a, b) => {
@@ -148,11 +150,15 @@ export function TaskQueuePanel({
           {sortedTasks.map((task) => {
             const status = task.status as TaskStatus;
             const uiState = taskRunStates[task.id];
-            const isRunning = uiState === 'running' || executingTaskId === task.id;
+            const isRunning = uiState === 'running' || executingTaskId === task.id || status === 'in-progress';
             const hasFailed = uiState === 'failed';
             const isTimedOut = status === 'timed-out';
             const isCancelled = status === 'cancelled';
             const canRun = (status === 'pending' || status === 'ready' || hasFailed || isTimedOut) && canExecute && !isAnyRunning;
+            const fallbackRemaining = task.startedAt && timeoutSeconds
+              ? Math.max(0, Math.ceil((task.startedAt + timeoutSeconds * 1000 - Date.now()) / 1000))
+              : null;
+            const remainingSeconds = timeRemaining ?? fallbackRemaining;
 
             return (
               <li key={task.id} className="px-4 py-3">
@@ -164,7 +170,7 @@ export function TaskQueuePanel({
                     <div className="mt-1 flex items-center gap-2">
                       {getStatusBadge(status, isRunning, hasFailed)}
                       <span className="text-xs text-text-soft/50 truncate">
-                        {task.deskId}
+                        {task.toolId}
                       </span>
                     </div>
 
@@ -180,8 +186,9 @@ export function TaskQueuePanel({
                         </div>
                         {/* ETA display */}
                         <p className="text-xs text-blue-600">
-                          Generating... {timeRemaining !== null && timeRemaining !== undefined
-                            ? formatTimeRemaining(timeRemaining)
+                          {task.executionPhase ? `Phase: ${task.executionPhase}` : 'Generating...'}{' '}
+                          {remainingSeconds !== null && remainingSeconds !== undefined
+                            ? formatTimeRemaining(remainingSeconds)
                             : ''}
                         </p>
                       </div>
@@ -206,23 +213,23 @@ export function TaskQueuePanel({
                   <div className="flex items-center gap-1 shrink-0">
                     {/* Cancel Button - visible while running */}
                     {isRunning && onCancelTask && (
-                      <Button
+                      <button
                         onClick={() => onCancelTask(task.id)}
                         className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
                         aria-label="Cancel task"
                       >
                         <XCircle size={10} />
                         Cancel
-                      </Button>
+                      </button>
                     )}
 
-                    {/* Run/Retry Button */}
+                    {/* Run/Retry Action */}
                     {canRun && (
-                      <Button
+                      <button
                         data-tour="run-button"
                         onClick={() => onRunTask(task.id, 'execute')}
                         disabled={!canRun}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-zinc-900 text-white hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-text-primary/80 underline underline-offset-4 decoration-[var(--color-gold)]/60 hover:text-text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                         aria-label={hasFailed || isTimedOut ? 'Retry task' : 'Run task'}
                       >
                         {hasFailed || isTimedOut ? (
@@ -236,7 +243,7 @@ export function TaskQueuePanel({
                             Run
                           </>
                         )}
-                      </Button>
+                      </button>
                     )}
                   </div>
                 </div>

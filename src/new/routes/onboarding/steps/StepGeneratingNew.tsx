@@ -1,10 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { useSpreadGeneration } from '../hooks/useSpreadGeneration';
 import { ProgressSpinner, ProgressBar } from '../../../components/ProgressDot';
 import { CheckCircle2 } from 'lucide-react';
 import { analytics } from '@/lib/analytics';
 import { Button } from '@/components/ui/Button';
+import {
+    ensureGenerationSession,
+    loadGenerationSession,
+    markGenerationComplete,
+    markGenerationRunning,
+} from '../utils/generationSession';
 
 interface SuccessProps {
     projectName: string;
@@ -55,21 +62,122 @@ const OnboardingSuccess = ({ projectName, sessionStartTime, generationStartTime,
 };
 
 export const StepGenerating = () => {
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { data, sessionStartTime } = useOnboarding();
-    const { generateSpread, isGenerating, error, progress } = useSpreadGeneration();
+    const { generateSpread, isGenerating, error, progress, phase, operation } = useSpreadGeneration();
     const [startTime] = useState(Date.now());
+    const [sessionId, setSessionId] = useState<string | null>(null);
+    const [waitingForResume, setWaitingForResume] = useState(false);
+    const projectIdParam = searchParams.get('projectId');
+    const skipContext = searchParams.get('skipContext') === '1';
+    const modeParam = searchParams.get('mode');
+    const existingSessionId = searchParams.get('generationSessionId');
+    const sessionFromStorage = useMemo(
+        () => (projectIdParam ? loadGenerationSession(projectIdParam) : null),
+        [projectIdParam]
+    );
+
+    const phaseLabel = useMemo(() => {
+        const lookup: Record<string, string> = {
+            collecting_context: 'Collecting context',
+            generating: 'Generating workspace',
+            saving: 'Saving setup',
+            complete: 'Complete',
+        };
+        return lookup[phase] || 'Provisioning';
+    }, [phase]);
+
+    const resumePhaseLabel = useMemo(() => {
+        const lookup: Record<string, string> = {
+            collecting_context: 'Collecting context',
+            generating: 'Generating workspace',
+            saving: 'Saving setup',
+            complete: 'Complete',
+        };
+        return lookup[sessionFromStorage?.phase || ''] || 'Provisioning';
+    }, [sessionFromStorage?.phase]);
+
+    const displayProgress = waitingForResume && sessionFromStorage?.progress !== undefined
+        ? sessionFromStorage.progress
+        : progress;
+
+    const displayPhase = waitingForResume ? resumePhaseLabel : phaseLabel;
     
     useEffect(() => {
         analytics.track('onboarding_step_viewed', { step: 3, stepName: 'generating' });
+    }, []);
 
-        // Auto-start generation on mount
-        if (!error && !isGenerating) {
-            generateSpread(data);
+    useEffect(() => {
+        if (!projectIdParam) {
+            const nextParams = new URLSearchParams();
+            if (modeParam) nextParams.set('mode', modeParam);
+            nextParams.set('step', 'project-info');
+            navigate(`/new?${nextParams.toString()}`, { replace: true });
+            return;
         }
-    }, []); // Run once on mount
+
+        const session = ensureGenerationSession(projectIdParam, existingSessionId, {
+            skippedContext: skipContext,
+        });
+        setSessionId(session.id);
+
+        if (existingSessionId !== session.id) {
+            const nextParams = new URLSearchParams(searchParams);
+            nextParams.set('generationSessionId', session.id);
+            navigate(`/new?${nextParams.toString()}`, { replace: true });
+            return;
+        }
+
+        if (session.status === 'complete') {
+            navigate(`/p/${projectIdParam}/workspace`, { replace: true });
+            return;
+        }
+
+        if (sessionFromStorage?.status === 'running' && sessionFromStorage.startedAt && !isGenerating) {
+            setWaitingForResume(true);
+            return;
+        }
+
+        if (!error && !isGenerating) {
+            const runningSession = markGenerationRunning(session);
+            setWaitingForResume(false);
+            generateSpread(data, { projectId: runningSession.projectId, generationSessionId: runningSession.id })
+                .then(() => {
+                    markGenerationComplete(runningSession);
+                })
+                .catch(() => {
+                    // Error state handled by hook
+                });
+        }
+    }, [
+        projectIdParam,
+        existingSessionId,
+        searchParams,
+        skipContext,
+        modeParam,
+        navigate,
+        sessionFromStorage,
+        isGenerating,
+        error,
+        data,
+        generateSpread,
+    ]);
     
     const handleRetry = () => {
-        generateSpread(data);
+        if (!projectIdParam) return;
+        const session = ensureGenerationSession(projectIdParam, sessionId, {
+            skippedContext: skipContext,
+        });
+        setWaitingForResume(false);
+        markGenerationRunning(session);
+        generateSpread(data, { projectId: session.projectId, generationSessionId: session.id }).then(() => {
+            markGenerationComplete(session);
+        });
+    };
+
+    const handleResume = () => {
+        handleRetry();
     };
     
     if (error) {
@@ -98,7 +206,7 @@ export const StepGenerating = () => {
     }
     
     // Success state - shows briefly before redirect
-    if (progress >= 100) {
+    if (progress >= 100 || operation.status === 'success') {
         // Track completion on first success render
         // This is a bit naive but works for a simple 3-step flow
         return <OnboardingSuccess 
@@ -125,22 +233,30 @@ export const StepGenerating = () => {
             {/* Status Message */}
             <div className="space-y-3">
                 <h1 className="text-xl font-medium text-text-primary">
-                    Provisioning workspace...
+                    {waitingForResume ? 'Provisioning in progress...' : 'Provisioning workspace...'}
                 </h1>
                 <p className="text-base text-text-secondary">
-                    Applying default configuration for {data.projectName}
+                    {displayPhase} for {data.projectName}
                 </p>
             </div>
             
             {/* Progress Bar - coral accent (PERMITTED: active-progress) */}
             <div className="w-full max-w-xs">
-                <ProgressBar value={progress} size="sm" showLabel />
+                <ProgressBar value={displayProgress} size="sm" showLabel />
             </div>
             
             {/* Helper Text */}
             <p className="text-xs text-text-soft max-w-md">
-                Provisioning in progress. Configuration remains editable.
+                {skipContext
+                    ? 'Context can be added later. Provisioning continues.'
+                    : 'Provisioning in progress. Configuration remains editable.'}
             </p>
+
+            {waitingForResume && (
+                <Button onClick={handleResume} variant="primary" size="lg">
+                    Resume provisioning
+                </Button>
+            )}
         </div>
     );
 };

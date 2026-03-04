@@ -9,7 +9,7 @@ import type {
     MultiModelStrategy, 
     LowConfidenceBehavior, 
     AIPreferencesData,
-    ProductionDeskId
+    ProjectToolId
 } from './types';
 
 export type { 
@@ -18,7 +18,7 @@ export type {
     MultiModelStrategy, 
     LowConfidenceBehavior, 
     AIPreferencesData,
-    ProductionDeskId
+    ProjectToolId
 };
 
 // ============================================
@@ -197,7 +197,7 @@ export interface VisualDirectionData {
 }
 
 // ============================================
-// Step 3: Tear Sheet Intent
+// Step 3: Project Intent
 // ============================================
 
 export type ProductStoryStatement =
@@ -215,12 +215,14 @@ export type MoodboardUseCase =
     | 'ai-generation-guide'
     | 'personal-reference';
 
-export interface TearSheetIntentData {
+export interface ProjectIntentData {
     storyStatement: ProductStoryStatement | null;
     coreMessage: string; // Single most important idea
     useCase: MoodboardUseCase | null;
     detailLevel: number; // 1-5 scale
 }
+
+// TearSheet alias removed
 
 // ============================================
 // Step 4: AI Preferences (Router Defaults)
@@ -399,12 +401,11 @@ export interface ExtendedOnboardingProfile {
     // Step 5: Visual Direction (new project only)
     visualDirection: VisualDirectionData;
 
-    // Step 6: Tear Sheet Intent (new project only)
-    tearSheetIntent: TearSheetIntentData;
-
+    // Step 6: Project Intent (new project only)
+    projectIntent: ProjectIntentData;
     // Generated Outputs
     generatedMoodboardId?: string;
-    generatedTearSheetId?: string;
+    generatedContextId?: string;
 }
 
 // Default/empty states
@@ -433,12 +434,14 @@ export const DEFAULT_VISUAL_DIRECTION: VisualDirectionData = {
     existingAssets: null,
 };
 
-export const DEFAULT_TEAR_SHEET_INTENT: TearSheetIntentData = {
+export const DEFAULT_PROJECT_INTENT: ProjectIntentData = {
     storyStatement: null,
     coreMessage: '',
     useCase: null,
     detailLevel: 3,
 };
+
+// TearSheet default removed
 
 export const DEFAULT_AI_PREFERENCES: AIPreferencesData = {
     qualityPriority: null,
@@ -500,7 +503,7 @@ export const DEFAULT_EXTENDED_PROFILE: ExtendedOnboardingProfile = {
     budgetPreferences: DEFAULT_BUDGET_PREFERENCES,
     permissions: DEFAULT_PERMISSIONS,
     visualDirection: DEFAULT_VISUAL_DIRECTION,
-    tearSheetIntent: DEFAULT_TEAR_SHEET_INTENT,
+    projectIntent: DEFAULT_PROJECT_INTENT,
 };
 
 // ============================================

@@ -13,7 +13,8 @@ import {
     CodraEscalation,
     EscalationType,
 } from '../../domain/types';
-import { SpreadTask, TaskQueue, getQueueProgress } from '../../domain/task-queue';
+import { SpecificationTask, TaskQueue, getQueueProgress } from '../../domain/task-queue';
+import { costLedger } from '../execution/cost-ledger';
 
 // ============================================
 // Guardrail Check Functions
@@ -23,7 +24,7 @@ import { SpreadTask, TaskQueue, getQueueProgress } from '../../domain/task-queue
  * Check all guardrails for a task before execution
  */
 export function checkGuardrails(
-    task: SpreadTask,
+    task: SpecificationTask,
     project: Project,
     queue: TaskQueue,
     budgetSpent: number = 0
@@ -119,7 +120,7 @@ export function getActiveGuardrails(guardrails: CodraGuardrail[]): CodraGuardrai
  */
 export function createEscalation(
     guardrails: CodraGuardrail[],
-    task: SpreadTask
+    task: SpecificationTask
 ): CodraEscalation | null {
     const exceeded = guardrails.filter(g => g.status === 'exceeded');
 
@@ -154,8 +155,6 @@ export function createEscalation(
 // Budget Tracking
 // ============================================
 
-const BUDGET_STORAGE_KEY = 'codra:daily-budget:';
-
 interface DailyBudget {
     date: string; // YYYY-MM-DD
     spent: number;
@@ -167,30 +166,19 @@ interface DailyBudget {
  */
 export function getTodaysBudget(projectId: string): DailyBudget {
     const today = new Date().toISOString().split('T')[0];
-    const key = `${BUDGET_STORAGE_KEY}${projectId}:${today}`;
-
-    const stored = localStorage.getItem(key);
-    if (stored) {
-        try {
-            return JSON.parse(stored) as DailyBudget;
-        } catch {
-            // Fall through to default
-        }
-    }
-
-    return { date: today, spent: 0, runs: 0 };
+    const summary = costLedger.getDailySummary(projectId, today);
+    return { date: today, spent: summary.spent, runs: summary.committedCount };
 }
 
 /**
  * Record a task execution cost
  */
 export function recordTaskCost(projectId: string, cost: number): void {
-    const budget = getTodaysBudget(projectId);
-    budget.spent += cost;
-    budget.runs += 1;
-
-    const key = `${BUDGET_STORAGE_KEY}${projectId}:${budget.date}`;
-    localStorage.setItem(key, JSON.stringify(budget));
+    costLedger.commit({
+        projectId,
+        amount: cost,
+        metadata: { source: 'guardrail_record' },
+    });
 }
 
 /**

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, Sparkles, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { ProductionDeskId } from '@/domain/types';
+import { ProjectToolId } from '@/domain/types';
 import { DeskSuggestion, getDeskSuggestions } from '@/lib/desk-suggestions';
 import { SuggestionCard } from './SuggestionCard';
 import { analytics } from '@/lib/analytics';
@@ -10,7 +10,7 @@ import { analytics } from '@/lib/analytics';
 interface SuggestionsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  sourceDesk: ProductionDeskId;
+  sourceDesk: ProjectToolId;
   artifactType: string;
   artifactContent: string;
   onBatchCreate: (suggestions: DeskSuggestion[]) => Promise<void>;

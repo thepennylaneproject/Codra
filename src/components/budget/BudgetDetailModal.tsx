@@ -3,7 +3,7 @@ import { X, TrendingUp, AlertCircle, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useBudget } from '@/hooks/useBudget';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { PRODUCTION_DESKS } from '../../domain/types';
+import { PROJECT_TOOLS } from '../../domain/types';
 
 interface BudgetDetailModalProps {
     isOpen: boolean;
@@ -16,7 +16,7 @@ export function BudgetDetailModal({ isOpen, onClose }: BudgetDetailModalProps) {
     if (!isOpen) return null;
 
     const deskData = Object.entries(byDesk).map(([deskId, cost]) => {
-        const desk = PRODUCTION_DESKS.find(d => d.id === deskId);
+        const desk = PROJECT_TOOLS.find(d => d.id === deskId);
         return {
             name: desk?.label || deskId,
             cost: Number(cost.toFixed(2))

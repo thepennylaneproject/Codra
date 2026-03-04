@@ -9,6 +9,7 @@ import { ImportContextModal, type EditedContext } from '@/components/onboarding/
 import { useAuth } from '@/hooks/useAuth';
 import { useFeatureFlag } from '@/hooks/useFeatureFlag';
 import { FEATURE_FLAGS } from '@/lib/feature-flags';
+import { ensureGenerationSession } from '../utils/generationSession';
 
 const ONBOARDING_PROJECT_KEY = 'codra:onboardingProject';
 
@@ -16,6 +17,7 @@ export const StepAddContext = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const projectId = searchParams.get('projectId');
+    const modeParam = searchParams.get('mode');
     const { data, addFile, removeFile, updateData } = useOnboarding();
     const { user } = useAuth();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -48,22 +50,36 @@ export const StepAddContext = () => {
     }, [projectId]);
     
     const handleBack = () => {
-        navigate('/new');
+        const nextParams = new URLSearchParams();
+        if (modeParam) nextParams.set('mode', modeParam);
+        nextParams.set('step', 'project-info');
+        navigate(`/new?${nextParams.toString()}`);
     };
     
     const handleSkip = () => {
+        if (!projectId) return;
         analytics.track('onboarding_step_skipped', {
             step: 2,
             stepName: 'context',
             durationMs: Date.now() - startTime,
             projectId,
         });
+        const session = ensureGenerationSession(projectId, searchParams.get('generationSessionId'), {
+            skippedContext: true,
+        });
         // Update localStorage to generating step
         updateLocalStorageStep('generating');
-        navigate(`/new?step=generating&projectId=${projectId}`);
+        const nextParams = new URLSearchParams();
+        if (modeParam) nextParams.set('mode', modeParam);
+        nextParams.set('step', 'generating');
+        nextParams.set('projectId', projectId);
+        nextParams.set('generationSessionId', session.id);
+        nextParams.set('skipContext', '1');
+        navigate(`/new?${nextParams.toString()}`);
     };
     
     const handleContinue = () => {
+        if (!projectId) return;
         analytics.track('onboarding_step_completed', {
             step: 2,
             stepName: 'context',
@@ -72,9 +88,15 @@ export const StepAddContext = () => {
             fileTypes: data.contextFiles.map(f => f.type),
             projectId,
         });
+        const session = ensureGenerationSession(projectId, searchParams.get('generationSessionId'));
         // Update localStorage to generating step
         updateLocalStorageStep('generating');
-        navigate(`/new?step=generating&projectId=${projectId}`);
+        const nextParams = new URLSearchParams();
+        if (modeParam) nextParams.set('mode', modeParam);
+        nextParams.set('step', 'generating');
+        nextParams.set('projectId', projectId);
+        nextParams.set('generationSessionId', session.id);
+        navigate(`/new?${nextParams.toString()}`);
     };
     
     const updateLocalStorageStep = (step: OnboardingProjectState['step']) => {
@@ -304,14 +326,13 @@ export const StepAddContext = () => {
                 <div className="flex-1" />
                 
                 {/* Skip Button */}
-                <Button
+                <button
+                    type="button"
                     onClick={handleSkip}
-                    variant="ghost"
-                    size="lg"
-                    className="border border-[#1A1A1A]/20 text-text-primary"
+                    className="text-sm font-medium text-text-secondary underline underline-offset-4 hover:text-text-primary transition-colors"
                 >
-                    Open next step
-                </Button>
+                    Skip for now
+                </button>
                 
                 {/* Continue Button */}
                 <Button

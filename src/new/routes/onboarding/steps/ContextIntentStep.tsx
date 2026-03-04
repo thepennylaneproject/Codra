@@ -14,13 +14,13 @@ export const ContextIntentStep = () => {
     const {
         profile,
         updateContext,
-        updateTearSheetIntent,
+        updateProjectIntent,
         setStep,
         updateLegacyData,
     } = useOnboardingStore();
     const state = useOnboardingStore();
 
-    const { context, tearSheetIntent } = profile;
+    const { context, projectIntent } = profile;
     const stepMeta = STEP_METADATA.context;
     const canProceed = canProceedFromStep('context', state);
 
@@ -88,17 +88,17 @@ export const ContextIntentStep = () => {
                         {STORY_STATEMENT_OPTIONS.map(option => (
                             <Button
                                 key={option.id}
-                                onClick={() => updateTearSheetIntent({ storyStatement: option.id })}
-                                className={`p-8 text-left border rounded-[24px] transition-all duration-500 group ${tearSheetIntent.storyStatement === option.id
+                                onClick={() => updateProjectIntent({ storyStatement: option.id })}
+                                className={`p-8 text-left border rounded-[24px] transition-all duration-500 group ${projectIntent.storyStatement === option.id
                                     ? 'border-zinc-400 bg-zinc-200/40 shadow-2xl shadow-zinc-500/10'
                                     : 'border-[var(--color-ink)]/5 hover:border-[var(--color-ink)]/20 bg-white'
                                     }`}
                             >
                                 <div className="flex items-center justify-between mb-4">
-                                    <span className={`text-xs font-semibold ${tearSheetIntent.storyStatement === option.id ? 'text-zinc-500' : 'text-text-primary'}`}>
+                                    <span className={`text-xs font-semibold ${projectIntent.storyStatement === option.id ? 'text-zinc-500' : 'text-text-primary'}`}>
                                         {option.label}
                                     </span>
-                                    {tearSheetIntent.storyStatement === option.id && <Check size={14} strokeWidth={4} className="text-zinc-500" />}
+                                    {projectIntent.storyStatement === option.id && <Check size={14} strokeWidth={4} className="text-zinc-500" />}
                                 </div>
                                 <p className="text-xs text-text-soft font-medium leading-relaxed">{option.description}</p>
                             </Button>
@@ -110,15 +110,15 @@ export const ContextIntentStep = () => {
                 <section className="space-y-6">
                     <label className="block text-xs font-semibold text-text-soft">The North Star Message</label>
                     <textarea
-                        value={tearSheetIntent.coreMessage}
-                        onChange={(e) => updateTearSheetIntent({ coreMessage: e.target.value })}
+                        value={projectIntent.coreMessage}
+                        onChange={(e) => updateProjectIntent({ coreMessage: e.target.value })}
                         placeholder="What is the single most important thing someone should feel or know?"
                         className="w-full bg-white border border-[var(--color-ink)]/10 rounded-2xl p-6 text-sm font-medium focus:outline-none focus:border-zinc-400 focus:ring-4 focus:ring-zinc-400/5 transition-all resize-none min-h-[100px] placeholder:text-text-primary/20 shadow-sm"
                         maxLength={150}
                     />
                     <div className="flex justify-between items-center text-xs font-semibold text-text-soft">
                         <span>Emotional Resonance</span>
-                        <span>{tearSheetIntent.coreMessage.length}/150</span>
+                        <span>{projectIntent.coreMessage.length}/150</span>
                     </div>
                 </section>
 

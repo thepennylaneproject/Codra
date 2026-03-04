@@ -1,23 +1,19 @@
 import { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, X, Check, ArrowRight, User } from 'lucide-react';
-import { Button, IconButton } from './ui/Button';
+import { AlertCircle, Check, ArrowRight, User } from 'lucide-react';
+import { Button } from './ui/Button';
 import { ConflictState } from '../hooks/useConflictDetection';
 
 interface ConflictDialogProps {
   conflict: ConflictState | null;
-  onMerge: () => void;
   onUseMine: () => void;
   onUseTheirs: () => void;
-  onClose: () => void;
 }
 
 export function ConflictDialog({
   conflict,
-  onMerge,
   onUseMine,
   onUseTheirs,
-  onClose,
 }: ConflictDialogProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
 
@@ -40,7 +36,6 @@ export function ConflictDialog({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[10005] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-          onClick={onClose}
         >
           <motion.div
             ref={dialogRef}
@@ -59,19 +54,10 @@ export function ConflictDialog({
                 <div>
                   <h2 className="text-xl font-semibold text-zinc-900">Project Updated</h2>
                   <p className="text-zinc-500 mt-1">
-                    Another user modified this project while you were editing.
+                    Another user modified this project while you were editing. Choose which version to keep.
                   </p>
                 </div>
               </div>
-              <IconButton
-                variant="ghost"
-                size="md"
-                onClick={onClose}
-                aria-label="Close"
-                className="absolute top-6 right-6 text-zinc-400"
-              >
-                <X size={20} />
-              </IconButton>
             </div>
 
             {/* Content */}
@@ -152,17 +138,8 @@ export function ConflictDialog({
 
             {/* Footer */}
             <div className="px-8 py-6 bg-zinc-50 border-t border-zinc-100 flex flex-col sm:flex-row gap-3">
-                {conflict.canAutoMerge && (
-                  <Button
-                    variant="primary"
-                    onClick={onMerge}
-                    className="flex-1 font-semibold h-12"
-                  >
-                    Merge & Save
-                  </Button>
-                )}
                 <Button
-                  variant="secondary"
+                  variant="primary"
                   onClick={onUseMine}
                   className="flex-1 h-12 font-semibold"
                 >
@@ -171,7 +148,7 @@ export function ConflictDialog({
                 <Button
                   variant="ghost"
                   onClick={onUseTheirs}
-                  className="flex-1 h-12 text-zinc-500 hover:text-zinc-900"
+                  className="flex-1 h-12 text-zinc-600 hover:text-zinc-900"
                 >
                   Accept Theirs
                 </Button>

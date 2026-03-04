@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { PenLine, Palette, Code2, BarChart3, LucideIcon } from 'lucide-react';
-import { ProductionDeskId } from '../../../domain/types';
+import { ProjectToolId } from '../../../domain/types';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { Button } from '@/components/ui/Button';
@@ -15,21 +15,21 @@ function cn(...inputs: ClassValue[]) {
 }
 
 interface DeskConfig {
-  id: ProductionDeskId;
+  id: ProjectToolId;
   label: string;
   icon: LucideIcon;
 }
 
 const DESK_CONFIG: DeskConfig[] = [
-  { id: 'write', label: 'Write', icon: PenLine },
+  { id: 'copy', label: 'Write', icon: PenLine },
   { id: 'design', label: 'Design', icon: Palette },
   { id: 'code', label: 'Code', icon: Code2 },
-  { id: 'analyze', label: 'Analyze', icon: BarChart3 },
+  { id: 'data', label: 'Analyze', icon: BarChart3 },
 ];
 
 interface DeskSwitcherProps {
-  activeDesk: ProductionDeskId;
-  onSwitch: (deskId: ProductionDeskId) => void;
+  activeDesk: ProjectToolId;
+  onSwitch: (deskId: ProjectToolId) => void;
 }
 
 export const DeskSwitcher: React.FC<DeskSwitcherProps> = ({ activeDesk, onSwitch }) => {

@@ -6,6 +6,7 @@ import { StepAddContext } from './steps/StepAddContext';
 import { StepGenerating } from './steps/StepGeneratingNew';
 import { ResumeProjectDialog } from './components/ResumeProjectDialog';
 import { useToast } from '@/new/components/Toast';
+import { loadGenerationSession } from './utils/generationSession';
 
 const ONBOARDING_PROJECT_KEY = 'codra:onboardingProject';
 
@@ -24,19 +25,30 @@ const ONBOARDING_PROJECT_KEY = 'codra:onboardingProject';
 export const OnboardingFlow = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { setStep, reset, setProjectId } = useOnboarding();
+    const { reset, setProjectId } = useOnboarding();
     const toast = useToast();
     const stepParam = searchParams.get('step');
     const projectIdParam = searchParams.get('projectId');
+    const modeParam = searchParams.get('mode');
     
     // Resume dialog state
     const [showResumeDialog, setShowResumeDialog] = useState(false);
     const [savedProject, setSavedProject] = useState<OnboardingProjectState | null>(null);
     
+    // Normalize URL to ensure step is present
+    useEffect(() => {
+        if (!stepParam) {
+            const nextParams = new URLSearchParams();
+            if (modeParam) nextParams.set('mode', modeParam);
+            nextParams.set('step', 'project-info');
+            navigate(`/new?${nextParams.toString()}`, { replace: true });
+        }
+    }, [stepParam, modeParam, navigate]);
+
     // Check for existing project on mount (only on initial load, not step changes)
     useEffect(() => {
-        // Only check when on the root /new page (no step param)
-        if (stepParam) return;
+        // Only check when on the start step
+        if (stepParam && stepParam !== 'project-info') return;
         
         try {
             const saved = localStorage.getItem(ONBOARDING_PROJECT_KEY);
@@ -52,38 +64,48 @@ export const OnboardingFlow = () => {
             // Invalid localStorage data, clear it
             localStorage.removeItem(ONBOARDING_PROJECT_KEY);
         }
-    }, []);
+    }, [stepParam]);
     
     // Validate projectId from URL when on context or generating steps
     useEffect(() => {
         if ((stepParam === 'context' || stepParam === 'generating') && !projectIdParam) {
             // Missing projectId in URL - redirect to start
             toast.error('Missing project ID. Please start over.');
-            navigate('/new');
+            const nextParams = new URLSearchParams();
+            if (modeParam) nextParams.set('mode', modeParam);
+            nextParams.set('step', 'project-info');
+            navigate(`/new?${nextParams.toString()}`, { replace: true });
         }
-    }, [stepParam, projectIdParam, navigate]);
-    
-    // Sync URL step with store
-    useEffect(() => {
-        if (stepParam === 'context') {
-            setStep('context');
-        } else if (stepParam === 'generating') {
-            setStep('generating');
-        } else {
-            setStep('project-info');
-        }
-    }, [stepParam, setStep]);
+    }, [stepParam, projectIdParam, navigate, modeParam, toast]);
     
     // Handle resume: navigate to saved step with projectId
     const handleResume = () => {
         if (!savedProject) return;
+        if (!savedProject.projectId) {
+            toast.error('Missing project ID. Please start over.');
+            handleCreateNew();
+            return;
+        }
         
         setProjectId(savedProject.projectId);
         setShowResumeDialog(false);
         
         // Navigate to the saved step
         const step = savedProject.step || 'context';
-        navigate(`/new?step=${step}&projectId=${savedProject.projectId}`);
+        const nextParams = new URLSearchParams();
+        if (modeParam) nextParams.set('mode', modeParam);
+        nextParams.set('step', step);
+        nextParams.set('projectId', savedProject.projectId);
+        if (step === 'generating') {
+            const session = loadGenerationSession(savedProject.projectId);
+            if (session?.id) {
+                nextParams.set('generationSessionId', session.id);
+                if (session.skippedContext) {
+                    nextParams.set('skipContext', '1');
+                }
+            }
+        }
+        navigate(`/new?${nextParams.toString()}`);
         toast.success(`Resuming "${savedProject.projectName}"`);
     };
     

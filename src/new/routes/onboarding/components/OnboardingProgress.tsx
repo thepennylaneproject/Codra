@@ -18,8 +18,17 @@ export const OnboardingProgress = ({ currentStep }: OnboardingProgressProps) => 
         !['mode', 'generating', 'complete'].includes(s)
     );
 
+    const displayIndex = Math.max(0, displaySteps.indexOf(currentStep));
+    const displayTotal = displaySteps.length;
+    const stepLabel = displayTotal > 0 ? `Step ${displayIndex + 1} of ${displayTotal}` : '';
+
     return (
         <div className="space-y-4">
+            {stepLabel && (
+                <div className="text-xs font-medium text-text-secondary">
+                    {stepLabel}
+                </div>
+            )}
             {/* Progress Bar */}
             <div className="relative h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                 <div

@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useOnboardingStore } from '../store';
 import { createProject } from '../../../../domain/projects';
 import { generateMoodboardV2 } from '../moodboardGeneratorV2';
-import { TearSheetRevision } from '../../../../domain/types';
+import { ProjectContextRevision } from '../../../../domain/types';
 import { Loader2, Sparkles, FileText, Palette } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import {
+    loadGenerationSessionById,
+    saveGenerationSessionById,
+} from '../utils/generationSession';
+import { storageAdapter } from '@/lib/storage/StorageKeyAdapter';
 
 type GenerationPhase = 'starting' | 'moodboard' | 'tear-sheet' | 'project' | 'complete';
 
@@ -19,6 +24,7 @@ const PHASE_LABELS: Record<GenerationPhase, string> = {
 
 export const GeneratingStep = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const {
         profile,
         buildProjectData,
@@ -30,12 +36,42 @@ export const GeneratingStep = () => {
 
     const [phase, setPhase] = useState<GenerationPhase>('starting');
     const [error, setError] = useState<string | null>(null);
+    const [waitingForResume, setWaitingForResume] = useState(false);
+    const [generationSessionId] = useState(
+        () => searchParams.get('generationSessionId') || crypto.randomUUID()
+    );
+
+    useEffect(() => {
+        if (searchParams.get('generationSessionId') === generationSessionId) return;
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.set('generationSessionId', generationSessionId);
+        navigate(`/new?${nextParams.toString()}`, { replace: true });
+    }, [searchParams, generationSessionId, navigate]);
 
     useEffect(() => {
         let isMounted = true;
 
         const generate = async () => {
             try {
+                const storedSession = loadGenerationSessionById(generationSessionId);
+                if (storedSession?.status === 'complete' && storedSession.projectId) {
+                    navigate(`/p/${storedSession.projectId}/context?mode=draft&from=onboarding`, { replace: true });
+                    return;
+                }
+
+                if (storedSession?.status === 'running' && storedSession.startedAt) {
+                    setWaitingForResume(true);
+                    return;
+                }
+
+                saveGenerationSessionById(generationSessionId, {
+                    id: generationSessionId,
+                    projectId: storedSession?.projectId || '',
+                    status: 'running',
+                    startedAt: storedSession?.startedAt ?? Date.now(),
+                });
+                setWaitingForResume(false);
+
                 // Phase 1: Generate Moodboard
                 if (!isMounted) return;
                 setPhase('moodboard');
@@ -68,7 +104,7 @@ export const GeneratingStep = () => {
                 const contextSnapshot = buildProjectContextSnapshot();
 
                 // Build Tear Sheet content from profile
-                const tearSheetRevision: TearSheetRevision = {
+                const contextRevision: ProjectContextRevision = {
                     id: crypto.randomUUID(),
                     version: 1,
                     createdAt: new Date().toISOString(),
@@ -85,21 +121,23 @@ export const GeneratingStep = () => {
                 };
 
                 // Persist Tear Sheet to localStorage
-                localStorage.setItem(
-                    `codra:tearSheet:${project.id}`,
-                    JSON.stringify([tearSheetRevision])
-                );
+                storageAdapter.saveContextRevisions(project.id, [contextRevision]);
 
                 // Store extended profile for editability
-                localStorage.setItem(
-                    `codra:onboardingProfile:${project.id}`,
-                    JSON.stringify(profile)
-                );
+                storageAdapter.saveOnboardingProfile(project.id, profile);
 
                 // Phase 4: Complete
                 if (!isMounted) return;
                 setPhase('complete');
                 await new Promise(r => setTimeout(r, 400));
+
+                saveGenerationSessionById(generationSessionId, {
+                    id: generationSessionId,
+                    projectId: project.id,
+                    status: 'complete',
+                    startedAt: storedSession?.startedAt ?? Date.now(),
+                    completedAt: Date.now(),
+                });
 
                 // Navigate to Project Context for confirmation
                 navigate(`/p/${project.id}/context?mode=draft&from=onboarding`);
@@ -122,6 +160,15 @@ export const GeneratingStep = () => {
     const handleRetry = () => {
         setError(null);
         setStep(profile.isImportFlow ? 'import' : 'context');
+    };
+
+    const handleResume = () => {
+        setWaitingForResume(false);
+        setPhase('starting');
+        setError(null);
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.set('generationSessionId', generationSessionId);
+        navigate(`/new?${nextParams.toString()}`, { replace: true });
     };
 
     if (error) {
@@ -195,6 +242,15 @@ export const GeneratingStep = () => {
                 Assembling your workspace.<br/>
                 Final review and confirmation required before launch.
             </p>
+
+            {waitingForResume && (
+                <Button
+                    onClick={handleResume}
+                    className="px-6 py-3 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 rounded-sm text-sm font-medium hover:opacity-90 transition-opacity"
+                >
+                    Resume provisioning
+                </Button>
+            )}
         </div>
     );
 };
@@ -249,7 +305,8 @@ function buildAffectedSections(profile: ReturnType<typeof useOnboardingStore.get
     if (profile.context.creativeGoals.includes('marketing-campaign')) {
         sections.push('Campaign Assets');
     }
-    if (profile.tearSheetIntent.useCase === 'designer-handoff') {
+    const projectIntent = profile.projectIntent;
+    if (projectIntent?.useCase === 'designer-handoff') {
         sections.push('Design Specifications');
     }
 
@@ -258,9 +315,10 @@ function buildAffectedSections(profile: ReturnType<typeof useOnboardingStore.get
 
 // Helper: Estimate cost from profile
 function estimateCost(profile: ReturnType<typeof useOnboardingStore.getState>['profile']): string {
+    const projectIntent = profile.projectIntent;
     const complexity = profile.visualDirection.personality.length +
         profile.visualDirection.imageryTypes.length +
-        (profile.tearSheetIntent.detailLevel || 3);
+        (projectIntent?.detailLevel || 3);
 
     if (complexity <= 5) return '$ - Simple Start';
     if (complexity <= 8) return '$$ - Moderate Investment';
@@ -270,6 +328,7 @@ function estimateCost(profile: ReturnType<typeof useOnboardingStore.getState>['p
 // Helper: Build workflow changes
 function buildWorkflowChanges(profile: ReturnType<typeof useOnboardingStore.getState>['profile']): string[] {
     const changes: string[] = [];
+    const projectIntent = profile.projectIntent;
 
     if (profile.context.aiWorkStyle === 'full-automation') {
         changes.push('Automated generation enabled');
@@ -277,7 +336,7 @@ function buildWorkflowChanges(profile: ReturnType<typeof useOnboardingStore.getS
     if (profile.context.aiWorkStyle === 'suggest-then-approve') {
         changes.push('Approval queue active');
     }
-    if (profile.tearSheetIntent.useCase === 'client-presentation') {
+    if (projectIntent?.useCase === 'client-presentation') {
         changes.push('Export mode configured');
     }
     if (profile.visualDirection.existingAssets === 'full-brand-guidelines') {

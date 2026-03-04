@@ -51,6 +51,30 @@ function transformProfile(row: Record<string, unknown>): UserProfile {
 }
 
 /**
+ * Transform profile payload from the user-profile Netlify function.
+ */
+function transformRemoteProfile(payload: Record<string, unknown>): UserProfile {
+  return {
+    id: payload.id as string,
+    email: payload.email as string,
+    fullName: (payload.fullName as string) ?? null,
+    displayName: (payload.displayName as string) ?? null,
+    avatarUrl: (payload.avatarUrl as string) ?? null,
+    company: (payload.company as string) ?? null,
+    jobTitle: (payload.jobTitle as string) ?? null,
+    timezone: (payload.timezone as string) || 'UTC',
+    preferences: payload.preferences as UserProfile['preferences'],
+    plan: payload.plan as UserProfile['plan'],
+    planStartedAt: payload.planStartedAt ? new Date(payload.planStartedAt as string) : null,
+    planExpiresAt: payload.planExpiresAt ? new Date(payload.planExpiresAt as string) : null,
+    onboardingCompleted: Boolean(payload.onboardingCompleted),
+    lastActiveAt: new Date(payload.lastActiveAt as string),
+    createdAt: new Date(payload.createdAt as string),
+    updatedAt: new Date(payload.updatedAt as string),
+  };
+}
+
+/**
  * Map Supabase auth errors to our error codes
  */
 function mapAuthError(error: unknown): AuthenticationError {
@@ -286,11 +310,34 @@ export const authAdapter = {
         .eq('id', targetUserId)
         .single();
 
-      if (error) {
+      if (!error) {
+        return { data: transformProfile(data), error: null };
+      }
+
+      // Fallback to service-role Netlify function when client query fails
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
         return { data: null, error: mapAuthError(error) };
       }
 
-      return { data: transformProfile(data), error: null };
+      const response = await fetch('/.netlify/functions/user-profile', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        return { data: null, error: mapAuthError(error) };
+      }
+
+      const body = await response.json().catch(() => null);
+      if (!body?.data) {
+        return { data: null, error: mapAuthError(error) };
+      }
+
+      return { data: transformRemoteProfile(body.data), error: null };
     } catch (err) {
       return { data: null, error: mapAuthError(err) };
     }

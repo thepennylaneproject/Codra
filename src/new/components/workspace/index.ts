@@ -5,20 +5,24 @@
  * Exports for the canonical workspace layout.
  *
  * Architecture:
- * - ExecutionDesk: Main three-column layout shell
- * - LyraConversationColumn: Left column for conversational planning
- * - ExecutionSurface: Center column for outputs (PRIMARY)
+ * - WorkspaceLayout: Main three-column layout shell
+ * - AssistantColumn: Left column for conversational planning
+ * - WorkspaceSurface: Center column for outputs (PRIMARY)
  * - ProofPanel: Right column for verification (collapsed by default)
  * - OutputDocument: Document wrapper for outputs
  */
 
-export { ExecutionDesk, LYRA_COLUMN_WIDTH, PROOF_COLUMN_WIDTH } from './ExecutionDesk';
-export { LyraConversationColumn } from './LyraConversationColumn';
-export { ExecutionSurface, getOutputStatusLabel, getOutputStatusColor } from './ExecutionSurface';
-export type { OutputStatus } from './ExecutionSurface';
+export { WorkspaceLayout, ASSISTANT_COLUMN_WIDTH, PROOF_COLUMN_WIDTH } from './WorkspaceLayout';
+export { AssistantColumn } from './AssistantColumn';
+export { WorkspaceSurface, getOutputStatusLabel, getOutputStatusColor } from './WorkspaceSurface';
+export type { OutputStatus } from './WorkspaceSurface';
 export { ProofPanel } from './ProofPanel';
 export type { VerificationResult, VerificationStatus, Conflict, SynthesisNote } from './ProofPanel';
+export { CostLedgerPanel } from './CostLedgerPanel';
 export { OutputDocument, OutputDocumentGroup, OutputDocumentSkeleton } from './OutputDocument';
-export { ExecutionDeskHeader } from './ExecutionDeskHeader';
-export { ExecutionDeskFooter } from './ExecutionDeskFooter';
+export { WorkspaceHeader } from './WorkspaceHeader';
+export { CostDisplay } from './CostDisplay';
+export { WorkspaceFooter } from './WorkspaceFooter';
+export { RetrievalSourcesPanel } from './RetrievalSourcesPanel';
+export { AuthenticityPanel } from './AuthenticityPanel';
 export { TaskQueuePanel } from './TaskQueuePanel';

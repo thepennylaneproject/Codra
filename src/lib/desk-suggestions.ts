@@ -3,17 +3,17 @@
  * Recommends follow-up tasks in other desks based on approved artifacts.
  */
 
-import { ProductionDeskId } from '../domain/types';
+import { ProjectToolId } from '../domain/types';
 
 export interface DeskSuggestion {
-  deskId: ProductionDeskId;
+  deskId: ProjectToolId;
   title: string;
   description: string;
   relevance: number; // 0-1
 }
 
-const SUGGESTION_MAP: Record<ProductionDeskId, Record<string, DeskSuggestion[]>> = {
-  'write': {
+const SUGGESTION_MAP: Record<ProjectToolId, Record<string, DeskSuggestion[]>> = {
+  'copy': {
     'copy': [
       {
         deskId: 'design',
@@ -40,7 +40,7 @@ const SUGGESTION_MAP: Record<ProductionDeskId, Record<string, DeskSuggestion[]>>
   'design': {
     'visual-direction': [
       {
-        deskId: 'write',
+        deskId: 'copy',
         title: 'Write Taglines',
         description: 'Craft headlines that resonate with the new visual mood.',
         relevance: 0.9,
@@ -54,7 +54,7 @@ const SUGGESTION_MAP: Record<ProductionDeskId, Record<string, DeskSuggestion[]>>
     ],
     'logo': [
       {
-        deskId: 'write',
+        deskId: 'copy',
         title: 'Brand Story',
         description: 'Develop a narrative around the new logo and identity.',
         relevance: 0.7,
@@ -64,7 +64,7 @@ const SUGGESTION_MAP: Record<ProductionDeskId, Record<string, DeskSuggestion[]>>
   'code': {
     'component': [
       {
-        deskId: 'write',
+        deskId: 'copy',
         title: 'Component Documentation',
         description: 'Write usage guidelines and API documentation for this component.',
         relevance: 0.8,
@@ -72,17 +72,17 @@ const SUGGESTION_MAP: Record<ProductionDeskId, Record<string, DeskSuggestion[]>>
     ],
     'api-integration': [
       {
-        deskId: 'analyze',
+        deskId: 'data',
         title: 'Performance Audit',
         description: 'Test the new API integration for latency and reliability.',
         relevance: 0.9,
       }
     ]
   },
-  'analyze': {
+  'data': {
     'research-summary': [
       {
-        deskId: 'write',
+        deskId: 'copy',
         title: 'Strategic Brief',
         description: 'Convert these insights into a high-level project strategy.',
         relevance: 0.9,
@@ -101,7 +101,7 @@ const SUGGESTION_MAP: Record<ProductionDeskId, Record<string, DeskSuggestion[]>>
  * Get desk suggestions based on approved work
  */
 export function getDeskSuggestions(
-  sourceDesk: ProductionDeskId,
+  sourceDesk: ProjectToolId,
   artifactType: string,
   _content: string // Could be used for AI-driven refinement
 ): DeskSuggestion[] {
@@ -114,13 +114,13 @@ export function getDeskSuggestions(
 
   // Fallback to generic desk suggestions if type is unknown
   if (suggestions.length === 0) {
-    if (sourceDesk === 'write') {
+    if (sourceDesk === 'copy') {
       suggestions = deskMap['copy'] || [];
     } else if (sourceDesk === 'design') {
       suggestions = deskMap['visual-direction'] || [];
     } else if (sourceDesk === 'code') {
       suggestions = deskMap['component'] || [];
-    } else if (sourceDesk === 'analyze') {
+    } else if (sourceDesk === 'data') {
       suggestions = deskMap['research-summary'] || [];
     }
   }

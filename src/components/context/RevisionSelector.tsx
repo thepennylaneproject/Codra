@@ -1,12 +1,12 @@
-import type { TearSheetRevision } from '@/domain/types';
+import type { ProjectContextRevision } from '@/domain/types';
 
 interface RevisionSelectorProps {
-  revisions: TearSheetRevision[];
+  revisions: ProjectContextRevision[];
   currentId: string | null;
   onSelect: (revisionId: string) => void;
 }
 
-function formatRevisionLabel(revision: TearSheetRevision) {
+function formatRevisionLabel(revision: ProjectContextRevision) {
   const date = new Date(revision.createdAt).toLocaleDateString();
   return `v${revision.version} · ${revision.status} · ${date}`;
 }

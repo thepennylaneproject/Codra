@@ -1,5 +1,6 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { useEffect, useMemo, useState, useCallback } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { getProjects } from '../../domain/projects';
 import { Project } from '../../domain/types';
 import { useToast } from '../components/Toast';
@@ -7,12 +8,44 @@ import { useFeatureGate } from '@/lib/hooks/useFeatureGate';
 import { UpgradeModal } from '../components/UpgradeModal';
 import { FirstRunExperience } from '@/components/fre';
 import { useFREStatus } from '@/hooks/useFREStatus';
+import { storageAdapter } from '@/lib/storage/StorageKeyAdapter';
+import { TaskQueue } from '@/domain/task-queue';
 
 /**
  * PROJECTS PAGE
  * Architectural project registry.
  */
 type ProjectStatus = 'Idle' | 'Running' | 'Complete';
+
+const PROJECTS_STORAGE_KEY = 'codra:projects';
+
+function loadStoredProjects(): Project[] {
+    if (typeof window === 'undefined') return [];
+    try {
+        const raw = localStorage.getItem(PROJECTS_STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+}
+
+function persistStoredProjects(projects: Project[]) {
+    if (typeof window === 'undefined') return;
+    try {
+        localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
+    } catch {
+        // ignore storage failures
+    }
+}
+
+function importProjectToStorage(project: Project) {
+    const existing = loadStoredProjects();
+    const next = [...existing.filter((p) => p.id !== project.id), project];
+    persistStoredProjects(next);
+    return next;
+}
 
 export function ProjectsPage() {
     const navigate = useNavigate();
@@ -59,23 +92,38 @@ export function ProjectsPage() {
         fetchProjects();
     }, []);
 
+    const handleCreatePrimary = useCallback(() => {
+        if (canCreateProject) {
+            navigate('/new');
+            setShowCreateMenu(false);
+        } else {
+            showUpgrade();
+        }
+    }, [canCreateProject, navigate, showUpgrade]);
+
+    const handleCreateMenuToggle = useCallback(() => {
+        if (canCreateProject) {
+            setShowCreateMenu((prev) => !prev);
+        } else {
+            showUpgrade();
+        }
+    }, [canCreateProject, showUpgrade]);
+
 
     const statusMap = useMemo(() => {
         const next = new Map<string, ProjectStatus>();
         if (typeof window === 'undefined') return next;
 
         for (const project of projects) {
-            const taskQueueKey = `codra:taskQueue:${project.id}`;
-            const stored = localStorage.getItem(taskQueueKey);
-            if (!stored) {
+            const storedQueue = storageAdapter.getTaskQueue(project.id) as TaskQueue | null;
+            if (!storedQueue) {
                 next.set(project.id, 'Idle');
                 continue;
             }
             try {
-                const parsed = JSON.parse(stored);
-                const tasks = Array.isArray(parsed?.tasks) ? parsed.tasks : [];
-                const hasRunning = tasks.some((task: { status?: string }) => task.status === 'in-progress');
-                const hasComplete = tasks.some((task: { status?: string }) => task.status === 'complete');
+                const tasks = Array.isArray(storedQueue?.tasks) ? storedQueue.tasks : [];
+                const hasRunning = tasks.some((task) => task.status === 'in-progress');
+                const hasComplete = tasks.some((task) => task.status === 'complete');
                 if (hasRunning) {
                     next.set(project.id, 'Running');
                 } else if (hasComplete) {
@@ -98,16 +146,25 @@ export function ProjectsPage() {
             <header className="border-b border-[#1A1A1A]/15 px-8 py-8">
                 <div className="flex items-center justify-between">
                     <h1 className="font-semibold tracking-tight text-[#1A1A1A]" style={{ fontSize: '24px' }}>Projects</h1>
-                    <div className="relative">
+                    <div className="relative inline-flex">
                         <button
                             data-tour="create-button"
-                            onClick={() => canCreateProject ? setShowCreateMenu(!showCreateMenu) : showUpgrade()}
+                            onClick={handleCreatePrimary}
                             disabled={!canCreateProject}
                             title={!canCreateProject ? reason : 'Create a new project'}
                             className={`font-normal text-[#1A1A1A] border border-[#1A1A1A]/15 px-3 py-1.5 ${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''}`}
                             style={{ fontSize: '14px' }}
                         >
                             Create
+                        </button>
+                        <button
+                            onClick={handleCreateMenuToggle}
+                            disabled={!canCreateProject}
+                            aria-label="Create options"
+                            title={!canCreateProject ? reason : 'More create options'}
+                            className={`border border-l-0 border-[#1A1A1A]/15 px-2 py-1.5 ${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            <ChevronDown size={14} className="text-[#1A1A1A]" />
                         </button>
                         {showCreateMenu && (
                             <>
@@ -164,10 +221,30 @@ export function ProjectsPage() {
                             try {
                                 const projectData = JSON.parse(event.target?.result as string);
                                 if (!projectData.name) throw new Error("Invalid project data");
-                                toast.success(`Project "${projectData.name}" imported. Redirecting...`);
-                                // Import flow would go here - for now just show success
-                                setTimeout(() => window.location.reload(), 1500);
-                            } catch (err) {
+
+                                const project: Project = {
+                                    id: projectData.id || crypto.randomUUID(),
+                                    name: projectData.name,
+                                    description: projectData.description,
+                                    goals: projectData.goals,
+                                    boundaries: projectData.boundaries,
+                                    audience: projectData.audience,
+                                    audienceContext: projectData.audienceContext,
+                                    brandConstraints: projectData.brandConstraints,
+                                    successCriteria: projectData.successCriteria,
+                                    guardrails: projectData.guardrails,
+                                    activeDesks: projectData.activeDesks,
+                                    budgetPolicy: projectData.budgetPolicy,
+                                    assets: projectData.assets,
+                                    moodboard: projectData.moodboard,
+                                    updatedAt: projectData.updatedAt || new Date().toISOString(),
+                                };
+
+                                const nextProjects = importProjectToStorage(project);
+                                setProjects(nextProjects);
+                                toast.success(`Project "${project.name}" imported. Opening workspace...`);
+                                navigate(`/p/${project.id}/workspace`);
+                            } catch {
                                 toast.error("Invalid project file.");
                             }
                         };
@@ -238,7 +315,7 @@ export function ProjectsPage() {
                     <div className="py-12 space-y-4">
                         <p className="font-normal text-[#1A1A1A] opacity-35" style={{ fontSize: '11px' }}>No projects.</p>
                         <button
-                            onClick={() => setShowCreateMenu(true)}
+                            onClick={handleCreatePrimary}
                             className="font-normal text-[#1A1A1A] border border-[#1A1A1A]/15 px-3 py-1.5"
                             style={{ fontSize: '14px' }}
                         >
@@ -275,4 +352,3 @@ export function ProjectsPage() {
         </div>
     );
 }
-

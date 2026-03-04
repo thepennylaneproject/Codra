@@ -12,6 +12,7 @@ import type {
   ShadowProject,
   ThoughtFragment,
 } from '../types';
+import { costService } from '@/lib/billing/cost-service';
 
 export interface DebatePreflightOptions {
   modelPlan?: DebateModelPlan[];
@@ -59,33 +60,19 @@ export function estimateDebateCost(
 
   const fragmentCount = fragments.length;
   const modelCount = modelPlan.length;
-  const perModelOverheadTokens = 80;
-  const outputTokenBase = 220;
-  const outputTokenPerFragment = 20;
 
-  const tokensInPerModel =
-    Math.round(inputChars / 4) +
-    fragmentCount * 50 +
-    Math.round(shadowChars / 6) +
-    perModelOverheadTokens;
-
-  const tokensOutPerModel =
-    outputTokenBase + Math.min(fragmentCount * outputTokenPerFragment, 800);
-
-  const tokensIn = tokensInPerModel * modelCount;
-  const tokensOut = tokensOutPerModel * modelCount;
-  const tokensTotal = tokensIn + tokensOut;
-  const creditsTotal = tokensTotal / 1000;
-
-  const basis: CreditEstimateBasis = {
+  const estimate = costService.estimateDebateTokens({
     inputChars,
     shadowChars,
     fragmentCount,
     modelCount,
-    perModelOverheadTokens,
-    outputTokenBase,
-    outputTokenPerFragment,
-  };
+  });
+
+  const tokensIn = estimate.tokensIn;
+  const tokensOut = estimate.tokensOut;
+  const tokensTotal = estimate.tokensTotal;
+  const creditsTotal = estimate.creditsTotal;
+  const basis: CreditEstimateBasis = estimate.basis;
 
   const estimateHash = hashEstimateInputs({
     shadow,

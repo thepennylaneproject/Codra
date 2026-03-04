@@ -1,4 +1,5 @@
 import { Project } from './types';
+import { supabase } from '@/lib/supabase';
 
 const STORAGE_KEY = 'codra:projects';
 
@@ -52,17 +53,69 @@ function saveProjectsToStorage(projects: Project[]) {
     }
 }
 
+async function fetchProjectsFromServer(): Promise<Project[] | null> {
+    if (typeof window === 'undefined') return null;
+
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.access_token) {
+            return null;
+        }
+
+        const response = await fetch('/.netlify/functions/projects-list', {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${session.access_token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const body = await response.json();
+        if (!body?.projects || !Array.isArray(body.projects)) {
+            return null;
+        }
+
+        const projects = body.projects.map((project: Project) => ({
+            ...project,
+            updatedAt: project.updatedAt || new Date().toISOString(),
+        })) as Project[];
+
+        saveProjectsToStorage(projects);
+        return projects;
+    } catch {
+        return null;
+    }
+}
+
 export async function getProjects(): Promise<Project[]> {
+    const remote = await fetchProjectsFromServer();
+    if (remote && remote.length > 0) {
+        return remote;
+    }
+
     // Simulator network delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 300));
     return loadProjectsFromStorage();
 }
 
 
 export async function getProjectById(id: string): Promise<Project | null> {
-    await new Promise(resolve => setTimeout(resolve, 300));
     const projects = loadProjectsFromStorage();
-    return projects.find(p => p.id === id) || null;
+    const cached = projects.find(p => p.id === id);
+    if (cached) return cached;
+
+    const remote = await fetchProjectsFromServer();
+    if (remote) {
+        const found = remote.find(p => p.id === id);
+        if (found) return found;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 150));
+    return null;
 }
 
 export async function createProject(profile: import('./types').OnboardingProfile): Promise<Project> {
@@ -109,4 +162,91 @@ export async function deleteProject(id: string): Promise<void> {
     if (index === -1) throw new Error('Project not found');
     projects.splice(index, 1);
     saveProjectsToStorage(projects);
+}
+
+interface CreateProjectParams {
+    userId: string;
+    name: string;
+    type: string;
+    summary?: string;
+}
+
+export async function createProjectOnServer(params: CreateProjectParams): Promise<{ projectId: string }> {
+    const { userId, name, type, summary } = params;
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session?.access_token) {
+        throw new Error('Authentication required');
+    }
+
+    // 1. Try Netlify Function first (official path)
+    try {
+        const response = await fetch('/.netlify/functions/projects-create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify({ name, type, summary }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return { projectId: data.projectId };
+        }
+        
+        // If 4xx error (validation), throw it (don't fallback)
+        if (response.status >= 400 && response.status < 500) {
+            const err = await response.json();
+            throw new Error(err.error || 'Project creation failed');
+        }
+        
+        // If 5xx error (server error/offline), fall through to client-side
+        console.warn('Backend function failed or unreachable (5xx). Attempting client-side fallback.');
+
+    } catch (err) {
+        // Network errors also fall through
+        console.warn('Backend function network error. Attempting client-side fallback.', err);
+    }
+
+    // 2. Client-side Fallback (Direct Supabase)
+    // After migration 20260122_unify_projects_schema.sql, all projects use unified schema
+    
+    // Map project type to domain
+    const projectDomainMap: Record<string, string> = {
+        campaign: 'content_engine',
+        product: 'saas',
+        content: 'content_engine',
+        custom: 'other',
+    };
+    const domain = projectDomainMap[type] || 'other';
+    const summaryText = summary || name;
+
+    // Use unified schema (title, summary, domain, primary_goal)
+    const payload = {
+        user_id: userId,
+        title: name,
+        summary: summaryText,
+        domain,
+        primary_goal: summaryText,
+        status: 'active',
+    };
+
+    const { data: project, error } = await supabase
+        .from('projects')
+        .insert(payload)
+        .select('id')
+        .single();
+
+    if (error) {
+        // Log error details for debugging
+        console.error('Failed to create project:', error);
+        throw new Error(error.message || 'Failed to create project');
+    }
+
+    if (!project) {
+        throw new Error('Failed to create project: No data returned');
+    }
+    
+    return { projectId: project.id };
 }

@@ -8,21 +8,21 @@ import type { Handler, HandlerEvent } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
 
 // Environment variables
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// Validate env vars
-if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error('Missing required environment variables');
-}
+const createSupabaseAdmin = () => {
+    if (!supabaseUrl || !supabaseServiceKey) {
+        return null;
+    }
 
-// Create Supabase admin client
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-    auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-    },
-});
+    return createClient(supabaseUrl, supabaseServiceKey, {
+        auth: {
+            autoRefreshToken: false,
+            persistSession: false,
+        },
+    });
+};
 
 // CORS headers
 const corsHeaders = {
@@ -42,7 +42,10 @@ const response = (statusCode: number, body: object) => ({
 });
 
 // Extract and verify JWT from Authorization header
-async function verifyAuth(event: HandlerEvent): Promise<{ userId: string; email: string } | null> {
+async function verifyAuth(
+    event: HandlerEvent,
+    supabaseAdmin: ReturnType<typeof createClient>
+): Promise<{ userId: string; email: string } | null> {
     const authHeader = event.headers.authorization || event.headers.Authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -99,8 +102,19 @@ export const handler: Handler = async (event: HandlerEvent) => {
         return response(405, { error: 'Method not allowed' });
     }
 
+    const supabaseAdmin = createSupabaseAdmin();
+    if (!supabaseAdmin) {
+        return response(500, {
+            error: 'Server misconfiguration',
+            missing: [
+                ...(supabaseUrl ? [] : ['SUPABASE_URL']),
+                ...(supabaseServiceKey ? [] : ['SUPABASE_SERVICE_ROLE_KEY']),
+            ],
+        });
+    }
+
     // Verify authentication
-    const auth = await verifyAuth(event);
+    const auth = await verifyAuth(event, supabaseAdmin);
     if (!auth) {
         return response(401, { error: 'Unauthorized' });
     }
@@ -133,6 +147,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
 
         // ============================================================
         // TIER ENFORCEMENT - Check project limits
+        // Fixed: Check subscriptions table for status (ARCH-004)
         // ============================================================
         
         // Get user profile with plan
@@ -167,14 +182,41 @@ export const handler: Handler = async (event: HandlerEvent) => {
             return response(500, { error: 'Failed to verify user tier' });
         }
 
+        // Check subscription status
+        const { data: subscription } = await supabaseAdmin
+            .from('subscriptions')
+            .select('status, plan_id')
+            .eq('user_id', userId)
+            .single();
+
         // Normalize tier (map variants to standard tiers)
         type UserTier = 'free' | 'pro' | 'team';
         let tier: UserTier = 'free';
-        const rawPlan = profile?.plan || 'free';
-        if (rawPlan === 'pro' || rawPlan === 'starter') {
-            tier = 'pro';
-        } else if (rawPlan === 'team' || rawPlan === 'enterprise' || rawPlan === 'agency') {
-            tier = 'team';
+
+        if (subscription && ['active', 'trialing'].includes(subscription.status)) {
+            // Use subscription plan if active
+            const planId = subscription.plan_id;
+            if (planId === 'pro' || planId === 'starter') {
+                tier = 'pro';
+            } else if (planId === 'team' || planId === 'enterprise' || planId === 'agency') {
+                tier = 'team';
+            }
+        } else if (profile) {
+             // Fallback to profile.plan if no active subscription (legacy users)
+             // But verify they aren't past_due in subscription table (handled above by strict status check)
+             // If subscription exists but is past_due, we fell through here. 
+             // Logic check: if subscription exists, we want to enforce it.
+             // If subscription exists and is NOT active/trialing, we force FREE.
+             // Only use profile if subscription does NOT exist.
+             
+             if (!subscription) {
+                const rawPlan = profile.plan || 'free';
+                if (rawPlan === 'pro' || rawPlan === 'starter') {
+                    tier = 'pro';
+                } else if (rawPlan === 'team' || rawPlan === 'enterprise' || rawPlan === 'agency') {
+                    tier = 'team';
+                }
+             }
         }
 
         // Get current project count
@@ -214,30 +256,71 @@ export const handler: Handler = async (event: HandlerEvent) => {
         }
 
         // ============================================================
-        // Insert project into database
-        const { data: project, error } = await supabaseAdmin
+        // Insert project into database (support both schemas)
+        const summaryText = summary || name;
+        const projectDomainMap: Record<string, string> = {
+            campaign: 'content_engine',
+            product: 'saas',
+            content: 'content_engine',
+            custom: 'other',
+        };
+        const domain = projectDomainMap[type] || 'other';
+
+        const architectPayload = {
+            user_id: userId,
+            title: name,
+            summary: summaryText,
+            domain,
+            primary_goal: summaryText,
+            status: 'active',
+        };
+
+        let project = null as { id: string; created_at: string } | null;
+        let error = null as any;
+
+        ({ data: project, error } = await supabaseAdmin
             .from('projects')
-            .insert({
-                user_id: userId,
-                name,
-                slug,
-                description: summary,
-                status: 'active',
-                settings: {
-                    projectType: type,
-                    defaultModel: 'gpt-4o',
-                    defaultProvider: 'aimlapi',
-                },
-            })
+            .insert(architectPayload)
             .select('id, created_at')
-            .single();
+            .single());
+
+        // ARCH-015 FIX: Check for correct Postgres error codes for schema mismatch
+        // 42P01: undefined_table, 42703: undefined_column
+        if (error?.code === '42P01' || error?.code === '42703') {
+            // Fallback to legacy schema
+            console.log('Architect schema insert failed, falling back to legacy schema');
+            ({ data: project, error } = await supabaseAdmin
+                .from('projects')
+                .insert({
+                    user_id: userId,
+                    name,
+                    slug,
+                    status: 'active',
+                    settings: {
+                        projectType: type,
+                        projectSummary: summary,
+                        defaultModel: 'gpt-4o',
+                        defaultProvider: 'aimlapi',
+                    },
+                })
+                .select('id, created_at')
+                .single());
+        }
 
         if (error) {
             console.error('Error creating project:', error);
 
-            // Check for duplicate slug
+            // Pattern 6: Handle Database Trigger Violation (Limit Exceeded)
+            if (error.code === 'P0001') {
+                return response(403, { 
+                    error: 'Project limit reached (enforced by database)',
+                    message: error.message || 'You have reached your project limit.',
+                    upgradeRequired: true
+                });
+            }
+
+            // Check for duplicate slug (legacy schema)
             if (error.code === '23505') {
-                // Unique constraint violation - try with timestamp suffix
                 const uniqueSlug = `${slug}-${Date.now()}`;
                 const { data: retryProject, error: retryError } = await supabaseAdmin
                     .from('projects')
@@ -245,10 +328,10 @@ export const handler: Handler = async (event: HandlerEvent) => {
                         user_id: userId,
                         name,
                         slug: uniqueSlug,
-                        description: summary,
                         status: 'active',
                         settings: {
                             projectType: type,
+                            projectSummary: summary,
                             defaultModel: 'gpt-4o',
                             defaultProvider: 'aimlapi',
                         },
@@ -257,6 +340,15 @@ export const handler: Handler = async (event: HandlerEvent) => {
                     .single();
 
                 if (retryError) {
+                    // Handle trigger violation on retry too
+                    if (retryError.code === 'P0001') {
+                        return response(403, { 
+                            error: 'Project limit reached (enforced by database)',
+                            message: retryError.message,
+                            upgradeRequired: true
+                        });
+                    }
+
                     console.error('Error creating project (retry):', retryError);
                     return response(500, { error: 'Failed to create project' });
                 }

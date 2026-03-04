@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { useLyraOptional } from '../../../../lib/lyra';
+import { useAssistantOptional } from '../../../../lib/assistant';
 
 export interface LyraSuggestionResponse {
     type: 'suggestion' | 'clarification' | 'idle' | 'thinking';
@@ -20,7 +20,7 @@ export interface LyraSuggestionResponse {
 }
 
 export function useLyraSuggestion(spreadId?: string, deskId?: string) {
-    const lyra = useLyraOptional();
+    const lyra = useAssistantOptional();
     const [suggestion, setSuggestion] = useState<LyraSuggestionResponse | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 

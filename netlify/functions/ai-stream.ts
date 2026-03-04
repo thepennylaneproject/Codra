@@ -13,6 +13,7 @@ import { CohereProvider } from '../../src/lib/ai/providers/cohere';
 import { HuggingFaceProvider } from '../../src/lib/ai/providers/huggingface';
 import { AIRouter } from '../../src/lib/ai/router';
 import type { AICompletionRequest } from '../../src/lib/ai/types';
+import { logAIRunStart, logAIRunComplete } from './utils/telemetry-helpers';
 
 const supabase = createClient(
     process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '',
@@ -154,46 +155,60 @@ export const handler: Handler = async (event, context) => {
             console.warn('HuggingFace not available:', e);
         }
 
+        // Log Run Start
+        const runId = await logAIRunStart({
+            userId: user.id,
+            workspaceId: null,
+            taskType: 'stream-completion',
+            grounded: false,
+            providerId: router.primaryProvider,
+            modelId: body.model,
+            estTokens: (body.messages || []).reduce((acc, m) => acc + m.content.length / 4, 0),
+        });
+
         // Start streaming
         let body_to_return = '';
         let totalCost = 0;
         let totalPromptTokens = 0;
         let totalCompletionTokens = 0;
         let usedProvider = '';
+        let success = true;
+        let errorMsg = '';
 
-        for await (const chunk of router.streamComplete({
-            model: body.model,
-            messages: body.messages,
-            temperature: body.temperature,
-            maxTokens: body.maxTokens,
-            provider: body.provider,
-        })) {
-            if (chunk.type === 'start') {
-                body_to_return += 'data: {"type":"start"}\n\n';
-                usedProvider = chunk.provider || usedProvider;
-            } else if (chunk.type === 'content' && chunk.content) {
-                body_to_return += `data: ${JSON.stringify({ type: 'content', content: chunk.content })}\n\n`;
-            } else if (chunk.type === 'end') {
-                totalCost = chunk.cost || 0;
-                totalPromptTokens = chunk.usage?.promptTokens || 0;
-                totalCompletionTokens = chunk.usage?.completionTokens || 0;
-            }
-        }
-
-        // Log usage
         try {
-            await supabase.from('usage_logs').insert({
-                user_id: user.id,
-                provider: usedProvider,
+            for await (const chunk of router.streamComplete({
                 model: body.model,
-                requests: 1,
-                prompt_tokens: totalPromptTokens,
-                completion_tokens: totalCompletionTokens,
-                cost: totalCost,
-                timestamp: new Date().toISOString(),
-            });
+                messages: body.messages,
+                temperature: body.temperature,
+                maxTokens: body.maxTokens,
+                provider: body.provider,
+            })) {
+                if (chunk.type === 'start') {
+                    body_to_return += 'data: {"type":"start"}\n\n';
+                    usedProvider = chunk.provider || usedProvider;
+                } else if (chunk.type === 'content' && chunk.content) {
+                    body_to_return += `data: ${JSON.stringify({ type: 'content', content: chunk.content })}\n\n`;
+                } else if (chunk.type === 'end') {
+                    totalCost = chunk.cost || 0;
+                    totalPromptTokens = chunk.usage?.promptTokens || 0;
+                    totalCompletionTokens = chunk.usage?.completionTokens || 0;
+                }
+            }
         } catch (e) {
-            console.error('Failed to log usage:', e);
+            success = false;
+            errorMsg = e instanceof Error ? e.message : String(e);
+            throw e;
+        } finally {
+            if (runId) {
+                await logAIRunComplete(runId, {
+                    actualPromptTokens: totalPromptTokens,
+                    actualCompletionTokens: totalCompletionTokens,
+                    actualCostUsd: totalCost,
+                    latencyMs: 0,
+                    success,
+                    errorMessageSafe: errorMsg,
+                });
+            }
         }
 
         body_to_return += `data: ${JSON.stringify({ type: 'end', usage: { promptTokens: totalPromptTokens, completionTokens: totalCompletionTokens }, cost: totalCost })}\n\n`;

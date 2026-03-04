@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useParams, useLocation, Link } from 'react-router-dom';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Rocket,
@@ -20,7 +20,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 import { useAuth } from '../../hooks/useAuth';
-import { useSupabaseSpread } from '../../hooks/useSupabaseSpread';
+import { useSpecification } from '../../hooks/useSpecification';
 import { useToast } from '../components/Toast';
 
 import type {
@@ -38,6 +38,9 @@ import {
     initiateScan,
     submitContextAndStartScan,
     getScan,
+    getLatestScanForProject,
+    resumeScan,
+    registerScan,
     toggleFindingSelection,
     convertFindingsToTasks,
 } from '../../lib/coherence-scan/coherence-scan-service';
@@ -70,20 +73,12 @@ const AUDIT_ICONS: Record<AuditType, typeof Rocket> = {
     'coherence-loop': RefreshCw,
 };
 
-// Severity colors
-const SEVERITY_COLORS: Record<string, string> = {
-    critical: 'bg-red-500/10 text-red-600 border-red-500/30',
-    high: 'bg-orange-500/10 text-orange-600 border-orange-500/30',
-    medium: 'bg-amber-500/10 text-amber-700 border-amber-500/30',
-    low: 'bg-blue-500/10 text-blue-600 border-blue-500/30',
-    info: 'bg-zinc-500/10 text-zinc-600 border-zinc-500/30',
-};
-
 type PageState = 'select' | 'questions' | 'scanning' | 'report' | 'loop-comparison';
 
 export default function CoherenceScanPage() {
     const { scanId } = useParams<{ scanId?: string }>();
     const location = useLocation();
+    const navigate = useNavigate();
     const { user } = useAuth();
     const toast = useToast();
 
@@ -99,13 +94,15 @@ export default function CoherenceScanPage() {
     const userId = user?.id || 'anonymous';
 
     // Supabase state for task integration
-    const { taskQueue, saveTaskQueue } = useSupabaseSpread(projectId || undefined);
+    const { taskQueue, saveTaskQueue } = useSpecification(projectId || undefined);
 
     // Page state
     const [pageState, setPageState] = useState<PageState>('select');
     const [, setSelectedScanType] = useState<ScanType | null>(null);
     const [currentScan, setCurrentScan] = useState<CoherenceScan | null>(null);
     const [loopComparison, setLoopComparison] = useState<LoopComparison | null>(null);
+    const resumeRef = useRef<string | null>(null);
+    const [queuedFindingsCount, setQueuedFindingsCount] = useState<number | null>(null);
 
     // Questions state
     const [questionAnswers, setQuestionAnswers] = useState<Record<string, string | string[]>>({});
@@ -144,6 +141,25 @@ export default function CoherenceScanPage() {
             }
         }
     }, [scanId]);
+
+    // Recover latest scan for project when no scanId is present
+    useEffect(() => {
+        if (scanId || !projectId) return;
+
+        const latest = getLatestScanForProject(projectId);
+        if (!latest) return;
+
+        const isActive = latest.status === 'pending'
+            || latest.status === 'gathering'
+            || latest.status === 'queued'
+            || latest.status === 'scanning';
+
+        if (!isActive) return;
+
+        setCurrentScan(latest);
+        setPageState(latest.status === 'scanning' ? 'scanning' : 'questions');
+        navigate(`/coherence-scan/${latest.id}?projectId=${projectId}`, { replace: true });
+    }, [scanId, projectId, navigate]);
 
     // Load projects for selection
     useEffect(() => {
@@ -216,6 +232,18 @@ export default function CoherenceScanPage() {
         return () => clearInterval(interval);
     }, [pageState, currentScan]);
 
+    // Resume scans after reload
+    useEffect(() => {
+        if (!currentScan) return;
+        if (currentScan.status !== 'queued' && currentScan.status !== 'scanning') return;
+        if (resumeRef.current === currentScan.id) return;
+
+        resumeRef.current = currentScan.id;
+        resumeScan(currentScan.id).catch((error) => {
+            console.error('Failed to resume scan:', error);
+        });
+    }, [currentScan]);
+
     const handleProjectChange = useCallback((nextId: string) => {
         setProjectId(nextId);
         const params = new URLSearchParams(location.search);
@@ -247,9 +275,10 @@ export default function CoherenceScanPage() {
         }
 
         setCurrentScan(result.scan);
+        navigate(`/coherence-scan/${result.scan.id}?projectId=${projectId}`, { replace: true });
         setPageState('questions');
         setCurrentQuestionIndex(0);
-    }, [userId, projectId, userTier]);
+    }, [userId, projectId, userTier, navigate]);
 
     const handleAnswerQuestion = (questionId: string, value: string | string[]) => {
         setQuestionAnswers(prev => ({ ...prev, [questionId]: value }));
@@ -321,6 +350,7 @@ export default function CoherenceScanPage() {
         try {
             await saveTaskQueue(updatedQueue);
             toast.success(`${newTasks.length} task${newTasks.length > 1 ? 's' : ''} added to your workspace queue.`);
+            setQueuedFindingsCount(newTasks.length);
             
             // Mark findings as processed locally if needed, or just refresh
             const updatedScan = getScan(currentScan.id);
@@ -340,6 +370,7 @@ export default function CoherenceScanPage() {
             // For now, we manually set state and trigger scanning
             setCurrentScan(loopScan);
             setPageState('scanning');
+            registerScan(loopScan);
             // Mocking starting the scan logic
             await submitContextAndStartScan(loopScan.id, loopScan.context || ({} as any));
         }
@@ -349,6 +380,24 @@ export default function CoherenceScanPage() {
 
     const limits = SCAN_LIMITS[userTier];
     const activeProject = projects.find(p => p.id === projectId);
+    const scanProgress = currentScan?.progress;
+    const auditProgress = currentScan?.auditProgress || [];
+    const completedAudits = scanProgress?.completedAudits
+        ?? auditProgress.filter((audit) => audit.status === 'complete').length;
+    const totalAudits = currentScan?.auditTypes.length ?? 0;
+    const percentComplete = scanProgress?.percent
+        ?? (totalAudits ? Math.round((completedAudits / totalAudits) * 100) : 0);
+    const phaseLabel = scanProgress?.phase === 'queued'
+        ? 'Queued'
+        : scanProgress?.phase === 'running'
+            ? 'Running audits'
+            : scanProgress?.phase === 'finalizing'
+                ? 'Finalizing report'
+                : scanProgress?.phase === 'complete'
+                    ? 'Complete'
+                    : scanProgress?.phase === 'failed'
+                        ? 'Failed'
+                        : 'Preparing';
 
     return (
         <div className="min-h-screen bg-[#FFFAF0]">
@@ -648,44 +697,58 @@ export default function CoherenceScanPage() {
                             </div>
 
                             <div>
-                                <h2 className="text-xl font-semibold text-text-primary mb-2">Scanning Your Project</h2>
+                                <h2 className="text-xl font-semibold text-text-primary mb-2">Coherence scan in progress</h2>
                                 <p className="text-text-soft">
-                                    Running {currentScan.auditTypes.length} audits...
+                                    {phaseLabel} • {completedAudits}/{totalAudits} audits complete
                                 </p>
                             </div>
 
+                            {/* Progress Bar */}
+                            <div className="space-y-2">
+                                <div className="h-1.5 w-full rounded-full bg-[#1A1A1A]/10 overflow-hidden">
+                                    <div
+                                        className="h-1.5 bg-emerald-600 transition-all"
+                                        style={{ width: `${percentComplete}%` }}
+                                    />
+                                </div>
+                                <div className="text-xs text-text-soft">
+                                    {percentComplete}% complete
+                                </div>
+                            </div>
+
                             {/* Audit Progress */}
-                            <div className="space-y-3">
-                                {currentScan.auditTypes.map((auditType, i) => {
+                            <div className="space-y-3 text-left">
+                                {currentScan.auditTypes.map((auditType) => {
                                     const Icon = AUDIT_ICONS[auditType];
                                     const audit = AUDIT_METADATA[auditType];
-                                    // Mock: show first few as complete
-                                    const isComplete = i < Math.floor(Date.now() / 2000) % currentScan.auditTypes.length;
+                                    const status = auditProgress.find((item) => item.auditType === auditType)?.status ?? 'pending';
+                                    const statusLabel = status === 'complete'
+                                        ? 'Complete'
+                                        : status === 'running'
+                                            ? 'Running'
+                                            : status === 'failed'
+                                                ? 'Failed'
+                                                : 'Queued';
 
                                     return (
                                         <div
                                             key={auditType}
-                                            className={cn(
-                                                "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                                                isComplete ? "bg-emerald-50" : "bg-white"
-                                            )}
+                                            className="flex items-center gap-3 px-4 py-3 rounded-lg border border-[#1A1A1A]/10 bg-white"
                                         >
-                                            <div className={cn(
-                                                "w-8 h-8 rounded-lg flex items-center justify-center",
-                                                isComplete ? "bg-emerald-500" : "bg-zinc-100"
-                                            )}>
-                                                {isComplete ? (
-                                                    <Check className="w-4 h-4 text-white" />
+                                            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-zinc-100">
+                                                {status === 'complete' ? (
+                                                    <Check className="w-4 h-4 text-emerald-600" />
                                                 ) : (
-                                                    <Icon className="w-4 h-4 text-zinc-400" />
+                                                    <Icon className="w-4 h-4 text-zinc-500" />
                                                 )}
                                             </div>
-                                            <span className={cn(
-                                                "text-sm",
-                                                isComplete ? "text-emerald-700" : "text-text-soft"
-                                            )}>
-                                                {audit.name}
-                                            </span>
+                                            <div className="flex-1">
+                                                <div className="text-sm text-text-primary">{audit.name}</div>
+                                                <div className="text-xs text-text-soft">{audit.description}</div>
+                                            </div>
+                                            <div className="text-[10px] uppercase tracking-widest text-text-soft/60">
+                                                {statusLabel}
+                                            </div>
                                         </div>
                                     );
                                 })}
@@ -693,7 +756,7 @@ export default function CoherenceScanPage() {
                         </motion.div>
                     )}
 
-                    {/* STEP 4: Report */}
+    {/* STEP 4: Report */}
                     {pageState === 'report' && currentScan && (
                         <motion.div
                             key="report"
@@ -702,49 +765,42 @@ export default function CoherenceScanPage() {
                             exit={{ opacity: 0, y: -20 }}
                             className="space-y-8"
                         >
-                            {/* Summary Banner */}
-                            {currentScan.summary && (
-                                <div className="bg-white rounded-xl border border-[#1A1A1A]/10 p-6">
-                                    <div className="flex items-center justify-between mb-6">
-                                        <div>
-                                    <h2 className="text-xl font-semibold text-text-primary">Execution complete</h2>
-                                            <p className="text-sm text-text-soft">
-                                                Found {currentScan.findings.length} findings across {currentScan.auditTypes.length} audits
-                                            </p>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="text-xl font-semibold text-text-primary">
-                                                {currentScan.summary.healthScore}
-                                            </div>
-                                            <div className="text-xs text-text-soft">Health Score</div>
-                                        </div>
+                            {/* Report Header */}
+                            <div className="bg-white rounded-xl border border-[#1A1A1A]/10 p-6">
+                                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                                    <div>
+                                        <h2 className="text-xl font-semibold text-text-primary">Coherence Scan Report</h2>
+                                        <p className="text-sm text-text-soft">
+                                            {currentScan.scanType.replace('-', ' ')} • {currentScan.auditTypes.length} audits
+                                        </p>
                                     </div>
-
-                                    {/* Severity Counts */}
-                                    <div className="flex gap-4">
-                                        {currentScan.summary.criticalCount > 0 && (
-                                            <div className="px-3 py-1 bg-red-50 text-red-600 rounded-lg text-sm font-medium">
-                                                {currentScan.summary.criticalCount} Critical
-                                            </div>
-                                        )}
-                                        {currentScan.summary.highCount > 0 && (
-                                            <div className="px-3 py-1 bg-orange-50 text-orange-600 rounded-lg text-sm font-medium">
-                                                {currentScan.summary.highCount} High
-                                            </div>
-                                        )}
-                                        {currentScan.summary.mediumCount > 0 && (
-                                            <div className="px-3 py-1 bg-amber-50 text-amber-700 rounded-lg text-sm font-medium">
-                                                {currentScan.summary.mediumCount} Medium
-                                            </div>
-                                        )}
-                                        {currentScan.summary.lowCount > 0 && (
-                                            <div className="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium">
-                                                {currentScan.summary.lowCount} Low
-                                            </div>
-                                        )}
+                                    <div className="text-sm text-text-soft">
+                                        <div>Completed: {currentScan.completedAt ? new Date(currentScan.completedAt).toLocaleString() : 'Pending'}</div>
+                                        <div>Project: {activeProject?.name || 'Unassigned'}</div>
                                     </div>
                                 </div>
-                            )}
+
+                                {currentScan.summary && (
+                                    <div className="mt-6 grid md:grid-cols-4 gap-3 text-sm">
+                                        <div className="border border-[#1A1A1A]/10 rounded-lg px-3 py-2">
+                                            <div className="text-[10px] uppercase tracking-widest text-text-soft/60">Health Score</div>
+                                            <div className="text-base font-semibold text-text-primary">{currentScan.summary.healthScore}</div>
+                                        </div>
+                                        <div className="border border-[#1A1A1A]/10 rounded-lg px-3 py-2">
+                                            <div className="text-[10px] uppercase tracking-widest text-text-soft/60">Critical</div>
+                                            <div className="text-base font-semibold text-text-primary">{currentScan.summary.criticalCount}</div>
+                                        </div>
+                                        <div className="border border-[#1A1A1A]/10 rounded-lg px-3 py-2">
+                                            <div className="text-[10px] uppercase tracking-widest text-text-soft/60">High</div>
+                                            <div className="text-base font-semibold text-text-primary">{currentScan.summary.highCount}</div>
+                                        </div>
+                                        <div className="border border-[#1A1A1A]/10 rounded-lg px-3 py-2">
+                                            <div className="text-[10px] uppercase tracking-widest text-text-soft/60">Medium</div>
+                                            <div className="text-base font-semibold text-text-primary">{currentScan.summary.mediumCount}</div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
 
                             {/* Findings List */}
                             <div className="space-y-4">
@@ -754,14 +810,16 @@ export default function CoherenceScanPage() {
                                         {currentScan.findings.filter(f => f.selected).length} selected for action
                                     </span>
                                 </div>
-
-                                {currentScan.findings.map((finding) => (
-                                    <FindingCard
-                                        key={finding.id}
-                                        finding={finding}
-                                        onToggle={() => handleToggleFinding(finding.id)}
-                                    />
-                                ))}
+                                <ol className="space-y-4">
+                                    {currentScan.findings.map((finding, index) => (
+                                        <FindingCard
+                                            key={finding.id}
+                                            finding={finding}
+                                            index={index + 1}
+                                            onToggle={() => handleToggleFinding(finding.id)}
+                                        />
+                                    ))}
+                                </ol>
                             </div>
 
                             {/* Action Bar */}
@@ -771,6 +829,17 @@ export default function CoherenceScanPage() {
                                     <span className="font-semibold text-text-primary">
                                         {currentScan.findings.filter(f => f.selected).length} findings
                                     </span>
+                                    {queuedFindingsCount !== null && (
+                                        <div className="mt-1 text-xs text-text-soft/70">
+                                            Filed to workspace.{' '}
+                                            <button
+                                                onClick={() => projectId && navigate(`/p/${projectId}/workspace`, { replace: false })}
+                                                className="text-[10px] uppercase tracking-widest underline underline-offset-4 text-text-soft/70 hover:text-text-primary"
+                                            >
+                                                Open desk
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                                 <Button
                                     onClick={handleAddToQueue}
@@ -926,9 +995,11 @@ function QuestionRenderer({
 // Finding Card Component
 function FindingCard({
     finding,
+    index,
     onToggle,
 }: {
     finding: ScanFinding;
+    index: number;
     onToggle: () => void;
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -937,7 +1008,7 @@ function FindingCard({
         <div
             className={cn(
                 "bg-white rounded-xl border transition-all",
-                finding.selected ? "border-emerald-400 shadow-md" : "border-[#1A1A1A]/10"
+                finding.selected ? "border-[#1A1A1A]/50 shadow-md" : "border-[#1A1A1A]/10"
             )}
         >
             <div
@@ -953,7 +1024,7 @@ function FindingCard({
                     className={cn(
                         "w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 mt-0",
                         finding.selected
-                            ? "border-emerald-600 bg-emerald-600"
+                            ? "border-[#1A1A1A] bg-[#1A1A1A]"
                             : "border-[#1A1A1A]/20"
                     )}
                 >
@@ -962,24 +1033,27 @@ function FindingCard({
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                        <span className={cn(
-                            "px-2 py-0 text-xs font-semibold rounded border",
-                            SEVERITY_COLORS[finding.severity]
-                        )}>
-                            {finding.severity}
+                    <div className="flex items-center gap-3 mb-2">
+                        <span className="text-[10px] uppercase tracking-widest text-text-soft/60">
+                            Finding {index}
                         </span>
-                        <span className="text-xs text-text-soft">
+                        <span className="h-3 w-px bg-[#1A1A1A]/10" />
+                        <span className="text-[10px] uppercase tracking-widest text-text-soft/60">
                             {finding.category.replace(/-/g, ' ')}
                         </span>
                     </div>
-                    <h4 className="font-medium text-text-primary mb-1">{finding.title}</h4>
+                    <div className="flex items-center gap-2 mb-2">
+                        <span className="px-2 py-0.5 text-[10px] uppercase tracking-widest border border-[#1A1A1A]/30 text-text-soft/70">
+                            {finding.severity}
+                        </span>
+                        <h4 className="font-medium text-text-primary">{finding.title}</h4>
+                    </div>
                     <p className="text-sm text-text-soft line-clamp-2">{finding.observation}</p>
                 </div>
 
                 {/* Effort Badge */}
-                <div className="text-xs text-text-soft shrink-0">
-                    {finding.estimatedEffort}
+                <div className="text-[10px] uppercase tracking-widest text-text-soft/60 shrink-0">
+                    Effort {finding.estimatedEffort}
                 </div>
             </div>
 
@@ -994,15 +1068,15 @@ function FindingCard({
                     >
                         <div className="p-4 pl-12 space-y-3 text-sm">
                             <div>
-                                <div className="text-text-soft text-xs mb-1">Why It Matters</div>
+                                <div className="text-text-soft text-xs mb-1 uppercase tracking-widest">Why it matters</div>
                                 <p className="text-text-primary">{finding.whyItMatters}</p>
                             </div>
                             <div>
-                                <div className="text-text-soft text-xs mb-1">User Impact</div>
+                                <div className="text-text-soft text-xs mb-1 uppercase tracking-widest">User impact</div>
                                 <p className="text-text-primary">{finding.userImpact}</p>
                             </div>
                             <div>
-                                <div className="text-text-soft text-xs mb-1">Recommendation</div>
+                                <div className="text-text-soft text-xs mb-1 uppercase tracking-widest">Recommendation</div>
                                 <p className="text-text-primary">{finding.recommendation}</p>
                             </div>
                         </div>

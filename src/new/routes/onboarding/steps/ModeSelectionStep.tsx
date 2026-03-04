@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboardingStore, STEP_METADATA } from '../store';
 import { createProject } from '../../../../domain/projects';
-import { TearSheetRevision, OnboardingProfile } from '../../../../domain/types';
+import { ProjectContextRevision, OnboardingProfile } from '../../../../domain/types';
 import { ProjectType, PROJECT_TYPE_OPTIONS } from '../../../../domain/onboarding-types';
 import { ArrowRight, Loader2, Zap, Layers } from 'lucide-react';
 import { useSettingsStore } from '../../../../lib/store/useSettingsStore';
 import { Button } from '@/components/ui/Button';
+import { storageAdapter } from '@/lib/storage/StorageKeyAdapter';
 
 const MANUAL_DEFAULT_PROFILE: OnboardingProfile = {
     projectName: 'Untitled Project',
@@ -54,7 +55,7 @@ export const ModeSelectionStep = () => {
             });
 
             // Initialize draft Tear Sheet
-            const initialRevision: TearSheetRevision = {
+            const initialRevision: ProjectContextRevision = {
                 id: crypto.randomUUID(),
                 version: 1,
                 createdAt: new Date().toISOString(),
@@ -75,7 +76,7 @@ export const ModeSelectionStep = () => {
                     guardrails: {},
                 },
             };
-            localStorage.setItem(`codra:tearSheet:${project.id}`, JSON.stringify([initialRevision]));
+            storageAdapter.saveContextRevisions(project.id, [initialRevision]);
 
             // Route directly to the Spread (prompt-first workspace)
             navigate(`/p/${project.id}/workspace`);
@@ -111,7 +112,7 @@ export const ModeSelectionStep = () => {
             });
 
             // Initialize minimal revision
-            const initialRevision: TearSheetRevision = {
+            const initialRevision: ProjectContextRevision = {
                 id: crypto.randomUUID(),
                 version: 1,
                 createdAt: new Date().toISOString(),
@@ -132,7 +133,7 @@ export const ModeSelectionStep = () => {
                     guardrails: {},
                 },
             };
-            localStorage.setItem(`codra:tearSheet:${project.id}`, JSON.stringify([initialRevision]));
+            storageAdapter.saveContextRevisions(project.id, [initialRevision]);
 
             navigate(`/p/${project.id}/workspace`);
         } catch (e) {

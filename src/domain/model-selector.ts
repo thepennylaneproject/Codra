@@ -1,4 +1,4 @@
-import { ProductionDeskId } from './types';
+import { ProjectToolId } from './types';
 
 export interface ModelMatch {
     modelId: string;
@@ -12,12 +12,12 @@ export interface ModelMatch {
  * Maps production tasks to the optimal model based on desk identity and task scope.
  */
 export function selectModelForTask(
-    deskId: ProductionDeskId, 
+    deskId: ProjectToolId, 
     taskTitle: string,
     isSmartModeEnabled: boolean = true
 ): ModelMatch {
-    const highCreativityDesks: ProductionDeskId[] = ['design', 'write'];
-    const technicalDesks: ProductionDeskId[] = ['code', 'analyze'];
+    const highCreativityDesks: ProjectToolId[] = ['design', 'copy'];
+    const technicalDesks: ProjectToolId[] = ['code', 'data'];
     
     const isCreative = highCreativityDesks.includes(deskId);
     const isTechnical = technicalDesks.includes(deskId);

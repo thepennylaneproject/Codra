@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { TrendingUp, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { ProjectMetrics } from '../../domain/spread/metrics-engine';
+import { ProjectMetrics } from '../../domain/specification/metrics-engine';
 import { cn } from '../../lib/utils';
 
 interface BudgetMeterProps {

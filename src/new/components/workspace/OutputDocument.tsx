@@ -18,7 +18,7 @@
 
 import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { OutputStatus, getOutputStatusLabel, getOutputStatusColor } from './ExecutionSurface';
+import { OutputStatus, getOutputStatusLabel, getOutputStatusColor } from './WorkspaceSurface';
 
 interface OutputDocumentProps {
   id: string;
@@ -29,6 +29,9 @@ interface OutputDocumentProps {
   timestamp?: Date;
   metadata?: Record<string, string>;
   isActive?: boolean;
+  onExport?: () => void;
+  exportLabel?: string;
+  annotation?: string;
 }
 
 export function OutputDocument({
@@ -40,6 +43,9 @@ export function OutputDocument({
   timestamp,
   metadata,
   isActive = false,
+  onExport,
+  exportLabel = 'Export',
+  annotation,
 }: OutputDocumentProps) {
   const statusLabel = getOutputStatusLabel(status);
   const statusColorClass = getOutputStatusColor(status);
@@ -64,10 +70,25 @@ export function OutputDocument({
                 {source}
               </p>
             )}
+            {annotation && (
+              <p className="font-normal text-[#1A1A1A] opacity-50 mt-1" style={{ fontSize: '11px' }}>
+                {annotation}
+              </p>
+            )}
           </div>
-          <span className={`font-normal ${statusColorClass}`} style={{ fontSize: '11px' }}>
-            {statusLabel}
-          </span>
+          <div className="flex items-center gap-3">
+            {onExport && (
+              <button
+                onClick={onExport}
+                className="text-[10px] uppercase tracking-[0.2em] underline underline-offset-4 text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors"
+              >
+                {exportLabel}
+              </button>
+            )}
+            <span className={`font-normal ${statusColorClass}`} style={{ fontSize: '11px' }}>
+              {statusLabel}
+            </span>
+          </div>
         </div>
       </header>
 

@@ -112,7 +112,7 @@ export function useChecklist(projectId?: string) {
         // Check if any task has been completed
         const keys = Object.keys(localStorage);
         for (const key of keys) {
-          if (key.startsWith('codra:taskQueue:')) {
+          if (key.startsWith('codra:task-queue:') || key.startsWith('codra:taskQueue:')) {
             const data = localStorage.getItem(key);
             if (data) {
               const parsed = JSON.parse(data);

@@ -10,11 +10,11 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { useToast } from '@/new/components/Toast';
 import { useUserPreferences } from './useUserPreferences';
 import { analytics } from '@/lib/analytics';
-import type { SpreadTask, TaskStatus } from '@/domain/task-queue';
+import type { SpecificationTask, TaskStatus } from '@/domain/task-queue';
 
 export interface TaskExecutionState {
   /** Current task data with status */
-  task: SpreadTask | null;
+  task: SpecificationTask | null;
   /** Seconds remaining until timeout */
   timeRemaining: number | null;
   /** Whether the task is currently being executed */
@@ -27,7 +27,7 @@ interface UseTaskExecutionOptions {
   taskId: string;
   projectId: string;
   /** Initial task data if available */
-  initialTask?: SpreadTask;
+  initialTask?: SpecificationTask;
   /** Called when task status changes */
   onStatusChange?: (taskId: string, status: TaskStatus, timestamp?: number) => void;
 }
@@ -51,7 +51,7 @@ export function useTaskExecution({
   const { preferences } = useUserPreferences();
 
   // State
-  const [task, setTask] = useState<SpreadTask | null>(initialTask || null);
+  const [task, setTask] = useState<SpecificationTask | null>(initialTask || null);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
@@ -85,7 +85,7 @@ export function useTaskExecution({
 
   // Update task and notify parent
   const updateTaskStatus = useCallback((status: TaskStatus, timestamp?: number) => {
-    setTask(prev => prev ? { ...prev, status } : null);
+    setTask((prev: SpecificationTask | null) => prev ? { ...prev, status } : null);
     onStatusChange?.(taskId, status, timestamp);
   }, [taskId, onStatusChange]);
 
@@ -109,7 +109,7 @@ export function useTaskExecution({
     // Update state
     setIsExecuting(true);
     setTimeRemaining(timeoutMinutes * 60);
-    setTask(prev => prev ? {
+    setTask((prev: SpecificationTask | null) => prev ? {
       ...prev,
       status: 'in-progress' as TaskStatus,
       startedAt,
@@ -117,7 +117,8 @@ export function useTaskExecution({
       id: taskId,
       title: '',
       description: '',
-      deskId: 'write',
+      toolId: 'copy', // Default to copy tool
+      deskId: 'copy',
       status: 'in-progress' as TaskStatus,
       order: 0,
       priority: 'normal',
@@ -135,7 +136,7 @@ export function useTaskExecution({
       
       setIsExecuting(false);
       setTimeRemaining(null);
-      setTask(prev => prev ? {
+      setTask((prev: SpecificationTask | null) => prev ? {
         ...prev,
         status: 'timed-out' as TaskStatus,
       } : null);
@@ -169,7 +170,7 @@ export function useTaskExecution({
       const completedAt = Date.now();
       setIsExecuting(false);
       setTimeRemaining(null);
-      setTask(prev => prev ? {
+      setTask((prev: SpecificationTask | null) => prev ? {
         ...prev,
         status: 'complete' as TaskStatus,
         completedAt: new Date().toISOString(),
@@ -187,7 +188,7 @@ export function useTaskExecution({
 
       setIsExecuting(false);
       setTimeRemaining(null);
-      setTask(prev => prev ? {
+      setTask((prev: SpecificationTask | null) => prev ? {
         ...prev,
         status: 'pending' as TaskStatus, // Reset to pending for retry
       } : null);
@@ -233,7 +234,7 @@ export function useTaskExecution({
       const cancelledAt = Date.now();
       setIsExecuting(false);
       setTimeRemaining(null);
-      setTask(prev => prev ? {
+      setTask((prev: SpecificationTask | null) => prev ? {
         ...prev,
         status: 'cancelled' as TaskStatus,
         cancelledAt,

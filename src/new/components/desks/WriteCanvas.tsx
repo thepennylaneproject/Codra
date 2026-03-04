@@ -24,7 +24,7 @@ export const WriteCanvas: React.FC<WriteCanvasProps> = ({
   void selectedModelId;
   void onSelectModel;
   const { getDeskState, updateDeskState } = useDeskState();
-  const state = getDeskState(projectId, 'write');
+  const state = getDeskState(projectId, 'copy');
 
   const titleRef = useRef<HTMLHeadingElement>(null);
   const bodyRef = useRef<HTMLParagraphElement>(null);
@@ -40,7 +40,7 @@ export const WriteCanvas: React.FC<WriteCanvasProps> = ({
       title: titleRef.current?.innerText || '',
       body: bodyRef.current?.innerText || ''
     };
-    updateDeskState(projectId, 'write', {
+    updateDeskState(projectId, 'copy', {
       inputContent: JSON.stringify(content)
     });
   };

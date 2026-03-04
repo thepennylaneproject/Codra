@@ -7,7 +7,7 @@
  * an artifact when executed.
  */
 
-import { ProductionDeskId } from './types';
+import { ProjectToolId } from './types';
 
 // ============================================
 // Task Status
@@ -68,14 +68,14 @@ export interface TaskSmartRoutingMetadata {
 }
 
 // ============================================
-// Spread Task
+// Specification Task
 // ============================================
 
 /**
  * A single actionable item in the task queue.
- * Represents a prompt that will be sent to an AI desk.
+ * Represents a prompt that will be sent to an AI tool.
  */
-export interface SpreadTask {
+export interface SpecificationTask {
     /** Unique identifier */
     id: string;
 
@@ -85,8 +85,11 @@ export interface SpreadTask {
     /** Brief description of what this task produces */
     description: string;
 
-    /** Which production desk handles this task */
-    deskId: ProductionDeskId;
+    /** Which tool handles this task */
+    toolId: ProjectToolId;
+
+    /** Desk identifier, may match toolId or be explicit */
+    deskId: ProjectToolId;
 
     /** Current execution status */
     status: TaskStatus;
@@ -109,7 +112,10 @@ export interface SpreadTask {
     /** Link to the generated artifact */
     artifactId?: string;
 
-    /** Which Tear Sheet section informed this task */
+    /** Which context section informed this task */
+    contextAnchor?: string;
+
+    /** Legacy anchor name (spread-based model) */
     tearSheetAnchor?: string;
 
     /** Raw result of task execution */
@@ -136,6 +142,9 @@ export interface SpreadTask {
     /** Estimated duration in seconds (for ETA display) */
     estimatedDurationSeconds?: number;
 
+    /** Current execution phase label */
+    executionPhase?: string;
+
     /** Metadata captured upon completion */
     completionMetadata?: TaskCompletionMetadata;
 
@@ -159,17 +168,22 @@ export interface TaskQueue {
     projectId: string;
 
     /** Ordered list of tasks */
-    tasks: SpreadTask[];
+    tasks: SpecificationTask[];
 
     /** When this queue was generated */
     generatedAt: string;
 
-    /** Tear Sheet version that generated this queue */
-    tearSheetVersion: number;
+    /** Project context version that generated this queue */
+    contextVersion: number;
 
-    /** Whether the queue needs re-routing due to Tear Sheet changes */
+    /** Whether the queue needs re-routing due to context changes */
     stale: boolean;
+
+    /** Legacy field name */
+    tearSheetVersion?: number;
 }
+
+export type SpreadTask = SpecificationTask;
 
 // ============================================
 // Task Queue Events
@@ -191,14 +205,14 @@ export interface TaskQueueEvent {
 }
 
 // ============================================
-// Desk to Task Type Mapping
+// Tool to Task Type Mapping
 // ============================================
 
 /**
  * Map task workspaces to the types of tasks they handle.
- * Used for automatic desk assignment during task generation.
+ * Used for automatic tool assignment during task generation.
  */
-export const DESK_TASK_TYPES: Record<ProductionDeskId, string[]> = {
+export const TOOL_TASK_TYPES: Record<ProjectToolId, string[]> = {
     'design': [
         'hero-image',
         'illustration',
@@ -221,7 +235,7 @@ export const DESK_TASK_TYPES: Record<ProductionDeskId, string[]> = {
         'blocker-identification',
         'workflow-optimization',
     ],
-    'write': [
+    'copy': [
         'headline',
         'body-copy',
         'tagline',
@@ -239,7 +253,7 @@ export const DESK_TASK_TYPES: Record<ProductionDeskId, string[]> = {
         'linkedin-summary',
         'interview-prep',
     ],
-    'analyze': [
+    'data': [
         'research-summary',
         'competitive-analysis',
         'metrics-dashboard',
@@ -255,7 +269,7 @@ export const DESK_TASK_TYPES: Record<ProductionDeskId, string[]> = {
 /**
  * Check if a task is ready to execute (all dependencies met)
  */
-export function isTaskReady(task: SpreadTask, allTasks: SpreadTask[]): boolean {
+export function isTaskReady(task: SpecificationTask, allTasks: SpecificationTask[]): boolean {
     if (task.status !== 'pending') return false;
     if (task.dependencies.length === 0) return true;
 
@@ -268,7 +282,7 @@ export function isTaskReady(task: SpreadTask, allTasks: SpreadTask[]): boolean {
 /**
  * Get the next task that's ready to execute
  */
-export function getNextReadyTask(queue: TaskQueue): SpreadTask | null {
+export function getNextReadyTask(queue: TaskQueue): SpecificationTask | null {
     // Sort by priority then order
     const priorityOrder: Record<TaskPriority, number> = {
         critical: 0,
@@ -300,8 +314,8 @@ export function getQueueProgress(queue: TaskQueue): number {
 /**
  * Get tasks grouped by status
  */
-export function getTasksByStatus(queue: TaskQueue): Record<TaskStatus, SpreadTask[]> {
-    const grouped: Record<TaskStatus, SpreadTask[]> = {
+export function getTasksByStatus(queue: TaskQueue): Record<TaskStatus, SpecificationTask[]> {
+    const grouped: Record<TaskStatus, SpecificationTask[]> = {
         pending: [],
         ready: [],
         'in-progress': [],

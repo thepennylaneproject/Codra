@@ -87,19 +87,7 @@ export function auditDecisionPoints(): DecisionPoint[] {
       component: 'DeskSwitcher'
     },
 
-    // TASK LAUNCH (Consolidated into single flow)
-    {
-      location: 'TaskLaunchPanel',
-      type: 'required',
-      description: 'Task description',
-      component: 'TaskLaunchPanel'
-    },
-    {
-      location: 'TaskLaunchPanel',
-      type: 'optional',
-      description: 'Select model (optional, has smart default)',
-      component: 'ModelSelector'
-    },
+
 
     // EXPORT FLOW
     {

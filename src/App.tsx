@@ -34,12 +34,9 @@ import { MotionProvider } from './lib/design/MotionContext';
 import { PlacementProvider } from './lib/placement/PlacementContext';
 
 // New Pipeline
-import { NewSpreadPage } from './new/routes/NewSpreadPage';
-import { ExecutionDeskPage } from './new/routes/ExecutionDeskPage';
+import { WorkspacePage } from './new/routes/WorkspacePage';
 import { ProjectContextPage } from './new/routes/ProjectContextPage';
-import { NewProjectOnboarding } from './new/routes/onboarding/NewProjectOnboarding';
-import { OnboardingFlow } from './new/routes/onboarding/OnboardingFlow';
-import { DeskWorkspacePage } from './new/routes/DeskWorkspacePage';
+import { OnboardingEntry } from './new/routes/onboarding/OnboardingEntry';
 import { ProjectsPage } from './new/routes/ProjectsPage';
 import { SettingsPage } from './features/settings';
 import { PricingPage } from './new/routes/PricingPage';
@@ -136,7 +133,7 @@ export function App() {
                       path="/new"
                       element={
                         <ProtectedRoute>
-                          <OnboardingFlow />
+                          <OnboardingEntry />
                         </ProtectedRoute>
                       }
                     />
@@ -146,7 +143,7 @@ export function App() {
                       path="/onboarding/new-project"
                       element={
                         <ProtectedRoute>
-                          <NewProjectOnboarding />
+                          <Navigate to="/new?mode=detailed" replace />
                         </ProtectedRoute>
                       }
                     />
@@ -164,17 +161,7 @@ export function App() {
                       path="/p/:projectId/workspace"
                       element={
                         <ProtectedRoute>
-                          <ExecutionDeskPage />
-                        </ProtectedRoute>
-                      }
-                    />
-
-                    {/* Legacy workspace (kept for comparison/rollback) */}
-                    <Route
-                      path="/p/:projectId/workspace-legacy"
-                      element={
-                        <ProtectedRoute>
-                          <NewSpreadPage />
+                          <WorkspacePage />
                         </ProtectedRoute>
                       }
                     />
@@ -188,13 +175,10 @@ export function App() {
                       }
                     />
 
+                    {/* Legacy production route - redirect to workspace */}
                     <Route
                       path="/p/:projectId/production"
-                      element={
-                        <ProtectedRoute>
-                          <DeskWorkspacePage />
-                        </ProtectedRoute>
-                      }
+                      element={<Navigate to="../workspace" replace />}
                     />
 
                     {/* Coherence Scan */}
