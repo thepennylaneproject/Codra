@@ -58,8 +58,8 @@ export const AUDIT_METADATA: Record<AuditType, {
     },
     'investor-diligence': {
         id: 'investor-diligence',
-        name: 'Investor Diligence Audit',
-        description: 'Pre-investor review of product coherence, market fit, and defensibility.',
+        name: 'View Source Intelligence Audit',
+        description: 'Source-backed codebase intelligence extraction for investor-grade project profiling.',
         icon: 'TrendingUp',
         estimatedCost: 0.50,
         model: 'claude-sonnet',
