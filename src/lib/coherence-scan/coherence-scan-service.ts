@@ -274,10 +274,11 @@ export async function resumeScan(scanId: string): Promise<void> {
  */
 async function runAudit(
     decision: RoutingDecision,
-    _context: ScanContext
+    context: ScanContext
 ): Promise<{ findings: ScanFinding[] }> {
     // NOTE: In production, we would use buildAuditPrompt() here to call the AI
     // For now, we return mock findings for development purposes
+    void context;
     
     // TODO: Integrate with actual AI provider
     // For now, return mock findings
@@ -381,8 +382,9 @@ export function toggleFindingSelection(scanId: string, findingId: string): void 
  */
 export function convertFindingsToTasks(
     scan: CoherenceScan,
-    _projectContext: { projectId: string; title: string }
+    projectContext: { projectId: string; title: string }
 ): SpecificationTask[] {
+    void projectContext;
     const selectedFindings = scan.findings.filter((f) => f.selected);
 
     return selectedFindings.map((finding, index) => {
@@ -478,11 +480,11 @@ function generateMockFindings(auditType: AuditType): AuditOutputSchema {
                 {
                     category: 'feature-visibility',
                     severity: 'medium',
-                    title: 'No social proof visible',
-                    observation: 'Landing page lacks testimonials, case studies, or usage stats.',
-                    whyItMatters: 'Investors and users need proof of traction.',
-                    userImpact: 'Lower trust, higher acquisition cost.',
-                    recommendation: 'Add customer logos, testimonials, or aggregate usage stats.',
+                    title: 'Project metadata is not fully surfaced',
+                    observation: 'The repository exposes implementation details, but higher-level project identity and deployment evidence are not consistently summarized in one place.',
+                    whyItMatters: 'Codebase diligence is slower when core facts must be inferred from scattered files.',
+                    userImpact: 'Stakeholders spend more time validating what the product is and how mature it is.',
+                    recommendation: 'Generate a structured source-backed audit covering identity, architecture, features, operations, and maturity signals.',
                     estimatedEffort: 'medium',
                 },
             ],
