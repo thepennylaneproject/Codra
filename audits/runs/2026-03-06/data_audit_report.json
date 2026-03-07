@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.1.0",
+  "kind": "agent_output",
+  "run_id": "data-20260306-123512",
+  "run_metadata": {
+    "timestamp": "2026-03-06T18:35:12.000Z",
+    "branch": "unknown",
+    "model": "gemini-2.0-flash",
+    "environment": "local",
+    "tool_platform": "antigravity"
+  },
+  "suite": "data",
+  "agent": {
+    "name": "schema-auditor",
+    "role": "Find schema mismatches, missing or broken Row Level Security (RLS) policies, migration gaps, data constraint violations, and orphaned data patterns.",
+    "inputs_used": [
+      "supabase/migrations/*.sql",
+      "src/lib/supabase.ts",
+      "src/lib/supabase-admin.ts",
+      "audits/open_findings.json"
+    ],
+    "stop_conditions_hit": []
+  },
+  "coverage": {
+    "files_examined": [
+      "supabase/migrations/*",
+      "src/lib/supabase*",
+      "package.json"
+    ],
+    "files_skipped": [],
+    "coverage_complete": true
+  },
+  "findings": [
+    {
+      "finding_id": "f-missing-rls-tables-01",
+      "type": "bug",
+      "category": "missing-rls",
+      "severity": "major",
+      "priority": "P1",
+      "confidence": "evidence",
+      "title": "Missing RLS Policies on API Credentials and Settings Tables",
+      "description": "Several core tables do not have Row Level Security (RLS) policies defined for them. Notably: api_credentials, app_settings, provider_settings, model_settings, project_briefing_state. This means any authenticated user might be able to read or modify global settings or other users' credentials if the tables have RLS disabled, or no one can access them if RLS is enabled without policies.",
+      "proof_hooks": [
+        {
+          "hook_type": "command",
+          "summary": "Comparing created tables vs tables with policies",
+          "command": "grep 'CREATE POLICY' supabase/migrations/*.sql and diffing against 'CREATE TABLE'",
+          "actual": "api_credentials, app_settings, provider_settings are missing policies"
+        }
+      ],
+      "impact": "Potential unauthorized access to global app settings, AI model settings, or API credentials, or broken functionality if RLS is enabled but lacks policies granting access.",
+      "suggested_fix": {
+        "approach": "Create RLS policies for all identified tables, restricting read/write access to admins or the owning user as appropriate.",
+        "affected_files": [
+          "supabase/migrations/add_rls_policies.sql"
+        ],
+        "estimated_effort": "small"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T18:35:12.000Z",
+          "actor": "schema-auditor",
+          "event": "created"
+        }
+      ]
+    },
+    {
+      "finding_id": "f-foreign-keys-missing-on-delete-01",
+      "type": "debt",
+      "category": "constraint-violation",
+      "severity": "minor",
+      "priority": "P2",
+      "confidence": "evidence",
+      "title": "Foreign Keys Missing ON DELETE Behaviors",
+      "description": "Multiple foreign key constraints are defined without explicit ON DELETE behaviors (e.g., CASCADE, SET NULL, RESTRICT). This can lead to orphaned records or foreign key violation errors when parent records are deleted.",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "Foreign keys lacking ON DELETE",
+          "file": "supabase/migrations/001_initial_schema.sql",
+          "symbol": "project_assets",
+          "start_line": 274,
+          "end_line": 274
+        },
+        {
+          "hook_type": "code_ref",
+          "summary": "Foreign keys lacking ON DELETE",
+          "file": "supabase/migrations/10-database-migration.sql",
+          "symbol": "created_by_user_id",
+          "start_line": 46,
+          "end_line": 46
+        }
+      ],
+      "impact": "Possibility of orphaned data piling up in the database, breaking application assumptions.",
+      "suggested_fix": {
+        "approach": "Review all foreign key constraints and explicitly define ON DELETE CASCADE or ON DELETE SET NULL depending on the desired lifecycle relationship.",
+        "affected_files": [
+          "supabase/migrations/fix_foreign_keys.sql"
+        ],
+        "estimated_effort": "medium"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T18:35:12.000Z",
+          "actor": "schema-auditor",
+          "event": "created"
+        }
+      ]
+    }
+  ],
+  "rollups": {
+    "by_severity": {
+      "blocker": 0,
+      "major": 1,
+      "minor": 1,
+      "nit": 0
+    },
+    "by_category": {
+      "missing-rls": 1,
+      "constraint-violation": 1
+    },
+    "by_type": {
+      "bug": 1,
+      "enhancement": 0,
+      "debt": 1,
+      "question": 0
+    },
+    "by_status": {
+      "open": 2
+    }
+  },
+  "next_actions": [
+    {
+      "action": "fix_missing_rls",
+      "finding_id": "f-missing-rls-tables-01",
+      "rationale": "Missing logical isolation on sensitive settings and credential tables is a security and functionality risk."
+    },
+    {
+      "action": "add_on_delete_rules",
+      "finding_id": "f-foreign-keys-missing-on-delete-01",
+      "rationale": "Explicit cascade rules prevent orphaned data and application errors."
+    }
+  ]
+}

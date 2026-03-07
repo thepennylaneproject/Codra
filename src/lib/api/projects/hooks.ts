@@ -22,6 +22,10 @@ import type {
 // QUERY KEYS
 // ============================================================================
 
+// 2 minutes — project/workstream/task data changes infrequently.
+// Prevents redundant refetches on window focus, tab switch, and remount.
+const STALE_TIME = 2 * 60 * 1000;
+
 export const projectKeys = {
     all: ['projects'] as const,
     lists: () => [...projectKeys.all, 'list'] as const,
@@ -49,6 +53,7 @@ export function useProjects() {
         queryKey: projectKeys.list(user?.id || ''),
         queryFn: () => adapter.getUserProjects(user!.id),
         enabled: !!user,
+        staleTime: STALE_TIME,
     });
 }
 
@@ -57,6 +62,7 @@ export function useProject(projectId: string | null) {
         queryKey: projectKeys.detail(projectId || ''),
         queryFn: () => adapter.getProject(projectId!),
         enabled: !!projectId,
+        staleTime: STALE_TIME,
     });
 }
 
@@ -105,6 +111,7 @@ export function useProjectWorkstreams(projectId: string | null) {
         queryKey: projectKeys.workstreams(projectId || ''),
         queryFn: () => adapter.getProjectWorkstreams(projectId!),
         enabled: !!projectId,
+        staleTime: STALE_TIME,
     });
 }
 
@@ -153,6 +160,7 @@ export function useProjectTasks(projectId: string | null) {
         queryKey: projectKeys.tasks(projectId || ''),
         queryFn: () => adapter.getProjectTasks(projectId!),
         enabled: !!projectId,
+        staleTime: STALE_TIME,
     });
 }
 
@@ -161,6 +169,7 @@ export function useWorkstreamTasks(workstreamId: string | null) {
         queryKey: projectKeys.workstreamTasks(workstreamId || ''),
         queryFn: () => adapter.getWorkstreamTasks(workstreamId!),
         enabled: !!workstreamId,
+        staleTime: STALE_TIME,
     });
 }
 
@@ -215,6 +224,7 @@ export function useTaskPrompts(taskId: string | null) {
         queryKey: projectKeys.taskPrompts(taskId || ''),
         queryFn: () => adapter.getTaskPrompts(taskId!),
         enabled: !!taskId,
+        staleTime: STALE_TIME,
     });
 }
 
@@ -251,6 +261,7 @@ export function useTaskArtifacts(taskId: string | null) {
         queryKey: projectKeys.taskArtifacts(taskId || ''),
         queryFn: () => adapter.getTaskArtifacts(taskId!),
         enabled: !!taskId,
+        staleTime: STALE_TIME,
     });
 }
 
@@ -287,6 +298,7 @@ export function useArtifactVersions(artifactId: string | null) {
         queryKey: projectKeys.artifactVersions(artifactId || ''),
         queryFn: () => adapter.getArtifactVersions(artifactId!),
         enabled: !!artifactId,
+        staleTime: STALE_TIME,
     });
 }
 
@@ -311,6 +323,7 @@ export function useProjectNames(projectId: string | null) {
         queryKey: projectKeys.names(projectId || ''),
         queryFn: () => adapter.getProjectNames(projectId!),
         enabled: !!projectId,
+        staleTime: STALE_TIME,
     });
 }
 
@@ -335,6 +348,7 @@ export function useProjectSuccessCriteria(projectId: string | null) {
         queryKey: projectKeys.successCriteria(projectId || ''),
         queryFn: () => adapter.getProjectSuccessCriteria(projectId!),
         enabled: !!projectId,
+        staleTime: STALE_TIME,
     });
 }
 

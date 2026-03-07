@@ -33,7 +33,7 @@ export async function saveExecution(
   execution: Omit<ExecutionRecord, 'id' | 'userId' | 'createdAt'>
 ): Promise<ExecutionRecord | null> {
   try {
-    const user = await getCurrentUser();
+    const { user } = await getCurrentUser();
     if (!user) {
       console.warn('No user logged in, execution not saved');
       return null;
@@ -70,7 +70,7 @@ export async function saveExecution(
  */
 export async function getPromptExecutions(promptId: string, limit = 10) {
   try {
-    const user = await getCurrentUser();
+    const { user } = await getCurrentUser();
     if (!user) return [];
 
     const { data, error } = await supabase
@@ -94,7 +94,7 @@ export async function getPromptExecutions(promptId: string, limit = 10) {
  */
 export async function getAllExecutions(limit = 50) {
   try {
-    const user = await getCurrentUser();
+    const { user } = await getCurrentUser();
     if (!user) return [];
 
     const { data, error } = await supabase
@@ -117,7 +117,7 @@ export async function getAllExecutions(limit = 50) {
  */
 export async function getExecutionStats() {
   try {
-    const user = await getCurrentUser();
+    const { user } = await getCurrentUser();
     if (!user) return null;
 
     const { data, error } = await supabase
@@ -154,7 +154,7 @@ export async function getExecutionStats() {
  */
 export async function deleteExecution(id: string): Promise<boolean> {
   try {
-    const user = await getCurrentUser();
+    const { user } = await getCurrentUser();
     if (!user) return false;
 
     const { error } = await supabase
@@ -177,7 +177,7 @@ export async function deleteExecution(id: string): Promise<boolean> {
  */
 export async function clearExecutionHistory(): Promise<boolean> {
   try {
-    const user = await getCurrentUser();
+    const { user } = await getCurrentUser();
     if (!user) return false;
 
     const { error } = await supabase

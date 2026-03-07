@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.1.0",
+  "kind": "agent_output",
+  "run_id": "logic-20260306-123528",
+  "suite": "logic",
+  "agent": {
+    "name": "runtime-bug-hunter",
+    "role": "Find runtime errors, logic bugs, null-safety violations, unhandled edge cases, dead code paths, and error handling gaps in this codebase.",
+    "inputs_used": [
+      "package.json",
+      "tsconfig.json",
+      "audits/artifacts/_run_/tests.txt",
+      "audits/artifacts/_run_/lint.txt",
+      "audits/artifacts/_run_/typecheck.txt",
+      "audits/artifacts/_run_/build.txt",
+      "src/lib/flow/nodes/condition.ts",
+      "src/pages/auth/AuthCallback.tsx",
+      "src/lib/supabase.ts",
+      "src/components/inspector/SuggestionsModal.tsx"
+    ],
+    "stop_conditions_hit": []
+  },
+  "coverage": {
+    "files_examined": [
+      "src/lib/flow/nodes/condition.ts",
+      "src/pages/auth/AuthCallback.tsx",
+      "src/lib/supabase.ts",
+      "src/components/inspector/SuggestionsModal.tsx"
+    ],
+    "files_skipped": [],
+    "coverage_complete": false,
+    "incomplete_reason": "Codebase contains hundreds of files; sampled critical flow and auth paths to adhere to timeframe and finding cap limits."
+  },
+  "findings": [
+    {
+      "id": "logic-001",
+      "title": "Uncaught Exceptions in Supabase Auth Handlers",
+      "severity": "high",
+      "category": "error-handling",
+      "type": "error-swallowing",
+      "status": "open",
+      "confidence": "evidence",
+      "location": {
+        "file": "src/lib/supabase.ts",
+        "line": 51,
+        "function": "getCurrentUser"
+      },
+      "description": "Auth errors are logged to console.error but the function returns null instead of throwing or returning an Error object, potentially hiding underlying authentication failures from the caller.",
+      "repro_steps": [
+        "1. Simulate a network failure during getCurrentUser()",
+        "2. Observe console.error log",
+        "3. Observe caller receiving `null` instead of an error state, causing opaque fallback behavior"
+      ],
+      "tests_needed": [
+        "test/auth/getCurrentUser-network-failure.test.ts"
+      ],
+      "suggested_fix": "Return a union type `{ user: User | null, error: Error | null }` or throw the error so the caller can handle it.",
+      "history_events": []
+    },
+    {
+      "id": "logic-002",
+      "title": "Loose Equality in Condition Node Evaluator",
+      "severity": "medium",
+      "category": "type-error",
+      "type": "type-coercion",
+      "status": "open",
+      "confidence": "evidence",
+      "location": {
+        "file": "src/lib/flow/nodes/condition.ts",
+        "line": 28,
+        "function": "execute"
+      },
+      "description": "The logic evaluator uses loose equality (`==` and `!=`) for the 'equals' and 'notEquals' operators. This can lead to unexpected type coercion bugs (e.g. `0 == \"0\"`, `false == 0`, `\"\" == false`).",
+      "repro_steps": [
+        "1. Create a condition node in a flow",
+        "2. Set operator to 'equals'",
+        "3. Compare the boolean `false` with integer `0` or empty string `\"\"`",
+        "4. Condition resolves to true unexpectedly"
+      ],
+      "tests_needed": [
+        "test/flow/nodes/condition-coercion.test.ts"
+      ],
+      "suggested_fix": "Change `left == right` to `left === right` and explicitly cast types if type coercion is the intended behavior (e.g. `String(left) === String(right)`).",
+      "history_events": []
+    },
+    {
+      "id": "logic-003",
+      "title": "Missing Code/State Check on Auth Callback OAuth Exchange",
+      "severity": "medium",
+      "category": "edge-case",
+      "type": "unhandled-edge-case",
+      "status": "open",
+      "confidence": "inference",
+      "location": {
+        "file": "src/pages/auth/AuthCallback.tsx",
+        "line": 150,
+        "function": "handleCallback"
+      },
+      "description": "The callback handler calls `supabase.auth.getSession()` unconditionally if `error` is not in the URL, under the assumption Supabase automatically traded the code. If the code parameter is missing or invalid, it may silently get an unauthenticated session and redirect the user back to login with no explanation.",
+      "repro_steps": [
+        "1. Navigate to `/auth/callback` with no query parameters",
+        "2. Observe redirection to `/login` without any error message or alert"
+      ],
+      "tests_needed": [
+        "test/pages/auth/Callback-missing-code.test.ts"
+      ],
+      "suggested_fix": "Look for the `code` query parameter and surface an 'Invalid Link' error if it is missing, before attempting session exchange or redirecting silently.",
+      "history_events": []
+    },
+    {
+      "id": "logic-004",
+      "title": "Batch Task Creation Does Not Wait for Errors",
+      "severity": "low",
+      "category": "async-bug",
+      "type": "race-condition",
+      "status": "open",
+      "confidence": "inference",
+      "location": {
+        "file": "src/components/inspector/SuggestionsModal.tsx",
+        "line": 64,
+        "function": "handleCreateAll"
+      },
+      "description": "When `handleCreateAll` invokes `onClose()`, the component may unmount before the analytics event is fully processed or before state settles. Although `onBatchCreate` is awaited, `setIsCreating(false)` in the finally block will execute on an unmounted component, potentially leading to a React state warning.",
+      "repro_steps": [
+        "1. Open SuggestionsModal",
+        "2. Ensure network is slow",
+        "3. Click 'Create Tasks'",
+        "4. Observe React 'Cannot update state on an unmounted component' warning"
+      ],
+      "tests_needed": [
+        "test/components/inspector/SuggestionsModal-unmount.test.ts"
+      ],
+      "suggested_fix": "Check if component is still mounted before calling `setIsCreating(false)`, or allow the modal to close itself naturally by letting the parent remove it from the DOM based on state.",
+      "history_events": []
+    }
+  ],
+  "rollups": {
+    "by_severity": {
+      "high": 1,
+      "medium": 2,
+      "low": 1
+    },
+    "by_category": {
+      "error-handling": 1,
+      "type-error": 1,
+      "edge-case": 1,
+      "async-bug": 1
+    },
+    "by_type": {
+      "error-swallowing": 1,
+      "type-coercion": 1,
+      "unhandled-edge-case": 1,
+      "race-condition": 1
+    },
+    "by_status": {
+      "open": 4
+    }
+  },
+  "next_actions": [
+    "Refactor src/lib/supabase.ts to throw specific Auth errors to callers instead of returning null.",
+    "Fix loose equality in src/lib/flow/nodes/condition.ts.",
+    "Add code check in AuthCallback.tsx."
+  ]
+}

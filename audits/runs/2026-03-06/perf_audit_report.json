@@ -1,0 +1,76 @@
+{
+  "kind": "agent_output",
+  "run_id": "perf-20260306-124600",
+  "suite": "performance",
+  "agent": {
+    "name": "performance-cost-auditor",
+    "version": "1.1"
+  },
+  "coverage": {
+    "routes_mapped": [],
+    "files_audited": 10,
+    "coverage_complete": true
+  },
+  "findings": [
+    {
+      "id": "PERF-001",
+      "category": "db-query-waste",
+      "severity": "medium",
+      "location": "src/lib/api/projects/adapter.ts, src/lib/api/auth.ts, src/lib/api/credentials/adapter.ts",
+      "title": "Unoptimized SELECT * Queries",
+      "description": "Multiple Supabase queries use .select('*') to fetch all columns. This wastes bandwidth and memory, especially for tables with large text or JSONB fields like projects and task_prompts.",
+      "expectation": "Explicitly specify only the required columns in the .select() chain for better database performance.",
+      "proof": {
+        "hook_type": "data_shape",
+        "expected": ".select('id, title, status, created_at')",
+        "actual": ".select('*')"
+      }
+    },
+    {
+      "id": "PERF-002",
+      "category": "cache-miss",
+      "severity": "high",
+      "location": "src/lib/api/projects/hooks.ts",
+      "title": "Missing staleTime in React Query Hooks",
+      "description": "Almost all project hooks (useProjects, useProjectTasks, etc.) omit the staleTime configuration. With the default of 0ms, this triggers redundant network requests on every window focus, component remount, and network reconnect.",
+      "expectation": "Configure an appropriate staleTime (e.g., 1-5 minutes) for data that does not change frequently, to minimize redundant API/DB calls.",
+      "proof": {
+        "hook_type": "code_reference",
+        "expected": "staleTime: 5 * 60 * 1000",
+        "actual": "Missing staleTime property in useQuery config object"
+      }
+    },
+    {
+      "id": "PERF-003",
+      "category": "bundle-size",
+      "severity": "high",
+      "location": "src/App.tsx, vite.config.ts",
+      "title": "Missing Code Splitting for Large Libraries",
+      "description": "The application relies on heavy dependencies (monaco-editor, @xyflow/react, html2canvas, jspdf, recharts) but lacks any React.lazy() or dynamic import() code-splitting boundaries. This forces all users to download the full weight of these libraries upfront, severely impacting initial load performance.",
+      "expectation": "Wrap heavy, route-specific components in React.lazy() and Suspense boundaries to lazily load expensive libraries, and configure Vite manualChunks where appropriate.",
+      "proof": {
+        "hook_type": "build_stats",
+        "expected": "Dynamic chunks for editor and flow diagram components",
+        "actual": "No dynamic imports () found in src code; large dependencies are statically compiled to the main bundle."
+      }
+    }
+  ],
+  "rollups": {
+    "total_findings": 3,
+    "by_severity": {
+      "high": 2,
+      "medium": 1,
+      "low": 0
+    },
+    "by_category": {
+      "db-query-waste": 1,
+      "cache-miss": 1,
+      "bundle-size": 1
+    }
+  },
+  "next_actions": [
+    "Audit SELECT * queries in adapter files and replace with specific column whitelists.",
+    "Add staleTime configuration to all React Query useQuery hooks.",
+    "Implement React.lazy() for route-level code splitting, especially for the IDE/Editor and Flow routes."
+  ]
+}

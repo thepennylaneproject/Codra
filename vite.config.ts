@@ -38,6 +38,14 @@ export default defineConfig({
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-supabase': ['@supabase/supabase-js'],
+          // Heavy editor — only loaded on workspace routes
+          'vendor-monaco': ['monaco-editor'],
+          // Flow canvas — only loaded on workspace routes
+          'vendor-xyflow': ['@xyflow/react'],
+          // Charts — only loaded on metrics/analytics routes
+          'vendor-recharts': ['recharts'],
+          // Export libs — only loaded when user exports a PDF
+          'vendor-export': ['jspdf', 'html2canvas'],
         },
       },
     },

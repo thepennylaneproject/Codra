@@ -36,22 +36,32 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 /**
- * Get the current authenticated user
+ * Get the current authenticated user.
+ * Returns { user, error } so callers can distinguish "not logged in" from
+ * a real auth/network failure. Previously both cases silently returned null.
  */
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<{
+  user: Awaited<ReturnType<typeof supabase.auth.getUser>>['data']['user'] | null;
+  error: Error | null;
+}> {
   try {
     const {
       data: { user },
       error
     } = await supabase.auth.getUser();
 
-    if (error) throw error;
-    return user;
+    if (error) {
+      console.error('Error getting current user:', error);
+      return { user: null, error };
+    }
+    return { user, error: null };
   } catch (error) {
-    console.error('Error getting current user:', error);
-    return null;
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Unexpected error getting current user:', err);
+    return { user: null, error: err };
   }
 }
+
 
 /**
  * Sign up a new user
@@ -143,7 +153,7 @@ export async function updatePassword(newPassword: string) {
  */
 export async function updateProfile(updates: Record<string, any>) {
   try {
-    const user = await getCurrentUser();
+    const { user } = await getCurrentUser();
     if (!user) throw new Error('No user logged in');
 
     const { data, error } = await supabase

@@ -2,33 +2,61 @@ import { Handler } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
 import { validateManifest, formatValidationErrors } from '../../src/lib/assets/manifest/validate';
 
-// Init Supabase with Service Role for admin writes
-// Note: In a real app, strict RLS with user context is better, but this functions as an admin/system ingestion point.
-// If run from UI, we should verify the user token or pass it through.
-// For now, I'll assume we pass the User ID in the body or verify the Bearer token.
-// Ideally, we forward the Authorization header to Supabase.
-
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
+// Service role client — used ONLY for auth token verification and workspace
+// ownership check. All writes use sql with the verified userId, not a body-supplied one.
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+const corsHeaders = {
+    'Access-Control-Allow-Origin': process.env.URL || '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
+
 export const handler: Handler = async (event, context) => {
+    // Handle preflight
+    if (event.httpMethod === 'OPTIONS') {
+        return { statusCode: 200, headers: corsHeaders, body: '' };
+    }
+
     if (event.httpMethod !== 'POST') {
-        return { statusCode: 405, body: 'Method Not Allowed' };
+        return { statusCode: 405, headers: corsHeaders, body: 'Method Not Allowed' };
     }
 
     try {
-        // 1. Auth Check (simplified)
-        // In prod, check event.headers.authorization and validation user.
-        // For this task, we'll extract a workspaceId and userId from the body (simulating an authenticated context)
-        // OR rely on the client passing trusted data if this is an internal tool.
-        // Let's assume we decode the JWT or get passed trustable metadata.
-        const payload = JSON.parse(event.body || '{}');
-        const { manifest, workspaceId, userId } = payload;
+        // 1. Verify JWT — reject requests with no/invalid Bearer token.
+        //    Never trust userId or workspaceId from the request body.
+        const authHeader = event.headers.authorization;
+        if (!authHeader?.startsWith('Bearer ')) {
+            return { statusCode: 401, headers: corsHeaders, body: JSON.stringify({ error: 'Unauthorized' }) };
+        }
+        const token = authHeader.replace('Bearer ', '');
+        const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+        if (authError || !user) {
+            return { statusCode: 401, headers: corsHeaders, body: JSON.stringify({ error: 'Invalid token' }) };
+        }
 
-        if (!workspaceId || !userId) {
-            return { statusCode: 401, body: JSON.stringify({ error: "Missing workspaceId or userId context" }) };
+        // 2. Parse body — workspaceId comes from here, but userId is always from the verified token.
+        const payload = JSON.parse(event.body || '{}');
+        const { manifest, workspaceId } = payload;
+        const userId = user.id; // Never trust userId from the body
+
+        if (!workspaceId) {
+            return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: 'Missing workspaceId' }) };
+        }
+
+        // 3. Verify the authenticated user owns this workspace.
+        const { data: workspace, error: wsError } = await supabase
+            .from('projects')
+            .select('id')
+            .eq('id', workspaceId)
+            .eq('user_id', userId)
+            .single();
+
+        if (wsError || !workspace) {
+            return { statusCode: 403, headers: corsHeaders, body: JSON.stringify({ error: 'Access denied to workspace' }) };
         }
 
         // 2. Validate Manifest
@@ -169,6 +197,7 @@ export const handler: Handler = async (event, context) => {
         console.error("Save Manifest Error:", error);
         return {
             statusCode: 500,
+            headers: corsHeaders,
             body: JSON.stringify({ error: error.message || "Internal Server Error" })
         };
     }

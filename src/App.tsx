@@ -5,6 +5,7 @@
 // ============================================================
 
 
+import { lazy, Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './lib/auth/AuthProvider';
@@ -33,8 +34,7 @@ import { AtmosphereProvider } from './lib/design/AtmosphereContext';
 import { MotionProvider } from './lib/design/MotionContext';
 import { PlacementProvider } from './lib/placement/PlacementContext';
 
-// New Pipeline
-import { WorkspacePage } from './new/routes/WorkspacePage';
+// New Pipeline — static (lightweight routes)
 import { ProjectContextPage } from './new/routes/ProjectContextPage';
 import { OnboardingEntry } from './new/routes/onboarding/OnboardingEntry';
 import { ProjectsPage } from './new/routes/ProjectsPage';
@@ -44,10 +44,25 @@ import { BlueprintGalleryPage } from './new/routes/BlueprintGalleryPage';
 import { TermsPage } from './new/routes/TermsPage';
 import { PrivacyPage } from './new/routes/PrivacyPage';
 import { ToastContainer } from './new/components/Toast';
-import CoherenceScanPage from './new/routes/CoherenceScanPage';
 import { WorkspaceShellDemo } from './new/routes/WorkspaceShellDemo';
-import { MetricsDashboard } from './pages/Admin/MetricsDashboard';
 import { ConnectionIndicator } from './components/ConnectionIndicator';
+
+// Heavy routes — lazy-loaded so their chunks (monaco, xyflow, recharts) are
+// not included in the main bundle download for users on lightweight routes.
+const WorkspacePage = lazy(() =>
+  import('./new/routes/WorkspacePage').then(m => ({ default: m.WorkspacePage }))
+);
+const CoherenceScanPage = lazy(() => import('./new/routes/CoherenceScanPage'));
+const MetricsDashboard = lazy(() =>
+  import('./pages/Admin/MetricsDashboard').then(m => ({ default: m.MetricsDashboard }))
+);
+
+// Fallback shown while heavy chunks load
+const RouteLoader = () => (
+  <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+    <div className="w-8 h-8 rounded-full border-2 border-zinc-700 border-t-zinc-400 animate-spin" />
+  </div>
+);
 
 // ============================================================
 // App Component
@@ -123,7 +138,7 @@ export function App() {
                       <Route path="/projects" element={<ProjectsPage />} />
                       <Route path="/settings" element={<SettingsPage />} />
                       <Route path="/dashboard" element={<Navigate to="/projects" replace />} />
-                      <Route path="/admin/metrics" element={<MetricsDashboard />} />
+                      <Route path="/admin/metrics" element={<Suspense fallback={<RouteLoader />}><MetricsDashboard /></Suspense>} />
                     </Route>
 
 
@@ -161,7 +176,9 @@ export function App() {
                       path="/p/:projectId/workspace"
                       element={
                         <ProtectedRoute>
-                          <WorkspacePage />
+                          <Suspense fallback={<RouteLoader />}>
+                            <WorkspacePage />
+                          </Suspense>
                         </ProtectedRoute>
                       }
                     />
@@ -186,7 +203,9 @@ export function App() {
                       path="/coherence-scan"
                       element={
                         <ProtectedRoute>
-                          <CoherenceScanPage />
+                          <Suspense fallback={<RouteLoader />}>
+                            <CoherenceScanPage />
+                          </Suspense>
                         </ProtectedRoute>
                       }
                     />
@@ -194,7 +213,9 @@ export function App() {
                       path="/coherence-scan/:scanId"
                       element={
                         <ProtectedRoute>
-                          <CoherenceScanPage />
+                          <Suspense fallback={<RouteLoader />}>
+                            <CoherenceScanPage />
+                          </Suspense>
                         </ProtectedRoute>
                       }
                     />
@@ -222,7 +243,9 @@ export function App() {
                       path="/admin/metrics"
                       element={
                         <ProtectedRoute>
-                          <MetricsDashboard />
+                          <Suspense fallback={<RouteLoader />}>
+                            <MetricsDashboard />
+                          </Suspense>
                         </ProtectedRoute>
                       }
                     />

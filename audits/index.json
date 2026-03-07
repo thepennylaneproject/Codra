@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1.0",
+  "runs": [
+    {
+      "run_id": "syn-run-20260306190944",
+      "timestamp": "2026-03-06T19:09:44.820509Z",
+      "agents": [
+        "security-privacy-auditor",
+        "schema-auditor",
+        "ux-flow-auditor",
+        "build-deploy-auditor",
+        "performance-cost-auditor",
+        "runtime-bug-hunter"
+      ],
+      "finding_count": 29,
+      "blocker_count": 1,
+      "major_count": 2,
+      "question_count": 0,
+      "coverage_gaps": [
+        "runtime-bug-hunter",
+        "ux-flow-auditor"
+      ],
+      "diff_summary_short": "29 new, 0 resolved, 0 changed"
+    }
+  ]
+}

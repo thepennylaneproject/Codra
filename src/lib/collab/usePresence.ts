@@ -13,7 +13,7 @@ export function usePresence(projectId: string) {
         managerRef.current = manager;
 
         const init = async () => {
-            const user = await getCurrentUser();
+            const { user } = await getCurrentUser();
 
             if (user) {
                 // Generate a random color for the user if they don't have one

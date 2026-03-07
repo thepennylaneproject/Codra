@@ -25,8 +25,8 @@ export const conditionExecutor: NodeExecutor<AppNode> = {
             const right = data.right; // resolved value
 
             switch (data.operator) {
-                case 'equals': result = left == right; break;
-                case 'notEquals': result = left != right; break;
+                case 'equals': result = left === right; break;
+                case 'notEquals': result = left !== right; break;
                 case 'contains': result = String(left).includes(String(right)); break;
                 case 'greaterThan': result = Number(left) > Number(right); break;
                 case 'lessThan': result = Number(left) < Number(right); break;

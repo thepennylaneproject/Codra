@@ -1,0 +1,65 @@
+{
+  "kind": "agent_output",
+  "run_id": "deploy-20260306-124305",
+  "suite": "deploy",
+  "agent": {
+    "name": "build-deploy-auditor",
+    "version": "1.1.0"
+  },
+  "findings": [
+    {
+      "id": "DEPLOY-001",
+      "category": "deploy-risk",
+      "severity": "Major",
+      "title": "Unpinned Dependencies in package.json",
+      "description": "Dependencies in package.json use caret versions (e.g., ^18.3.1 for React, ^5.4.0 for Vite). This can result in non-deterministic builds across environments if lockfiles are inadvertently ignored, or cause unexpected breaks down the line.",
+      "file": "package.json",
+      "recommendation": "Pin all critical dependencies to exact versions or enforce strict adherence to package-lock.json with 'npm ci' across all deployment and development environments."
+    },
+    {
+      "id": "DEPLOY-002",
+      "category": "missing-error-boundary",
+      "severity": "Major Enhancement",
+      "title": "Missing Global window.onerror and unhandledrejection handlers",
+      "description": "While a React ErrorBoundary exists for the component tree, there is no global top-level handler for asynchronous operations or errors occurring outside the React lifecycle, resulting in unreported frontend crashes.",
+      "file": "src/main.tsx",
+      "recommendation": "Add top-level event listeners for 'error' and 'unhandledrejection' to capture and report all unhandled UI crashes to the analytics service."
+    },
+    {
+      "id": "DEPLOY-003",
+      "category": "env-management",
+      "severity": "Major",
+      "title": "Missing Startup Environment Variable Validation",
+      "description": "Required environment variables (e.g., Supabase URLs and Cloudinary credentials) are checked manually at runtime usage points rather than validated centrally at application startup. This can lead to silent execution failures.",
+      "file": "src/lib/supabase.ts",
+      "recommendation": "Implement a centralized environment variable validation schema (e.g., Zod with env.mjs or t3-env) that throws an immediate error if the deployment lacks required variables."
+    },
+    {
+      "id": "DEPLOY-004",
+      "category": "deploy-risk",
+      "severity": "Minor",
+      "title": "Missing Health Check API Endpoint",
+      "description": "The application lacks a dedicated `/api/health` Netlify function or endpoint. This prevents robust external uptime monitoring (e.g., from Pingdom or Datadog) beyond checking the static HTML.",
+      "file": "netlify/functions/health.ts",
+      "recommendation": "Add a simple /api/health Netlify function returning { status: 'ok', timestamp: Date.now() }."
+    },
+    {
+      "id": "DEPLOY-005",
+      "category": "logging-gap",
+      "severity": "Minor",
+      "title": "Blanket catch Blocks Swallowing Errors",
+      "description": "Found numerous empty `catch` blocks or blocks that swallow the error entirely inside try-catch patterns across the codebase. This drastically reduces observability into transient pipeline failures.",
+      "file": "src/**/*.ts",
+      "recommendation": "Enforce a linting rule requiring all catch blocks to log the error at minimum, using analytics.track or console.error with surrounding context."
+    },
+    {
+      "id": "DEPLOY-006",
+      "category": "env-management",
+      "severity": "Minor",
+      "title": "Missing Deployment Environment Documentation",
+      "description": "No central README.md exists in the project root to document the full list of necessary environment variables or deployment steps required for a fresh install.",
+      "file": "README.md",
+      "recommendation": "Create a unified README.md with comprehensive deployment instructions and required environment variables mapping."
+    }
+  ]
+}

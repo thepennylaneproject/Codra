@@ -1,0 +1,36 @@
+{
+  "kind": "agent_output",
+  "run_id": "security-20260306-124516",
+  "suite": "security",
+  "agent": {
+    "name": "security-privacy-auditor",
+    "version": "1.1"
+  },
+  "metadata": {
+    "threat_model_notes": "Codra handles AI provider API credentials and asset bundles. High-value targets: user stored API keys, proprietary project blueprints, and asset manifests. Vectors: Exposed/unauthenticated serverless functions, bypassing RLS using service keys, and IDORs."
+  },
+  "findings": [
+    {
+      "id": "SEC-001",
+      "category": "auth-bypass",
+      "severity": "P0",
+      "title": "Critical Authentication Bypass in asset_manifest_save.ts",
+      "description": "The netlify function `asset_manifest_save.ts` uses `SUPABASE_SERVICE_ROLE_KEY` to bypass Row Level Security. It trusts the `userId` and `workspaceId` extracted directly from the request payload JSON without validating any JWT or Authorization header. An attacker can forge save requests for any user or workspace, overwriting their assets.",
+      "attack_scenario": "An attacker sends a POST request to `/api/asset_manifest_save` with `{ \"userId\": \"target-uuid\", \"workspaceId\": \"target-workspace-id\", \"manifest\": {...} }`. The server blindly trusts these parameters and overwrites the victim's asset bundle using its admin privileges.",
+      "fix": "Use `await supabase.auth.getUser(token)` to verify the user's identity from the `Authorization` header instead of trusting the request body payload. Alternatively, rely on RLS and use the user's initialized Supabase client rather than the service role key.",
+      "file": "netlify/functions/asset_manifest_save.ts",
+      "location": "line 22-32"
+    },
+    {
+      "id": "SEC-002",
+      "category": "data-leakage",
+      "severity": "P0",
+      "title": "Unauthenticated Data Exposure in asset_manifest_get.ts",
+      "description": "The netlify function `asset_manifest_get.ts` fetches asset bundles and assets using the `SUPABASE_SERVICE_ROLE_KEY` (RLS bypassed) by simply taking a `bundleId` from the query string. There is no session validation.",
+      "attack_scenario": "An attacker sends a GET request to `/api/asset_manifest_get?bundleId=predictable-or-leaked-id`. The server responds with the full manifest contents, leaking proprietary assets.",
+      "fix": "Implement JWT validation via `supabase.auth.getUser(token)` and verify the authenticated user has access to the workspace that owns the bundle, or use the regular Supabase client to rely on RLS.",
+      "file": "netlify/functions/asset_manifest_get.ts",
+      "location": "line 18-42"
+    }
+  ]
+}

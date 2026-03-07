@@ -1,0 +1,122 @@
+{
+  "kind": "agent_output",
+  "run_id": "ux-20260306-001718",
+  "suite": "ux",
+  "agent": {
+    "name": "ux-flow-auditor",
+    "version": "1.1"
+  },
+  "coverage": {
+    "routes_mapped": [
+      "/projects",
+      "/pricing",
+      "/blueprints",
+      "/terms",
+      "/privacy",
+      "/login",
+      "/signup",
+      "/forgot-password",
+      "/auth/callback",
+      "/reset-password",
+      "/settings",
+      "/dashboard",
+      "/admin/metrics",
+      "/new",
+      "/p/:projectId/workspace",
+      "/p/:projectId/context",
+      "/coherence-scan",
+      "/workspace-shell-demo"
+    ],
+    "files_audited": 38,
+    "coverage_complete": false
+  },
+  "findings": [
+    {
+      "id": "UX-001",
+      "category": "copy-mismatch",
+      "severity": "medium",
+      "location": "src/components/auth/LoginForm.tsx, src/components/auth/SignupForm.tsx",
+      "title": "Inconsistent Login Terminology",
+      "description": "The terms 'Sign in', 'Log in', and 'Open login' are used interchangeably across authentication components.",
+      "expectation": "Use a single consistent term for the login action (e.g., 'Log In')."
+    },
+    {
+      "id": "UX-002",
+      "category": "copy-mismatch",
+      "severity": "low",
+      "location": "src/domain/smart-defaults-types.ts",
+      "title": "Inconsistent Save Terminology",
+      "description": "'Save Changes', 'Save', and 'Automatically save changes' are used with varying casing and patterns.",
+      "expectation": "Standardize casing and phrasing for fundamental actions like save."
+    },
+    {
+      "id": "UX-003",
+      "category": "copy-mismatch",
+      "severity": "medium",
+      "location": "src/domain/signatures.ts",
+      "title": "Placeholder Text in Production",
+      "description": "Found 'Lorem ipsum dolor sit amet.' text strings exposed in UI weight definitions.",
+      "expectation": "Remove lorem ipsum placeholders and replace with real copy."
+    },
+    {
+      "id": "UX-004",
+      "category": "missing-state",
+      "severity": "high",
+      "location": "src/App.tsx",
+      "title": "Missing Error Boundaries",
+      "description": "Major sections like ProjectsPage, SettingsPage, and Admin Metrics lack error boundaries. Only WorkspacePage implements one.",
+      "expectation": "Wrap major route components in ErrorBoundary to prevent full app crashes."
+    },
+    {
+      "id": "UX-005",
+      "category": "missing-state",
+      "severity": "low",
+      "location": "src/new/components/workspace/WorkspaceSurface.tsx",
+      "title": "Unhelpful Empty States",
+      "description": "Workspace empty state notes it is 'intentional, not instructional' with no guidance for the user on what to do next.",
+      "expectation": "Empty states should guide the user toward their first action."
+    },
+    {
+      "id": "UX-006",
+      "category": "a11y-gap",
+      "severity": "medium",
+      "location": "src/new/components/desks/DesignCanvas.tsx",
+      "title": "Unhelpful Image Alt Text",
+      "description": "Images use unhelpful alt text like 'Generated' or just '{asset.name}' directly without providing structural context for screen readers.",
+      "expectation": "Provide descriptive alt text distinguishing purpose and meaning for screen readers."
+    },
+    {
+      "id": "UX-007",
+      "category": "question",
+      "severity": "medium",
+      "location": "Global",
+      "title": "Undefined Product Voice",
+      "description": "The intended product voice and tone are not explicitly defined in the observed design tokens or documentation.",
+      "expectation": "Propose and document a default voice guide (e.g., clear, concise, professional)."
+    }
+  ],
+  "rollups": {
+    "total_findings": 7,
+    "by_severity": {
+      "high": 1,
+      "medium": 4,
+      "low": 2
+    },
+    "by_category": {
+      "copy-mismatch": 3,
+      "missing-state": 2,
+      "a11y-gap": 1,
+      "question": 1,
+      "broken-flow": 0,
+      "nav-dead-end": 0,
+      "inconsistent-label": 0
+    }
+  },
+  "next_actions": [
+    "Standardize authentication and system action terminology across the app's components.",
+    "Implement ErrorBoundary components at the route component level in App.tsx.",
+    "Draft a product voice guide to align on tone, personality, and capitalization conventions.",
+    "Update workspace empty states to include clear primary calls-to-action.",
+    "Audit all <img> tags and update alt attributes to be meaningful."
+  ]
+}

@@ -145,6 +145,15 @@ export function AuthCallback() {
       }
 
       try {
+        // Guard: if no `code` param is present, there's nothing for Supabase to exchange.
+        // This prevents a silent redirect-to-login with no user feedback.
+        const code = searchParams.get('code');
+        const type = searchParams.get('type');
+        if (!code && !type) {
+          setError('missing_code');
+          return;
+        }
+
         // Let Supabase handle the OAuth code exchange
         // Supabase detects the auth callback automatically
         const { data, error: authError } = await supabase.auth.getSession();
