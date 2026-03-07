@@ -8,6 +8,9 @@ import {
 describe('codebase intelligence extraction prompt', () => {
     it('contains the required section headers and metadata block', () => {
         expect(CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT).toContain('# View Source: Codebase Intelligence Extraction Prompt');
+        expect(CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT).toContain(
+            '> **Instructions:** Run this prompt through an AI agent with full access to each codebase. Replace `[PROJECT_NAME]` with the actual project name before running. Output should be returned in the exact section structure below. Do not skip sections — mark any section where information is unavailable as `[NOT FOUND IN CODEBASE — REQUIRES MANUAL INPUT]`.',
+        );
 
         for (const section of [
             '### SECTION 1: PROJECT IDENTITY',
@@ -22,6 +25,7 @@ describe('codebase intelligence extraction prompt', () => {
             '### SECTION 10: EXECUTIVE SUMMARY',
             '## OUTPUT FORMAT',
             'AUDIT METADATA',
+            'Codebase access: [full repo / partial / read-only]',
         ]) {
             expect(CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT).toContain(section);
         }

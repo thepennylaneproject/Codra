@@ -150,7 +150,7 @@ Return ONLY valid JSON, no markdown formatting.
 
 export const CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT = `# View Source: Codebase Intelligence Extraction Prompt
 
-> **Instructions:** Run this prompt through an AI agent with full access to each codebase. Replace [PROJECT_NAME] with the actual project name before running. Output should be returned in the exact section structure below. Do not skip sections — mark any section where information is unavailable as [NOT FOUND IN CODEBASE — REQUIRES MANUAL INPUT].
+> **Instructions:** Run this prompt through an AI agent with full access to each codebase. Replace \`[PROJECT_NAME]\` with the actual project name before running. Output should be returned in the exact section structure below. Do not skip sections — mark any section where information is unavailable as \`[NOT FOUND IN CODEBASE — REQUIRES MANUAL INPUT]\`.
 
 ---
 
