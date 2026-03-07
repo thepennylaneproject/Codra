@@ -154,6 +154,13 @@ export function filterAssets(
         filtered = filtered.filter(a => matchesConstraint(a.sizeClass, constraints.sizeClass));
     }
     
+    // Aspect class filter
+    const beforeAspect = filtered.length;
+    filtered = filtered.filter(a => matchesConstraint(a.aspectClass, constraints.aspect));
+    if (filtered.length === 0 && beforeAspect > 0) {
+        unmetConstraints.push(`aspect: no assets match ${constraints.aspect}`);
+    }
+
     // Required tags filter
     const beforeReq = filtered.length;
     filtered = filtered.filter(a => hasRequiredTags(a, constraints.requiredTags));

@@ -64,7 +64,7 @@ export type LifecycleStatus = 'any' | 'draft' | 'approved' | 'deprecated';
 export type ProductFamily = 'any' | 'relevnt_core' | 'deepwater' | 'steel' | 'diamond' | 'pro' | 'starter' | 'other';
 
 /** Asset class categories */
-export type AssetClass = 'raster' | 'vector';
+export type AssetClass = 'any' | 'raster' | 'vector';
 
 /** Vector-specific types */
 export type VectorType = 'stroke' | 'filled' | 'mixed';

@@ -37,7 +37,7 @@ export const DEFAULT_SELECTION: SelectionConstraints = {
     forbiddenTags: [],
     productFamily: 'any',
     variant: 'any',
-    assetClass: 'raster',
+    assetClass: 'any',
     vectorType: 'mixed',
     complexity: 'low',
     isInvertible: false,
