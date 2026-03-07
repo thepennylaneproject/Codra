@@ -8,6 +8,9 @@ import {
 describe('codebase intelligence extraction prompt', () => {
     it('contains the required section headers and metadata block', () => {
         expect(CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT).toContain('# View Source: Codebase Intelligence Extraction Prompt');
+        expect(CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT).toContain('You are conducting a comprehensive intelligence extraction of the **Codra** codebase.');
+        expect(CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT).not.toContain('## THE PROMPT');
+        expect(CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT).not.toContain('Replace [PROJECT_NAME] with the actual project name before running.');
 
         for (const section of [
             '### SECTION 1: PROJECT IDENTITY',

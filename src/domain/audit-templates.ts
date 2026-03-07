@@ -150,13 +150,7 @@ Return ONLY valid JSON, no markdown formatting.
 
 export const CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT = `# View Source: Codebase Intelligence Extraction Prompt
 
-> **Instructions:** Run this prompt through an AI agent with full access to each codebase. Replace [PROJECT_NAME] with the actual project name before running. Output should be returned in the exact section structure below. Do not skip sections — mark any section where information is unavailable as [NOT FOUND IN CODEBASE — REQUIRES MANUAL INPUT].
-
----
-
-## THE PROMPT
-
-You are conducting a comprehensive intelligence extraction of the **[PROJECT_NAME]** codebase. Your goal is to produce a structured, investor-grade profile of this project by reading the actual code, configuration, documentation, and commit history. Do not hallucinate or infer — only report what you can verify from the codebase itself. Where you identify gaps, flag them explicitly.
+You are conducting a comprehensive intelligence extraction of the **Codra** codebase. Your goal is to produce a structured, investor-grade profile of this project by reading the actual code, configuration, documentation, and commit history. Do not hallucinate or infer — only report what you can verify from the codebase itself. Where you identify gaps, flag them explicitly.
 
 Work through every section below. Be thorough. Be precise. Be honest about what's mature and what's early.
 
