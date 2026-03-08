@@ -138,7 +138,6 @@ export function App() {
                       <Route path="/projects" element={<ProjectsPage />} />
                       <Route path="/settings" element={<SettingsPage />} />
                       <Route path="/dashboard" element={<Navigate to="/projects" replace />} />
-                      <Route path="/admin/metrics" element={<Suspense fallback={<RouteLoader />}><MetricsDashboard /></Suspense>} />
                     </Route>
 
 

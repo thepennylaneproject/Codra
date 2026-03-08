@@ -1,6 +1,7 @@
 /**
  * WORKSPACE SHELL DEMO PAGE
- * Demonstrates the new workspace shell architecture with all features
+ * Demonstrates the new workspace shell architecture with all features.
+ * Admin-only: accessible to administrators for testing purposes.
  */
 
 import React from 'react';
@@ -8,9 +9,30 @@ import { useParams } from 'react-router-dom';
 import { WorkspaceShell } from '../../components/workspace';
 import { Sparkles, FileText, Lightbulb, Terminal } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
 
 export const WorkspaceShellDemo: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
+  const { isAdmin, isLoading } = useAdminCheck();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-zinc-500" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-xl font-semibold text-zinc-900 mb-2">Access Denied</h1>
+          <p className="text-zinc-500">This page is only accessible to administrators.</p>
+        </div>
+      </div>
+    );
+  }
 
   // Demo content for left dock
   const leftDockContent = (

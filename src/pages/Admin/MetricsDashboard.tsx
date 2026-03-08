@@ -1,10 +1,12 @@
 import { useMetrics } from '@/hooks/useMetrics';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { MetricCard } from './components/MetricCard';
 import { FunnelChart } from './components/FunnelChart';
 import { FlowMetrics } from './components/FlowMetrics';
 import { Layout } from 'lucide-react';
 
 export function MetricsDashboard() {
+  const { isAdmin, isLoading: isAdminLoading } = useAdminCheck();
   const { 
     decisionCount,
     onboardingFunnel,
@@ -13,11 +15,22 @@ export function MetricsDashboard() {
     isLoading
   } = useMetrics();
   
-  if (isLoading) {
+  if (isAdminLoading || isLoading) {
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
         </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-xl font-semibold text-zinc-900 mb-2">Access Denied</h1>
+          <p className="text-zinc-500">This dashboard is only accessible to administrators.</p>
+        </div>
+      </div>
     );
   }
 

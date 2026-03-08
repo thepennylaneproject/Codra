@@ -53,11 +53,11 @@ function getCredentialForProvider(provider: string): string {
 }
 
 export const handler: Handler = async (event, context) => {
-    // CORS headers
+    // CORS headers — process.env.URL is set automatically by Netlify in deployed environments
     const headers = {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': process.env.URL || process.env.CORS_ORIGIN || '*',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-workspace-id',
         'Content-Type': 'application/json',
     };
 
@@ -198,7 +198,7 @@ export const handler: Handler = async (event, context) => {
         // Log Run Start
         const runId = await logAIRunStart({
             userId: user.id,
-            workspaceId: null, // TODO: Extract from headers if available
+            workspaceId: event.headers['x-workspace-id'] || null,
             taskType: 'completion',
             grounded: false,
             providerId: router.primaryProvider,
