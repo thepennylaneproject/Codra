@@ -23,6 +23,8 @@ Codra is a single-product JAMstack application (React 18 + Vite frontend, Netlif
 ### Auth & external services
 
 - The app requires Supabase credentials (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) to authenticate users. Without them the frontend loads but login/signup cannot complete.
+- Vite exposes `VITE_*` env vars via `import.meta.env`. Make sure these are set as shell environment variables before running `npm run dev` — Vite reads them at startup.
+- If signup/login silently resets the form, check the browser console for `ERR_NAME_NOT_RESOLVED` or `Failed to fetch`. This means the Supabase project URL is unreachable (wrong URL, deleted project, or network issue).
 - AI features require at least one provider API key (e.g. `OPENAI_API_KEY`, `AIMLAPI_API_KEY`).
 - Full env var list: see `.env.example` and the Netlify function source files under `netlify/functions/`.
 
