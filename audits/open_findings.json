@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1.0",
-  "last_updated": "2026-03-06T19:14:52Z",
+  "last_updated": "2026-03-13T20:02:52Z",
   "last_run_id": "syn-run-20260306190944",
   "findings": [
     {
@@ -28,7 +28,7 @@
         ],
         "estimated_effort": "small"
       },
-      "status": "fixed_pending_verify",
+      "status": "in_progress",
       "history": [
         {
           "timestamp": "2026-03-06T18:35:12.000Z",
@@ -40,6 +40,12 @@
           "actor": "synthesizer",
           "action": "status_changed",
           "notes": "Verification shows RLS IS enabled with full SELECT/ALL policies on app_settings, provider_settings, model_settings in supabase/migrations/20251214_admin_settings.sql (lines 114-148). api_credentials covered by 001_initial_schema.sql and phase3-migration.sql. project_briefing_state not found in migrations \u2014 check 20251212_briefing_state.sql. Marking fixed_pending_verify; run a manual Supabase linter check to confirm."
+        },
+        {
+          "timestamp": "2026-03-13T20:02:52Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-47): In Progress -> in_progress"
         }
       ]
     },
@@ -247,7 +253,7 @@
       "finding_id": "SYNTH-DEBT-001",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
@@ -263,6 +269,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -270,7 +282,7 @@
       "finding_id": "SYNTH-DEBT-002",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
@@ -286,6 +298,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -293,7 +311,7 @@
       "finding_id": "SYNTH-DEBT-003",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
@@ -309,6 +327,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -316,7 +340,7 @@
       "finding_id": "SYNTH-DEBT-004",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
@@ -332,6 +356,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -339,7 +369,7 @@
       "finding_id": "SYNTH-DEBT-005",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
@@ -355,6 +385,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -362,7 +398,7 @@
       "finding_id": "SYNTH-DEBT-006",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
@@ -378,6 +414,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -385,7 +427,7 @@
       "finding_id": "SYNTH-DEBT-007",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
@@ -401,6 +443,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -408,7 +456,7 @@
       "finding_id": "SYNTH-DEBT-008",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in runtime-bug-hunter output",
       "proof_hooks": [
@@ -424,6 +472,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -431,7 +485,7 @@
       "finding_id": "SYNTH-DEBT-009",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in runtime-bug-hunter output",
       "proof_hooks": [
@@ -447,6 +501,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -454,7 +514,7 @@
       "finding_id": "SYNTH-DEBT-010",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in runtime-bug-hunter output",
       "proof_hooks": [
@@ -470,6 +530,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -477,7 +543,7 @@
       "finding_id": "SYNTH-DEBT-011",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in runtime-bug-hunter output",
       "proof_hooks": [
@@ -493,6 +559,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -500,7 +572,7 @@
       "finding_id": "SYNTH-DEBT-012",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
@@ -516,6 +588,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -523,7 +601,7 @@
       "finding_id": "SYNTH-DEBT-013",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
@@ -539,6 +617,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -546,7 +630,7 @@
       "finding_id": "SYNTH-DEBT-014",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
@@ -562,6 +646,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -569,7 +659,7 @@
       "finding_id": "SYNTH-DEBT-015",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
@@ -585,6 +675,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -592,7 +688,7 @@
       "finding_id": "SYNTH-DEBT-016",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
@@ -608,6 +704,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -615,7 +717,7 @@
       "finding_id": "SYNTH-DEBT-017",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
@@ -631,6 +733,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -638,7 +746,7 @@
       "finding_id": "SYNTH-DEBT-018",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
@@ -654,6 +762,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -661,7 +775,7 @@
       "finding_id": "SYNTH-DEBT-019",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in performance-cost-auditor output",
       "proof_hooks": [
@@ -677,6 +791,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -684,7 +804,7 @@
       "finding_id": "SYNTH-DEBT-020",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in performance-cost-auditor output",
       "proof_hooks": [
@@ -700,6 +820,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -707,7 +833,7 @@
       "finding_id": "SYNTH-DEBT-021",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in performance-cost-auditor output",
       "proof_hooks": [
@@ -723,6 +849,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -730,7 +862,7 @@
       "finding_id": "SYNTH-DEBT-022",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in security-privacy-auditor output",
       "proof_hooks": [
@@ -746,6 +878,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -753,7 +891,7 @@
       "finding_id": "SYNTH-DEBT-023",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in security-privacy-auditor output",
       "proof_hooks": [
@@ -769,6 +907,12 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     },
@@ -776,7 +920,7 @@
       "finding_id": "SYNTH-DEBT-024",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
+      "priority": "P2",
       "confidence": "high",
       "title": "Schema Violation in security-privacy-auditor output",
       "proof_hooks": [
@@ -792,8 +936,15 @@
           "actor": "synthesizer",
           "action": "created",
           "notes": "Generated due to schema validation failure."
+        },
+        {
+          "timestamp": "2026-03-13T05:01:46Z",
+          "actor": "cleanup-script",
+          "event": "note_added",
+          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
         }
       ]
     }
-  ]
+  ],
+  "cleanup_applied": "2026-03-13T05:01:46Z"
 }

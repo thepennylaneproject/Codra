@@ -1,7 +1,21 @@
-Unknown command: "lint"
+
+> codra@0.2.0 lint
+> eslint src
 
 
-Did you mean this?
-  npm link # Symlink a package folder
-To see a list of supported npm commands, run:
-  npm help
+Oops! Something went wrong! :(
+
+ESLint: 8.57.1
+
+Error [ERR_MODULE_NOT_FOUND]: Failed to load plugin 'storybook' declared in '.eslintrc.cjs': Cannot find module '/Users/sarahsahl/Desktop/codra/node_modules/storybook/dist/test/index.js' imported from /Users/sarahsahl/Desktop/codra/node_modules/storybook/dist/csf/index.js
+Referenced from: /Users/sarahsahl/Desktop/codra/.eslintrc.cjs
+    at finalizeResolution (node:internal/modules/esm/resolve:274:11)
+    at moduleResolve (node:internal/modules/esm/resolve:859:10)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:767:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:790:52)
+    at #cachedResolveSync (node:internal/modules/esm/loader:750:25)
+    at ModuleLoader.getModuleJobForRequire (node:internal/modules/esm/loader:459:50)
+    at new ModuleJobSync (node:internal/modules/esm/module_job:395:34)
+    at ModuleLoader.getModuleJobForRequire (node:internal/modules/esm/loader:522:11)

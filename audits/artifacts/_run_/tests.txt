@@ -1,5 +1,70 @@
-npm error Missing script: "test"
-npm error
-npm error To see a list of scripts, run:
-npm error   npm run
-npm error A complete log of this run can be found in: /Users/sarahsahl/.npm/_logs/2026-03-05T18_40_30_070Z-debug-0.log
+
+> codra@0.2.0 test
+> vitest --run
+
+
+[1m[46m RUN [49m[22m [36mv4.0.16 [39m[90m/Users/sarahsahl/Desktop/codra[39m
+
+ [32m✓[39m src/lib/models/__tests__/adapters.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/lib/models/__tests__/policy-router.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 82[2mms[22m[39m
+ [32m✓[39m src/lib/image-policy/__tests__/errors.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m src/lib/models/__tests__/eval-runner.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/lib/image-policy/__tests__/resolver.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+[90mstderr[2m | src/lib/image-policy/__tests__/policy-executor.test.ts[2m > [22m[2mgenerate-ok mode[2m > [22m[2mshould try canonical first by default
+[22m[39mNo generateImage function provided, returning placeholder
+
+ [32m✓[39m src/lib/image-policy/__tests__/policy-executor.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+ [32m✓[39m src/lib/templates/__tests__/runner.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 161[2mms[22m[39m
+ [32m✓[39m src/lib/models/__tests__/registry-service.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/domain/__tests__/audit-templates.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/lib/thinking/debate/__tests__/cost-preflight.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/lib/ai/__tests__/retrieval-logic.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/lib/project-state/__tests__/ProjectStateManager.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [31m❯[39m src/lib/flow/__tests__/executor.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 11[2mms[22m[39m
+     [32m✓[39m should execute a simple linear flow[32m 1[2mms[22m[39m
+[31m     [31m×[31m should handle conditions[39m[32m 8[2mms[22m[39m
+     [32m✓[39m should resolve built-in variables[32m 1[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m netlify/functions/utils/__tests__/telemetry-helpers.test.ts[2m [ netlify/functions/utils/__tests__/telemetry-helpers.test.ts ][22m
+[31m[1mError[22m: supabaseUrl is required.[39m
+[90m [2m❯[22m validateSupabaseUrl node_modules/@supabase/supabase-js/dist/main/lib/helpers.js:[2m50:15[22m[39m
+[90m [2m❯[22m new SupabaseClient node_modules/@supabase/supabase-js/dist/main/SupabaseClient.js:[2m41:59[22m[39m
+[90m [2m❯[22m createClient node_modules/@supabase/supabase-js/dist/main/index.js:[2m46:12[22m[39m
+[36m [2m❯[22m netlify/functions/utils/telemetry-helpers.ts:[2m22:25[22m[39m
+    [90m 20| [39m
+    [90m 21| [39m[90m// Service role client bypasses RLS for system operations[39m
+    [90m 22| [39mconst supabaseService = createClient(SUPABASE_URL, SUPABASE_SERVICE_RO…
+    [90m   | [39m                        [31m^[39m
+    [90m 23| [39m    auth[33m:[39m {
+    [90m 24| [39m        autoRefreshToken[33m:[39m [35mfalse[39m[33m,[39m
+[90m [2m❯[22m netlify/functions/utils/__tests__/telemetry-helpers.test.ts:[2m9:1[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/lib/flow/__tests__/executor.test.ts[2m > [22mFlow Execution Engine[2m > [22mshould handle conditions
+[31m[1mAssertionError[22m: expected 'Incorrect' to be 'Correct' // Object.is equality[39m
+
+Expected: [32m"[7mC[27morrect"[39m
+Received: [31m"[7mInc[27morrect"[39m
+
+[36m [2m❯[22m src/lib/flow/__tests__/executor.test.ts:[2m51:43[22m[39m
+    [90m 49| [39m
+    [90m 50| [39m        [35mconst[39m resultTrue [33m=[39m [35mawait[39m executor[33m.[39m[34mexecute[39m(flow[33m,[39m { value[33m:[39m [34m10[39m })[33m;[39m
+    [90m 51| [39m        [34mexpect[39m(resultTrue[33m.[39moutputs[33m.[39mresult)[33m.[39m[34mtoBe[39m([32m'Correct'[39m)[33m;[39m
+    [90m   | [39m                                          [31m^[39m
+    [90m 52| [39m
+    [90m 53| [39m        [35mconst[39m resultFalse [33m=[39m [35mawait[39m executor[33m.[39m[34mexecute[39m(flow[33m,[39m { value[33m:[39m [34m5[39m })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m12 passed[39m[22m[90m (14)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m120 passed[39m[22m[90m (121)[39m
+[2m   Start at [22m 14:33:19
+[2m   Duration [22m 2.87s[2m (transform 5.60s, setup 0ms, import 7.45s, tests 376ms, environment 2ms)[22m
+

@@ -1,0 +1,10 @@
+---
+description: Project expectations and boundaries. Prevents agents from violating project constraints.
+globs:
+  - "**/*"
+---
+
+# Project Expectations
+
+This project has constraints defined in `audits/expectations.md`.
+Before making any change, read that file and verify your suggestion does not violate any `critical` rule.

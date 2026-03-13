@@ -1,7 +1,32 @@
-Unknown command: "build"
+
+> codra@0.2.0 prebuild
+> tsx scripts/generate-css-tokens.ts && tsx scripts/generate-tailwind-config.ts
 
 
-Did you mean this?
-  npm run build # run the "build" package script
-To see a list of supported npm commands, run:
-  npm help
+> codra@0.2.0 build
+> NODE_OPTIONS="--max-old-space-size=8192" tsc && NODE_OPTIONS="--max-old-space-size=8192" vite build
+
+vite v5.4.21 building for production...
+transforming...
+
+/assets/backgrounds/texture_cyan_circuit.jpg referenced in /assets/backgrounds/texture_cyan_circuit.jpg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/assets/backgrounds/texture_deep_space.jpg referenced in /assets/backgrounds/texture_deep_space.jpg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/assets/backgrounds/texture_midas_touch.jpg referenced in /assets/backgrounds/texture_midas_touch.jpg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/assets/backgrounds/texture_stealth_noir.jpg referenced in /assets/backgrounds/texture_stealth_noir.jpg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/assets/backgrounds/texture_default_v1.jpg referenced in /assets/backgrounds/texture_default_v1.jpg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/assets/backgrounds/texture_default_v2.jpg referenced in /assets/backgrounds/texture_default_v2.jpg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+✓ 3836 modules transformed.
+x Build failed in 22.28s
+error during build:
+Could not resolve "./powerquery.js" from "node_modules/monaco-editor/esm/vs/basic-languages/powerquery/powerquery.contribution.js"
+file: /Users/sarahsahl/Desktop/codra/node_modules/monaco-editor/esm/vs/basic-languages/powerquery/powerquery.contribution.js
+    at getRollupError (file:///Users/sarahsahl/Desktop/codra/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at error (file:///Users/sarahsahl/Desktop/codra/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at ModuleLoader.handleInvalidResolvedId (file:///Users/sarahsahl/Desktop/codra/node_modules/rollup/dist/es/shared/node-entry.js:21590:24)
+    at ModuleLoader.resolveDynamicImport (file:///Users/sarahsahl/Desktop/codra/node_modules/rollup/dist/es/shared/node-entry.js:21650:58)
+    at async file:///Users/sarahsahl/Desktop/codra/node_modules/rollup/dist/es/shared/node-entry.js:21534:32
