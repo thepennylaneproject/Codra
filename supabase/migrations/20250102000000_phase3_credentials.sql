@@ -34,8 +34,47 @@ CREATE TABLE IF NOT EXISTS public.api_credentials (
 
 -- Indexes
 CREATE INDEX idx_api_credentials_user_id ON public.api_credentials(user_id);
-CREATE INDEX idx_api_credentials_provider ON public.api_credentials(provider_id, environment);
-CREATE INDEX idx_api_credentials_is_active ON public.api_credentials(is_active);
+DO $$
+BEGIN
+  -- Support both legacy provider_id and current provider schemas.
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'api_credentials'
+      AND column_name = 'provider_id'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_api_credentials_provider ON public.api_credentials(provider_id, environment)';
+  ELSIF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'api_credentials'
+      AND column_name = 'provider'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_api_credentials_provider ON public.api_credentials(provider, environment)';
+  END IF;
+END $$;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'api_credentials'
+      AND column_name = 'is_active'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_api_credentials_is_active ON public.api_credentials(is_active)';
+  ELSIF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'api_credentials'
+      AND column_name = 'status'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_api_credentials_is_active ON public.api_credentials(status)';
+  END IF;
+END $$;
 
 -- RLS Policies - api_credentials
 ALTER TABLE public.api_credentials ENABLE ROW LEVEL SECURITY;
@@ -180,14 +219,13 @@ CREATE TABLE IF NOT EXISTS public.usage_alerts (
   limit_value NUMERIC NOT NULL,
   percentage NUMERIC NOT NULL,
   alerted_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-  acknowledged BOOLEAN DEFAULT false,
-  
-  UNIQUE(credential_id, quota_id, threshold, alerted_at::date)
+  acknowledged BOOLEAN DEFAULT false
 );
 
 -- Indexes
 CREATE INDEX idx_usage_alerts_credential_id ON public.usage_alerts(credential_id);
 CREATE INDEX idx_usage_alerts_acknowledged ON public.usage_alerts(acknowledged);
+CREATE INDEX idx_usage_alerts_alerted_at ON public.usage_alerts(alerted_at);
 
 -- RLS Policies - usage_alerts
 ALTER TABLE public.usage_alerts ENABLE ROW LEVEL SECURITY;

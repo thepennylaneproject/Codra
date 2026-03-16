@@ -72,8 +72,20 @@ CHECK (domain IN ('saas', 'site', 'automation', 'content_engine', 'api', 'mobile
 CREATE INDEX IF NOT EXISTS idx_projects_domain 
   ON public.projects(domain);
 
-CREATE INDEX IF NOT EXISTS idx_projects_title 
-  ON public.projects(title) WHERE deleted_at IS NULL;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'projects'
+      AND column_name = 'deleted_at'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_projects_title ON public.projects(title) WHERE deleted_at IS NULL';
+  ELSE
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_projects_title ON public.projects(title)';
+  END IF;
+END $$;
 
 -- ============================================================
 -- 6. ADD COMMENTS

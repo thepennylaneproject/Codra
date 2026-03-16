@@ -43,11 +43,11 @@ CREATE TABLE public.assets (
 );
 
 -- Indexes for efficient queries
-CREATE INDEX idx_assets_workspace ON public.assets(workspace_id) WHERE deleted_at IS NULL;
-CREATE INDEX idx_assets_user ON public.assets(user_id) WHERE deleted_at IS NULL;
-CREATE INDEX idx_assets_type ON public.assets(type) WHERE deleted_at IS NULL;
-CREATE INDEX idx_assets_created ON public.assets(created_at DESC) WHERE deleted_at IS NULL;
-CREATE INDEX idx_assets_hash ON public.assets(hash_sha256) WHERE hash_sha256 IS NOT NULL AND deleted_at IS NULL;
+CREATE INDEX idx_library_assets_workspace ON public.assets(workspace_id) WHERE deleted_at IS NULL;
+CREATE INDEX idx_library_assets_user ON public.assets(user_id) WHERE deleted_at IS NULL;
+CREATE INDEX idx_library_assets_type ON public.assets(type) WHERE deleted_at IS NULL;
+CREATE INDEX idx_library_assets_created ON public.assets(created_at DESC) WHERE deleted_at IS NULL;
+CREATE INDEX idx_library_assets_hash ON public.assets(hash_sha256) WHERE hash_sha256 IS NOT NULL AND deleted_at IS NULL;
 
 -- Auto-update timestamp trigger
 CREATE TRIGGER assets_updated_at

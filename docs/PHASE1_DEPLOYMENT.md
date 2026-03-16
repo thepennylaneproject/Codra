@@ -33,16 +33,13 @@ echo "Backup saved to: $BACKUP_FILE"
 Run these migrations **in sequence** on your Supabase database:
 
 ```bash
-# Navigate to migrations directory
-cd supabase/migrations
-
-# Option A: Using Supabase CLI (recommended)
-supabase db push
+# Option A: Using npm + Supabase CLI from repo root (recommended)
+npm run db:push
 
 # Option B: Manual SQL execution
-psql $DATABASE_URL -f 20260122_unify_projects_schema.sql
-psql $DATABASE_URL -f 20260122_fix_foreign_keys.sql
-psql $DATABASE_URL -f 20260122_auto_increment_version.sql
+psql $DATABASE_URL -f supabase/migrations/20260122000000_unify_projects_schema.sql
+psql $DATABASE_URL -f supabase/migrations/20260122000100_fix_foreign_keys.sql
+psql $DATABASE_URL -f supabase/migrations/20260122000200_auto_increment_version.sql
 ```
 
 **Expected Output:**

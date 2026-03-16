@@ -16,6 +16,9 @@
 -- 2. FIX EXISTING RESET FUNCTIONS
 -- ============================================================
 
+DROP FUNCTION IF EXISTS public.reset_monthly_usage();
+DROP FUNCTION IF EXISTS public.reset_daily_usage();
+
 -- Fix reset_monthly_usage to run for all credentials on their reset day
 CREATE OR REPLACE FUNCTION public.reset_monthly_usage()
 RETURNS INTEGER AS $$

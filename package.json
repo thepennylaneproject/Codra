@@ -29,7 +29,13 @@
     "pipeline:enrich": "tsx scripts/pipeline/enrich-assets.ts",
     "pipeline:index": "tsx scripts/pipeline/generate-index.ts --materialize-slots",
     "pipeline:validate": "tsx scripts/pipeline/validate-assets.ts --report",
-    "pipeline:all": "npm run pipeline:enrich && npm run pipeline:validate && npm run pipeline:index"
+    "pipeline:all": "npm run pipeline:enrich && npm run pipeline:validate && npm run pipeline:index",
+    "db:start": "npx supabase start",
+    "db:stop": "npx supabase stop",
+    "db:reset": "npx supabase db reset",
+    "db:push": "npx supabase db push",
+    "db:status": "npx supabase migration list --local",
+    "db:migration:new": "npx supabase migration new"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
