@@ -200,14 +200,22 @@ A full pass (all 130) is desirable but lower priority — the above four are the
 ## Implementation Checklist
 
 - [x] Plan document created
-- [ ] C1/C3: `jobIngestion.ts` exports fixed, build passes, tests pass
-- [ ] C2: jsPDF vulnerability patched
-- [ ] C4: `retrieval_search.ts` JWT auth added
-- [ ] C6: `.env.example` completed
-- [ ] R4/P8: Pipeline artifacts removed, `.gitignore` fixed
-- [ ] R5: `LICENSE` file added
-- [ ] R7: `getCredentialForProvider` extracted to shared utility
-- [ ] R8: `package.json` metadata fields added
-- [ ] R10: Dev tools moved to `devDependencies`
-- [ ] R2: Most egregious `console.log` calls removed
-- [ ] README: `[REDACTED]` fixed, env var setup section added
+- [x] C1/C3: `jobIngestion.ts` exports fixed, build passes, 12 tests now pass
+- [x] C2: jsPDF vulnerability patched via `npm audit fix --force` (upgraded to 4.2.0, 0 vulnerabilities)
+- [x] C4: `retrieval_search.ts` JWT auth added — returns 401 for unauthenticated callers
+- [x] C6: `.env.example` completed — all 19+ vars documented with placeholders and source links
+- [x] R4/P8: 5.5MB of pipeline artifacts removed from tracking, `.gitignore` updated
+- [x] R5: `LICENSE` file added (proprietary copyright notice)
+- [x] R7: `getCredentialForProvider` + `verifyBearerToken` extracted to `netlify/functions/utils/credential-utils.ts`; both `ai-complete.ts` and `ai-stream.ts` updated to use the shared utility
+- [x] R8: `package.json` author, license, repository, homepage fields added
+- [x] R10: `typescript`, `vite`, `tailwindcss`, `postcss`, `autoprefixer`, `dotenv`, and 4 `@types/*` packages moved to `devDependencies`
+- [x] R2: Most egregious `console.log` calls removed (WorkspaceShell keyboard stub, GitPanel repo selection, ModelDiagnostics override attempt)
+- [x] README: `[REDACTED]` fixed, env var setup section added, deployment docs linked
+
+## Remaining Items (Human Action Required)
+
+- [ ] C5: Add live demo URL to README — requires Netlify deployment confirmation
+- [ ] R3: Fix 135 `:any` type annotations — large refactor, dedicated branch recommended
+- [ ] R6: Rename/migrate `src/new/` directory — large structural refactor
+- [ ] R9: "Initial plan" commit messages — cannot rewrite without explicit history rewrite approval
+- [ ] R11: Gate stub features (Lyra execution, coherence scan) behind alpha feature flags
