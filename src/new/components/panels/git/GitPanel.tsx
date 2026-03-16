@@ -37,7 +37,6 @@ export const GitPanel: React.FC = () => {
 
     const handleRepoSelect = (repo: Repository) => {
         setSelectedRepo(repo);
-        console.log("Selected repo:", repo);
     };
 
     if (!token) {

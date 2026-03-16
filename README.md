@@ -23,15 +23,44 @@ Codra is an AI workflow tool that helps creatives and teams produce structured c
 
 JAMstack: a Vite/React SPA served from Netlify CDN, with all data operations handled by Netlify serverless functions backed by Supabase. AI requests are routed through a provider-agnostic `AIRouter` that handles fallback, cost tracking, and per-user telemetry. The UI uses a 4-layer design token system (CSS variables → generated Tailwind config → component tokens → overrides) for strict visual consistency.
 
+## Live Demo
+
+<!-- Add your Netlify deployment URL here once deployed -->
+**Deployment URL:** *(coming soon — see [deployment docs](docs/PHASE1_DEPLOYMENT.md) for setup)*
+
 ## Development
+
+### Prerequisites
+
+Copy `.env.example` to `.env.local` and fill in the required values before starting the dev server. At minimum, you need:
+
+```bash
+cp .env.example .env.local
+# Edit .env.local — add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY at minimum
+```
+
+### Running locally
 
 ```bash
 npm install
-npm run dev
+npm run dev          # Vite frontend on http://localhost:4444
 ```
 
-The dev server runs on `http://localhost:4444` via Vite (proxied through Netlify Dev on `:8881` for full function support).
+For full backend function support (AI, billing, auth), use Netlify Dev:
+
+```bash
+npm install -g netlify-cli
+netlify dev          # Proxied on http://localhost:8881
+```
+
+### Environment Variables
+
+All required environment variables are documented in `.env.example` with placeholder values and source links. The app **will not boot** without `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. AI and billing features require their respective provider keys.
+
+See also:
+- [Deployment Guide](docs/PHASE1_DEPLOYMENT.md)
+- [Supabase Migration Notes](docs/SUPABASE_MIGRATIONS.md)
 
 ## License
 
-All rights reserved. © The Penny Lane Project.
+Copyright © 2026 The Penny Lane Project. All rights reserved. See [LICENSE](LICENSE) for details.

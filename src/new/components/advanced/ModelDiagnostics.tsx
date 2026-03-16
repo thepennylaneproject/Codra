@@ -52,9 +52,7 @@ export function ModelDiagnostics({ isOpen, onClose, currentTask }: ModelDiagnost
             return;
         }
 
-        // TODO: Implement override logic
-        // This would store the override in the flow store or task executor
-        console.log('Apply override:', { overrideModelId, overrideProviderId, rememberOverride });
+        // TODO: Implement override logic — store in flow store or task executor
 
         // Close the panel after applying
         onClose();
