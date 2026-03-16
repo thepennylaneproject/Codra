@@ -20,10 +20,10 @@ export interface JobSource {
   fetchOptions?: RequestInit;
 }
 
-export interface FetchJobsResult {
+export interface FetchJobsResult<T = unknown> {
   source: string;
   /** Parsed response data from the source, or null if the fetch failed. */
-  data: unknown;
+  data: T | null;
   /** Whether the fetch ultimately succeeded. */
   ok: boolean;
   /** Number of attempts made (including the first). */
@@ -57,8 +57,10 @@ export const ingestionCircuitBreaker = new CircuitBreaker({ failureThreshold: 3 
 
 // ─── Retry configuration ──────────────────────────────────────────────────────
 
+const INGESTION_MAX_ATTEMPTS = 3;
+
 const INGESTION_RETRY_OPTIONS: RetryOptions = {
-  maxAttempts: 3,
+  maxAttempts: INGESTION_MAX_ATTEMPTS,
   baseDelayMs: 1000,
   backoffMultiplier: 2,
   isRetryable: (error: unknown) => {
@@ -82,7 +84,7 @@ const INGESTION_RETRY_OPTIONS: RetryOptions = {
  *   skipped on subsequent calls until manually reset or a successful call
  *   resets the counter.
  */
-export async function fetchJobs(source: JobSource): Promise<FetchJobsResult> {
+export async function fetchJobs<T = unknown>(source: JobSource): Promise<FetchJobsResult<T>> {
   const { name, url, fetchOptions } = source;
 
   // Check circuit breaker before attempting any network call.
@@ -106,7 +108,7 @@ export async function fetchJobs(source: JobSource): Promise<FetchJobsResult> {
       return res;
     }, INGESTION_RETRY_OPTIONS);
 
-    const data = await response.json();
+    const data = (await response.json()) as T;
     ingestionCircuitBreaker.recordSuccess(name);
 
     return { source: name, data, ok: true, attempts };
@@ -118,7 +120,7 @@ export async function fetchJobs(source: JobSource): Promise<FetchJobsResult> {
       source: name,
       data: null,
       ok: false,
-      attempts: INGESTION_RETRY_OPTIONS.maxAttempts ?? 3,
+      attempts: INGESTION_MAX_ATTEMPTS,
       error: message,
     };
   }
@@ -128,6 +130,6 @@ export async function fetchJobs(source: JobSource): Promise<FetchJobsResult> {
  * Fetches jobs from all provided sources concurrently.
  * Sources that have an open circuit are skipped automatically.
  */
-export async function fetchAllJobs(sources: JobSource[]): Promise<FetchJobsResult[]> {
-  return Promise.all(sources.map(fetchJobs));
+export async function fetchAllJobs<T = unknown>(sources: JobSource[]): Promise<FetchJobsResult<T>[]> {
+  return Promise.all(sources.map((s) => fetchJobs<T>(s)));
 }
