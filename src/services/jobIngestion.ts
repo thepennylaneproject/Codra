@@ -34,6 +34,42 @@ export interface FetchJobsResult<T = unknown> {
   skipped?: boolean;
 }
 
+/** Raw job shape as returned by external job API responses. */
+export interface RawJobResult {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  description?: string;
+  url?: string;
+  /** ISO date string e.g. "2024-01-15" */
+  posted_at?: string;
+}
+
+/** Normalized job shape used throughout the application. */
+export interface ParsedJob {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  description: string;
+  url: string;
+  /** Normalized from `posted_at`; null when the source omits the field. */
+  postedAt: string | null;
+}
+
+/** Envelope returned by external job APIs. */
+export interface JobApiResponse {
+  results: RawJobResult[] | null | undefined;
+}
+
+/** Result of a single ingestion batch run. */
+export interface BatchResult {
+  batchId: string;
+  count: number;
+  jobs: ParsedJob[];
+}
+
 // ─── Non-retryable error ──────────────────────────────────────────────────────
 
 class HttpError extends Error {
@@ -132,4 +168,49 @@ export async function fetchJobs<T = unknown>(source: JobSource): Promise<FetchJo
  */
 export async function fetchAllJobs<T = unknown>(sources: JobSource[]): Promise<FetchJobsResult<T>[]> {
   return Promise.all(sources.map((s) => fetchJobs<T>(s)));
+}
+
+// ─── Job API parsing ──────────────────────────────────────────────────────────
+
+/**
+ * Normalizes a raw `JobApiResponse` envelope into an array of `ParsedJob`
+ * objects. Returns an empty array when `results` is null/undefined and emits a
+ * console warning so callers can detect unexpected API shapes.
+ */
+export function parseJobResponse(response: JobApiResponse): ParsedJob[] {
+  const { results } = response;
+
+  if (results == null) {
+    console.warn('[jobIngestion] parseJobResponse: received null/undefined results — returning empty array');
+    return [];
+  }
+
+  return results.map((raw): ParsedJob => ({
+    id: raw.id,
+    title: raw.title,
+    company: raw.company,
+    location: raw.location,
+    description: raw.description ?? '',
+    url: raw.url ?? '',
+    postedAt: raw.posted_at ?? null,
+  }));
+}
+
+/**
+ * Runs a single ingestion batch: calls `fetchFn`, parses the response, and
+ * returns a `BatchResult`. Errors from `fetchFn` are caught and logged so the
+ * caller always receives a valid (possibly empty) batch.
+ */
+export async function ingestJobBatch(
+  fetchFn: () => Promise<JobApiResponse>,
+  batchId: string,
+): Promise<BatchResult> {
+  try {
+    const response = await fetchFn();
+    const jobs = parseJobResponse(response);
+    return { batchId, count: jobs.length, jobs };
+  } catch (error) {
+    console.error(`[jobIngestion] ingestJobBatch "${batchId}" failed:`, error);
+    return { batchId, count: 0, jobs: [] };
+  }
 }

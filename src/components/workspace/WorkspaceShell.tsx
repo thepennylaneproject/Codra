@@ -88,7 +88,7 @@ export const WorkspaceShell: React.FC<WorkspaceShellProps> = ({
         // Cmd/Ctrl + 1-4 : Switch desk view (placeholder for future)
         if (['1', '2', '3', '4'].includes(e.key)) {
           e.preventDefault();
-          console.log(`Desk switch shortcut: ${e.key} (not yet implemented)`);
+          // desk switch not yet implemented
         }
       }
     };
