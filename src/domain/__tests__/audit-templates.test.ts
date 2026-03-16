@@ -6,28 +6,25 @@ import {
 } from '../audit-templates';
 
 describe('codebase intelligence extraction prompt', () => {
-    it('contains the required section headers and metadata block', () => {
-        expect(CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT).toContain('# View Source: Codebase Intelligence Extraction Prompt');
+    it('contains the required section headers and investor readiness structure', () => {
+        expect(CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT).toContain('investor-readiness audit');
 
         for (const section of [
-            '### SECTION 1: PROJECT IDENTITY',
-            '### SECTION 2: TECHNICAL ARCHITECTURE',
-            '### SECTION 3: FEATURE INVENTORY',
-            '### SECTION 4: DESIGN SYSTEM & BRAND',
-            '### SECTION 5: DATA & SCALE SIGNALS',
-            '### SECTION 6: MONETIZATION & BUSINESS LOGIC',
-            '### SECTION 7: CODE QUALITY & MATURITY SIGNALS',
-            '### SECTION 8: ECOSYSTEM CONNECTIONS',
-            '### SECTION 9: WHAT\'S MISSING (CRITICAL)',
-            '### SECTION 10: EXECUTIVE SUMMARY',
-            '## OUTPUT FORMAT',
-            'AUDIT METADATA',
+            '── REPO HYGIENE ──',
+            '── SECURITY ──',
+            '── DOCUMENTATION ──',
+            '── CODE QUALITY ──',
+            '── CI/CD & DEPLOYMENT ──',
+            '── DEPENDENCY MANAGEMENT ──',
+            '── GIT DISCIPLINE ──',
+            '── PORTFOLIO COHESION ──',
+            '── INVESTOR SIGNALS ──',
         ]) {
             expect(CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT).toContain(section);
         }
     });
 
-    it('uses the exact view source prompt for the investor-diligence audit template', () => {
+    it('the investor-diligence audit template uses the investor-readiness prompt as its user message', () => {
         const prompt = buildAuditPrompt('investor-diligence', {
             projectDescription: 'Codra',
             targetAudience: 'Founders',

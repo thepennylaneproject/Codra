@@ -148,184 +148,109 @@ Be direct. Be specific. Prioritize:
 Return ONLY valid JSON, no markdown formatting.
 `;
 
-export const CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT = `# View Source: Codebase Intelligence Extraction Prompt
+export const CODEBASE_INTELLIGENCE_EXTRACTION_PROMPT = `You are conducting an investor-readiness audit of a software project repository. The founder is actively seeking investment. Your job is to evaluate the current state of this repo and flag anything that would raise concern, signal amateur habits, or undermine credibility with a technical evaluator or VC. Be direct and specific. Do not soften findings.
 
-> **Instructions:** Run this prompt through an AI agent with full access to each codebase. Replace [PROJECT_NAME] with the actual project name before running. Output should be returned in the exact section structure below. Do not skip sections — mark any section where information is unavailable as [NOT FOUND IN CODEBASE — REQUIRES MANUAL INPUT].
+── REPO HYGIENE ──────────────────────────────────────────
 
----
+1. Does a README.md exist at the root? If yes, evaluate it:
+   - Does it clearly state what this product does in 1–2 sentences?
+   - Does it include setup/install instructions?
+   - Does it document environment variables required (without exposing values)?
+   - Does it include a live demo link or screenshots?
+   - Is it current — does it reflect the actual state of the project?
 
-## THE PROMPT
+2. Is there a .gitignore present and complete? Flag any of the following if found committed to the repo:
+   - .env files or any file containing secrets, API keys, or tokens
+   - node_modules/, __pycache__/, .DS_Store, *.log files
+   - Build artifacts or dist folders that should not be versioned
 
-You are conducting a comprehensive intelligence extraction of the **[PROJECT_NAME]** codebase. Your goal is to produce a structured, investor-grade profile of this project by reading the actual code, configuration, documentation, and commit history. Do not hallucinate or infer — only report what you can verify from the codebase itself. Where you identify gaps, flag them explicitly.
+3. Is there a LICENSE file? If not, flag it — unlicensed code is a legal ambiguity for investors.
 
-Work through every section below. Be thorough. Be precise. Be honest about what's mature and what's early.
+4. Does a package.json (or equivalent) exist with accurate name, version, description, and author fields? Flag placeholder or missing values.
 
----
+── SECURITY ──────────────────────────────────────────────
 
-### SECTION 1: PROJECT IDENTITY
+5. Scan git history and current files for any hardcoded secrets, API keys, tokens, database URLs, or credentials. Flag every instance, even in commented-out code.
 
-1. **Project name** (as defined in package.json, config files, or README)
-2. **Repository URL** (if available in config/remotes)
-3. **One-line description** (pull from README, package.json description, or meta tags — quote it exactly, then write a cleaner version if needed)
-4. **Project status** — Based on what you see in the code, classify as one of:
-   - \`Concept\` (mostly scaffolding/boilerplate)
-   - \`Prototype\` (core features partially implemented)
-   - \`Alpha\` (core features working, rough edges)
-   - \`Beta\` (feature-complete for v1, needs polish)
-   - \`Production\` (deployed, handling real users)
-5. **First commit date** and **most recent commit date**
-6. **Total number of commits**
-7. **Deployment status** — Is this deployed? Where? (check for netlify.toml, vercel.json, Dockerfiles, CI/CD configs, environment configs referencing production URLs)
-8. **Live URL(s)** if discoverable in config
+6. Are environment variables referenced via process.env or equivalent — never hardcoded? Confirm a .env.example or equivalent template exists to document required variables without exposing values.
 
----
+7. Check for exposed Supabase keys, Stripe keys, or other service credentials in client-side code or public config files.
 
-### SECTION 2: TECHNICAL ARCHITECTURE
+8. Are there any public-facing API routes with no authentication or rate limiting? Flag them.
 
-1. **Primary language(s) and frameworks** (with versions from package.json, requirements.txt, etc.)
-2. **Full dependency list** — Group into:
-   - Core framework dependencies
-   - UI/styling libraries
-   - State management
-   - API/data layer
-   - AI/ML integrations
-   - Authentication/authorization
-   - Testing
-   - Build tooling
-   - Other notable dependencies
-3. **Project structure** — Provide the top-level directory tree (2 levels deep) with a one-line explanation of each major directory's purpose
-4. **Architecture pattern** — What pattern is this? (monolith, microservices, serverless functions, JAMstack, etc.) Describe the data flow from user interaction to database and back.
-5. **Database/storage layer** — What databases, ORMs, or storage solutions are in use? List all tables/collections you can identify from schema files, migrations, or model definitions. For each table, note its columns/fields.
-6. **API layer** — Document all API endpoints or serverless functions. For each, note:
-   - Route/path
-   - HTTP method
-   - Brief purpose
-   - Authentication required (yes/no)
-7. **External service integrations** — List every third-party API or service the code connects to (Stripe, OpenAI, SendGrid, etc.) with what it's used for
-8. **AI/ML components** — If the project uses AI, detail:
-   - Which models/providers
-   - What prompts or chains exist (summarize, don't reproduce full prompts)
-   - How AI output is processed and presented to users
-9. **Authentication and authorization model** — How do users log in? What permission levels exist?
-10. **Environment variables** — List all env vars referenced in the code (names only, never values) grouped by purpose
+── DOCUMENTATION ─────────────────────────────────────────
 
----
+9. Is there any inline code documentation — JSDoc, TypeScript types, or comments explaining non-obvious logic? Flag files that are completely undocumented.
 
-### SECTION 3: FEATURE INVENTORY
+10. Are TypeScript types defined and used consistently, or are there widespread \`any\` types that suggest incomplete implementation?
 
-For each distinct feature or capability in the application:
+11. Is there a CHANGELOG.md or any record of version history? Not required, but flag its absence as a recommendation.
 
-1. **Feature name**
-2. **User-facing description** (what does this let a user do?)
-3. **Implementation completeness** — classify as:
-   - \`Scaffolded\` (route/component exists but minimal logic)
-   - \`Partial\` (core logic works, UI incomplete or vice versa)
-   - \`Functional\` (works end-to-end)
-   - \`Polished\` (works well, handles edge cases, good UX)
-4. **Key files** (list the 2-5 most important files for this feature)
-5. **Dependencies on other features**
+12. Do component or function names communicate intent clearly, or is there significant naming ambiguity that would slow a new reader?
 
----
+── CODE QUALITY ──────────────────────────────────────────
 
-### SECTION 4: DESIGN SYSTEM & BRAND
+13. Is there an ESLint, Prettier, or equivalent linter config present? If not, flag it — linting discipline signals engineering maturity.
 
-1. **Color palette** — Extract all defined colors from:
-   - Tailwind config
-   - CSS custom properties / variables
-   - Theme files
-   - Any design token files
-   List each color with its name, hex value, and where it's defined.
-2. **Typography** — What fonts are loaded? What's the type scale?
-3. **Component library** — Is there a shared component system? List all reusable UI components with a one-line description of each.
-4. **Design language** — Based on the UI code, describe the visual style (minimal, playful, corporate, editorial, etc.)
-5. **Responsive strategy** — How does the app handle mobile vs desktop?
-6. **Dark mode** — Is it supported? How is it implemented?
-7. **Brand assets** — List any logos, illustrations, or custom icons in the repo
+14. Are there any obvious dead code blocks, commented-out code dumps, or TODO/FIXME comments that suggest unfinished work? List them.
 
----
+15. Is error handling present in async operations and API calls, or are there bare unhandled promises?
 
-### SECTION 5: DATA & SCALE SIGNALS
+16. Are there any console.log statements left in production-facing code? Flag all instances.
 
-1. **User model** — What data is stored per user? What's the user journey from signup to value?
-2. **Content/data volume** — Are there seed files, fixture data, or references to data volume? How many records does the system seem designed to handle?
-3. **Performance considerations** — Any caching, pagination, lazy loading, code splitting, rate limiting, or optimization patterns?
-4. **Analytics/tracking** — Is there any analytics integration? What events are tracked?
-5. **Error handling** — How are errors caught, logged, and reported?
-6. **Testing** — What test coverage exists? List test files found and what they cover.
+17. Is there evidence of copy-paste code that should be abstracted into reusable utilities or components?
 
----
+── CI/CD & DEPLOYMENT ────────────────────────────────────
 
-### SECTION 6: MONETIZATION & BUSINESS LOGIC
+18. Is there a CI/CD pipeline configured (GitHub Actions, Netlify CI, etc.)? If not, flag the absence.
 
-1. **Pricing/tier structure** — Is there any pricing logic, plan definitions, or feature gating in the code?
-2. **Payment integration** — Stripe, PayPal, or other payment processing?
-3. **Subscription/billing logic** — Recurring payments? Trial periods? Plan limits?
-4. **Feature gates** — What features are restricted by plan/tier?
-5. **Usage limits** — Any rate limits, quotas, or credit systems?
+19. Is the deployment process documented — where does this deploy, how, and what are the environment requirements?
 
----
+20. Are there separate environments defined (development, staging, production), or is everything running against a single environment?
 
-### SECTION 7: CODE QUALITY & MATURITY SIGNALS
+21. Does the project build successfully from a clean install? Simulate: \`npm install && npm run build\`. Flag any build errors or missing steps.
 
-1. **Code organization** — Is there a clear separation of concerns? Are there well-defined modules/layers?
-2. **Patterns and conventions** — What design patterns are used? (facade, repository, dependency injection, etc.) Are naming conventions consistent?
-3. **Documentation** — README quality, inline comments, JSDoc/docstrings, architecture docs?
-4. **TypeScript usage** — How strict? Any \`any\` types? Are interfaces well-defined?
-5. **Error handling patterns** — Consistent try/catch? Custom error classes? User-facing error messages?
-6. **Git hygiene** — Commit message patterns, branching strategy, PR history?
-7. **Technical debt flags** — TODOs, FIXMEs, deprecated code, commented-out blocks, obvious workarounds?
-8. **Security posture** — Input validation, SQL injection protection, XSS prevention, CORS config, secrets management?
+── DEPENDENCY MANAGEMENT ────────────────────────────────
 
----
+22. Review package.json dependencies. Flag:
+    - Any packages with known critical vulnerabilities (run npm audit equivalent)
+    - Any packages that are severely out of date (major version behind)
+    - Any unused dependencies that inflate the bundle
+    - Any dev dependencies incorrectly listed as production dependencies
 
-### SECTION 8: ECOSYSTEM CONNECTIONS
+23. Is the lockfile (package-lock.json or yarn.lock) committed? Flag if missing.
 
-1. **Shared code or patterns** with other projects in The Penny Lane Project portfolio (Relevnt, Codra, Ready, Mythos, embr, passagr, advocera)
-2. **Shared dependencies or infrastructure** (same Supabase instance? Same Netlify account? Shared component libraries?)
-3. **Data connections** — Does this project read from or write to any data source shared with other projects?
-4. **Cross-references** — Any imports, links, or references to sister projects in the code?
+── GIT DISCIPLINE ────────────────────────────────────────
 
----
+24. Review the last 20 commit messages. Evaluate:
+    - Are they descriptive and meaningful, or vague ("fix stuff", "wip", "asdf")?
+    - Is there a consistent branching strategy (main/dev/feature branches), or is everything committed directly to main?
+    - Are there any massive single commits that bundle unrelated changes?
 
-### SECTION 9: WHAT'S MISSING (CRITICAL)
+25. Are there any stale branches that appear abandoned or merged but not cleaned up?
 
-Based on your analysis, identify:
+26. Is the repo public or private? If public, verify no sensitive information exists in any commit in history — not just the current HEAD.
 
-1. **Gaps for a production-ready product** — What would need to be built to serve real users at scale?
-2. **Gaps for investor readiness** — What metrics, documentation, or infrastructure is missing that an investor would expect?
-3. **Gaps in the codebase itself** — Dead code, unused dependencies, incomplete migrations, orphaned files?
-4. **Recommended next steps** — If you had to prioritize the top 5 things to work on next, what would they be and why?
+── PORTFOLIO COHESION ────────────────────────────────────
 
----
+27. Does the naming, branding, and purpose of this project align clearly with the stated portfolio (The Penny Lane Project)? Would an investor connecting the dots across the portfolio understand where this fits?
 
-### SECTION 10: EXECUTIVE SUMMARY
+28. Is the tech stack consistent with the rest of the portfolio, or does this project use an entirely different toolchain without documented rationale?
 
-Write a 3-paragraph summary of this project suitable for an investor audience:
+29. Does the project have a live URL or demo environment linked anywhere? If not, flag — investors expect to be able to see the product.
 
-- **Paragraph 1:** What this is, what problem it solves, and for whom
-- **Paragraph 2:** Technical credibility — what's built, how it's built, and what it signals about the builder's capabilities
-- **Paragraph 3:** Honest assessment of current state and what it would take to reach the next milestone
+── INVESTOR SIGNALS ──────────────────────────────────────
 
----
+30. Produce a final Risk Summary with three tiers:
+    CRITICAL — must fix before investor review (security issues, secrets in repo, broken build)
+    RECOMMENDED — should fix to signal engineering maturity (linting, documentation gaps, dead code)
+    POLISH — nice-to-have improvements that signal attention to detail
 
-## OUTPUT FORMAT
+31. Provide an overall Investor Readiness Score from 1–10, with 10 being fully diligence-ready. Justify the score briefly.
 
-Return the completed audit as a single structured document using the exact section headers above. Use code blocks for file paths and technical details. Use tables where they improve readability (dependency lists, feature inventories, API endpoints). Flag every instance where information was not found in the codebase versus where you inferred it.
+32. List the top 3 highest-leverage actions the founder should take immediately to improve this score.
 
-**End your output with a metadata block:**
-
-\`\`\`
----
-AUDIT METADATA
-Project: [PROJECT_NAME]
-Date: [TODAY'S DATE]
-Agent: [MODEL NAME AND VERSION]
-Codebase access: [full repo / partial / read-only]
-Confidence level: [high / medium / low] with explanation
-Sections with gaps: [list section numbers]
-Total files analyzed: [count]
----
-\`\`\``;
+Format output with clear section headers matching the audit categories above. Be specific — cite file names, line numbers, and commit SHAs where relevant. Do not generalize.`;
 
 export const AUDIT_TEMPLATES: Record<AuditType, AuditTemplate> = {
     'ship-ready': {
