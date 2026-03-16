@@ -11,6 +11,7 @@ import {
     searchTavily
 } from './utils/retrieval-providers';
 import { logRetrievalRun } from './utils/telemetry-helpers';
+import { verifyBearerToken } from './utils/credential-utils';
 
 // --- Rate Limiting (Simple In-Memory) ---
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
@@ -70,7 +71,20 @@ export const handler: Handler = async (event, context) => {
         };
     }
 
-    // 2. Rate Limit
+    // 2. Authentication — required before consuming paid search API quota
+    let userId: string | null = null;
+    try {
+        const authResult = await verifyBearerToken(event.headers.authorization);
+        userId = authResult.id;
+    } catch {
+        return {
+            statusCode: 401,
+            headers: corsHeaders,
+            body: JSON.stringify({ error: 'Unauthorized' }),
+        };
+    }
+
+    // 3. Rate Limit
     const clientIp = event.headers['client-ip'] || event.headers['x-forwarded-for'] || 'unknown';
     if (!checkRateLimit(clientIp)) {
         return {
@@ -157,7 +171,7 @@ export const handler: Handler = async (event, context) => {
 
         // 6. Log telemetry (fire and forget - don't block response)
         logRetrievalRun({
-            userId: null, // TODO: Extract from auth header if available
+            userId: userId,
             workspaceId: workspaceId || null,
             providerUsed: selectedProvider,
             query,
@@ -191,8 +205,8 @@ export const handler: Handler = async (event, context) => {
 
         // Log failed retrieval run
         logRetrievalRun({
-            userId: null, // TODO: Extract from auth header if available
-            workspaceId: null, // Not available in error context
+            userId: userId,
+            workspaceId: null,
             providerUsed: 'brave', // Default assumption
             query: '', // Not available in error context
             resultsCount: 0,

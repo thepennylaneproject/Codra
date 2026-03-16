@@ -3,7 +3,6 @@
  */
 
 import { Handler } from '@netlify/functions';
-import { createClient } from '@supabase/supabase-js';
 import { AimlApiProvider } from '../../src/lib/ai/providers/aimlapi';
 import { DeepSeekProvider } from '../../src/lib/ai/providers/deepseek';
 import { GeminiProvider } from '../../src/lib/ai/providers/gemini';
@@ -14,43 +13,9 @@ import { HuggingFaceProvider } from '../../src/lib/ai/providers/huggingface';
 import { AIRouter } from '../../src/lib/ai/router';
 import type { AICompletionRequest, AICompletionResponse } from '../../src/lib/ai/types';
 import { logAIRunStart, logAIRunComplete } from './utils/telemetry-helpers';
+import { getSupabaseAdmin, getCredentialForProvider, verifyBearerToken } from './utils/credential-utils';
 
-// Initialize Supabase
-const supabase = createClient(
-    process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '',
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || ''
-);
-
-/**
- * Get API key for a provider from Codra's platform environment variables.
- * Codra uses a platform-key model where all users share Codra's API keys,
- * and usage is tracked per-user for billing purposes.
- */
-function getCredentialForProvider(provider: string): string {
-    const envVarMap: Record<string, string> = {
-        'aimlapi': 'AIMLAPI_API_KEY',
-        'deepseek': 'DEEPSEEK_API_KEY',
-        'gemini': 'GEMINI_API_KEY',
-        'openai': 'OPENAI_API_KEY',
-        'anthropic': 'ANTHROPIC_API_KEY',
-        'mistral': 'MISTRAL_API_KEY',
-        'cohere': 'COHERE_API_KEY_PROD',
-        'huggingface': 'HUGGINGFACE_API_KEY',
-        'deepai': 'DEEPAI_API_KEY',
-    };
-
-    const envVarName = envVarMap[provider];
-    if (!envVarName) {
-        throw new Error(`Unknown provider: ${provider}`);
-    }
-
-    const apiKey = process.env[envVarName];
-    if (!apiKey) {
-        throw new Error(`Missing environment variable: ${envVarName}`);
-    }
-
-    return apiKey;
-}
+const supabase = getSupabaseAdmin();
 
 export const handler: Handler = async (event, context) => {
     // CORS headers — process.env.URL is set automatically by Netlify in deployed environments
@@ -77,23 +42,15 @@ export const handler: Handler = async (event, context) => {
             };
         }
 
-        const authHeader = event.headers.authorization;
-        if (!authHeader?.startsWith('Bearer ')) {
+        let user: { id: string; email?: string };
+        try {
+            user = await verifyBearerToken(event.headers.authorization);
+        } catch (authErr: unknown) {
+            const statusCode = (authErr as { statusCode?: number }).statusCode ?? 401;
             return {
-                statusCode: 401,
+                statusCode,
                 headers,
-                body: JSON.stringify({ success: false, error: 'Unauthorized' }),
-            };
-        }
-
-        const token = authHeader.slice(7);
-        const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-        if (authError || !user) {
-            return {
-                statusCode: 401,
-                headers,
-                body: JSON.stringify({ success: false, error: 'Invalid token' }),
+                body: JSON.stringify({ success: false, error: (authErr as Error).message }),
             };
         }
 
