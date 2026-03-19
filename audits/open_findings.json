@@ -1,1321 +1,1339 @@
 {
-  "schema_version": "1.1.0",
-  "last_updated": "2026-03-19T21:15:00Z",
-  "last_run_id": "synthesized-20260319-211503",
-  "findings": [
-    {
-      "finding_id": "f-missing-rls-tables-01",
-      "type": "bug",
-      "category": "missing-rls",
-      "severity": "major",
-      "priority": "P1",
-      "confidence": "evidence",
-      "title": "Missing RLS Policies on API Credentials and Settings Tables",
-      "description": "Several core tables do not have Row Level Security (RLS) policies defined for them. Notably: api_credentials, app_settings, provider_settings, model_settings, project_briefing_state. This means any authenticated user might be able to read or modify global settings or other users' credentials if the tables have RLS disabled, or no one can access them if RLS is enabled without policies.",
-      "proof_hooks": [
+    "schema_version": "1.1.0",
+    "last_updated": "2026-03-19T21:15:00Z",
+    "last_run_id": "synthesized-20260319-211503",
+    "findings": [
         {
-          "hook_type": "command",
-          "summary": "Comparing created tables vs tables with policies",
-          "command": "grep 'CREATE POLICY' supabase/migrations/*.sql and diffing against 'CREATE TABLE'",
-          "actual": "api_credentials, app_settings, provider_settings are missing policies"
+            "finding_id": "f-missing-rls-tables-01",
+            "type": "bug",
+            "category": "missing-rls",
+            "severity": "major",
+            "priority": "P1",
+            "confidence": "evidence",
+            "title": "Missing RLS Policies on API Credentials and Settings Tables",
+            "description": "Several core tables do not have Row Level Security (RLS) policies defined for them. Notably: api_credentials, app_settings, provider_settings, model_settings, project_briefing_state. This means any authenticated user might be able to read or modify global settings or other users' credentials if the tables have RLS disabled, or no one can access them if RLS is enabled without policies.",
+            "proof_hooks": [
+                {
+                    "hook_type": "command",
+                    "summary": "Comparing created tables vs tables with policies",
+                    "command": "grep 'CREATE POLICY' supabase/migrations/*.sql and diffing against 'CREATE TABLE'",
+                    "actual": "api_credentials, app_settings, provider_settings are missing policies"
+                }
+            ],
+            "impact": "Potential unauthorized access to global app settings, AI model settings, or API credentials, or broken functionality if RLS is enabled but lacks policies granting access.",
+            "suggested_fix": {
+                "approach": "Create RLS policies for all identified tables, restricting read/write access to admins or the owning user as appropriate.",
+                "affected_files": [
+                    "supabase/migrations/add_rls_policies.sql"
+                ],
+                "estimated_effort": "small"
+            },
+            "status": "fixed_verified",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T18:35:12.000Z",
+                    "actor": "schema-auditor",
+                    "event": "created"
+                },
+                {
+                    "timestamp": "2026-03-06T19:14:52Z",
+                    "actor": "synthesizer",
+                    "action": "status_changed",
+                    "notes": "Verification shows RLS IS enabled with full SELECT/ALL policies on app_settings, provider_settings, model_settings in supabase/migrations/20251214_admin_settings.sql (lines 114-148). api_credentials covered by 001_initial_schema.sql and phase3-migration.sql. project_briefing_state not found in migrations \u2014 check 20251212_briefing_state.sql. Marking fixed_pending_verify; run a manual Supabase linter check to confirm."
+                },
+                {
+                    "timestamp": "2026-03-13T20:02:52Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-47): In Progress -> in_progress"
+                },
+                {
+                    "timestamp": "2026-03-16T20:56:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-47): Done -> fixed_verified"
+                }
+            ]
+        },
+        {
+            "finding_id": "f-foreign-keys-missing-on-delete-01",
+            "type": "debt",
+            "category": "constraint-violation",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "evidence",
+            "title": "Foreign Keys Missing ON DELETE Behaviors",
+            "description": "Multiple foreign key constraints are defined without explicit ON DELETE behaviors (e.g., CASCADE, SET NULL, RESTRICT). This can lead to orphaned records or foreign key violation errors when parent records are deleted.",
+            "proof_hooks": [
+                {
+                    "hook_type": "code_ref",
+                    "summary": "project_assets.parent_id FK had no explicit ON DELETE",
+                    "file": "supabase/migrations/20240101000000_initial_schema.sql",
+                    "symbol": "project_assets",
+                    "start_line": 274,
+                    "end_line": 274
+                },
+                {
+                    "hook_type": "code_ref",
+                    "summary": "asset_bundles.created_by FK had no explicit ON DELETE",
+                    "file": "supabase/migrations/20251214000200_asset_manifest.sql",
+                    "symbol": "asset_bundles",
+                    "start_line": 20,
+                    "end_line": 20
+                },
+                {
+                    "hook_type": "code_ref",
+                    "summary": "image_policy tables: created_by and registry_version FKs lacked ON DELETE",
+                    "file": "supabase/migrations/20260109000100_image_policy.sql",
+                    "symbol": "image_policy_registry_versions",
+                    "start_line": 29,
+                    "end_line": 115
+                },
+                {
+                    "hook_type": "code_ref",
+                    "summary": "Migration redefines four nullable FKs with ON DELETE SET NULL",
+                    "file": "supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql",
+                    "symbol": "explicit_on_delete_remaining_fks",
+                    "start_line": 4,
+                    "end_line": 41
+                }
+            ],
+            "impact": "Possibility of orphaned data piling up in the database, breaking application assumptions.",
+            "suggested_fix": {
+                "approach": "Review all foreign key constraints and explicitly define ON DELETE CASCADE or ON DELETE SET NULL depending on the desired lifecycle relationship.",
+                "affected_files": [
+                    "supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql"
+                ],
+                "estimated_effort": "medium"
+            },
+            "status": "fixed_verified",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T18:35:12.000Z",
+                    "actor": "schema-auditor",
+                    "event": "created"
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-48): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:27Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                },
+                {
+                    "timestamp": "2026-03-19T21:15:00Z",
+                    "actor": "synthesizer",
+                    "event": "verification_passed",
+                    "notes": "Scoped re-audit (data, logic, security) on supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql: explicit ON DELETE SET NULL for project_assets.parent_id, asset_bundles.created_by, image_policy_registry_versions.created_by, image_policy_receipts.registry_version. No new findings; aligns with suggested_fix.",
+                    "artifacts": [
+                        "audits/runs/2026-03-19/data-20260319-211500.json",
+                        "audits/runs/2026-03-19/logic-20260319-211501.json",
+                        "audits/runs/2026-03-19/security-20260319-211502.json",
+                        "audits/runs/2026-03-19/synthesized-20260319-211503.json"
+                    ]
+                }
+            ]
+        },
+        {
+            "finding_id": "f-a3b7c9e1",
+            "type": "bug",
+            "category": "null-ref",
+            "severity": "blocker",
+            "priority": "P0",
+            "confidence": "speculation",
+            "title": "Unhandled null in parseJobResponse when API returns empty results array",
+            "description": "When the external job API returns {results: null} instead of {results: []}, the parseJobResponse function throws a TypeError. This crashes the ingestion pipeline silently because the catch block logs but does not re-throw or mark the batch as failed. The null case is documented in the API changelog from v2.3.",
+            "proof_hooks": [
+                {
+                    "hook_type": "code_ref",
+                    "summary": "Nullable access on results without guard",
+                    "file": "src/services/jobIngestion.ts",
+                    "symbol": "parseJobResponse",
+                    "start_line": 47,
+                    "end_line": 47
+                },
+                {
+                    "hook_type": "error_text",
+                    "summary": "TypeError thrown when results is null",
+                    "error_text": "TypeError: Cannot read properties of null (reading 'map')"
+                },
+                {
+                    "hook_type": "repro_steps",
+                    "summary": "Reproduce by mocking null API response",
+                    "steps": [
+                        "Set API_MOCK=true in .env.local",
+                        "Add mock response file at __mocks__/api/empty-null.json with {results: null}",
+                        "Run: npx ts-node scripts/ingest.ts --source=mock",
+                        "Observe TypeError in console and zero jobs ingested"
+                    ]
+                },
+                {
+                    "hook_type": "verification",
+                    "summary": "Locate actual ingestion pipeline file before attempting fix",
+                    "steps": [
+                        "Search src/pipeline/, netlify/functions/, src/lib/ for job fetch/ingest logic",
+                        "If found: verify null guard behavior, update finding with real file reference",
+                        "If not found: close as 'not applicable' for this codebase version"
+                    ]
+                }
+            ],
+            "repro_steps": [
+                "Set API_MOCK=true in .env.local",
+                "Add mock response file at __mocks__/api/empty-null.json with {results: null}",
+                "Run: npx ts-node scripts/ingest.ts --source=mock",
+                "Observe TypeError in console and zero jobs ingested"
+            ],
+            "impact": "Job ingestion silently fails for any API source that returns null instead of empty array. Database stagnates. Users see stale listings.",
+            "suggested_fix": {
+                "approach": "Add null coalescing at line 47: (results ?? []).map(...). Add a guard log when null is received so you can track which APIs behave this way.",
+                "affected_files": [
+                    "src/services/jobIngestion.ts"
+                ],
+                "estimated_effort": "trivial",
+                "risk_notes": "Very low risk. Null coalescing is additive. Verify that downstream code handles empty arrays correctly (it already does based on line 62 check).",
+                "tests_needed": [
+                    "Unit test: parseJobResponse with null results returns empty array",
+                    "Unit test: parseJobResponse with undefined results returns empty array",
+                    "Integration test: full ingestion pipeline with mock null response completes without error"
+                ]
+            },
+            "owner": "solo-dev",
+            "status": "fixed_verified",
+            "related_ids": [
+                "f-e2d4f6a8"
+            ],
+            "history": [
+                {
+                    "timestamp": "2025-03-04T14:30:22Z",
+                    "actor": "runtime-bug-hunter",
+                    "event": "created",
+                    "notes": "Discovered during static analysis of null-safety patterns in ingestion pipeline. Confirmed via preflight test output showing no coverage for null API responses."
+                },
+                {
+                    "timestamp": "2026-03-06T19:14:52Z",
+                    "actor": "synthesizer",
+                    "action": "confidence_changed",
+                    "notes": "Triage rule 7: src/services/jobIngestion.ts does not exist in the codebase. Cannot reproduce. Confidence downgraded from 'evidence' to 'speculation'. Adding verification hook: confirm if jobIngestion logic lives elsewhere (e.g. src/pipeline/ or netlify/functions/). Keep open until verified or a matching file is located."
+                },
+                {
+                    "timestamp": "2026-03-16T20:56:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-49): Done -> fixed_verified"
+                }
+            ],
+            "artifacts": []
+        },
+        {
+            "finding_id": "f-e2d4f6a8",
+            "type": "enhancement",
+            "category": "error-handling",
+            "severity": "major",
+            "priority": "P1",
+            "confidence": "speculation",
+            "title": "Ingestion pipeline has no retry logic for transient API failures",
+            "description": "The fetchJobs function makes a single HTTP request per source. If the request fails due to a timeout or 503, the entire source is skipped until the next scheduled run. Given that some APIs have known intermittent availability, a retry with exponential backoff would significantly improve data freshness.",
+            "proof_hooks": [
+                {
+                    "hook_type": "code_ref",
+                    "summary": "Single try/catch with no retry loop in fetchJobs",
+                    "file": "src/services/jobIngestion.ts",
+                    "symbol": "fetchJobs",
+                    "start_line": 22,
+                    "end_line": 35
+                },
+                {
+                    "hook_type": "command",
+                    "summary": "Simulating transient failure shows source is permanently skipped",
+                    "command": "npx ts-node scripts/ingest.ts --source=mock --mock-status=503",
+                    "expected": "Retry and eventually succeed or fail gracefully with clear error",
+                    "actual": "Source silently skipped, no retry attempted"
+                },
+                {
+                    "hook_type": "verification",
+                    "summary": "Locate actual ingestion pipeline file before attempting fix",
+                    "steps": [
+                        "Search src/pipeline/, netlify/functions/, src/lib/ for job fetch/ingest logic",
+                        "If found: verify null guard behavior, update finding with real file reference",
+                        "If not found: close as 'not applicable' for this codebase version"
+                    ]
+                }
+            ],
+            "repro_steps": [],
+            "impact": "Missed job data on transient failures. Users may not see jobs from sources that had a momentary outage during the fetch window.",
+            "suggested_fix": {
+                "approach": "Wrap fetchJobs call in a retry utility with max 3 attempts, exponential backoff starting at 1s, and a circuit breaker that skips after 3 consecutive full failures for a source.",
+                "affected_files": [
+                    "src/services/jobIngestion.ts",
+                    "src/utils/retry.ts (new file)"
+                ],
+                "estimated_effort": "small",
+                "risk_notes": "Retries increase total API call count. If you are on a metered API plan, add a daily call budget. Also ensure retries do not cause duplicate ingestion by checking idempotency keys.",
+                "tests_needed": [
+                    "Unit test: retry utility retries on 503 and succeeds on second attempt",
+                    "Unit test: retry utility gives up after max attempts and throws",
+                    "Unit test: retry utility does not retry on 400 (client error)"
+                ]
+            },
+            "owner": "solo-dev",
+            "status": "fixed_verified",
+            "related_ids": [
+                "f-a3b7c9e1"
+            ],
+            "history": [
+                {
+                    "timestamp": "2025-03-04T14:30:22Z",
+                    "actor": "runtime-bug-hunter",
+                    "event": "created",
+                    "notes": "Identified as a reliability gap during ingestion pipeline review. Related to f-a3b7c9e1 (both are ingestion resilience issues)."
+                },
+                {
+                    "timestamp": "2026-03-06T19:14:52Z",
+                    "actor": "synthesizer",
+                    "action": "confidence_changed",
+                    "notes": "Triage rule 7: src/services/jobIngestion.ts does not exist in the codebase. Cannot reproduce. Confidence downgraded from 'inference' to 'speculation'. Adding verification hook: confirm if jobIngestion logic lives elsewhere (e.g. src/pipeline/ or netlify/functions/). Keep open until verified or a matching file is located."
+                },
+                {
+                    "timestamp": "2026-03-16T20:56:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-50): Done -> fixed_verified"
+                }
+            ],
+            "artifacts": []
+        },
+        {
+            "finding_id": "SYNTH-DEBT-001",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in build-deploy-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Missing coverage object"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.814548Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-51): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:27Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-002",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in build-deploy-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.814807Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-52): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:27Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-003",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in build-deploy-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.814811Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-53): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:27Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-004",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in build-deploy-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.814814Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-54): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:27Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-005",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in build-deploy-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.814817Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-55): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-006",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in build-deploy-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.814820Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-56): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-007",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in build-deploy-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.814823Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-57): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-008",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in runtime-bug-hunter output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815069Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-58): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-009",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in runtime-bug-hunter output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815074Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-59): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-010",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in runtime-bug-hunter output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815077Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-60): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-011",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in runtime-bug-hunter output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815080Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-61): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-012",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in ux-flow-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815339Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-62): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-013",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in ux-flow-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815343Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-63): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-014",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in ux-flow-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815346Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-64): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-015",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in ux-flow-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815349Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-65): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-016",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in ux-flow-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815352Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-66): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-017",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in ux-flow-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815355Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-67): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-018",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in ux-flow-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815359Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-68): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:28Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-019",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in performance-cost-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815550Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-69): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:29Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-020",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in performance-cost-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815553Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-70): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:29Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-021",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in performance-cost-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_pending_verify",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815558Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-71): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:29Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-022",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in security-privacy-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Missing coverage object"
+                }
+            ],
+            "status": "fixed_verified",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815748Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-72): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:29Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                },
+                {
+                    "timestamp": "2026-03-19T21:17:20Z",
+                    "actor": "copilot",
+                    "event": "verification_passed",
+                    "notes": "audits/runs/2026-03-06/security_audit_report.json migrated to schema v1.1.0: added schema_version, kind, run_metadata, coverage, rollups, next_actions; each finding updated with finding_id, type, priority, confidence, proof_hooks, status, history."
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-023",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in security-privacy-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_verified",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815753Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-73): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:29Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                },
+                {
+                    "timestamp": "2026-03-19T21:17:20Z",
+                    "actor": "copilot",
+                    "event": "verification_passed",
+                    "notes": "audits/runs/2026-03-06/security_audit_report.json migrated to schema v1.1.0: added schema_version, kind, run_metadata, coverage, rollups, next_actions; each finding updated with finding_id, type, priority, confidence, proof_hooks, status, history."
+                }
+            ]
+        },
+        {
+            "finding_id": "SYNTH-DEBT-024",
+            "type": "debt",
+            "severity": "minor",
+            "priority": "P2",
+            "confidence": "high",
+            "title": "Schema Violation in security-privacy-auditor output",
+            "proof_hooks": [
+                {
+                    "hook_type": "log",
+                    "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+                }
+            ],
+            "status": "fixed_verified",
+            "history": [
+                {
+                    "timestamp": "2026-03-06T19:09:44.815756Z",
+                    "actor": "synthesizer",
+                    "action": "created",
+                    "notes": "Generated due to schema validation failure."
+                },
+                {
+                    "timestamp": "2026-03-13T05:01:46Z",
+                    "actor": "cleanup-script",
+                    "event": "note_added",
+                    "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+                },
+                {
+                    "timestamp": "2026-03-19T20:36:13Z",
+                    "actor": "linear-sync",
+                    "event": "note_added",
+                    "notes": "Status synced from Linear (PLP-74): Todo -> accepted"
+                },
+                {
+                    "timestamp": "2026-03-19T20:44:29Z",
+                    "actor": "solo-dev",
+                    "event": "patch_applied",
+                    "notes": "Fix applied via session runner. Commit: 4582118",
+                    "commit": "4582118"
+                },
+                {
+                    "timestamp": "2026-03-19T21:17:20Z",
+                    "actor": "copilot",
+                    "event": "verification_passed",
+                    "notes": "audits/runs/2026-03-06/security_audit_report.json migrated to schema v1.1.0: added schema_version, kind, run_metadata, coverage, rollups, next_actions; each finding updated with finding_id, type, priority, confidence, proof_hooks, status, history."
+                }
+            ]
         }
-      ],
-      "impact": "Potential unauthorized access to global app settings, AI model settings, or API credentials, or broken functionality if RLS is enabled but lacks policies granting access.",
-      "suggested_fix": {
-        "approach": "Create RLS policies for all identified tables, restricting read/write access to admins or the owning user as appropriate.",
-        "affected_files": [
-          "supabase/migrations/add_rls_policies.sql"
-        ],
-        "estimated_effort": "small"
-      },
-      "status": "fixed_verified",
-      "history": [
-        {
-          "timestamp": "2026-03-06T18:35:12.000Z",
-          "actor": "schema-auditor",
-          "event": "created"
-        },
-        {
-          "timestamp": "2026-03-06T19:14:52Z",
-          "actor": "synthesizer",
-          "action": "status_changed",
-          "notes": "Verification shows RLS IS enabled with full SELECT/ALL policies on app_settings, provider_settings, model_settings in supabase/migrations/20251214_admin_settings.sql (lines 114-148). api_credentials covered by 001_initial_schema.sql and phase3-migration.sql. project_briefing_state not found in migrations \u2014 check 20251212_briefing_state.sql. Marking fixed_pending_verify; run a manual Supabase linter check to confirm."
-        },
-        {
-          "timestamp": "2026-03-13T20:02:52Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-47): In Progress -> in_progress"
-        },
-        {
-          "timestamp": "2026-03-16T20:56:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-47): Done -> fixed_verified"
-        }
-      ]
-    },
-    {
-      "finding_id": "f-foreign-keys-missing-on-delete-01",
-      "type": "debt",
-      "category": "constraint-violation",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "evidence",
-      "title": "Foreign Keys Missing ON DELETE Behaviors",
-      "description": "Multiple foreign key constraints are defined without explicit ON DELETE behaviors (e.g., CASCADE, SET NULL, RESTRICT). This can lead to orphaned records or foreign key violation errors when parent records are deleted.",
-      "proof_hooks": [
-        {
-          "hook_type": "code_ref",
-          "summary": "project_assets.parent_id FK had no explicit ON DELETE",
-          "file": "supabase/migrations/20240101000000_initial_schema.sql",
-          "symbol": "project_assets",
-          "start_line": 274,
-          "end_line": 274
-        },
-        {
-          "hook_type": "code_ref",
-          "summary": "asset_bundles.created_by FK had no explicit ON DELETE",
-          "file": "supabase/migrations/20251214000200_asset_manifest.sql",
-          "symbol": "asset_bundles",
-          "start_line": 20,
-          "end_line": 20
-        },
-        {
-          "hook_type": "code_ref",
-          "summary": "image_policy tables: created_by and registry_version FKs lacked ON DELETE",
-          "file": "supabase/migrations/20260109000100_image_policy.sql",
-          "symbol": "image_policy_registry_versions",
-          "start_line": 29,
-          "end_line": 115
-        },
-        {
-          "hook_type": "code_ref",
-          "summary": "Migration redefines four nullable FKs with ON DELETE SET NULL",
-          "file": "supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql",
-          "symbol": "explicit_on_delete_remaining_fks",
-          "start_line": 4,
-          "end_line": 41
-        }
-      ],
-      "impact": "Possibility of orphaned data piling up in the database, breaking application assumptions.",
-      "suggested_fix": {
-        "approach": "Review all foreign key constraints and explicitly define ON DELETE CASCADE or ON DELETE SET NULL depending on the desired lifecycle relationship.",
-        "affected_files": [
-          "supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql"
-        ],
-        "estimated_effort": "medium"
-      },
-      "status": "fixed_verified",
-      "history": [
-        {
-          "timestamp": "2026-03-06T18:35:12.000Z",
-          "actor": "schema-auditor",
-          "event": "created"
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-48): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:27Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        },
-        {
-          "timestamp": "2026-03-19T21:15:00Z",
-          "actor": "synthesizer",
-          "event": "verification_passed",
-          "notes": "Scoped re-audit (data, logic, security) on supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql: explicit ON DELETE SET NULL for project_assets.parent_id, asset_bundles.created_by, image_policy_registry_versions.created_by, image_policy_receipts.registry_version. No new findings; aligns with suggested_fix.",
-          "artifacts": [
-            "audits/runs/2026-03-19/data-20260319-211500.json",
-            "audits/runs/2026-03-19/logic-20260319-211501.json",
-            "audits/runs/2026-03-19/security-20260319-211502.json",
-            "audits/runs/2026-03-19/synthesized-20260319-211503.json"
-          ]
-        }
-      ]
-    },
-    {
-      "finding_id": "f-a3b7c9e1",
-      "type": "bug",
-      "category": "null-ref",
-      "severity": "blocker",
-      "priority": "P0",
-      "confidence": "speculation",
-      "title": "Unhandled null in parseJobResponse when API returns empty results array",
-      "description": "When the external job API returns {results: null} instead of {results: []}, the parseJobResponse function throws a TypeError. This crashes the ingestion pipeline silently because the catch block logs but does not re-throw or mark the batch as failed. The null case is documented in the API changelog from v2.3.",
-      "proof_hooks": [
-        {
-          "hook_type": "code_ref",
-          "summary": "Nullable access on results without guard",
-          "file": "src/services/jobIngestion.ts",
-          "symbol": "parseJobResponse",
-          "start_line": 47,
-          "end_line": 47
-        },
-        {
-          "hook_type": "error_text",
-          "summary": "TypeError thrown when results is null",
-          "error_text": "TypeError: Cannot read properties of null (reading 'map')"
-        },
-        {
-          "hook_type": "repro_steps",
-          "summary": "Reproduce by mocking null API response",
-          "steps": [
-            "Set API_MOCK=true in .env.local",
-            "Add mock response file at __mocks__/api/empty-null.json with {results: null}",
-            "Run: npx ts-node scripts/ingest.ts --source=mock",
-            "Observe TypeError in console and zero jobs ingested"
-          ]
-        },
-        {
-          "hook_type": "verification",
-          "summary": "Locate actual ingestion pipeline file before attempting fix",
-          "steps": [
-            "Search src/pipeline/, netlify/functions/, src/lib/ for job fetch/ingest logic",
-            "If found: verify null guard behavior, update finding with real file reference",
-            "If not found: close as 'not applicable' for this codebase version"
-          ]
-        }
-      ],
-      "repro_steps": [
-        "Set API_MOCK=true in .env.local",
-        "Add mock response file at __mocks__/api/empty-null.json with {results: null}",
-        "Run: npx ts-node scripts/ingest.ts --source=mock",
-        "Observe TypeError in console and zero jobs ingested"
-      ],
-      "impact": "Job ingestion silently fails for any API source that returns null instead of empty array. Database stagnates. Users see stale listings.",
-      "suggested_fix": {
-        "approach": "Add null coalescing at line 47: (results ?? []).map(...). Add a guard log when null is received so you can track which APIs behave this way.",
-        "affected_files": [
-          "src/services/jobIngestion.ts"
-        ],
-        "estimated_effort": "trivial",
-        "risk_notes": "Very low risk. Null coalescing is additive. Verify that downstream code handles empty arrays correctly (it already does based on line 62 check).",
-        "tests_needed": [
-          "Unit test: parseJobResponse with null results returns empty array",
-          "Unit test: parseJobResponse with undefined results returns empty array",
-          "Integration test: full ingestion pipeline with mock null response completes without error"
-        ]
-      },
-      "owner": "solo-dev",
-      "status": "fixed_verified",
-      "related_ids": [
-        "f-e2d4f6a8"
-      ],
-      "history": [
-        {
-          "timestamp": "2025-03-04T14:30:22Z",
-          "actor": "runtime-bug-hunter",
-          "event": "created",
-          "notes": "Discovered during static analysis of null-safety patterns in ingestion pipeline. Confirmed via preflight test output showing no coverage for null API responses."
-        },
-        {
-          "timestamp": "2026-03-06T19:14:52Z",
-          "actor": "synthesizer",
-          "action": "confidence_changed",
-          "notes": "Triage rule 7: src/services/jobIngestion.ts does not exist in the codebase. Cannot reproduce. Confidence downgraded from 'evidence' to 'speculation'. Adding verification hook: confirm if jobIngestion logic lives elsewhere (e.g. src/pipeline/ or netlify/functions/). Keep open until verified or a matching file is located."
-        },
-        {
-          "timestamp": "2026-03-16T20:56:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-49): Done -> fixed_verified"
-        }
-      ],
-      "artifacts": []
-    },
-    {
-      "finding_id": "f-e2d4f6a8",
-      "type": "enhancement",
-      "category": "error-handling",
-      "severity": "major",
-      "priority": "P1",
-      "confidence": "speculation",
-      "title": "Ingestion pipeline has no retry logic for transient API failures",
-      "description": "The fetchJobs function makes a single HTTP request per source. If the request fails due to a timeout or 503, the entire source is skipped until the next scheduled run. Given that some APIs have known intermittent availability, a retry with exponential backoff would significantly improve data freshness.",
-      "proof_hooks": [
-        {
-          "hook_type": "code_ref",
-          "summary": "Single try/catch with no retry loop in fetchJobs",
-          "file": "src/services/jobIngestion.ts",
-          "symbol": "fetchJobs",
-          "start_line": 22,
-          "end_line": 35
-        },
-        {
-          "hook_type": "command",
-          "summary": "Simulating transient failure shows source is permanently skipped",
-          "command": "npx ts-node scripts/ingest.ts --source=mock --mock-status=503",
-          "expected": "Retry and eventually succeed or fail gracefully with clear error",
-          "actual": "Source silently skipped, no retry attempted"
-        },
-        {
-          "hook_type": "verification",
-          "summary": "Locate actual ingestion pipeline file before attempting fix",
-          "steps": [
-            "Search src/pipeline/, netlify/functions/, src/lib/ for job fetch/ingest logic",
-            "If found: verify null guard behavior, update finding with real file reference",
-            "If not found: close as 'not applicable' for this codebase version"
-          ]
-        }
-      ],
-      "repro_steps": [],
-      "impact": "Missed job data on transient failures. Users may not see jobs from sources that had a momentary outage during the fetch window.",
-      "suggested_fix": {
-        "approach": "Wrap fetchJobs call in a retry utility with max 3 attempts, exponential backoff starting at 1s, and a circuit breaker that skips after 3 consecutive full failures for a source.",
-        "affected_files": [
-          "src/services/jobIngestion.ts",
-          "src/utils/retry.ts (new file)"
-        ],
-        "estimated_effort": "small",
-        "risk_notes": "Retries increase total API call count. If you are on a metered API plan, add a daily call budget. Also ensure retries do not cause duplicate ingestion by checking idempotency keys.",
-        "tests_needed": [
-          "Unit test: retry utility retries on 503 and succeeds on second attempt",
-          "Unit test: retry utility gives up after max attempts and throws",
-          "Unit test: retry utility does not retry on 400 (client error)"
-        ]
-      },
-      "owner": "solo-dev",
-      "status": "fixed_verified",
-      "related_ids": [
-        "f-a3b7c9e1"
-      ],
-      "history": [
-        {
-          "timestamp": "2025-03-04T14:30:22Z",
-          "actor": "runtime-bug-hunter",
-          "event": "created",
-          "notes": "Identified as a reliability gap during ingestion pipeline review. Related to f-a3b7c9e1 (both are ingestion resilience issues)."
-        },
-        {
-          "timestamp": "2026-03-06T19:14:52Z",
-          "actor": "synthesizer",
-          "action": "confidence_changed",
-          "notes": "Triage rule 7: src/services/jobIngestion.ts does not exist in the codebase. Cannot reproduce. Confidence downgraded from 'inference' to 'speculation'. Adding verification hook: confirm if jobIngestion logic lives elsewhere (e.g. src/pipeline/ or netlify/functions/). Keep open until verified or a matching file is located."
-        },
-        {
-          "timestamp": "2026-03-16T20:56:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-50): Done -> fixed_verified"
-        }
-      ],
-      "artifacts": []
-    },
-    {
-      "finding_id": "SYNTH-DEBT-001",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in build-deploy-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Missing coverage object"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.814548Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-51): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:27Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-002",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in build-deploy-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.814807Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-52): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:27Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-003",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in build-deploy-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.814811Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-53): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:27Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-004",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in build-deploy-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.814814Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-54): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:27Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-005",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in build-deploy-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.814817Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-55): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-006",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in build-deploy-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.814820Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-56): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-007",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in build-deploy-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.814823Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-57): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-008",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in runtime-bug-hunter output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815069Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-58): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-009",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in runtime-bug-hunter output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815074Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-59): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-010",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in runtime-bug-hunter output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815077Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-60): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-011",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in runtime-bug-hunter output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815080Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-61): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-012",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in ux-flow-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815339Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-62): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-013",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in ux-flow-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815343Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-63): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-014",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in ux-flow-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815346Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-64): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-015",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in ux-flow-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815349Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-65): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-016",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in ux-flow-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815352Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-66): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-017",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in ux-flow-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815355Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-67): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-018",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in ux-flow-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815359Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-68): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:28Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-019",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in performance-cost-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815550Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-69): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:29Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-020",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in performance-cost-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815553Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-70): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:29Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-021",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in performance-cost-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815558Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-71): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:29Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-022",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in security-privacy-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Missing coverage object"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815748Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-72): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:29Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-023",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in security-privacy-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815753Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-73): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:29Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    },
-    {
-      "finding_id": "SYNTH-DEBT-024",
-      "type": "debt",
-      "severity": "minor",
-      "priority": "P2",
-      "confidence": "high",
-      "title": "Schema Violation in security-privacy-auditor output",
-      "proof_hooks": [
-        {
-          "hook_type": "log",
-          "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-        }
-      ],
-      "status": "fixed_pending_verify",
-      "history": [
-        {
-          "timestamp": "2026-03-06T19:09:44.815756Z",
-          "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
-        },
-        {
-          "timestamp": "2026-03-13T05:01:46Z",
-          "actor": "cleanup-script",
-          "event": "note_added",
-          "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
-        },
-        {
-          "timestamp": "2026-03-19T20:36:13Z",
-          "actor": "linear-sync",
-          "event": "note_added",
-          "notes": "Status synced from Linear (PLP-74): Todo -> accepted"
-        },
-        {
-          "timestamp": "2026-03-19T20:44:29Z",
-          "actor": "solo-dev",
-          "event": "patch_applied",
-          "notes": "Fix applied via session runner. Commit: 4582118",
-          "commit": "4582118"
-        }
-      ]
-    }
-  ],
-  "cleanup_applied": "2026-03-13T05:01:46Z"
+    ],
+    "cleanup_applied": "2026-03-13T05:01:46Z"
 }
