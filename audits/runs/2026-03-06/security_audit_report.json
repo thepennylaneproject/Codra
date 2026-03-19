@@ -4,7 +4,7 @@
   "suite": "security",
   "agent": {
     "name": "security-privacy-auditor",
-    "version": "1.1",
+    "version": "1.1.0",
     "role": "Audit and report issues for this suite.",
     "inputs_used": [],
     "stop_conditions_hit": []
@@ -30,7 +30,7 @@
         {
           "hook_type": "code_ref",
           "summary": "See line 22-32",
-          "file": "line 22-32"
+          "file": "netlify/functions/asset_manifest_save.ts"
         }
       ],
       "impact": "The netlify function `asset_manifest_save.ts` uses `SUPABASE_SERVICE_ROLE_KEY` to bypass Row Level Security. It trusts the `userId` and `workspaceId` extracted directly from the request payload JSON without validating any JWT or Authorization header. An attacker can forge save requests for any user or workspace, overwriting their assets.",
@@ -63,7 +63,7 @@
         {
           "hook_type": "code_ref",
           "summary": "See line 18-42",
-          "file": "line 18-42"
+          "file": "netlify/functions/asset_manifest_get.ts"
         }
       ],
       "impact": "The netlify function `asset_manifest_get.ts` fetches asset bundles and assets using the `SUPABASE_SERVICE_ROLE_KEY` (RLS bypassed) by simply taking a `bundleId` from the query string. There is no session validation.",

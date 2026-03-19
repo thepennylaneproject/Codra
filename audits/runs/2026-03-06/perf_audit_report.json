@@ -4,7 +4,7 @@
   "suite": "performance",
   "agent": {
     "name": "performance-cost-auditor",
-    "version": "1.1",
+    "version": "1.1.0",
     "role": "Audit and report issues for this suite.",
     "inputs_used": [],
     "stop_conditions_hit": []
@@ -35,7 +35,7 @@
       "proof_hooks": [
         {
           "hook_type": "data_shape",
-          "summary": ".select('id, title, status, created_at')",
+          "summary": "Specify required columns instead of SELECT * in Supabase queries",
           "expected": ".select('id, title, status, created_at')",
           "actual": ".select('*')"
         }
@@ -108,10 +108,11 @@
       "confidence": "inference",
       "proof_hooks": [
         {
-          "hook_type": "artifact_ref",
-          "summary": "Dynamic chunks for editor and flow diagram components",
+          "hook_type": "code_ref",
+          "summary": "Code splitting boundaries missing for heavy dependencies",
           "expected": "Dynamic chunks for editor and flow diagram components",
-          "actual": "No dynamic imports () found in src code; large dependencies are statically compiled to the main bundle."
+          "actual": "No dynamic imports () found in src code; large dependencies are statically compiled to the main bundle.",
+          "file": "src/App.tsx"
         }
       ],
       "impact": "The application relies on heavy dependencies (monaco-editor, @xyflow/react, html2canvas, jspdf, recharts) but lacks any React.lazy() or dynamic import() code-splitting boundaries. This forces all users to download the full weight of these libraries upfront, severely impacting initial load performance.",
@@ -129,11 +130,11 @@
     }
   ],
   "rollups": {
-    "total_findings": 3,
     "by_severity": {
-      "high": 2,
-      "medium": 1,
-      "low": 0
+      "blocker": 0,
+      "major": 2,
+      "minor": 1,
+      "nit": 0
     },
     "by_category": {
       "db-query-waste": 1,
@@ -158,12 +159,12 @@
     },
     {
       "action": "Add staleTime configuration to all React Query useQuery hooks.",
-      "finding_id": "PERF-001",
+      "finding_id": "PERF-002",
       "rationale": "Follow-up task from audit."
     },
     {
       "action": "Implement React.lazy() for route-level code splitting, especially for the IDE/Editor and Flow routes.",
-      "finding_id": "PERF-001",
+      "finding_id": "PERF-003",
       "rationale": "Follow-up task from audit."
     }
   ],

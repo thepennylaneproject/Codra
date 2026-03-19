@@ -4,7 +4,7 @@
   "suite": "ux",
   "agent": {
     "name": "ux-flow-auditor",
-    "version": "1.1",
+    "version": "1.1.0",
     "role": "Audit and report issues for this suite.",
     "inputs_used": [],
     "stop_conditions_hit": []
@@ -12,7 +12,10 @@
   "coverage": {
     "files_audited": 38,
     "coverage_complete": false,
-    "files_examined": [
+    "files_examined": [],
+    "files_skipped": [],
+    "incomplete_reason": "Partial review",
+    "routes_examined": [
       "/projects",
       "/pricing",
       "/blueprints",
@@ -31,15 +34,13 @@
       "/p/:projectId/context",
       "/coherence-scan",
       "/workspace-shell-demo"
-    ],
-    "files_skipped": [],
-    "incomplete_reason": "Partial review"
+    ]
   },
   "findings": [
     {
       "id": "UX-001",
       "category": "copy-mismatch",
-      "severity": "minor",
+      "severity": "nit",
       "location": "src/components/auth/LoginForm.tsx, src/components/auth/SignupForm.tsx",
       "title": "Inconsistent Login Terminology",
       "description": "The terms 'Sign in', 'Log in', and 'Open login' are used interchangeably across authentication components.",
@@ -235,9 +236,8 @@
       "confidence": "inference",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
-          "summary": "See Global",
-          "file": "Global"
+          "hook_type": "log_line",
+          "summary": "Product voice and tone not explicitly documented in observed assets."
         }
       ],
       "impact": "The intended product voice and tone are not explicitly defined in the observed design tokens or documentation.",
@@ -255,20 +255,17 @@
     }
   ],
   "rollups": {
-    "total_findings": 7,
     "by_severity": {
-      "high": 1,
-      "medium": 4,
-      "low": 2
+      "blocker": 0,
+      "major": 1,
+      "minor": 3,
+      "nit": 3
     },
     "by_category": {
       "copy-mismatch": 3,
       "missing-state": 2,
       "a11y-gap": 1,
-      "question": 1,
-      "broken-flow": 0,
-      "nav-dead-end": 0,
-      "inconsistent-label": 0
+      "question": 1
     },
     "by_type": {
       "bug": 0,
@@ -288,22 +285,22 @@
     },
     {
       "action": "Implement ErrorBoundary components at the route component level in App.tsx.",
-      "finding_id": "UX-001",
+      "finding_id": "UX-004",
       "rationale": "Follow-up task from audit."
     },
     {
       "action": "Draft a product voice guide to align on tone, personality, and capitalization conventions.",
-      "finding_id": "UX-001",
+      "finding_id": "UX-007",
       "rationale": "Follow-up task from audit."
     },
     {
       "action": "Update workspace empty states to include clear primary calls-to-action.",
-      "finding_id": "UX-001",
+      "finding_id": "UX-005",
       "rationale": "Follow-up task from audit."
     },
     {
       "action": "Audit all <img> tags and update alt attributes to be meaningful.",
-      "finding_id": "UX-001",
+      "finding_id": "UX-006",
       "rationale": "Follow-up task from audit."
     }
   ],

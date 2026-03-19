@@ -7,7 +7,7 @@
     "role": "Merge, deduplicate, rank, and plan across all agent outputs."
   },
   "diff_summary": {
-    "compared_against": "none",
+    "compared_against": "not_applicable",
     "new_findings": [
       "f-missing-rls-tables-01",
       "f-foreign-keys-missing-on-delete-01",
@@ -116,7 +116,7 @@
           }
         ],
         "artifacts": [],
-        "why_now": "High priority from synthesis ordering",
+        "why_now": "Ranked #1 in original synth ordering",
         "estimated_effort": "medium"
       },
       {
@@ -152,7 +152,7 @@
             "event": "created"
           }
         ],
-        "why_now": "High priority from synthesis ordering",
+        "why_now": "Ranked #2 in original synth ordering",
         "estimated_effort": "medium"
       },
       {
@@ -211,7 +211,7 @@
           }
         ],
         "artifacts": [],
-        "why_now": "High priority from synthesis ordering",
+        "why_now": "Ranked #3 in original synth ordering",
         "estimated_effort": "medium"
       },
       {
@@ -236,7 +236,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "High priority from synthesis ordering",
+        "why_now": "Ranked #4 in original synth ordering",
         "estimated_effort": "medium"
       },
       {
@@ -261,7 +261,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "High priority from synthesis ordering",
+        "why_now": "Ranked #5 in original synth ordering",
         "estimated_effort": "medium"
       },
       {
@@ -286,7 +286,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "High priority from synthesis ordering",
+        "why_now": "Ranked #6 in original synth ordering",
         "estimated_effort": "medium"
       },
       {
@@ -311,7 +311,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "High priority from synthesis ordering",
+        "why_now": "Ranked #7 in original synth ordering",
         "estimated_effort": "medium"
       },
       {
@@ -336,7 +336,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "High priority from synthesis ordering",
+        "why_now": "Ranked #8 in original synth ordering",
         "estimated_effort": "medium"
       },
       {
@@ -361,7 +361,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "High priority from synthesis ordering",
+        "why_now": "Ranked #9 in original synth ordering",
         "estimated_effort": "medium"
       },
       {
@@ -386,7 +386,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "High priority from synthesis ordering",
+        "why_now": "Ranked #10 in original synth ordering",
         "estimated_effort": "medium"
       }
     ],
@@ -654,7 +654,7 @@
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Missing coverage object"
         }
       ],
@@ -663,9 +663,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.814548Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -684,7 +683,7 @@
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -693,9 +692,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.814807Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -714,7 +712,7 @@
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -723,9 +721,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.814811Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -744,7 +741,7 @@
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -753,9 +750,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.814814Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -774,7 +770,7 @@
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -783,9 +779,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.814817Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -804,7 +799,7 @@
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -813,9 +808,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.814820Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -834,7 +828,7 @@
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -843,9 +837,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.814823Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -864,7 +857,7 @@
       "title": "Schema Violation in runtime-bug-hunter output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
@@ -873,9 +866,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815069Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -894,7 +886,7 @@
       "title": "Schema Violation in runtime-bug-hunter output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
@@ -903,9 +895,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815074Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -924,7 +915,7 @@
       "title": "Schema Violation in runtime-bug-hunter output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
@@ -933,9 +924,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815077Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -954,7 +944,7 @@
       "title": "Schema Violation in runtime-bug-hunter output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
@@ -963,9 +953,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815080Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -984,7 +973,7 @@
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -993,9 +982,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815339Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1014,7 +1002,7 @@
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1023,9 +1011,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815343Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1044,7 +1031,7 @@
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1053,9 +1040,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815346Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1074,7 +1060,7 @@
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1083,9 +1069,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815349Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1104,7 +1089,7 @@
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1113,9 +1098,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815352Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1134,7 +1118,7 @@
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1143,9 +1127,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815355Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1164,7 +1147,7 @@
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1173,9 +1156,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815359Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1194,7 +1176,7 @@
       "title": "Schema Violation in performance-cost-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1203,9 +1185,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815550Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1224,7 +1205,7 @@
       "title": "Schema Violation in performance-cost-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1233,9 +1214,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815553Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1254,7 +1234,7 @@
       "title": "Schema Violation in performance-cost-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1263,9 +1243,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815558Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1284,7 +1263,7 @@
       "title": "Schema Violation in security-privacy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Missing coverage object"
         }
       ],
@@ -1293,9 +1272,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815748Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1314,7 +1292,7 @@
       "title": "Schema Violation in security-privacy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1323,9 +1301,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815753Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1344,7 +1321,7 @@
       "title": "Schema Violation in security-privacy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "code_ref",
+          "hook_type": "log_line",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1353,9 +1330,8 @@
         {
           "timestamp": "2026-03-06T19:09:44.815756Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure.",
-          "event": "created"
+          "event": "created",
+          "notes": "Generated due to schema validation failure."
         }
       ],
       "impact": "Impact not documented",
@@ -1457,9 +1433,6 @@
     }
   ],
   "rollups": {
-    "by_status": {
-      "open": 29
-    },
     "by_severity": {
       "blocker": 1,
       "major": 2,
@@ -1470,7 +1443,7 @@
       "null-ref": 1,
       "missing-rls": 1,
       "error-handling": 1,
-      "uncategorized": 24,
+      "schema-violation": 24,
       "constraint-violation": 1,
       "ambiguous-behavior": 1
     },
@@ -1479,6 +1452,9 @@
       "enhancement": 1,
       "debt": 25,
       "question": 1
+    },
+    "by_status": {
+      "open": 29
     }
   },
   "run_id": "synthesizer_output",
@@ -1492,9 +1468,19 @@
   },
   "next_actions": [
     {
-      "action": "Follow top_fixes plan",
+      "action": "Address top prioritized finding",
       "finding_id": "f-a3b7c9e1",
-      "rationale": "Auto-generated placeholder"
+      "rationale": "Ranked #1 in synthesis plan."
+    },
+    {
+      "action": "Work through remaining critical findings",
+      "finding_id": "f-missing-rls-tables-01",
+      "rationale": "High priority from synthesis."
+    },
+    {
+      "action": "Prepare verification steps for schema fixes",
+      "finding_id": "f-e2d4f6a8",
+      "rationale": "Ensure schema violations are revalidated."
     }
   ]
 }

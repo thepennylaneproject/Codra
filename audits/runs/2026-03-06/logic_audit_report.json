@@ -36,8 +36,8 @@
       "id": "logic-001",
       "title": "Uncaught Exceptions in Supabase Auth Handlers",
       "severity": "major",
-      "category": "error-handling",
-      "type": "debt",
+      "category": "error-swallowing",
+      "type": "bug",
       "status": "open",
       "confidence": "evidence",
       "location": {
@@ -83,8 +83,8 @@
       "id": "logic-002",
       "title": "Loose Equality in Condition Node Evaluator",
       "severity": "minor",
-      "category": "type-error",
-      "type": "debt",
+      "category": "type-coercion",
+      "type": "bug",
       "status": "open",
       "confidence": "evidence",
       "location": {
@@ -131,8 +131,8 @@
       "id": "logic-003",
       "title": "Missing Code/State Check on Auth Callback OAuth Exchange",
       "severity": "minor",
-      "category": "edge-case",
-      "type": "debt",
+      "category": "unhandled-edge-case",
+      "type": "bug",
       "status": "open",
       "confidence": "inference",
       "location": {
@@ -177,8 +177,8 @@
       "id": "logic-004",
       "title": "Batch Task Creation Does Not Wait for Errors",
       "severity": "nit",
-      "category": "async-bug",
-      "type": "debt",
+      "category": "race-condition",
+      "type": "bug",
       "status": "open",
       "confidence": "inference",
       "location": {
@@ -224,21 +224,22 @@
   ],
   "rollups": {
     "by_severity": {
-      "high": 1,
-      "medium": 2,
-      "low": 1
+      "blocker": 0,
+      "major": 1,
+      "minor": 2,
+      "nit": 1
     },
     "by_category": {
-      "error-handling": 1,
-      "type-error": 1,
-      "edge-case": 1,
-      "async-bug": 1
-    },
-    "by_type": {
       "error-swallowing": 1,
       "type-coercion": 1,
       "unhandled-edge-case": 1,
       "race-condition": 1
+    },
+    "by_type": {
+      "bug": 4,
+      "enhancement": 0,
+      "debt": 0,
+      "question": 0
     },
     "by_status": {
       "open": 4
@@ -252,12 +253,12 @@
     },
     {
       "action": "Fix loose equality in src/lib/flow/nodes/condition.ts.",
-      "finding_id": "logic-001",
+      "finding_id": "logic-002",
       "rationale": "Follow-up task from audit."
     },
     {
       "action": "Add code check in AuthCallback.tsx.",
-      "finding_id": "logic-001",
+      "finding_id": "logic-003",
       "rationale": "Follow-up task from audit."
     }
   ],
