@@ -67,26 +67,34 @@
       "proof_hooks": [
         {
           "hook_type": "code_ref",
-          "summary": "Foreign keys lacking ON DELETE",
-          "file": "supabase/migrations/001_initial_schema.sql",
+          "summary": "project_assets.parent_id FK had no explicit ON DELETE",
+          "file": "supabase/migrations/20240101000000_initial_schema.sql",
           "symbol": "project_assets",
           "start_line": 274,
           "end_line": 274
         },
         {
           "hook_type": "code_ref",
-          "summary": "Foreign keys lacking ON DELETE",
-          "file": "supabase/migrations/10-database-migration.sql",
-          "symbol": "created_by_user_id",
-          "start_line": 46,
-          "end_line": 46
+          "summary": "asset_bundles.created_by FK had no explicit ON DELETE",
+          "file": "supabase/migrations/20251214000200_asset_manifest.sql",
+          "symbol": "asset_bundles",
+          "start_line": 20,
+          "end_line": 20
+        },
+        {
+          "hook_type": "code_ref",
+          "summary": "image_policy tables: created_by and registry_version FKs lacked ON DELETE",
+          "file": "supabase/migrations/20260109000100_image_policy.sql",
+          "symbol": "image_policy_registry_versions",
+          "start_line": 29,
+          "end_line": 115
         }
       ],
       "impact": "Possibility of orphaned data piling up in the database, breaking application assumptions.",
       "suggested_fix": {
         "approach": "Review all foreign key constraints and explicitly define ON DELETE CASCADE or ON DELETE SET NULL depending on the desired lifecycle relationship.",
         "affected_files": [
-          "supabase/migrations/fix_foreign_keys.sql"
+          "supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql"
         ],
         "estimated_effort": "medium"
       },

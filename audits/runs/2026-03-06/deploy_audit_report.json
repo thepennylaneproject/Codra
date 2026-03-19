@@ -1,65 +1,289 @@
 {
+  "schema_version": "1.1.0",
   "kind": "agent_output",
   "run_id": "deploy-20260306-124305",
+  "run_metadata": {
+    "timestamp": "2026-03-06T17:43:05.000Z",
+    "branch": "unknown",
+    "commit": "unknown",
+    "environment": "local",
+    "tool_platform": "cursor",
+    "model": "unknown"
+  },
   "suite": "deploy",
   "agent": {
     "name": "build-deploy-auditor",
-    "version": "1.1.0"
+    "role": "Find gaps in build config, CI/CD, error boundaries, logging, environment management, and deployment safety.",
+    "inputs_used": [
+      "vite.config.ts",
+      "tsconfig.json",
+      "netlify.toml",
+      "package.json",
+      ".env.example",
+      "src/main.tsx",
+      "src/lib/supabase.ts",
+      "netlify/functions",
+      "README.md"
+    ],
+    "stop_conditions_hit": []
+  },
+  "coverage": {
+    "files_examined": [
+      "package.json",
+      "vite.config.ts",
+      "netlify.toml",
+      "src/main.tsx",
+      "src/lib/supabase.ts"
+    ],
+    "files_skipped": [],
+    "coverage_complete": false,
+    "incomplete_reason": "Sampled primary build and deploy surfaces; full src/**/*.ts catch-block audit not exhaustive."
   },
   "findings": [
     {
-      "id": "DEPLOY-001",
+      "finding_id": "DEPLOY-001",
+      "type": "debt",
       "category": "deploy-risk",
-      "severity": "Major",
+      "severity": "major",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Unpinned Dependencies in package.json",
       "description": "Dependencies in package.json use caret versions (e.g., ^18.3.1 for React, ^5.4.0 for Vite). This can result in non-deterministic builds across environments if lockfiles are inadvertently ignored, or cause unexpected breaks down the line.",
-      "file": "package.json",
-      "recommendation": "Pin all critical dependencies to exact versions or enforce strict adherence to package-lock.json with 'npm ci' across all deployment and development environments."
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "Caret ranges in package.json allow semver drift",
+          "file": "package.json",
+          "symbol": "dependencies",
+          "start_line": 1,
+          "end_line": 1
+        }
+      ],
+      "impact": "CI and local installs may resolve different transitive versions over time, causing hard-to-reproduce build or runtime failures.",
+      "suggested_fix": {
+        "approach": "Pin all critical dependencies to exact versions or enforce strict adherence to package-lock.json with npm ci across all deployment and development environments.",
+        "affected_files": ["package.json"],
+        "estimated_effort": "small"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T17:43:05.000Z",
+          "actor": "build-deploy-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
-      "id": "DEPLOY-002",
+      "finding_id": "DEPLOY-002",
+      "type": "enhancement",
       "category": "missing-error-boundary",
-      "severity": "Major Enhancement",
+      "severity": "major",
+      "priority": "P1",
+      "confidence": "inference",
       "title": "Missing Global window.onerror and unhandledrejection handlers",
       "description": "While a React ErrorBoundary exists for the component tree, there is no global top-level handler for asynchronous operations or errors occurring outside the React lifecycle, resulting in unreported frontend crashes.",
-      "file": "src/main.tsx",
-      "recommendation": "Add top-level event listeners for 'error' and 'unhandledrejection' to capture and report all unhandled UI crashes to the analytics service."
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "Entry module should register global error handlers for non-React failures",
+          "file": "src/main.tsx",
+          "symbol": "main",
+          "start_line": 1,
+          "end_line": 80
+        }
+      ],
+      "impact": "Unhandled promise rejections and global errors may fail silently from an observability perspective.",
+      "suggested_fix": {
+        "approach": "Add top-level event listeners for error and unhandledrejection to capture and report all unhandled UI crashes to the analytics service.",
+        "affected_files": ["src/main.tsx"],
+        "estimated_effort": "small"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T17:43:05.000Z",
+          "actor": "build-deploy-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
-      "id": "DEPLOY-003",
+      "finding_id": "DEPLOY-003",
+      "type": "debt",
       "category": "env-management",
-      "severity": "Major",
+      "severity": "major",
+      "priority": "P2",
+      "confidence": "inference",
       "title": "Missing Startup Environment Variable Validation",
       "description": "Required environment variables (e.g., Supabase URLs and Cloudinary credentials) are checked manually at runtime usage points rather than validated centrally at application startup. This can lead to silent execution failures.",
-      "file": "src/lib/supabase.ts",
-      "recommendation": "Implement a centralized environment variable validation schema (e.g., Zod with env.mjs or t3-env) that throws an immediate error if the deployment lacks required variables."
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "Client Supabase init reads env without a single startup schema",
+          "file": "src/lib/supabase.ts",
+          "symbol": "createClient",
+          "start_line": 1,
+          "end_line": 120
+        }
+      ],
+      "impact": "Misconfigured deploys may partially work then fail deep in user flows without a clear fatal error at boot.",
+      "suggested_fix": {
+        "approach": "Implement a centralized environment variable validation schema (e.g., Zod with env.mjs or t3-env) that throws an immediate error if the deployment lacks required variables.",
+        "affected_files": ["src/lib/supabase.ts"],
+        "estimated_effort": "medium"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T17:43:05.000Z",
+          "actor": "build-deploy-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
-      "id": "DEPLOY-004",
+      "finding_id": "DEPLOY-004",
+      "type": "debt",
       "category": "deploy-risk",
-      "severity": "Minor",
+      "severity": "minor",
+      "priority": "P3",
+      "confidence": "inference",
       "title": "Missing Health Check API Endpoint",
-      "description": "The application lacks a dedicated `/api/health` Netlify function or endpoint. This prevents robust external uptime monitoring (e.g., from Pingdom or Datadog) beyond checking the static HTML.",
-      "file": "netlify/functions/health.ts",
-      "recommendation": "Add a simple /api/health Netlify function returning { status: 'ok', timestamp: Date.now() }."
+      "description": "The application lacks a dedicated /api/health Netlify function or endpoint. This prevents robust external uptime monitoring (e.g., from Pingdom or Datadog) beyond checking the static HTML.",
+      "proof_hooks": [
+        {
+          "hook_type": "artifact_ref",
+          "summary": "No health handler under netlify/functions for synthetic uptime probes",
+          "artifact_path": "netlify/functions"
+        }
+      ],
+      "impact": "Load balancers and uptime checks cannot distinguish app-ready vs static shell.",
+      "suggested_fix": {
+        "approach": "Add a simple /api/health Netlify function returning { status: 'ok', timestamp: Date.now() }.",
+        "affected_files": ["netlify/functions/health.ts"],
+        "estimated_effort": "trivial"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T17:43:05.000Z",
+          "actor": "build-deploy-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
-      "id": "DEPLOY-005",
+      "finding_id": "DEPLOY-005",
+      "type": "debt",
       "category": "logging-gap",
-      "severity": "Minor",
+      "severity": "minor",
+      "priority": "P3",
+      "confidence": "speculation",
       "title": "Blanket catch Blocks Swallowing Errors",
-      "description": "Found numerous empty `catch` blocks or blocks that swallow the error entirely inside try-catch patterns across the codebase. This drastically reduces observability into transient pipeline failures.",
-      "file": "src/**/*.ts",
-      "recommendation": "Enforce a linting rule requiring all catch blocks to log the error at minimum, using analytics.track or console.error with surrounding context."
+      "description": "Found numerous empty catch blocks or blocks that swallow the error entirely inside try-catch patterns across the codebase. This drastically reduces observability into transient pipeline failures.",
+      "proof_hooks": [
+        {
+          "hook_type": "command",
+          "summary": "Search for empty catch patterns across TypeScript sources",
+          "command": "rg 'catch\\\\s*\\\\(' src -g '*.ts'"
+        }
+      ],
+      "impact": "Production failures may leave no trace, slowing incident response.",
+      "suggested_fix": {
+        "approach": "Enforce a linting rule requiring all catch blocks to log the error at minimum, using analytics.track or console.error with surrounding context.",
+        "affected_files": ["src/**/*.ts"],
+        "estimated_effort": "large"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T17:43:05.000Z",
+          "actor": "build-deploy-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
-      "id": "DEPLOY-006",
+      "finding_id": "DEPLOY-006",
+      "type": "debt",
       "category": "env-management",
-      "severity": "Minor",
+      "severity": "minor",
+      "priority": "P3",
+      "confidence": "inference",
       "title": "Missing Deployment Environment Documentation",
       "description": "No central README.md exists in the project root to document the full list of necessary environment variables or deployment steps required for a fresh install.",
-      "file": "README.md",
-      "recommendation": "Create a unified README.md with comprehensive deployment instructions and required environment variables mapping."
+      "proof_hooks": [
+        {
+          "hook_type": "artifact_ref",
+          "summary": "Root README may omit deploy env matrix",
+          "artifact_path": "README.md"
+        }
+      ],
+      "impact": "New contributors and deploy pipelines risk missing required configuration.",
+      "suggested_fix": {
+        "approach": "Create a unified README.md with comprehensive deployment instructions and required environment variables mapping.",
+        "affected_files": ["README.md", ".env.example"],
+        "estimated_effort": "small"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T17:43:05.000Z",
+          "actor": "build-deploy-auditor",
+          "event": "created"
+        }
+      ]
+    }
+  ],
+  "rollups": {
+    "by_severity": {
+      "blocker": 0,
+      "major": 3,
+      "minor": 3,
+      "nit": 0
+    },
+    "by_category": {
+      "deploy-risk": 2,
+      "missing-error-boundary": 1,
+      "env-management": 2,
+      "logging-gap": 1
+    },
+    "by_type": {
+      "bug": 0,
+      "enhancement": 1,
+      "debt": 5,
+      "question": 0
+    },
+    "by_status": {
+      "open": 6
+    }
+  },
+  "next_actions": [
+    {
+      "action": "add_global_error_handlers",
+      "finding_id": "DEPLOY-002",
+      "rationale": "Major enhancement: unhandled errors outside React are invisible without window-level handlers."
+    },
+    {
+      "action": "validate_env_at_startup",
+      "finding_id": "DEPLOY-003",
+      "rationale": "Major debt: fail fast on missing Supabase and other required env vars."
+    },
+    {
+      "action": "pin_or_enforce_lockfile",
+      "finding_id": "DEPLOY-001",
+      "rationale": "Reduce non-deterministic dependency resolution in CI and production."
+    },
+    {
+      "action": "add_health_endpoint",
+      "finding_id": "DEPLOY-004",
+      "rationale": "Low-effort improvement for uptime and synthetic checks."
+    },
+    {
+      "action": "document_deploy_env",
+      "finding_id": "DEPLOY-006",
+      "rationale": "Improves onboarding and reduces misconfiguration incidents."
     }
   ]
 }
