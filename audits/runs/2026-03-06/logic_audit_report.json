@@ -2,6 +2,14 @@
   "schema_version": "1.1.0",
   "kind": "agent_output",
   "run_id": "logic-20260306-123528",
+  "run_metadata": {
+    "timestamp": "2026-03-06T12:35:28Z",
+    "branch": "unknown",
+    "commit": "unknown",
+    "environment": "local",
+    "tool_platform": "antigravity",
+    "model": "gemini-2.0-flash"
+  },
   "suite": "logic",
   "agent": {
     "name": "runtime-bug-hunter",
@@ -40,16 +48,22 @@
       "type": "bug",
       "status": "open",
       "confidence": "evidence",
-      "location": {
-        "file": "src/lib/supabase.ts",
-        "line": 51,
-        "function": "getCurrentUser"
-      },
+      "title": "Uncaught Exceptions in Supabase Auth Handlers",
       "description": "Auth errors are logged to console.error but the function returns null instead of throwing or returning an Error object, potentially hiding underlying authentication failures from the caller.",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "getCurrentUser logs errors and returns { user: null, error } after catching exceptions",
+          "file": "src/lib/supabase.ts",
+          "symbol": "getCurrentUser",
+          "start_line": 43,
+          "end_line": 62
+        }
+      ],
       "repro_steps": [
-        "1. Simulate a network failure during getCurrentUser()",
-        "2. Observe console.error log",
-        "3. Observe caller receiving `null` instead of an error state, causing opaque fallback behavior"
+        "Simulate a network failure during getCurrentUser()",
+        "Observe console.error log output",
+        "Caller receives null user rather than an actionable error state"
       ],
       "tests_needed": [
         "test/auth/getCurrentUser-network-failure.test.ts"
@@ -87,17 +101,22 @@
       "type": "bug",
       "status": "open",
       "confidence": "evidence",
-      "location": {
-        "file": "src/lib/flow/nodes/condition.ts",
-        "line": 28,
-        "function": "execute"
-      },
-      "description": "The logic evaluator uses loose equality (`==` and `!=`) for the 'equals' and 'notEquals' operators. This can lead to unexpected type coercion bugs (e.g. `0 == \"0\"`, `false == 0`, `\"\" == false`).",
+      "title": "Loose Equality in Condition Node Evaluator",
+      "description": "The logic evaluator uses loose equality for the 'equals' and 'notEquals' operators. This can lead to unexpected type coercion bugs (e.g., 0 == \"0\", false == 0, \"\" == false).",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "Condition executor compares operands with equals / notEquals operators",
+          "file": "src/lib/flow/nodes/condition.ts",
+          "symbol": "conditionExecutor.execute",
+          "start_line": 20,
+          "end_line": 34
+        }
+      ],
       "repro_steps": [
-        "1. Create a condition node in a flow",
-        "2. Set operator to 'equals'",
-        "3. Compare the boolean `false` with integer `0` or empty string `\"\"`",
-        "4. Condition resolves to true unexpectedly"
+        "Create a condition node in a flow",
+        "Set operator to 'equals'",
+        "Compare the boolean false with integer 0 or empty string \"\" and observe unexpected truthy result under loose equality"
       ],
       "tests_needed": [
         "test/flow/nodes/condition-coercion.test.ts"
@@ -135,15 +154,21 @@
       "type": "bug",
       "status": "open",
       "confidence": "inference",
-      "location": {
-        "file": "src/pages/auth/AuthCallback.tsx",
-        "line": 150,
-        "function": "handleCallback"
-      },
-      "description": "The callback handler calls `supabase.auth.getSession()` unconditionally if `error` is not in the URL, under the assumption Supabase automatically traded the code. If the code parameter is missing or invalid, it may silently get an unauthenticated session and redirect the user back to login with no explanation.",
+      "title": "Missing Code/State Check on Auth Callback OAuth Exchange",
+      "description": "The callback handler calls supabase.auth.getSession() even when no OAuth code is present, silently redirecting users without feedback if the exchange cannot succeed.",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "Auth callback requests session without validating presence of code/type parameters",
+          "file": "src/pages/auth/AuthCallback.tsx",
+          "symbol": "AuthCallback",
+          "start_line": 135,
+          "end_line": 192
+        }
+      ],
       "repro_steps": [
-        "1. Navigate to `/auth/callback` with no query parameters",
-        "2. Observe redirection to `/login` without any error message or alert"
+        "Navigate to /auth/callback with no query parameters",
+        "Observe redirect to /login without any error messaging"
       ],
       "tests_needed": [
         "test/pages/auth/Callback-missing-code.test.ts"
@@ -181,17 +206,22 @@
       "type": "bug",
       "status": "open",
       "confidence": "inference",
-      "location": {
-        "file": "src/components/inspector/SuggestionsModal.tsx",
-        "line": 64,
-        "function": "handleCreateAll"
-      },
-      "description": "When `handleCreateAll` invokes `onClose()`, the component may unmount before the analytics event is fully processed or before state settles. Although `onBatchCreate` is awaited, `setIsCreating(false)` in the finally block will execute on an unmounted component, potentially leading to a React state warning.",
+      "title": "Batch Task Creation Does Not Wait for Errors",
+      "description": "When handleCreateAll invokes onClose(), the component may unmount before the analytics event finishes or state settles. setIsCreating(false) then runs on an unmounted component, risking React state warnings.",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "handleCreateAll awaits onBatchCreate but calls onClose before resetting local state",
+          "file": "src/components/inspector/SuggestionsModal.tsx",
+          "symbol": "handleCreateAll",
+          "start_line": 55,
+          "end_line": 67
+        }
+      ],
       "repro_steps": [
-        "1. Open SuggestionsModal",
-        "2. Ensure network is slow",
-        "3. Click 'Create Tasks'",
-        "4. Observe React 'Cannot update state on an unmounted component' warning"
+        "Open SuggestionsModal with slow network latency",
+        "Click Create Tasks to trigger handleCreateAll",
+        "Observe potential state update on unmounted component warning if modal closes before finally block executes"
       ],
       "tests_needed": [
         "test/components/inspector/SuggestionsModal-unmount.test.ts"
