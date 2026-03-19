@@ -11,6 +11,7 @@
     "run_metadata",
     "suite",
     "agent",
+    "coverage",
     "findings",
     "rollups",
     "next_actions"
