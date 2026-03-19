@@ -71,8 +71,27 @@ Return only one JSON object:
 - `kind`: `"agent_output"`
 - `suite`: `"ux"`
 - `run_id`: `ux-<YYYYMMDD>-<HHmmss>`
+- `run_metadata`: `timestamp`, `branch`, `environment`, `tool_platform`, `model`
 - `agent.name`: `"ux-flow-auditor"`
-- `agent.role`, `agent.inputs_used`, `agent.stop_conditions_hit`
-- `coverage`, `findings`, `rollups` (`by_severity`, `by_category`, `by_type`, `by_status`), `next_actions`
+- `agent.role`: one-sentence description
+- `agent.inputs_used`: list of files/artifacts you actually examined
+- `agent.stop_conditions_hit`: list of any stop conditions triggered (or empty)
+- `coverage`: `files_examined`, `files_skipped`, `coverage_complete`, `incomplete_reason`
+- `findings`: array of findings — every finding MUST include all required fields:
+  - `finding_id`: stable ID using `f-` prefix (see Finding ID Format above)
+  - `type`: one of the valid type enums
+  - `category`: agent-specific category string
+  - `severity`: one of the valid severity enums
+  - `priority`: one of the valid priority enums
+  - `confidence`: one of the valid confidence enums
+  - `title`: one-line summary (max 120 chars)
+  - `description`: full explanation
+  - `proof_hooks`: array (min 1) of typed proof hooks with `hook_type` and `summary`
+  - `impact`: what happens if this is not fixed
+  - `suggested_fix`: object with `approach` (required), plus optional `affected_files`, `estimated_effort`, `risk_notes`, `tests_needed`
+  - `status`: initial value must be `"open"`
+  - `history`: array (min 1) with at least one `created` event containing `timestamp`, `actor`, `event`, and `notes`
+- `rollups`: `by_severity`, `by_category`, `by_type`, `by_status`
+- `next_actions`: top 3–5 actions as objects with `action`, `finding_id`, `rationale`
 
 No text outside JSON.

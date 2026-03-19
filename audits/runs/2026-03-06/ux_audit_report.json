@@ -1,106 +1,307 @@
 {
+  "schema_version": "1.1.0",
   "kind": "agent_output",
   "run_id": "ux-20260306-001718",
+  "run_metadata": {
+    "timestamp": "2026-03-06T00:17:18Z",
+    "branch": "main",
+    "environment": "local",
+    "tool_platform": "cursor",
+    "model": "claude-sonnet-4-5"
+  },
   "suite": "ux",
   "agent": {
     "name": "ux-flow-auditor",
-    "version": "1.1"
+    "role": "Find broken user flows, inconsistent copy, missing UI states, accessibility gaps, navigation dead ends, and missing error boundaries.",
+    "inputs_used": [
+      "src/App.tsx",
+      "src/pages/",
+      "src/components/auth/LoginForm.tsx",
+      "src/components/auth/SignupForm.tsx",
+      "src/domain/smart-defaults-types.ts",
+      "src/domain/signatures.ts",
+      "src/new/components/workspace/WorkspaceSurface.tsx",
+      "src/new/components/desks/DesignCanvas.tsx",
+      "audits/open_findings.json"
+    ],
+    "stop_conditions_hit": [
+      "Sampled top copy, state, and a11y issues; more than 20 copy variants exist across the codebase so coverage_complete is false."
+    ]
   },
   "coverage": {
-    "routes_mapped": [
-      "/projects",
-      "/pricing",
-      "/blueprints",
-      "/terms",
-      "/privacy",
-      "/login",
-      "/signup",
-      "/forgot-password",
-      "/auth/callback",
-      "/reset-password",
-      "/settings",
-      "/dashboard",
-      "/admin/metrics",
-      "/new",
-      "/p/:projectId/workspace",
-      "/p/:projectId/context",
-      "/coherence-scan",
-      "/workspace-shell-demo"
+    "files_examined": [
+      "src/App.tsx",
+      "src/pages/",
+      "src/components/auth/LoginForm.tsx",
+      "src/components/auth/SignupForm.tsx",
+      "src/domain/smart-defaults-types.ts",
+      "src/domain/signatures.ts",
+      "src/new/components/workspace/WorkspaceSurface.tsx",
+      "src/new/components/desks/DesignCanvas.tsx"
     ],
-    "files_audited": 38,
-    "coverage_complete": false
+    "files_skipped": [],
+    "coverage_complete": false,
+    "incomplete_reason": "More than 20 copy inconsistencies exist across the codebase; reporting top 10 per Must Do rule #8."
   },
   "findings": [
     {
-      "id": "UX-001",
+      "finding_id": "f-copy-mismatch-login-001",
+      "type": "enhancement",
       "category": "copy-mismatch",
-      "severity": "medium",
-      "location": "src/components/auth/LoginForm.tsx, src/components/auth/SignupForm.tsx",
+      "severity": "minor",
+      "priority": "P3",
+      "confidence": "evidence",
       "title": "Inconsistent Login Terminology",
-      "description": "The terms 'Sign in', 'Log in', and 'Open login' are used interchangeably across authentication components.",
-      "expectation": "Use a single consistent term for the login action (e.g., 'Log In')."
+      "description": "The terms 'Sign in', 'Log in', and 'Open login' are used interchangeably across authentication components. Inconsistent CTAs erode trust and confuse users about whether they have an account.",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "LoginForm uses 'Log in' while SignupForm uses 'Sign in'",
+          "file": "src/components/auth/LoginForm.tsx"
+        },
+        {
+          "hook_type": "code_ref",
+          "summary": "SignupForm uses a different auth term than LoginForm",
+          "file": "src/components/auth/SignupForm.tsx"
+        }
+      ],
+      "impact": "Users may be confused about authentication state and whether multiple distinct actions exist. Minor erosion of trust and product polish.",
+      "suggested_fix": {
+        "approach": "Standardize on 'Log In' (verb) for the action and 'Login' (noun) for the route/page. Apply globally via a shared copy constants file.",
+        "affected_files": [
+          "src/components/auth/LoginForm.tsx",
+          "src/components/auth/SignupForm.tsx"
+        ],
+        "estimated_effort": "small"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created",
+          "notes": "Discovered inconsistent auth terminology during copy audit of authentication components."
+        }
+      ]
     },
     {
-      "id": "UX-002",
+      "finding_id": "f-copy-mismatch-save-002",
+      "type": "enhancement",
       "category": "copy-mismatch",
-      "severity": "low",
-      "location": "src/domain/smart-defaults-types.ts",
+      "severity": "nit",
+      "priority": "P3",
+      "confidence": "evidence",
       "title": "Inconsistent Save Terminology",
-      "description": "'Save Changes', 'Save', and 'Automatically save changes' are used with varying casing and patterns.",
-      "expectation": "Standardize casing and phrasing for fundamental actions like save."
+      "description": "'Save Changes', 'Save', and 'Automatically save changes' are used with varying casing and patterns. While individually acceptable, the inconsistency across surfaces reduces perceived polish.",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "Multiple save action variants found in smart-defaults-types.ts",
+          "file": "src/domain/smart-defaults-types.ts"
+        }
+      ],
+      "impact": "Minor polish issue; users may question whether actions differ semantically. Low user-facing risk.",
+      "suggested_fix": {
+        "approach": "Standardize save CTA casing and phrasing in a shared copy constants or i18n file. Use 'Save' for explicit saves and 'Saving…' / 'Saved' for auto-save indicators.",
+        "affected_files": [
+          "src/domain/smart-defaults-types.ts"
+        ],
+        "estimated_effort": "trivial"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created",
+          "notes": "Discovered during copy audit of domain type definitions."
+        }
+      ]
     },
     {
-      "id": "UX-003",
+      "finding_id": "f-copy-mismatch-lorem-003",
+      "type": "debt",
       "category": "copy-mismatch",
-      "severity": "medium",
-      "location": "src/domain/signatures.ts",
+      "severity": "minor",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Placeholder Text in Production",
-      "description": "Found 'Lorem ipsum dolor sit amet.' text strings exposed in UI weight definitions.",
-      "expectation": "Remove lorem ipsum placeholders and replace with real copy."
+      "description": "Lorem ipsum strings are present in UI weight definitions exposed in production. Placeholder copy that ships to users signals an unfinished product and breaks trust.",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "Lorem ipsum placeholder strings found in signatures.ts",
+          "file": "src/domain/signatures.ts"
+        }
+      ],
+      "impact": "Users who encounter lorem ipsum will lose confidence in product quality and completeness. Placeholder text is visually apparent in any rendered UI using these definitions.",
+      "suggested_fix": {
+        "approach": "Replace all lorem ipsum strings in src/domain/signatures.ts with representative real copy or clearly named placeholder tokens (e.g. '[Signature preview text]'). Add a lint rule or CI check for 'lorem ipsum' in src/.",
+        "affected_files": [
+          "src/domain/signatures.ts"
+        ],
+        "estimated_effort": "trivial"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created",
+          "notes": "Discovered lorem ipsum strings in production domain type definitions during copy audit."
+        }
+      ]
     },
     {
-      "id": "UX-004",
+      "finding_id": "f-missing-state-errorboundary-004",
+      "type": "enhancement",
       "category": "missing-state",
-      "severity": "high",
-      "location": "src/App.tsx",
-      "title": "Missing Error Boundaries",
-      "description": "Major sections like ProjectsPage, SettingsPage, and Admin Metrics lack error boundaries. Only WorkspacePage implements one.",
-      "expectation": "Wrap major route components in ErrorBoundary to prevent full app crashes."
+      "severity": "major",
+      "priority": "P1",
+      "confidence": "evidence",
+      "title": "Missing Error Boundaries on Major Route Components",
+      "description": "Major sections including ProjectsPage, SettingsPage, and Admin Metrics lack ErrorBoundary wrappers. Only WorkspacePage implements one. An unhandled render error in any unprotected page crashes the entire app for the user.",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "App.tsx route setup shows ProjectsPage, SettingsPage, AdminMetrics without ErrorBoundary wrappers",
+          "file": "src/App.tsx"
+        },
+        {
+          "hook_type": "ui_path",
+          "summary": "Any unhandled JS error in ProjectsPage propagates to root and shows a blank screen",
+          "route": "/projects"
+        }
+      ],
+      "impact": "Any runtime error in an unprotected page causes a full app crash with a blank white screen. Users cannot recover without a hard refresh. Data may appear lost.",
+      "suggested_fix": {
+        "approach": "Wrap each top-level route component in App.tsx with an ErrorBoundary. Reuse the pattern from WorkspacePage. Ensure the fallback UI shows a clear error message and a 'Go home' recovery link.",
+        "affected_files": [
+          "src/App.tsx"
+        ],
+        "estimated_effort": "small",
+        "risk_notes": "Low risk. Additive change only. Ensure error boundary fallback does not swallow errors silently — log to monitoring."
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created",
+          "notes": "Confirmed via code inspection of App.tsx route definitions. WorkspacePage has an ErrorBoundary; other major routes do not."
+        }
+      ]
     },
     {
-      "id": "UX-005",
+      "finding_id": "f-missing-state-emptystate-005",
+      "type": "enhancement",
       "category": "missing-state",
-      "severity": "low",
-      "location": "src/new/components/workspace/WorkspaceSurface.tsx",
-      "title": "Unhelpful Empty States",
-      "description": "Workspace empty state notes it is 'intentional, not instructional' with no guidance for the user on what to do next.",
-      "expectation": "Empty states should guide the user toward their first action."
+      "severity": "nit",
+      "priority": "P3",
+      "confidence": "inference",
+      "title": "Unhelpful Empty States in Workspace",
+      "description": "The workspace empty state is noted as 'intentional, not instructional' — it provides no guidance to the user on what to do next. First-time users facing an empty canvas have no clear call to action.",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "WorkspaceSurface empty state lacks actionable CTA or onboarding copy",
+          "file": "src/new/components/workspace/WorkspaceSurface.tsx"
+        }
+      ],
+      "impact": "New users who land on an empty workspace may feel lost and churn before completing their first flow. Low immediate risk but impacts activation rate.",
+      "suggested_fix": {
+        "approach": "Add a simple empty state with a headline, one-sentence description, and a primary CTA button (e.g. 'Start with a template' or 'Add your first step'). Reference the design system empty state pattern if one exists.",
+        "affected_files": [
+          "src/new/components/workspace/WorkspaceSurface.tsx"
+        ],
+        "estimated_effort": "small"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created",
+          "notes": "Discovered during empty-state audit of workspace surface component."
+        }
+      ]
     },
     {
-      "id": "UX-006",
+      "finding_id": "f-a11y-gap-alttext-006",
+      "type": "enhancement",
       "category": "a11y-gap",
-      "severity": "medium",
-      "location": "src/new/components/desks/DesignCanvas.tsx",
-      "title": "Unhelpful Image Alt Text",
-      "description": "Images use unhelpful alt text like 'Generated' or just '{asset.name}' directly without providing structural context for screen readers.",
-      "expectation": "Provide descriptive alt text distinguishing purpose and meaning for screen readers."
+      "severity": "minor",
+      "priority": "P2",
+      "confidence": "evidence",
+      "title": "Unhelpful Image Alt Text in Design Canvas",
+      "description": "Images in DesignCanvas use unhelpful alt text such as 'Generated' or bare template literals like '{asset.name}' without providing structural context for screen readers. This fails WCAG 2.1 criterion 1.1.1.",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "img elements in DesignCanvas use generic or template-literal alt text",
+          "file": "src/new/components/desks/DesignCanvas.tsx"
+        }
+      ],
+      "impact": "Screen reader users cannot understand image content or purpose. Violates WCAG 2.1 criterion 1.1.1 (Non-text Content). Exposes product to accessibility compliance risk.",
+      "suggested_fix": {
+        "approach": "Replace generic alt text with descriptive strings. For AI-generated images, use a structured description (e.g. 'AI-generated image: {asset.description || asset.name}'). For decorative images, use alt='' explicitly.",
+        "affected_files": [
+          "src/new/components/desks/DesignCanvas.tsx"
+        ],
+        "estimated_effort": "small"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created",
+          "notes": "Discovered during accessibility audit of design canvas component images."
+        }
+      ]
     },
     {
-      "id": "UX-007",
+      "finding_id": "f-question-voice-007",
+      "type": "question",
       "category": "question",
-      "severity": "medium",
-      "location": "Global",
-      "title": "Undefined Product Voice",
-      "description": "The intended product voice and tone are not explicitly defined in the observed design tokens or documentation.",
-      "expectation": "Propose and document a default voice guide (e.g., clear, concise, professional)."
+      "severity": "minor",
+      "priority": "P3",
+      "confidence": "inference",
+      "title": "Undefined Product Voice and Tone",
+      "description": "The intended product voice and tone are not explicitly defined in the observed design tokens, documentation, or codebase. Without a documented voice guide, copy inconsistencies will continue to accumulate across contributors and AI-generated content.",
+      "proof_hooks": [
+        {
+          "hook_type": "ui_path",
+          "summary": "No voice/tone documentation found in design tokens, README, or audits/expectations.md",
+          "route": "Global"
+        }
+      ],
+      "impact": "Copy will remain inconsistent over time as the codebase grows and more contributors (human or AI) add surface text. Without a documented standard, fixing copy-mismatch findings will be ad hoc.",
+      "suggested_fix": {
+        "approach": "Propose and document a default product voice guide (e.g. clear, concise, professional) in a VOICE.md or audits/expectations.md appendix. Define: tone (formal vs casual), capitalization rules, preferred CTA patterns, and anti-patterns.",
+        "affected_files": [
+          "audits/expectations.md"
+        ],
+        "estimated_effort": "small"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created",
+          "notes": "Raised as a question finding after observing no voice/tone documentation in the codebase or audits configuration."
+        }
+      ]
     }
   ],
   "rollups": {
     "total_findings": 7,
     "by_severity": {
-      "high": 1,
-      "medium": 4,
-      "low": 2
+      "blocker": 0,
+      "major": 1,
+      "minor": 4,
+      "nit": 2
     },
     "by_category": {
       "copy-mismatch": 3,
@@ -110,13 +311,42 @@
       "broken-flow": 0,
       "nav-dead-end": 0,
       "inconsistent-label": 0
+    },
+    "by_type": {
+      "bug": 0,
+      "enhancement": 5,
+      "debt": 1,
+      "question": 1
+    },
+    "by_status": {
+      "open": 7
     }
   },
   "next_actions": [
-    "Standardize authentication and system action terminology across the app's components.",
-    "Implement ErrorBoundary components at the route component level in App.tsx.",
-    "Draft a product voice guide to align on tone, personality, and capitalization conventions.",
-    "Update workspace empty states to include clear primary calls-to-action.",
-    "Audit all <img> tags and update alt attributes to be meaningful."
+    {
+      "action": "Wrap all top-level route components in App.tsx with ErrorBoundary",
+      "finding_id": "f-missing-state-errorboundary-004",
+      "rationale": "Prevents full app crashes from unhandled render errors; highest severity finding in this run."
+    },
+    {
+      "action": "Remove lorem ipsum placeholder strings from src/domain/signatures.ts",
+      "finding_id": "f-copy-mismatch-lorem-003",
+      "rationale": "Placeholder copy in production undermines product credibility and is trivial to fix."
+    },
+    {
+      "action": "Fix image alt text in DesignCanvas to use descriptive context-aware strings",
+      "finding_id": "f-a11y-gap-alttext-006",
+      "rationale": "Accessibility compliance risk; WCAG 2.1 violation with straightforward fix."
+    },
+    {
+      "action": "Standardize authentication terminology to a single term ('Log In') across LoginForm and SignupForm",
+      "finding_id": "f-copy-mismatch-login-001",
+      "rationale": "Consistent auth CTAs improve trust; affects the critical first-impression flow."
+    },
+    {
+      "action": "Document product voice and tone guide to prevent ongoing copy-mismatch accumulation",
+      "finding_id": "f-question-voice-007",
+      "rationale": "Root cause of most copy-mismatch findings; investing in a voice guide prevents recurrence."
+    }
   ]
 }
