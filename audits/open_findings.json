@@ -573,7 +573,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "fixed_pending_verify",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814823Z",
@@ -599,6 +599,12 @@
           "event": "patch_applied",
           "notes": "Fix applied via session runner. Commit: 4582118",
           "commit": "4582118"
+        },
+        {
+          "timestamp": "2026-03-19T22:07:51Z",
+          "actor": "copilot-swe-agent",
+          "event": "verification_passed",
+          "notes": "deploy_audit_report.json validated against audits/schema/audit-output.schema.json via Ajv (tests: src/audits/__tests__/deploy-audit-schema.test.ts)"
         }
       ]
     },
