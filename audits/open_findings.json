@@ -615,7 +615,7 @@
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
-      "status": "fixed_pending_verify",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815069Z",
@@ -641,6 +641,12 @@
           "event": "patch_applied",
           "notes": "Fix applied via session runner. Commit: 4582118",
           "commit": "4582118"
+        },
+        {
+          "timestamp": "2026-03-19T21:47:00Z",
+          "actor": "solo-dev",
+          "event": "verification_passed",
+          "notes": "logic_audit_report.json updated to LYRA v1.1.0 schema compliance: all 4 findings now have finding_id, priority, proof_hooks, and history. Schema violations resolved."
         }
       ]
     },
@@ -657,7 +663,7 @@
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
-      "status": "fixed_pending_verify",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815074Z",
@@ -683,6 +689,12 @@
           "event": "patch_applied",
           "notes": "Fix applied via session runner. Commit: 4582118",
           "commit": "4582118"
+        },
+        {
+          "timestamp": "2026-03-19T21:47:00Z",
+          "actor": "solo-dev",
+          "event": "verification_passed",
+          "notes": "logic_audit_report.json updated to LYRA v1.1.0 schema compliance: all 4 findings now have finding_id, priority, proof_hooks, and history. Schema violations resolved."
         }
       ]
     },
@@ -699,7 +711,7 @@
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
-      "status": "fixed_pending_verify",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815077Z",
@@ -725,6 +737,12 @@
           "event": "patch_applied",
           "notes": "Fix applied via session runner. Commit: 4582118",
           "commit": "4582118"
+        },
+        {
+          "timestamp": "2026-03-19T21:47:00Z",
+          "actor": "solo-dev",
+          "event": "verification_passed",
+          "notes": "logic_audit_report.json updated to LYRA v1.1.0 schema compliance: all 4 findings now have finding_id, priority, proof_hooks, and history. Schema violations resolved."
         }
       ]
     },
@@ -741,7 +759,7 @@
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
-      "status": "fixed_pending_verify",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815080Z",
@@ -767,6 +785,12 @@
           "event": "patch_applied",
           "notes": "Fix applied via session runner. Commit: 4582118",
           "commit": "4582118"
+        },
+        {
+          "timestamp": "2026-03-19T21:47:00Z",
+          "actor": "solo-dev",
+          "event": "verification_passed",
+          "notes": "logic_audit_report.json updated to LYRA v1.1.0 schema compliance: all 4 findings now have finding_id, priority, proof_hooks, and history. Schema violations resolved."
         }
       ]
     },
