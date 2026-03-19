@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.1.0",
+  "kind": "synthesizer_output",
+  "run_id": "synthesized-20260319-211503",
+  "run_metadata": {
+    "timestamp": "2026-03-19T21:15:03Z",
+    "branch": "main",
+    "commit": "344a7a7",
+    "environment": "local",
+    "tool_platform": "cursor",
+    "model": "agent",
+    "notes": "Merged scoped outputs from data-20260319-211500, logic-20260319-211501, security-20260319-211502. Updated canonical state for f-foreign-keys-missing-on-delete-01."
+  },
+  "suite": "synthesized",
+  "agent": {
+    "name": "synthesizer",
+    "role": "Merge, deduplicate, normalize, rank, and plan across all agent outputs."
+  },
+  "coverage": {
+    "files_examined": [
+      "audits/runs/2026-03-19/data-20260319-211500.json",
+      "audits/runs/2026-03-19/logic-20260319-211501.json",
+      "audits/runs/2026-03-19/security-20260319-211502.json",
+      "audits/open_findings.json"
+    ],
+    "files_skipped": [],
+    "coverage_complete": true
+  },
+  "findings": [],
+  "rollups": {
+    "by_severity": { "blocker": 0, "major": 0, "minor": 0, "nit": 0 },
+    "by_category": {},
+    "by_type": { "bug": 0, "enhancement": 0, "debt": 0, "question": 0 },
+    "by_status": {}
+  },
+  "next_actions": [
+    {
+      "action": "Apply migration on staging/production and run delete smoke tests",
+      "finding_id": "f-foreign-keys-missing-on-delete-01",
+      "rationale": "Verification_passed is based on static review; DB still must apply migration successfully."
+    },
+    {
+      "action": "Sync Linear PLP-48 to Done if not already",
+      "finding_id": "f-foreign-keys-missing-on-delete-01",
+      "rationale": "Finding is now fixed_verified in open_findings.json."
+    }
+  ],
+  "diff_summary": {
+    "compared_against": "syn-run-20260306190944",
+    "new_findings": [],
+    "resolved_findings": [],
+    "changed_severity": [],
+    "changed_status": [
+      {
+        "finding_id": "f-foreign-keys-missing-on-delete-01",
+        "old_status": "fixed_pending_verify",
+        "new_status": "fixed_verified"
+      }
+    ],
+    "converted_type": [],
+    "merged_findings": [],
+    "not_rereported": []
+  },
+  "ranked_plan": {
+    "top_fixes": [
+      {
+        "finding_id": "f-a3b7c9e1",
+        "why_now": "Remains P0 blocker in open_findings; higher priority than closed FK debt.",
+        "risk": "Ingestion pipeline may still fail on null API payloads.",
+        "estimated_effort": "small"
+      }
+    ],
+    "commit_plan": [],
+    "regression_checklist": [
+      "After deploying 20260319120000_explicit_on_delete_remaining_fks.sql: delete a test auth user and confirm asset_bundles.created_by and image_policy_registry_versions.created_by become NULL without FK errors.",
+      "Delete a parent project_assets row and confirm child parent_id NULL where applicable.",
+      "Delete an image_policy_registry_versions row and confirm receipts.registry_version NULLs safely."
+    ],
+    "reaudit_plan": [
+      {
+        "agent": "schema-auditor",
+        "scope": "Remaining supabase/migrations FK inventory if any other nullable FKs still lack explicit ON DELETE",
+        "reason": "This migration covered four constraints; full-schema pass was out of scope."
+      }
+    ]
+  }
+}

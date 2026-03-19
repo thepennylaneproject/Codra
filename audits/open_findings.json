@@ -1,7 +1,7 @@
 {
   "schema_version": "1.1.0",
-  "last_updated": "2026-03-19T20:44:29Z",
-  "last_run_id": "syn-run-20260306190944",
+  "last_updated": "2026-03-19T21:15:00Z",
+  "last_run_id": "synthesized-20260319-211503",
   "findings": [
     {
       "finding_id": "f-missing-rls-tables-01",
@@ -88,6 +88,14 @@
           "symbol": "image_policy_registry_versions",
           "start_line": 29,
           "end_line": 115
+        },
+        {
+          "hook_type": "code_ref",
+          "summary": "Migration redefines four nullable FKs with ON DELETE SET NULL",
+          "file": "supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql",
+          "symbol": "explicit_on_delete_remaining_fks",
+          "start_line": 4,
+          "end_line": 41
         }
       ],
       "impact": "Possibility of orphaned data piling up in the database, breaking application assumptions.",
@@ -98,7 +106,7 @@
         ],
         "estimated_effort": "medium"
       },
-      "status": "fixed_pending_verify",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T18:35:12.000Z",
@@ -117,6 +125,18 @@
           "event": "patch_applied",
           "notes": "Fix applied via session runner. Commit: 4582118",
           "commit": "4582118"
+        },
+        {
+          "timestamp": "2026-03-19T21:15:00Z",
+          "actor": "synthesizer",
+          "event": "verification_passed",
+          "notes": "Scoped re-audit (data, logic, security) on supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql: explicit ON DELETE SET NULL for project_assets.parent_id, asset_bundles.created_by, image_policy_registry_versions.created_by, image_policy_receipts.registry_version. No new findings; aligns with suggested_fix.",
+          "artifacts": [
+            "audits/runs/2026-03-19/data-20260319-211500.json",
+            "audits/runs/2026-03-19/logic-20260319-211501.json",
+            "audits/runs/2026-03-19/security-20260319-211502.json",
+            "audits/runs/2026-03-19/synthesized-20260319-211503.json"
+          ]
         }
       ]
     },

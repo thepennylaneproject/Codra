@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.1.0",
+  "kind": "agent_output",
+  "run_id": "data-20260319-211500",
+  "run_metadata": {
+    "timestamp": "2026-03-19T21:15:00Z",
+    "branch": "main",
+    "commit": "344a7a7",
+    "environment": "local",
+    "tool_platform": "cursor",
+    "model": "agent",
+    "notes": "Scoped re-audit per session hint: single migration file only."
+  },
+  "suite": "data",
+  "agent": {
+    "name": "schema-auditor",
+    "role": "Find schema mismatches, missing RLS, migration gaps, constraint violations, and validation gaps.",
+    "inputs_used": [
+      "audits/expectations.md",
+      "audits/open_findings.json",
+      "supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql"
+    ],
+    "stop_conditions_hit": []
+  },
+  "coverage": {
+    "files_examined": [
+      "supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql"
+    ],
+    "files_skipped": [
+      "Full migration graph, src/types, RLS policies — out of scope for this re-audit"
+    ],
+    "coverage_complete": true
+  },
+  "findings": [],
+  "rollups": {
+    "by_severity": { "blocker": 0, "major": 0, "minor": 0, "nit": 0 },
+    "by_category": {},
+    "by_type": { "bug": 0, "enhancement": 0, "debt": 0, "question": 0 },
+    "by_status": {}
+  },
+  "next_actions": [
+    {
+      "action": "Mark f-foreign-keys-missing-on-delete-01 verified after synthesizer merge",
+      "finding_id": "f-foreign-keys-missing-on-delete-01",
+      "rationale": "Migration adds explicit ON DELETE SET NULL for all four nullable FKs called out in the finding; DROP/ADD pattern is valid for constraint replacement."
+    },
+    {
+      "action": "Apply migration to remote Supabase and confirm no FK errors on delete smoke tests",
+      "finding_id": "f-foreign-keys-missing-on-delete-01",
+      "rationale": "Static review only; production verification still requires `supabase db push` or equivalent against a staging DB."
+    }
+  ]
+}

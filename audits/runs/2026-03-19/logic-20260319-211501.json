@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.1.0",
+  "kind": "agent_output",
+  "run_id": "logic-20260319-211501",
+  "run_metadata": {
+    "timestamp": "2026-03-19T21:15:01Z",
+    "branch": "main",
+    "commit": "344a7a7",
+    "environment": "local",
+    "tool_platform": "cursor",
+    "model": "agent",
+    "notes": "Scoped re-audit: DDL migration only; no application runtime paths in scope."
+  },
+  "suite": "logic",
+  "agent": {
+    "name": "runtime-bug-hunter",
+    "role": "Find runtime errors, logic bugs, null-safety violations, and async race issues.",
+    "inputs_used": [
+      "audits/expectations.md",
+      "audits/open_findings.json",
+      "supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql"
+    ],
+    "stop_conditions_hit": []
+  },
+  "coverage": {
+    "files_examined": [
+      "supabase/migrations/20260319120000_explicit_on_delete_remaining_fks.sql"
+    ],
+    "files_skipped": [
+      "src/, netlify/functions — excluded by scope hint"
+    ],
+    "coverage_complete": true
+  },
+  "findings": [],
+  "rollups": {
+    "by_severity": { "blocker": 0, "major": 0, "minor": 0, "nit": 0 },
+    "by_category": {},
+    "by_type": { "bug": 0, "enhancement": 0, "debt": 0, "question": 0 },
+    "by_status": {}
+  },
+  "next_actions": [
+    {
+      "action": "Regression: ensure UI and APIs tolerate NULL created_by / parent_id / registry_version after user or parent row deletion",
+      "finding_id": "f-foreign-keys-missing-on-delete-01",
+      "rationale": "ON DELETE SET NULL changes delete semantics vs NO ACTION; callers must not assume those columns are always non-null."
+    }
+  ]
+}
