@@ -1,76 +1,202 @@
 {
+  "schema_version": "1.1.0",
   "kind": "agent_output",
   "run_id": "perf-20260306-124600",
+  "run_metadata": {
+    "timestamp": "2026-03-06T12:46:00Z",
+    "branch": "unknown",
+    "commit": "unknown",
+    "environment": "ci",
+    "tool_platform": "github-copilot",
+    "model": "claude-sonnet-4.1",
+    "notes": "Performance & cost sweep based on repository snapshot from 2026-03-06."
+  },
   "suite": "performance",
   "agent": {
     "name": "performance-cost-auditor",
-    "version": "1.1"
+    "role": "Identifies performance regressions, redundant calls, and cost risks in the codebase.",
+    "inputs_used": [
+      "src/lib/api/projects/adapter.ts",
+      "src/lib/api/auth.ts",
+      "src/lib/api/credentials/adapter.ts",
+      "src/lib/api/projects/hooks.ts",
+      "src/App.tsx",
+      "vite.config.ts"
+    ],
+    "stop_conditions_hit": []
   },
   "coverage": {
+    "files_examined": [
+      "src/lib/api/projects/adapter.ts",
+      "src/lib/api/auth.ts",
+      "src/lib/api/credentials/adapter.ts",
+      "src/lib/api/projects/hooks.ts",
+      "src/App.tsx",
+      "vite.config.ts"
+    ],
+    "files_skipped": [],
     "routes_mapped": [],
-    "files_audited": 10,
     "coverage_complete": true
   },
   "findings": [
     {
-      "id": "PERF-001",
+      "finding_id": "f-perf-001",
+      "type": "debt",
       "category": "db-query-waste",
-      "severity": "medium",
-      "location": "src/lib/api/projects/adapter.ts, src/lib/api/auth.ts, src/lib/api/credentials/adapter.ts",
+      "severity": "minor",
+      "priority": "P2",
+      "confidence": "inference",
       "title": "Unoptimized SELECT * Queries",
       "description": "Multiple Supabase queries use .select('*') to fetch all columns. This wastes bandwidth and memory, especially for tables with large text or JSONB fields like projects and task_prompts.",
-      "expectation": "Explicitly specify only the required columns in the .select() chain for better database performance.",
-      "proof": {
-        "hook_type": "data_shape",
-        "expected": ".select('id, title, status, created_at')",
-        "actual": ".select('*')"
-      }
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "Projects adapter fetches all columns with select('*').",
+          "file": "src/lib/api/projects/adapter.ts"
+        },
+        {
+          "hook_type": "code_ref",
+          "summary": "Auth adapter returns all columns with select('*').",
+          "file": "src/lib/api/auth.ts"
+        },
+        {
+          "hook_type": "code_ref",
+          "summary": "Credentials adapter returns every column via select('*').",
+          "file": "src/lib/api/credentials/adapter.ts"
+        }
+      ],
+      "impact": "Fetching unbounded columns increases payload sizes and slows Supabase responses, raising bandwidth cost for large rows.",
+      "suggested_fix": {
+        "approach": "Specify only required columns in Supabase select calls for each query.",
+        "affected_files": [
+          "src/lib/api/projects/adapter.ts",
+          "src/lib/api/auth.ts",
+          "src/lib/api/credentials/adapter.ts"
+        ],
+        "estimated_effort": "small"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T12:46:00Z",
+          "actor": "performance-cost-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
-      "id": "PERF-002",
+      "finding_id": "f-perf-002",
+      "type": "debt",
       "category": "cache-miss",
-      "severity": "high",
-      "location": "src/lib/api/projects/hooks.ts",
+      "severity": "major",
+      "priority": "P1",
+      "confidence": "inference",
       "title": "Missing staleTime in React Query Hooks",
       "description": "Almost all project hooks (useProjects, useProjectTasks, etc.) omit the staleTime configuration. With the default of 0ms, this triggers redundant network requests on every window focus, component remount, and network reconnect.",
-      "expectation": "Configure an appropriate staleTime (e.g., 1-5 minutes) for data that does not change frequently, to minimize redundant API/DB calls.",
-      "proof": {
-        "hook_type": "code_reference",
-        "expected": "staleTime: 5 * 60 * 1000",
-        "actual": "Missing staleTime property in useQuery config object"
-      }
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "Project hooks omit staleTime so queries refetch on focus.",
+          "file": "src/lib/api/projects/hooks.ts"
+        }
+      ],
+      "impact": "Redundant fetches create unnecessary Supabase calls and slower UX on navigation.",
+      "suggested_fix": {
+        "approach": "Provide a sensible staleTime (for example 1-5 minutes) for project data in useQuery options.",
+        "affected_files": [
+          "src/lib/api/projects/hooks.ts"
+        ],
+        "estimated_effort": "small"
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T12:46:00Z",
+          "actor": "performance-cost-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
-      "id": "PERF-003",
+      "finding_id": "f-perf-003",
+      "type": "debt",
       "category": "bundle-size",
-      "severity": "high",
-      "location": "src/App.tsx, vite.config.ts",
+      "severity": "major",
+      "priority": "P1",
+      "confidence": "inference",
       "title": "Missing Code Splitting for Large Libraries",
       "description": "The application relies on heavy dependencies (monaco-editor, @xyflow/react, html2canvas, jspdf, recharts) but lacks any React.lazy() or dynamic import() code-splitting boundaries. This forces all users to download the full weight of these libraries upfront, severely impacting initial load performance.",
-      "expectation": "Wrap heavy, route-specific components in React.lazy() and Suspense boundaries to lazily load expensive libraries, and configure Vite manualChunks where appropriate.",
-      "proof": {
-        "hook_type": "build_stats",
-        "expected": "Dynamic chunks for editor and flow diagram components",
-        "actual": "No dynamic imports () found in src code; large dependencies are statically compiled to the main bundle."
-      }
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "App.tsx imports heavy components without lazy boundaries.",
+          "file": "src/App.tsx"
+        },
+        {
+          "hook_type": "code_ref",
+          "summary": "Vite config does not define route-level dynamic imports for heavy vendors.",
+          "file": "vite.config.ts"
+        }
+      ],
+      "impact": "All users download monaco-editor, xyflow, recharts, and export libraries upfront, hurting initial load and increasing bandwidth costs.",
+      "suggested_fix": {
+        "approach": "Use React.lazy and Suspense for editor/flow routes and configure manualChunks or dynamic imports to split heavy vendors.",
+        "affected_files": [
+          "src/App.tsx",
+          "vite.config.ts"
+        ],
+        "estimated_effort": "medium",
+        "tests_needed": [
+          "Run bundle analyzer to verify vendor chunks are split"
+        ]
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T12:46:00Z",
+          "actor": "performance-cost-auditor",
+          "event": "created"
+        }
+      ]
     }
   ],
   "rollups": {
-    "total_findings": 3,
     "by_severity": {
-      "high": 2,
-      "medium": 1,
-      "low": 0
+      "blocker": 0,
+      "major": 2,
+      "minor": 1,
+      "nit": 0
     },
     "by_category": {
       "db-query-waste": 1,
       "cache-miss": 1,
       "bundle-size": 1
+    },
+    "by_type": {
+      "bug": 0,
+      "enhancement": 0,
+      "debt": 3,
+      "question": 0
+    },
+    "by_status": {
+      "open": 3
     }
   },
   "next_actions": [
-    "Audit SELECT * queries in adapter files and replace with specific column whitelists.",
-    "Add staleTime configuration to all React Query useQuery hooks.",
-    "Implement React.lazy() for route-level code splitting, especially for the IDE/Editor and Flow routes."
+    {
+      "action": "Replace select('*') with column-specific queries in Supabase adapters.",
+      "finding_id": "f-perf-001",
+      "rationale": "Reduces response size, speeds queries, and aligns with least-data-needed guidance."
+    },
+    {
+      "action": "Set staleTime defaults for project query hooks.",
+      "finding_id": "f-perf-002",
+      "rationale": "Prevents redundant refetches on focus/remount and cuts unnecessary Supabase calls."
+    },
+    {
+      "action": "Add lazy boundaries and route-level chunking for heavy UI surfaces.",
+      "finding_id": "f-perf-003",
+      "rationale": "Shrinks initial bundle size so users avoid downloading editor/flow vendors upfront."
+    }
   ]
 }
