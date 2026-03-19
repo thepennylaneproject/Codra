@@ -4,10 +4,18 @@
   "suite": "ux",
   "agent": {
     "name": "ux-flow-auditor",
-    "version": "1.1"
+    "version": "1.1.0",
+    "role": "Audit and report issues for this suite.",
+    "inputs_used": [],
+    "stop_conditions_hit": []
   },
   "coverage": {
-    "routes_mapped": [
+    "files_audited": 38,
+    "coverage_complete": false,
+    "files_examined": [],
+    "files_skipped": [],
+    "incomplete_reason": "Partial review",
+    "routes_examined": [
       "/projects",
       "/pricing",
       "/blueprints",
@@ -26,97 +34,283 @@
       "/p/:projectId/context",
       "/coherence-scan",
       "/workspace-shell-demo"
-    ],
-    "files_audited": 38,
-    "coverage_complete": false
+    ]
   },
   "findings": [
     {
       "id": "UX-001",
       "category": "copy-mismatch",
-      "severity": "medium",
+      "severity": "nit",
       "location": "src/components/auth/LoginForm.tsx, src/components/auth/SignupForm.tsx",
       "title": "Inconsistent Login Terminology",
       "description": "The terms 'Sign in', 'Log in', and 'Open login' are used interchangeably across authentication components.",
-      "expectation": "Use a single consistent term for the login action (e.g., 'Log In')."
+      "finding_id": "UX-001",
+      "type": "debt",
+      "priority": "P2",
+      "confidence": "inference",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "See src/components/auth/LoginForm.tsx, src/components/auth/SignupForm.tsx",
+          "file": "src/components/auth/LoginForm.tsx"
+        }
+      ],
+      "impact": "The terms 'Sign in', 'Log in', and 'Open login' are used interchangeably across authentication components.",
+      "suggested_fix": {
+        "approach": "Use a single consistent term for the login action (e.g., 'Log In')."
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
       "id": "UX-002",
       "category": "copy-mismatch",
-      "severity": "low",
+      "severity": "nit",
       "location": "src/domain/smart-defaults-types.ts",
       "title": "Inconsistent Save Terminology",
       "description": "'Save Changes', 'Save', and 'Automatically save changes' are used with varying casing and patterns.",
-      "expectation": "Standardize casing and phrasing for fundamental actions like save."
+      "finding_id": "UX-002",
+      "type": "debt",
+      "priority": "P3",
+      "confidence": "inference",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "See src/domain/smart-defaults-types.ts",
+          "file": "src/domain/smart-defaults-types.ts"
+        }
+      ],
+      "impact": "'Save Changes', 'Save', and 'Automatically save changes' are used with varying casing and patterns.",
+      "suggested_fix": {
+        "approach": "Standardize casing and phrasing for fundamental actions like save."
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
       "id": "UX-003",
       "category": "copy-mismatch",
-      "severity": "medium",
+      "severity": "minor",
       "location": "src/domain/signatures.ts",
       "title": "Placeholder Text in Production",
       "description": "Found 'Lorem ipsum dolor sit amet.' text strings exposed in UI weight definitions.",
-      "expectation": "Remove lorem ipsum placeholders and replace with real copy."
+      "finding_id": "UX-003",
+      "type": "debt",
+      "priority": "P2",
+      "confidence": "inference",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "See src/domain/signatures.ts",
+          "file": "src/domain/signatures.ts"
+        }
+      ],
+      "impact": "Found 'Lorem ipsum dolor sit amet.' text strings exposed in UI weight definitions.",
+      "suggested_fix": {
+        "approach": "Remove lorem ipsum placeholders and replace with real copy."
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
       "id": "UX-004",
       "category": "missing-state",
-      "severity": "high",
+      "severity": "major",
       "location": "src/App.tsx",
       "title": "Missing Error Boundaries",
       "description": "Major sections like ProjectsPage, SettingsPage, and Admin Metrics lack error boundaries. Only WorkspacePage implements one.",
-      "expectation": "Wrap major route components in ErrorBoundary to prevent full app crashes."
+      "finding_id": "UX-004",
+      "type": "debt",
+      "priority": "P1",
+      "confidence": "inference",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "See src/App.tsx",
+          "file": "src/App.tsx"
+        }
+      ],
+      "impact": "Major sections like ProjectsPage, SettingsPage, and Admin Metrics lack error boundaries. Only WorkspacePage implements one.",
+      "suggested_fix": {
+        "approach": "Wrap major route components in ErrorBoundary to prevent full app crashes."
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
       "id": "UX-005",
       "category": "missing-state",
-      "severity": "low",
+      "severity": "nit",
       "location": "src/new/components/workspace/WorkspaceSurface.tsx",
       "title": "Unhelpful Empty States",
       "description": "Workspace empty state notes it is 'intentional, not instructional' with no guidance for the user on what to do next.",
-      "expectation": "Empty states should guide the user toward their first action."
+      "finding_id": "UX-005",
+      "type": "debt",
+      "priority": "P3",
+      "confidence": "inference",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "See src/new/components/workspace/WorkspaceSurface.tsx",
+          "file": "src/new/components/workspace/WorkspaceSurface.tsx"
+        }
+      ],
+      "impact": "Workspace empty state notes it is 'intentional, not instructional' with no guidance for the user on what to do next.",
+      "suggested_fix": {
+        "approach": "Empty states should guide the user toward their first action."
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
       "id": "UX-006",
       "category": "a11y-gap",
-      "severity": "medium",
+      "severity": "minor",
       "location": "src/new/components/desks/DesignCanvas.tsx",
       "title": "Unhelpful Image Alt Text",
       "description": "Images use unhelpful alt text like 'Generated' or just '{asset.name}' directly without providing structural context for screen readers.",
-      "expectation": "Provide descriptive alt text distinguishing purpose and meaning for screen readers."
+      "finding_id": "UX-006",
+      "type": "debt",
+      "priority": "P2",
+      "confidence": "inference",
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "See src/new/components/desks/DesignCanvas.tsx",
+          "file": "src/new/components/desks/DesignCanvas.tsx"
+        }
+      ],
+      "impact": "Images use unhelpful alt text like 'Generated' or just '{asset.name}' directly without providing structural context for screen readers.",
+      "suggested_fix": {
+        "approach": "Provide descriptive alt text distinguishing purpose and meaning for screen readers."
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
       "id": "UX-007",
       "category": "question",
-      "severity": "medium",
+      "severity": "minor",
       "location": "Global",
       "title": "Undefined Product Voice",
       "description": "The intended product voice and tone are not explicitly defined in the observed design tokens or documentation.",
-      "expectation": "Propose and document a default voice guide (e.g., clear, concise, professional)."
+      "finding_id": "UX-007",
+      "type": "question",
+      "priority": "P2",
+      "confidence": "inference",
+      "proof_hooks": [
+        {
+          "hook_type": "log_line",
+          "summary": "Product voice and tone not explicitly documented in observed assets."
+        }
+      ],
+      "impact": "The intended product voice and tone are not explicitly defined in the observed design tokens or documentation.",
+      "suggested_fix": {
+        "approach": "Propose and document a default voice guide (e.g., clear, concise, professional)."
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T00:17:18Z",
+          "actor": "ux-flow-auditor",
+          "event": "created"
+        }
+      ]
     }
   ],
   "rollups": {
-    "total_findings": 7,
     "by_severity": {
-      "high": 1,
-      "medium": 4,
-      "low": 2
+      "blocker": 0,
+      "major": 1,
+      "minor": 3,
+      "nit": 3
     },
     "by_category": {
       "copy-mismatch": 3,
       "missing-state": 2,
       "a11y-gap": 1,
-      "question": 1,
-      "broken-flow": 0,
-      "nav-dead-end": 0,
-      "inconsistent-label": 0
+      "question": 1
+    },
+    "by_type": {
+      "bug": 0,
+      "enhancement": 0,
+      "debt": 6,
+      "question": 1
+    },
+    "by_status": {
+      "open": 7
     }
   },
   "next_actions": [
-    "Standardize authentication and system action terminology across the app's components.",
-    "Implement ErrorBoundary components at the route component level in App.tsx.",
-    "Draft a product voice guide to align on tone, personality, and capitalization conventions.",
-    "Update workspace empty states to include clear primary calls-to-action.",
-    "Audit all <img> tags and update alt attributes to be meaningful."
-  ]
+    {
+      "action": "Standardize authentication and system action terminology across the app's components.",
+      "finding_id": "UX-001",
+      "rationale": "Follow-up task from audit."
+    },
+    {
+      "action": "Implement ErrorBoundary components at the route component level in App.tsx.",
+      "finding_id": "UX-004",
+      "rationale": "Follow-up task from audit."
+    },
+    {
+      "action": "Draft a product voice guide to align on tone, personality, and capitalization conventions.",
+      "finding_id": "UX-007",
+      "rationale": "Follow-up task from audit."
+    },
+    {
+      "action": "Update workspace empty states to include clear primary calls-to-action.",
+      "finding_id": "UX-005",
+      "rationale": "Follow-up task from audit."
+    },
+    {
+      "action": "Audit all <img> tags and update alt attributes to be meaningful.",
+      "finding_id": "UX-006",
+      "rationale": "Follow-up task from audit."
+    }
+  ],
+  "schema_version": "1.1.0",
+  "run_metadata": {
+    "timestamp": "2026-03-06T00:17:18Z",
+    "branch": "unknown",
+    "commit": "unknown",
+    "environment": "local",
+    "tool_platform": "cursor",
+    "model": "unknown"
+  }
 }
