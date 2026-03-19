@@ -1,36 +1,149 @@
 {
+  "schema_version": "1.1.0",
   "kind": "agent_output",
   "run_id": "security-20260306-124516",
+  "run_metadata": {
+    "timestamp": "2026-03-06T12:45:16.000Z",
+    "branch": "main",
+    "commit": "unknown",
+    "environment": "local",
+    "tool_platform": "cursor",
+    "model": "agent",
+    "notes": "Codra handles AI provider API credentials and asset bundles. High-value targets: user stored API keys, proprietary project blueprints, and asset manifests. Vectors: Exposed/unauthenticated serverless functions, bypassing RLS using service keys, and IDORs."
+  },
   "suite": "security",
   "agent": {
-    "name": "security-privacy-auditor",
-    "version": "1.1"
+    "name": "security-and-privacy-auditor",
+    "role": "Identify practical security and privacy risks with realistic attack scenarios.",
+    "inputs_used": [
+      "netlify/functions/asset_manifest_save.ts",
+      "netlify/functions/asset_manifest_get.ts",
+      "audits/open_findings.json"
+    ],
+    "stop_conditions_hit": [
+      "Critical auth bypass found (SEC-001) — stopped further analysis per protocol"
+    ]
   },
-  "metadata": {
-    "threat_model_notes": "Codra handles AI provider API credentials and asset bundles. High-value targets: user stored API keys, proprietary project blueprints, and asset manifests. Vectors: Exposed/unauthenticated serverless functions, bypassing RLS using service keys, and IDORs."
+  "coverage": {
+    "files_examined": [
+      "netlify/functions/asset_manifest_save.ts",
+      "netlify/functions/asset_manifest_get.ts"
+    ],
+    "files_skipped": [],
+    "coverage_complete": false
   },
   "findings": [
     {
-      "id": "SEC-001",
+      "finding_id": "f-auth-bypass-asset-manifest-save-001",
+      "type": "bug",
       "category": "auth-bypass",
-      "severity": "P0",
+      "severity": "blocker",
+      "priority": "P0",
+      "confidence": "evidence",
       "title": "Critical Authentication Bypass in asset_manifest_save.ts",
       "description": "The netlify function `asset_manifest_save.ts` uses `SUPABASE_SERVICE_ROLE_KEY` to bypass Row Level Security. It trusts the `userId` and `workspaceId` extracted directly from the request payload JSON without validating any JWT or Authorization header. An attacker can forge save requests for any user or workspace, overwriting their assets.",
-      "attack_scenario": "An attacker sends a POST request to `/api/asset_manifest_save` with `{ \"userId\": \"target-uuid\", \"workspaceId\": \"target-workspace-id\", \"manifest\": {...} }`. The server blindly trusts these parameters and overwrites the victim's asset bundle using its admin privileges.",
-      "fix": "Use `await supabase.auth.getUser(token)` to verify the user's identity from the `Authorization` header instead of trusting the request body payload. Alternatively, rely on RLS and use the user's initialized Supabase client rather than the service role key.",
-      "file": "netlify/functions/asset_manifest_save.ts",
-      "location": "line 22-32"
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "userId and workspaceId taken from request body without JWT validation",
+          "file": "netlify/functions/asset_manifest_save.ts",
+          "start_line": 22,
+          "end_line": 32
+        },
+        {
+          "hook_type": "repro_steps",
+          "summary": "Forge save request for a victim's workspace via unauthenticated POST",
+          "steps": [
+            "Send POST to /api/asset_manifest_save with { \"userId\": \"target-uuid\", \"workspaceId\": \"target-workspace-id\", \"manifest\": {} }",
+            "Observe server writes manifest using service role key without verifying caller identity",
+            "Victim's asset bundle is overwritten"
+          ]
+        }
+      ],
+      "impact": "An attacker can overwrite any user's or workspace's asset bundle by forging save requests. This constitutes unauthorized write access to all asset manifests stored in the platform.",
+      "suggested_fix": {
+        "approach": "Use `await supabase.auth.getUser(token)` to verify the user's identity from the `Authorization` header instead of trusting the request body payload. Alternatively, rely on RLS and use the user's initialized Supabase client rather than the service role key.",
+        "affected_files": ["netlify/functions/asset_manifest_save.ts"],
+        "estimated_effort": "small",
+        "risk_notes": "Switching away from service role key requires RLS policies on the target tables. Verify RLS is in place before removing the service role key.",
+        "tests_needed": [
+          "Test that requests without a valid Authorization header are rejected with 401",
+          "Test that a user cannot overwrite another user's workspace assets"
+        ]
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T12:45:16.000Z",
+          "actor": "security-and-privacy-auditor",
+          "event": "created"
+        }
+      ]
     },
     {
-      "id": "SEC-002",
+      "finding_id": "f-data-leakage-asset-manifest-get-001",
+      "type": "bug",
       "category": "data-leakage",
-      "severity": "P0",
+      "severity": "blocker",
+      "priority": "P0",
+      "confidence": "evidence",
       "title": "Unauthenticated Data Exposure in asset_manifest_get.ts",
       "description": "The netlify function `asset_manifest_get.ts` fetches asset bundles and assets using the `SUPABASE_SERVICE_ROLE_KEY` (RLS bypassed) by simply taking a `bundleId` from the query string. There is no session validation.",
-      "attack_scenario": "An attacker sends a GET request to `/api/asset_manifest_get?bundleId=predictable-or-leaked-id`. The server responds with the full manifest contents, leaking proprietary assets.",
-      "fix": "Implement JWT validation via `supabase.auth.getUser(token)` and verify the authenticated user has access to the workspace that owns the bundle, or use the regular Supabase client to rely on RLS.",
-      "file": "netlify/functions/asset_manifest_get.ts",
-      "location": "line 18-42"
+      "proof_hooks": [
+        {
+          "hook_type": "code_ref",
+          "summary": "bundleId taken from query string; no JWT or session check before service role query",
+          "file": "netlify/functions/asset_manifest_get.ts",
+          "start_line": 18,
+          "end_line": 42
+        },
+        {
+          "hook_type": "repro_steps",
+          "summary": "Retrieve any asset manifest without authentication via GET request",
+          "steps": [
+            "Send GET to /api/asset_manifest_get?bundleId=<any-bundle-id>",
+            "Observe server responds with full manifest contents using service role key",
+            "No Authorization header required"
+          ]
+        }
+      ],
+      "impact": "Any unauthenticated actor who knows or can guess a bundleId can read proprietary asset manifests and their contents, leaking sensitive project data.",
+      "suggested_fix": {
+        "approach": "Implement JWT validation via `supabase.auth.getUser(token)` and verify the authenticated user has access to the workspace that owns the bundle, or use the regular Supabase client to rely on RLS.",
+        "affected_files": ["netlify/functions/asset_manifest_get.ts"],
+        "estimated_effort": "small",
+        "risk_notes": "RLS policies must be in place on the bundles/assets tables before removing the service role key. Test that workspace membership checks are enforced.",
+        "tests_needed": [
+          "Test that requests without a valid Authorization header are rejected with 401",
+          "Test that a user cannot read another user's workspace bundle"
+        ]
+      },
+      "status": "open",
+      "history": [
+        {
+          "timestamp": "2026-03-06T12:45:16.000Z",
+          "actor": "security-and-privacy-auditor",
+          "event": "created"
+        }
+      ]
+    }
+  ],
+  "rollups": {
+    "by_severity": { "blocker": 2, "major": 0, "minor": 0, "nit": 0 },
+    "by_category": { "auth-bypass": 1, "data-leakage": 1 },
+    "by_type": { "bug": 2, "enhancement": 0, "debt": 0, "question": 0 },
+    "by_status": { "open": 2 }
+  },
+  "next_actions": [
+    {
+      "action": "Add JWT validation to asset_manifest_save.ts — extract user from Authorization header, reject if missing or invalid",
+      "finding_id": "f-auth-bypass-asset-manifest-save-001",
+      "rationale": "Blocker P0: unauthenticated write path allows any caller to overwrite any user's assets."
+    },
+    {
+      "action": "Add JWT validation to asset_manifest_get.ts — verify caller owns the requested bundle before returning data",
+      "finding_id": "f-data-leakage-asset-manifest-get-001",
+      "rationale": "Blocker P0: unauthenticated read path exposes all asset manifests to any caller with a bundleId."
     }
   ]
 }

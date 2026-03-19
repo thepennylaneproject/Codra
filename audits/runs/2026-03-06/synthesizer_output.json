@@ -34,12 +34,13 @@
       "SYNTH-DEBT-018",
       "SYNTH-DEBT-019",
       "SYNTH-DEBT-020",
-      "SYNTH-DEBT-021",
+      "SYNTH-DEBT-021"
+    ],
+    "resolved_findings": [
       "SYNTH-DEBT-022",
       "SYNTH-DEBT-023",
       "SYNTH-DEBT-024"
     ],
-    "resolved_findings": [],
     "changed_severity": [],
     "changed_status": [],
     "converted_type": [],
@@ -1112,8 +1113,8 @@
       "finding_id": "SYNTH-DEBT-022",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "inference",
       "title": "Schema Violation in security-privacy-auditor output",
       "proof_hooks": [
         {
@@ -1121,22 +1122,43 @@
           "summary": "Missing coverage object"
         }
       ],
-      "status": "open",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815748Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
+        },
+        {
+          "timestamp": "2026-03-19T21:17:32.929Z",
+          "actor": "copilot",
+          "event": "verification_passed",
+          "notes": "security_audit_report.json updated to v1.1.0 schema. All required finding fields added; enum values corrected."
         }
-      ]
+      ],
+      "impact": "The synthesizer cannot validate coverage completeness from non-compliant agent output, leaving audit gaps undetected.",
+      "suggested_fix": {
+        "approach": "Update audits/runs/2026-03-06/security_audit_report.json to conform to schema_version 1.1.0: add all required finding fields and correct enum values.",
+        "affected_files": [
+          "audits/runs/2026-03-06/security_audit_report.json",
+          "audits/prompts/agent-security.md"
+        ],
+        "estimated_effort": "trivial",
+        "risk_notes": "No source code changes required; audit data file fix only.",
+        "tests_needed": [
+          "Re-validate security_audit_report.json against audit-output.schema.json"
+        ]
+      },
+      "category": "schema-compliance",
+      "description": "The security-privacy-auditor output (security_audit_report.json) was missing the required `coverage` object, preventing the synthesizer from verifying audit completeness."
     },
     {
       "finding_id": "SYNTH-DEBT-023",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "inference",
       "title": "Schema Violation in security-privacy-auditor output",
       "proof_hooks": [
         {
@@ -1144,22 +1166,43 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815753Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
+        },
+        {
+          "timestamp": "2026-03-19T21:17:32.929Z",
+          "actor": "copilot",
+          "event": "verification_passed",
+          "notes": "security_audit_report.json updated to v1.1.0 schema. All required finding fields added; enum values corrected."
         }
-      ]
+      ],
+      "impact": "Non-compliant findings for f-auth-bypass-asset-manifest-save-001 cannot be merged into open_findings.json, causing critical blocker to be omitted from the canonical finding list.",
+      "suggested_fix": {
+        "approach": "Update audits/runs/2026-03-06/security_audit_report.json to conform to schema_version 1.1.0: add all required finding fields and correct enum values.",
+        "affected_files": [
+          "audits/runs/2026-03-06/security_audit_report.json",
+          "audits/prompts/agent-security.md"
+        ],
+        "estimated_effort": "trivial",
+        "risk_notes": "No source code changes required; audit data file fix only.",
+        "tests_needed": [
+          "Re-validate security_audit_report.json against audit-output.schema.json"
+        ]
+      },
+      "category": "schema-compliance",
+      "description": "Finding SEC-001 in the security-privacy-auditor output was missing required v1.1.0 schema fields: `finding_id`, `type`, `priority`, `confidence`, `proof_hooks`, `status`, and `history`. The `severity` field also used the invalid value 'P0' instead of a valid enum entry."
     },
     {
       "finding_id": "SYNTH-DEBT-024",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "inference",
       "title": "Schema Violation in security-privacy-auditor output",
       "proof_hooks": [
         {
@@ -1167,15 +1210,36 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815756Z",
           "actor": "synthesizer",
-          "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
+        },
+        {
+          "timestamp": "2026-03-19T21:17:32.929Z",
+          "actor": "copilot",
+          "event": "verification_passed",
+          "notes": "security_audit_report.json updated to v1.1.0 schema. All required finding fields added; enum values corrected."
         }
-      ]
+      ],
+      "impact": "Non-compliant findings for f-data-leakage-asset-manifest-get-001 cannot be merged into open_findings.json, causing critical blocker to be omitted from the canonical finding list.",
+      "suggested_fix": {
+        "approach": "Update audits/runs/2026-03-06/security_audit_report.json to conform to schema_version 1.1.0: add all required finding fields and correct enum values.",
+        "affected_files": [
+          "audits/runs/2026-03-06/security_audit_report.json",
+          "audits/prompts/agent-security.md"
+        ],
+        "estimated_effort": "trivial",
+        "risk_notes": "No source code changes required; audit data file fix only.",
+        "tests_needed": [
+          "Re-validate security_audit_report.json against audit-output.schema.json"
+        ]
+      },
+      "category": "schema-compliance",
+      "description": "Finding SEC-002 in the security-privacy-auditor output was missing required v1.1.0 schema fields: `finding_id`, `type`, `priority`, `confidence`, `proof_hooks`, `status`, and `history`. The `severity` field also used the invalid value 'P0' instead of a valid enum entry."
     },
     {
       "finding_id": "f-foreign-keys-missing-on-delete-01",

@@ -73,8 +73,24 @@ Return only one JSON object:
 - `kind`: `"agent_output"`
 - `suite`: `"security"`
 - `run_id`: `security-<YYYYMMDD>-<HHmmss>`
-- `agent.name`: `"security-and-privacy-auditor"`
-- `agent.role`, `agent.inputs_used`, `agent.stop_conditions_hit`
-- `coverage`, `findings`, `rollups` (`by_severity`, `by_category`, `by_type`, `by_status`), `next_actions`
+- `run_metadata`: object with `timestamp` (ISO-8601), `branch`, `commit`, `environment`, `tool_platform`, `model`, `notes` (threat model, 3-5 lines)
+- `agent`: object with `name` (`"security-and-privacy-auditor"`), `role`, `inputs_used` (array), `stop_conditions_hit` (array)
+- `coverage`: object with `files_examined` (array), `files_skipped` (array), `coverage_complete` (boolean)
+- `findings`: array of Finding objects — every finding **must** include all required fields:
+  - `finding_id` (string, see Finding ID Format above)
+  - `type` (enum: `bug` | `enhancement` | `debt` | `question`)
+  - `category` (string, e.g. `auth-bypass`, `data-leakage`, `secrets-exposure`, `cors`)
+  - `severity` (enum: `blocker` | `major` | `minor` | `nit`)
+  - `priority` (enum: `P0` | `P1` | `P2` | `P3`)
+  - `confidence` (enum: `evidence` | `inference` | `speculation`)
+  - `title` (string, max 120 chars)
+  - `description` (string, full explanation with attack scenario)
+  - `proof_hooks` (array, min 1 item — each with `hook_type` and `summary`)
+  - `impact` (string, specific consequences if not fixed)
+  - `suggested_fix` (object with `approach`, `affected_files`, `estimated_effort`, `risk_notes`, `tests_needed`)
+  - `status` (enum: `open` | `accepted` | `in_progress` | `fixed_pending_verify` | `fixed_verified` | `wont_fix` | `deferred` | `duplicate` | `converted_to_enhancement`)
+  - `history` (array, min 1 event — each with `timestamp`, `actor`, `event`)
+- `rollups`: object with `by_severity`, `by_category`, `by_type`, `by_status` (all keys from valid enums, zero-filled)
+- `next_actions`: array of objects with `action`, `finding_id`, `rationale`
 
 No text outside JSON.
