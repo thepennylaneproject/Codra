@@ -447,7 +447,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "fixed_pending_verify",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814814Z",
@@ -473,6 +473,12 @@
           "event": "patch_applied",
           "notes": "Fix applied via session runner. Commit: 4582118",
           "commit": "4582118"
+        },
+        {
+          "timestamp": "2026-03-19T22:20:00Z",
+          "actor": "copilot",
+          "event": "verification",
+          "notes": "Validated audits/runs/2026-03-06/deploy_audit_report.json against audits/schema/audit-output.schema.json (Ajv)."
         }
       ]
     },
