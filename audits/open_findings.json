@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1.0",
-  "last_updated": "2026-03-19T21:15:00Z",
+  "last_updated": "2026-03-19T22:15:00Z",
   "last_run_id": "synthesized-20260319-211503",
   "findings": [
     {
@@ -321,7 +321,7 @@
           "summary": "Missing coverage object"
         }
       ],
-      "status": "fixed_pending_verify",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814548Z",
@@ -347,6 +347,12 @@
           "event": "patch_applied",
           "notes": "Fix applied via session runner. Commit: 4582118",
           "commit": "4582118"
+        },
+        {
+          "timestamp": "2026-03-19T22:15:00Z",
+          "actor": "copilot",
+          "event": "verified",
+          "notes": "coverage now present in deploy_audit_report.json (commit 4582118); coverage added to schema required array; schema validation test added in src/domain/__tests__/audit-output-schema.test.ts"
         }
       ]
     },

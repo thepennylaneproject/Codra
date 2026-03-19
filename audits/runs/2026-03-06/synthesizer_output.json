@@ -1,468 +1,31 @@
 {
   "schema_version": "1.1.0",
   "kind": "synthesizer_output",
+  "run_id": "synthesized-20260306-190944",
+  "run_metadata": {
+    "timestamp": "2026-03-06T19:09:44.000Z",
+    "branch": "unknown",
+    "commit": "unknown",
+    "environment": "local",
+    "tool_platform": "antigravity",
+    "model": "unknown"
+  },
   "suite": "synthesized",
   "agent": {
     "name": "synthesizer",
     "role": "Merge, deduplicate, rank, and plan across all agent outputs."
   },
-  "diff_summary": {
-    "compared_against": null,
-    "new_findings": [
-      "f-missing-rls-tables-01",
-      "f-foreign-keys-missing-on-delete-01",
-      "f-a3b7c9e1",
-      "f-e2d4f6a8",
-      "f-c1d9e3f0",
-      "SYNTH-DEBT-001",
-      "SYNTH-DEBT-002",
-      "SYNTH-DEBT-003",
-      "SYNTH-DEBT-004",
-      "SYNTH-DEBT-005",
-      "SYNTH-DEBT-006",
-      "SYNTH-DEBT-007",
-      "SYNTH-DEBT-008",
-      "SYNTH-DEBT-009",
-      "SYNTH-DEBT-010",
-      "SYNTH-DEBT-011",
-      "SYNTH-DEBT-012",
-      "SYNTH-DEBT-013",
-      "SYNTH-DEBT-014",
-      "SYNTH-DEBT-015",
-      "SYNTH-DEBT-016",
-      "SYNTH-DEBT-017",
-      "SYNTH-DEBT-018",
-      "SYNTH-DEBT-019",
-      "SYNTH-DEBT-020",
-      "SYNTH-DEBT-021",
-      "SYNTH-DEBT-022",
-      "SYNTH-DEBT-023",
-      "SYNTH-DEBT-024"
+  "coverage": {
+    "files_examined": [
+      "audits/runs/2026-03-06/data_audit_report.json",
+      "audits/runs/2026-03-06/deploy_audit_report.json",
+      "audits/runs/2026-03-06/logic_audit_report.json",
+      "audits/runs/2026-03-06/perf_audit_report.json",
+      "audits/runs/2026-03-06/security_audit_report.json",
+      "audits/runs/2026-03-06/ux_audit_report.json"
     ],
-    "resolved_findings": [],
-    "changed_severity": [],
-    "changed_status": [],
-    "converted_type": [],
-    "merged_findings": [],
-    "not_re_reported": []
-  },
-  "ranked_plan": {
-    "top_fixes": [
-      {
-        "finding_id": "f-a3b7c9e1",
-        "type": "bug",
-        "category": "null-ref",
-        "severity": "blocker",
-        "priority": "P0",
-        "confidence": "evidence",
-        "title": "Unhandled null in parseJobResponse when API returns empty results array",
-        "description": "When the external job API returns {results: null} instead of {results: []}, the parseJobResponse function throws a TypeError. This crashes the ingestion pipeline silently because the catch block logs but does not re-throw or mark the batch as failed. The null case is documented in the API changelog from v2.3.",
-        "proof_hooks": [
-          {
-            "hook_type": "code_ref",
-            "summary": "Nullable access on results without guard",
-            "file": "src/services/jobIngestion.ts",
-            "symbol": "parseJobResponse",
-            "start_line": 47,
-            "end_line": 47
-          },
-          {
-            "hook_type": "error_text",
-            "summary": "TypeError thrown when results is null",
-            "error_text": "TypeError: Cannot read properties of null (reading 'map')"
-          },
-          {
-            "hook_type": "repro_steps",
-            "summary": "Reproduce by mocking null API response",
-            "steps": [
-              "Set API_MOCK=true in .env.local",
-              "Add mock response file at __mocks__/api/empty-null.json with {results: null}",
-              "Run: npx ts-node scripts/ingest.ts --source=mock",
-              "Observe TypeError in console and zero jobs ingested"
-            ]
-          }
-        ],
-        "repro_steps": [
-          "Set API_MOCK=true in .env.local",
-          "Add mock response file at __mocks__/api/empty-null.json with {results: null}",
-          "Run: npx ts-node scripts/ingest.ts --source=mock",
-          "Observe TypeError in console and zero jobs ingested"
-        ],
-        "impact": "Job ingestion silently fails for any API source that returns null instead of empty array. Database stagnates. Users see stale listings.",
-        "suggested_fix": {
-          "approach": "Add null coalescing at line 47: (results ?? []).map(...). Add a guard log when null is received so you can track which APIs behave this way.",
-          "affected_files": [
-            "src/services/jobIngestion.ts"
-          ],
-          "estimated_effort": "trivial",
-          "risk_notes": "Very low risk. Null coalescing is additive. Verify that downstream code handles empty arrays correctly (it already does based on line 62 check).",
-          "tests_needed": [
-            "Unit test: parseJobResponse with null results returns empty array",
-            "Unit test: parseJobResponse with undefined results returns empty array",
-            "Integration test: full ingestion pipeline with mock null response completes without error"
-          ]
-        },
-        "owner": "solo-dev",
-        "status": "open",
-        "related_ids": [
-          "f-e2d4f6a8"
-        ],
-        "history": [
-          {
-            "timestamp": "2025-03-04T14:30:22Z",
-            "actor": "runtime-bug-hunter",
-            "event": "created",
-            "notes": "Discovered during static analysis of null-safety patterns in ingestion pipeline. Confirmed via preflight test output showing no coverage for null API responses."
-          }
-        ],
-        "artifacts": []
-      },
-      {
-        "finding_id": "f-missing-rls-tables-01",
-        "type": "bug",
-        "category": "missing-rls",
-        "severity": "major",
-        "priority": "P1",
-        "confidence": "evidence",
-        "title": "Missing RLS Policies on API Credentials and Settings Tables",
-        "description": "Several core tables do not have Row Level Security (RLS) policies defined for them. Notably: api_credentials, app_settings, provider_settings, model_settings, project_briefing_state. This means any authenticated user might be able to read or modify global settings or other users' credentials if the tables have RLS disabled, or no one can access them if RLS is enabled without policies.",
-        "proof_hooks": [
-          {
-            "hook_type": "command",
-            "summary": "Comparing created tables vs tables with policies",
-            "command": "grep 'CREATE POLICY' supabase/migrations/*.sql and diffing against 'CREATE TABLE'",
-            "actual": "api_credentials, app_settings, provider_settings are missing policies"
-          }
-        ],
-        "impact": "Potential unauthorized access to global app settings, AI model settings, or API credentials, or broken functionality if RLS is enabled but lacks policies granting access.",
-        "suggested_fix": {
-          "approach": "Create RLS policies for all identified tables, restricting read/write access to admins or the owning user as appropriate.",
-          "affected_files": [
-            "supabase/migrations/add_rls_policies.sql"
-          ],
-          "estimated_effort": "small"
-        },
-        "status": "open",
-        "history": [
-          {
-            "timestamp": "2026-03-06T18:35:12.000Z",
-            "actor": "schema-auditor",
-            "event": "created"
-          }
-        ]
-      },
-      {
-        "finding_id": "f-e2d4f6a8",
-        "type": "enhancement",
-        "category": "error-handling",
-        "severity": "major",
-        "priority": "P1",
-        "confidence": "inference",
-        "title": "Ingestion pipeline has no retry logic for transient API failures",
-        "description": "The fetchJobs function makes a single HTTP request per source. If the request fails due to a timeout or 503, the entire source is skipped until the next scheduled run. Given that some APIs have known intermittent availability, a retry with exponential backoff would significantly improve data freshness.",
-        "proof_hooks": [
-          {
-            "hook_type": "code_ref",
-            "summary": "Single try/catch with no retry loop in fetchJobs",
-            "file": "src/services/jobIngestion.ts",
-            "symbol": "fetchJobs",
-            "start_line": 22,
-            "end_line": 35
-          },
-          {
-            "hook_type": "command",
-            "summary": "Simulating transient failure shows source is permanently skipped",
-            "command": "npx ts-node scripts/ingest.ts --source=mock --mock-status=503",
-            "expected": "Retry and eventually succeed or fail gracefully with clear error",
-            "actual": "Source silently skipped, no retry attempted"
-          }
-        ],
-        "repro_steps": [],
-        "impact": "Missed job data on transient failures. Users may not see jobs from sources that had a momentary outage during the fetch window.",
-        "suggested_fix": {
-          "approach": "Wrap fetchJobs call in a retry utility with max 3 attempts, exponential backoff starting at 1s, and a circuit breaker that skips after 3 consecutive full failures for a source.",
-          "affected_files": [
-            "src/services/jobIngestion.ts",
-            "src/utils/retry.ts (new file)"
-          ],
-          "estimated_effort": "small",
-          "risk_notes": "Retries increase total API call count. If you are on a metered API plan, add a daily call budget. Also ensure retries do not cause duplicate ingestion by checking idempotency keys.",
-          "tests_needed": [
-            "Unit test: retry utility retries on 503 and succeeds on second attempt",
-            "Unit test: retry utility gives up after max attempts and throws",
-            "Unit test: retry utility does not retry on 400 (client error)"
-          ]
-        },
-        "owner": "solo-dev",
-        "status": "open",
-        "related_ids": [
-          "f-a3b7c9e1"
-        ],
-        "history": [
-          {
-            "timestamp": "2025-03-04T14:30:22Z",
-            "actor": "runtime-bug-hunter",
-            "event": "created",
-            "notes": "Identified as a reliability gap during ingestion pipeline review. Related to f-a3b7c9e1 (both are ingestion resilience issues)."
-          }
-        ],
-        "artifacts": []
-      },
-      {
-        "finding_id": "SYNTH-DEBT-001",
-        "type": "debt",
-        "severity": "minor",
-        "priority": "p2",
-        "confidence": "high",
-        "title": "Schema Violation in build-deploy-auditor output",
-        "proof_hooks": [
-          {
-            "hook_type": "log",
-            "summary": "Missing coverage object"
-          }
-        ],
-        "status": "open",
-        "history": [
-          {
-            "timestamp": "2026-03-06T19:09:44.814548Z",
-            "actor": "synthesizer",
-            "action": "created",
-            "notes": "Generated due to schema validation failure."
-          }
-        ]
-      },
-      {
-        "finding_id": "SYNTH-DEBT-002",
-        "type": "debt",
-        "severity": "minor",
-        "priority": "p2",
-        "confidence": "high",
-        "title": "Schema Violation in build-deploy-auditor output",
-        "proof_hooks": [
-          {
-            "hook_type": "log",
-            "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-          }
-        ],
-        "status": "open",
-        "history": [
-          {
-            "timestamp": "2026-03-06T19:09:44.814807Z",
-            "actor": "synthesizer",
-            "action": "created",
-            "notes": "Generated due to schema validation failure."
-          }
-        ]
-      },
-      {
-        "finding_id": "SYNTH-DEBT-003",
-        "type": "debt",
-        "severity": "minor",
-        "priority": "p2",
-        "confidence": "high",
-        "title": "Schema Violation in build-deploy-auditor output",
-        "proof_hooks": [
-          {
-            "hook_type": "log",
-            "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-          }
-        ],
-        "status": "open",
-        "history": [
-          {
-            "timestamp": "2026-03-06T19:09:44.814811Z",
-            "actor": "synthesizer",
-            "action": "created",
-            "notes": "Generated due to schema validation failure."
-          }
-        ]
-      },
-      {
-        "finding_id": "SYNTH-DEBT-004",
-        "type": "debt",
-        "severity": "minor",
-        "priority": "p2",
-        "confidence": "high",
-        "title": "Schema Violation in build-deploy-auditor output",
-        "proof_hooks": [
-          {
-            "hook_type": "log",
-            "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-          }
-        ],
-        "status": "open",
-        "history": [
-          {
-            "timestamp": "2026-03-06T19:09:44.814814Z",
-            "actor": "synthesizer",
-            "action": "created",
-            "notes": "Generated due to schema validation failure."
-          }
-        ]
-      },
-      {
-        "finding_id": "SYNTH-DEBT-005",
-        "type": "debt",
-        "severity": "minor",
-        "priority": "p2",
-        "confidence": "high",
-        "title": "Schema Violation in build-deploy-auditor output",
-        "proof_hooks": [
-          {
-            "hook_type": "log",
-            "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-          }
-        ],
-        "status": "open",
-        "history": [
-          {
-            "timestamp": "2026-03-06T19:09:44.814817Z",
-            "actor": "synthesizer",
-            "action": "created",
-            "notes": "Generated due to schema validation failure."
-          }
-        ]
-      },
-      {
-        "finding_id": "SYNTH-DEBT-006",
-        "type": "debt",
-        "severity": "minor",
-        "priority": "p2",
-        "confidence": "high",
-        "title": "Schema Violation in build-deploy-auditor output",
-        "proof_hooks": [
-          {
-            "hook_type": "log",
-            "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-          }
-        ],
-        "status": "open",
-        "history": [
-          {
-            "timestamp": "2026-03-06T19:09:44.814820Z",
-            "actor": "synthesizer",
-            "action": "created",
-            "notes": "Generated due to schema validation failure."
-          }
-        ]
-      },
-      {
-        "finding_id": "SYNTH-DEBT-007",
-        "type": "debt",
-        "severity": "minor",
-        "priority": "p2",
-        "confidence": "high",
-        "title": "Schema Violation in build-deploy-auditor output",
-        "proof_hooks": [
-          {
-            "hook_type": "log",
-            "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
-          }
-        ],
-        "status": "open",
-        "history": [
-          {
-            "timestamp": "2026-03-06T19:09:44.814823Z",
-            "actor": "synthesizer",
-            "action": "created",
-            "notes": "Generated due to schema validation failure."
-          }
-        ]
-      }
-    ],
-    "commit_plan": [
-      {
-        "title": "fix: resolve f-a3b7c9e1 - Unhandled null in parseJobResponse when API returns empty results array",
-        "finding_ids": [
-          "f-a3b7c9e1"
-        ],
-        "steps": [
-          "Investigate issue",
-          "Apply fix",
-          "Verify"
-        ],
-        "affected_files": [],
-        "tests_or_checks": [
-          "Run relevant test suite"
-        ]
-      },
-      {
-        "title": "fix: resolve f-missing-rls-tables-01 - Missing RLS Policies on API Credentials and Settings Tables",
-        "finding_ids": [
-          "f-missing-rls-tables-01"
-        ],
-        "steps": [
-          "Investigate issue",
-          "Apply fix",
-          "Verify"
-        ],
-        "affected_files": [],
-        "tests_or_checks": [
-          "Run relevant test suite"
-        ]
-      },
-      {
-        "title": "fix: resolve f-e2d4f6a8 - Ingestion pipeline has no retry logic for transient API failures",
-        "finding_ids": [
-          "f-e2d4f6a8"
-        ],
-        "steps": [
-          "Investigate issue",
-          "Apply fix",
-          "Verify"
-        ],
-        "affected_files": [],
-        "tests_or_checks": [
-          "Run relevant test suite"
-        ]
-      },
-      {
-        "title": "fix: resolve SYNTH-DEBT-001 - Schema Violation in build-deploy-auditor output",
-        "finding_ids": [
-          "SYNTH-DEBT-001"
-        ],
-        "steps": [
-          "Investigate issue",
-          "Apply fix",
-          "Verify"
-        ],
-        "affected_files": [],
-        "tests_or_checks": [
-          "Run relevant test suite"
-        ]
-      },
-      {
-        "title": "fix: resolve SYNTH-DEBT-002 - Schema Violation in build-deploy-auditor output",
-        "finding_ids": [
-          "SYNTH-DEBT-002"
-        ],
-        "steps": [
-          "Investigate issue",
-          "Apply fix",
-          "Verify"
-        ],
-        "affected_files": [],
-        "tests_or_checks": [
-          "Run relevant test suite"
-        ]
-      }
-    ],
-    "regression_checklist": [
-      "Run 'npm run build'",
-      "Check logs for errors"
-    ],
-    "reaudit_plan": [
-      {
-        "agent": "runtime-bug-hunter",
-        "scope": "Incomplete areas",
-        "reason": "Codebase contains hundreds of files; sampled critical flow and auth paths to adhere to timeframe and finding cap limits."
-      },
-      {
-        "agent": "ux-flow-auditor",
-        "scope": "Incomplete areas",
-        "reason": "Unknown reason"
-      }
-    ]
+    "files_skipped": [],
+    "coverage_complete": true
   },
   "findings": [
     {
@@ -1272,5 +835,464 @@
     "by_status": {
       "open": 29
     }
+  },
+  "next_actions": [],
+  "diff_summary": {
+    "compared_against": null,
+    "new_findings": [
+      "f-missing-rls-tables-01",
+      "f-foreign-keys-missing-on-delete-01",
+      "f-a3b7c9e1",
+      "f-e2d4f6a8",
+      "f-c1d9e3f0",
+      "SYNTH-DEBT-001",
+      "SYNTH-DEBT-002",
+      "SYNTH-DEBT-003",
+      "SYNTH-DEBT-004",
+      "SYNTH-DEBT-005",
+      "SYNTH-DEBT-006",
+      "SYNTH-DEBT-007",
+      "SYNTH-DEBT-008",
+      "SYNTH-DEBT-009",
+      "SYNTH-DEBT-010",
+      "SYNTH-DEBT-011",
+      "SYNTH-DEBT-012",
+      "SYNTH-DEBT-013",
+      "SYNTH-DEBT-014",
+      "SYNTH-DEBT-015",
+      "SYNTH-DEBT-016",
+      "SYNTH-DEBT-017",
+      "SYNTH-DEBT-018",
+      "SYNTH-DEBT-019",
+      "SYNTH-DEBT-020",
+      "SYNTH-DEBT-021",
+      "SYNTH-DEBT-022",
+      "SYNTH-DEBT-023",
+      "SYNTH-DEBT-024"
+    ],
+    "resolved_findings": [],
+    "changed_severity": [],
+    "changed_status": [],
+    "converted_type": [],
+    "merged_findings": [],
+    "not_re_reported": []
+  },
+  "ranked_plan": {
+    "top_fixes": [
+      {
+        "finding_id": "f-a3b7c9e1",
+        "type": "bug",
+        "category": "null-ref",
+        "severity": "blocker",
+        "priority": "P0",
+        "confidence": "evidence",
+        "title": "Unhandled null in parseJobResponse when API returns empty results array",
+        "description": "When the external job API returns {results: null} instead of {results: []}, the parseJobResponse function throws a TypeError. This crashes the ingestion pipeline silently because the catch block logs but does not re-throw or mark the batch as failed. The null case is documented in the API changelog from v2.3.",
+        "proof_hooks": [
+          {
+            "hook_type": "code_ref",
+            "summary": "Nullable access on results without guard",
+            "file": "src/services/jobIngestion.ts",
+            "symbol": "parseJobResponse",
+            "start_line": 47,
+            "end_line": 47
+          },
+          {
+            "hook_type": "error_text",
+            "summary": "TypeError thrown when results is null",
+            "error_text": "TypeError: Cannot read properties of null (reading 'map')"
+          },
+          {
+            "hook_type": "repro_steps",
+            "summary": "Reproduce by mocking null API response",
+            "steps": [
+              "Set API_MOCK=true in .env.local",
+              "Add mock response file at __mocks__/api/empty-null.json with {results: null}",
+              "Run: npx ts-node scripts/ingest.ts --source=mock",
+              "Observe TypeError in console and zero jobs ingested"
+            ]
+          }
+        ],
+        "repro_steps": [
+          "Set API_MOCK=true in .env.local",
+          "Add mock response file at __mocks__/api/empty-null.json with {results: null}",
+          "Run: npx ts-node scripts/ingest.ts --source=mock",
+          "Observe TypeError in console and zero jobs ingested"
+        ],
+        "impact": "Job ingestion silently fails for any API source that returns null instead of empty array. Database stagnates. Users see stale listings.",
+        "suggested_fix": {
+          "approach": "Add null coalescing at line 47: (results ?? []).map(...). Add a guard log when null is received so you can track which APIs behave this way.",
+          "affected_files": [
+            "src/services/jobIngestion.ts"
+          ],
+          "estimated_effort": "trivial",
+          "risk_notes": "Very low risk. Null coalescing is additive. Verify that downstream code handles empty arrays correctly (it already does based on line 62 check).",
+          "tests_needed": [
+            "Unit test: parseJobResponse with null results returns empty array",
+            "Unit test: parseJobResponse with undefined results returns empty array",
+            "Integration test: full ingestion pipeline with mock null response completes without error"
+          ]
+        },
+        "owner": "solo-dev",
+        "status": "open",
+        "related_ids": [
+          "f-e2d4f6a8"
+        ],
+        "history": [
+          {
+            "timestamp": "2025-03-04T14:30:22Z",
+            "actor": "runtime-bug-hunter",
+            "event": "created",
+            "notes": "Discovered during static analysis of null-safety patterns in ingestion pipeline. Confirmed via preflight test output showing no coverage for null API responses."
+          }
+        ],
+        "artifacts": []
+      },
+      {
+        "finding_id": "f-missing-rls-tables-01",
+        "type": "bug",
+        "category": "missing-rls",
+        "severity": "major",
+        "priority": "P1",
+        "confidence": "evidence",
+        "title": "Missing RLS Policies on API Credentials and Settings Tables",
+        "description": "Several core tables do not have Row Level Security (RLS) policies defined for them. Notably: api_credentials, app_settings, provider_settings, model_settings, project_briefing_state. This means any authenticated user might be able to read or modify global settings or other users' credentials if the tables have RLS disabled, or no one can access them if RLS is enabled without policies.",
+        "proof_hooks": [
+          {
+            "hook_type": "command",
+            "summary": "Comparing created tables vs tables with policies",
+            "command": "grep 'CREATE POLICY' supabase/migrations/*.sql and diffing against 'CREATE TABLE'",
+            "actual": "api_credentials, app_settings, provider_settings are missing policies"
+          }
+        ],
+        "impact": "Potential unauthorized access to global app settings, AI model settings, or API credentials, or broken functionality if RLS is enabled but lacks policies granting access.",
+        "suggested_fix": {
+          "approach": "Create RLS policies for all identified tables, restricting read/write access to admins or the owning user as appropriate.",
+          "affected_files": [
+            "supabase/migrations/add_rls_policies.sql"
+          ],
+          "estimated_effort": "small"
+        },
+        "status": "open",
+        "history": [
+          {
+            "timestamp": "2026-03-06T18:35:12.000Z",
+            "actor": "schema-auditor",
+            "event": "created"
+          }
+        ]
+      },
+      {
+        "finding_id": "f-e2d4f6a8",
+        "type": "enhancement",
+        "category": "error-handling",
+        "severity": "major",
+        "priority": "P1",
+        "confidence": "inference",
+        "title": "Ingestion pipeline has no retry logic for transient API failures",
+        "description": "The fetchJobs function makes a single HTTP request per source. If the request fails due to a timeout or 503, the entire source is skipped until the next scheduled run. Given that some APIs have known intermittent availability, a retry with exponential backoff would significantly improve data freshness.",
+        "proof_hooks": [
+          {
+            "hook_type": "code_ref",
+            "summary": "Single try/catch with no retry loop in fetchJobs",
+            "file": "src/services/jobIngestion.ts",
+            "symbol": "fetchJobs",
+            "start_line": 22,
+            "end_line": 35
+          },
+          {
+            "hook_type": "command",
+            "summary": "Simulating transient failure shows source is permanently skipped",
+            "command": "npx ts-node scripts/ingest.ts --source=mock --mock-status=503",
+            "expected": "Retry and eventually succeed or fail gracefully with clear error",
+            "actual": "Source silently skipped, no retry attempted"
+          }
+        ],
+        "repro_steps": [],
+        "impact": "Missed job data on transient failures. Users may not see jobs from sources that had a momentary outage during the fetch window.",
+        "suggested_fix": {
+          "approach": "Wrap fetchJobs call in a retry utility with max 3 attempts, exponential backoff starting at 1s, and a circuit breaker that skips after 3 consecutive full failures for a source.",
+          "affected_files": [
+            "src/services/jobIngestion.ts",
+            "src/utils/retry.ts (new file)"
+          ],
+          "estimated_effort": "small",
+          "risk_notes": "Retries increase total API call count. If you are on a metered API plan, add a daily call budget. Also ensure retries do not cause duplicate ingestion by checking idempotency keys.",
+          "tests_needed": [
+            "Unit test: retry utility retries on 503 and succeeds on second attempt",
+            "Unit test: retry utility gives up after max attempts and throws",
+            "Unit test: retry utility does not retry on 400 (client error)"
+          ]
+        },
+        "owner": "solo-dev",
+        "status": "open",
+        "related_ids": [
+          "f-a3b7c9e1"
+        ],
+        "history": [
+          {
+            "timestamp": "2025-03-04T14:30:22Z",
+            "actor": "runtime-bug-hunter",
+            "event": "created",
+            "notes": "Identified as a reliability gap during ingestion pipeline review. Related to f-a3b7c9e1 (both are ingestion resilience issues)."
+          }
+        ],
+        "artifacts": []
+      },
+      {
+        "finding_id": "SYNTH-DEBT-001",
+        "type": "debt",
+        "severity": "minor",
+        "priority": "p2",
+        "confidence": "high",
+        "title": "Schema Violation in build-deploy-auditor output",
+        "proof_hooks": [
+          {
+            "hook_type": "log",
+            "summary": "Missing coverage object"
+          }
+        ],
+        "status": "open",
+        "history": [
+          {
+            "timestamp": "2026-03-06T19:09:44.814548Z",
+            "actor": "synthesizer",
+            "action": "created",
+            "notes": "Generated due to schema validation failure."
+          }
+        ]
+      },
+      {
+        "finding_id": "SYNTH-DEBT-002",
+        "type": "debt",
+        "severity": "minor",
+        "priority": "p2",
+        "confidence": "high",
+        "title": "Schema Violation in build-deploy-auditor output",
+        "proof_hooks": [
+          {
+            "hook_type": "log",
+            "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+          }
+        ],
+        "status": "open",
+        "history": [
+          {
+            "timestamp": "2026-03-06T19:09:44.814807Z",
+            "actor": "synthesizer",
+            "action": "created",
+            "notes": "Generated due to schema validation failure."
+          }
+        ]
+      },
+      {
+        "finding_id": "SYNTH-DEBT-003",
+        "type": "debt",
+        "severity": "minor",
+        "priority": "p2",
+        "confidence": "high",
+        "title": "Schema Violation in build-deploy-auditor output",
+        "proof_hooks": [
+          {
+            "hook_type": "log",
+            "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+          }
+        ],
+        "status": "open",
+        "history": [
+          {
+            "timestamp": "2026-03-06T19:09:44.814811Z",
+            "actor": "synthesizer",
+            "action": "created",
+            "notes": "Generated due to schema validation failure."
+          }
+        ]
+      },
+      {
+        "finding_id": "SYNTH-DEBT-004",
+        "type": "debt",
+        "severity": "minor",
+        "priority": "p2",
+        "confidence": "high",
+        "title": "Schema Violation in build-deploy-auditor output",
+        "proof_hooks": [
+          {
+            "hook_type": "log",
+            "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+          }
+        ],
+        "status": "open",
+        "history": [
+          {
+            "timestamp": "2026-03-06T19:09:44.814814Z",
+            "actor": "synthesizer",
+            "action": "created",
+            "notes": "Generated due to schema validation failure."
+          }
+        ]
+      },
+      {
+        "finding_id": "SYNTH-DEBT-005",
+        "type": "debt",
+        "severity": "minor",
+        "priority": "p2",
+        "confidence": "high",
+        "title": "Schema Violation in build-deploy-auditor output",
+        "proof_hooks": [
+          {
+            "hook_type": "log",
+            "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+          }
+        ],
+        "status": "open",
+        "history": [
+          {
+            "timestamp": "2026-03-06T19:09:44.814817Z",
+            "actor": "synthesizer",
+            "action": "created",
+            "notes": "Generated due to schema validation failure."
+          }
+        ]
+      },
+      {
+        "finding_id": "SYNTH-DEBT-006",
+        "type": "debt",
+        "severity": "minor",
+        "priority": "p2",
+        "confidence": "high",
+        "title": "Schema Violation in build-deploy-auditor output",
+        "proof_hooks": [
+          {
+            "hook_type": "log",
+            "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+          }
+        ],
+        "status": "open",
+        "history": [
+          {
+            "timestamp": "2026-03-06T19:09:44.814820Z",
+            "actor": "synthesizer",
+            "action": "created",
+            "notes": "Generated due to schema validation failure."
+          }
+        ]
+      },
+      {
+        "finding_id": "SYNTH-DEBT-007",
+        "type": "debt",
+        "severity": "minor",
+        "priority": "p2",
+        "confidence": "high",
+        "title": "Schema Violation in build-deploy-auditor output",
+        "proof_hooks": [
+          {
+            "hook_type": "log",
+            "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
+          }
+        ],
+        "status": "open",
+        "history": [
+          {
+            "timestamp": "2026-03-06T19:09:44.814823Z",
+            "actor": "synthesizer",
+            "action": "created",
+            "notes": "Generated due to schema validation failure."
+          }
+        ]
+      }
+    ],
+    "commit_plan": [
+      {
+        "title": "fix: resolve f-a3b7c9e1 - Unhandled null in parseJobResponse when API returns empty results array",
+        "finding_ids": [
+          "f-a3b7c9e1"
+        ],
+        "steps": [
+          "Investigate issue",
+          "Apply fix",
+          "Verify"
+        ],
+        "affected_files": [],
+        "tests_or_checks": [
+          "Run relevant test suite"
+        ]
+      },
+      {
+        "title": "fix: resolve f-missing-rls-tables-01 - Missing RLS Policies on API Credentials and Settings Tables",
+        "finding_ids": [
+          "f-missing-rls-tables-01"
+        ],
+        "steps": [
+          "Investigate issue",
+          "Apply fix",
+          "Verify"
+        ],
+        "affected_files": [],
+        "tests_or_checks": [
+          "Run relevant test suite"
+        ]
+      },
+      {
+        "title": "fix: resolve f-e2d4f6a8 - Ingestion pipeline has no retry logic for transient API failures",
+        "finding_ids": [
+          "f-e2d4f6a8"
+        ],
+        "steps": [
+          "Investigate issue",
+          "Apply fix",
+          "Verify"
+        ],
+        "affected_files": [],
+        "tests_or_checks": [
+          "Run relevant test suite"
+        ]
+      },
+      {
+        "title": "fix: resolve SYNTH-DEBT-001 - Schema Violation in build-deploy-auditor output",
+        "finding_ids": [
+          "SYNTH-DEBT-001"
+        ],
+        "steps": [
+          "Investigate issue",
+          "Apply fix",
+          "Verify"
+        ],
+        "affected_files": [],
+        "tests_or_checks": [
+          "Run relevant test suite"
+        ]
+      },
+      {
+        "title": "fix: resolve SYNTH-DEBT-002 - Schema Violation in build-deploy-auditor output",
+        "finding_ids": [
+          "SYNTH-DEBT-002"
+        ],
+        "steps": [
+          "Investigate issue",
+          "Apply fix",
+          "Verify"
+        ],
+        "affected_files": [],
+        "tests_or_checks": [
+          "Run relevant test suite"
+        ]
+      }
+    ],
+    "regression_checklist": [
+      "Run 'npm run build'",
+      "Check logs for errors"
+    ],
+    "reaudit_plan": [
+      {
+        "agent": "runtime-bug-hunter",
+        "scope": "Incomplete areas",
+        "reason": "Codebase contains hundreds of files; sampled critical flow and auth paths to adhere to timeframe and finding cap limits."
+      },
+      {
+        "agent": "ux-flow-auditor",
+        "scope": "Incomplete areas",
+        "reason": "Unknown reason"
+      }
+    ]
   }
 }
