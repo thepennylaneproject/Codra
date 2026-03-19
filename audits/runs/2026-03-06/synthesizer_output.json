@@ -236,7 +236,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "Prioritized by synthesizer based on severity and priority.",
+        "why_now": "Schema-validation debt blocks LYRA ingest for Schema Violation in build-deploy-auditor output.",
         "estimated_effort": "medium"
       },
       {
@@ -261,7 +261,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "Prioritized by synthesizer based on severity and priority.",
+        "why_now": "Schema-validation debt blocks LYRA ingest for Schema Violation in build-deploy-auditor output.",
         "estimated_effort": "medium"
       },
       {
@@ -286,7 +286,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "Prioritized by synthesizer based on severity and priority.",
+        "why_now": "Schema-validation debt blocks LYRA ingest for Schema Violation in build-deploy-auditor output.",
         "estimated_effort": "medium"
       },
       {
@@ -311,7 +311,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "Prioritized by synthesizer based on severity and priority.",
+        "why_now": "Schema-validation debt blocks LYRA ingest for Schema Violation in build-deploy-auditor output.",
         "estimated_effort": "medium"
       },
       {
@@ -336,7 +336,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "Prioritized by synthesizer based on severity and priority.",
+        "why_now": "Schema-validation debt blocks LYRA ingest for Schema Violation in build-deploy-auditor output.",
         "estimated_effort": "medium"
       },
       {
@@ -361,7 +361,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "Prioritized by synthesizer based on severity and priority.",
+        "why_now": "Schema-validation debt blocks LYRA ingest for Schema Violation in build-deploy-auditor output.",
         "estimated_effort": "medium"
       },
       {
@@ -386,7 +386,7 @@
             "notes": "Generated due to schema validation failure."
           }
         ],
-        "why_now": "Prioritized by synthesizer based on severity and priority.",
+        "why_now": "Schema-validation debt blocks LYRA ingest for Schema Violation in build-deploy-auditor output.",
         "estimated_effort": "medium"
       }
     ],
