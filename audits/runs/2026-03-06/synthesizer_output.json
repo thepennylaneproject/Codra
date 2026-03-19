@@ -7,7 +7,7 @@
     "role": "Merge, deduplicate, rank, and plan across all agent outputs."
   },
   "diff_summary": {
-    "compared_against": null,
+    "compared_against": "none",
     "new_findings": [
       "f-missing-rls-tables-01",
       "f-foreign-keys-missing-on-delete-01",
@@ -115,7 +115,9 @@
             "notes": "Discovered during static analysis of null-safety patterns in ingestion pipeline. Confirmed via preflight test output showing no coverage for null API responses."
           }
         ],
-        "artifacts": []
+        "artifacts": [],
+        "why_now": "High priority from synthesis ordering",
+        "estimated_effort": "medium"
       },
       {
         "finding_id": "f-missing-rls-tables-01",
@@ -149,7 +151,9 @@
             "actor": "schema-auditor",
             "event": "created"
           }
-        ]
+        ],
+        "why_now": "High priority from synthesis ordering",
+        "estimated_effort": "medium"
       },
       {
         "finding_id": "f-e2d4f6a8",
@@ -206,7 +210,9 @@
             "notes": "Identified as a reliability gap during ingestion pipeline review. Related to f-a3b7c9e1 (both are ingestion resilience issues)."
           }
         ],
-        "artifacts": []
+        "artifacts": [],
+        "why_now": "High priority from synthesis ordering",
+        "estimated_effort": "medium"
       },
       {
         "finding_id": "SYNTH-DEBT-001",
@@ -229,7 +235,9 @@
             "action": "created",
             "notes": "Generated due to schema validation failure."
           }
-        ]
+        ],
+        "why_now": "High priority from synthesis ordering",
+        "estimated_effort": "medium"
       },
       {
         "finding_id": "SYNTH-DEBT-002",
@@ -252,7 +260,9 @@
             "action": "created",
             "notes": "Generated due to schema validation failure."
           }
-        ]
+        ],
+        "why_now": "High priority from synthesis ordering",
+        "estimated_effort": "medium"
       },
       {
         "finding_id": "SYNTH-DEBT-003",
@@ -275,7 +285,9 @@
             "action": "created",
             "notes": "Generated due to schema validation failure."
           }
-        ]
+        ],
+        "why_now": "High priority from synthesis ordering",
+        "estimated_effort": "medium"
       },
       {
         "finding_id": "SYNTH-DEBT-004",
@@ -298,7 +310,9 @@
             "action": "created",
             "notes": "Generated due to schema validation failure."
           }
-        ]
+        ],
+        "why_now": "High priority from synthesis ordering",
+        "estimated_effort": "medium"
       },
       {
         "finding_id": "SYNTH-DEBT-005",
@@ -321,7 +335,9 @@
             "action": "created",
             "notes": "Generated due to schema validation failure."
           }
-        ]
+        ],
+        "why_now": "High priority from synthesis ordering",
+        "estimated_effort": "medium"
       },
       {
         "finding_id": "SYNTH-DEBT-006",
@@ -344,7 +360,9 @@
             "action": "created",
             "notes": "Generated due to schema validation failure."
           }
-        ]
+        ],
+        "why_now": "High priority from synthesis ordering",
+        "estimated_effort": "medium"
       },
       {
         "finding_id": "SYNTH-DEBT-007",
@@ -367,7 +385,9 @@
             "action": "created",
             "notes": "Generated due to schema validation failure."
           }
-        ]
+        ],
+        "why_now": "High priority from synthesis ordering",
+        "estimated_effort": "medium"
       }
     ],
     "commit_plan": [
@@ -629,12 +649,12 @@
       "finding_id": "SYNTH-DEBT-001",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Missing coverage object"
         }
       ],
@@ -644,20 +664,27 @@
           "timestamp": "2026-03-06T19:09:44.814548Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in build-deploy-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-002",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -667,20 +694,27 @@
           "timestamp": "2026-03-06T19:09:44.814807Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in build-deploy-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-003",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -690,20 +724,27 @@
           "timestamp": "2026-03-06T19:09:44.814811Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in build-deploy-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-004",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -713,20 +754,27 @@
           "timestamp": "2026-03-06T19:09:44.814814Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in build-deploy-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-005",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -736,20 +784,27 @@
           "timestamp": "2026-03-06T19:09:44.814817Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in build-deploy-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-006",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -759,20 +814,27 @@
           "timestamp": "2026-03-06T19:09:44.814820Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in build-deploy-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-007",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in build-deploy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -782,20 +844,27 @@
           "timestamp": "2026-03-06T19:09:44.814823Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in build-deploy-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-008",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in runtime-bug-hunter output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
@@ -805,20 +874,27 @@
           "timestamp": "2026-03-06T19:09:44.815069Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in runtime-bug-hunter output"
     },
     {
       "finding_id": "SYNTH-DEBT-009",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in runtime-bug-hunter output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
@@ -828,20 +904,27 @@
           "timestamp": "2026-03-06T19:09:44.815074Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in runtime-bug-hunter output"
     },
     {
       "finding_id": "SYNTH-DEBT-010",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in runtime-bug-hunter output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
@@ -851,20 +934,27 @@
           "timestamp": "2026-03-06T19:09:44.815077Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in runtime-bug-hunter output"
     },
     {
       "finding_id": "SYNTH-DEBT-011",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in runtime-bug-hunter output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
@@ -874,20 +964,27 @@
           "timestamp": "2026-03-06T19:09:44.815080Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in runtime-bug-hunter output"
     },
     {
       "finding_id": "SYNTH-DEBT-012",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -897,20 +994,27 @@
           "timestamp": "2026-03-06T19:09:44.815339Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in ux-flow-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-013",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -920,20 +1024,27 @@
           "timestamp": "2026-03-06T19:09:44.815343Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in ux-flow-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-014",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -943,20 +1054,27 @@
           "timestamp": "2026-03-06T19:09:44.815346Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in ux-flow-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-015",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -966,20 +1084,27 @@
           "timestamp": "2026-03-06T19:09:44.815349Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in ux-flow-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-016",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -989,20 +1114,27 @@
           "timestamp": "2026-03-06T19:09:44.815352Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in ux-flow-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-017",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1012,20 +1144,27 @@
           "timestamp": "2026-03-06T19:09:44.815355Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in ux-flow-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-018",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in ux-flow-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1035,20 +1174,27 @@
           "timestamp": "2026-03-06T19:09:44.815359Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in ux-flow-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-019",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in performance-cost-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1058,20 +1204,27 @@
           "timestamp": "2026-03-06T19:09:44.815550Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in performance-cost-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-020",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in performance-cost-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1081,20 +1234,27 @@
           "timestamp": "2026-03-06T19:09:44.815553Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in performance-cost-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-021",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in performance-cost-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1104,20 +1264,27 @@
           "timestamp": "2026-03-06T19:09:44.815558Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in performance-cost-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-022",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in security-privacy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Missing coverage object"
         }
       ],
@@ -1127,20 +1294,27 @@
           "timestamp": "2026-03-06T19:09:44.815748Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in security-privacy-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-023",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in security-privacy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1150,20 +1324,27 @@
           "timestamp": "2026-03-06T19:09:44.815753Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in security-privacy-auditor output"
     },
     {
       "finding_id": "SYNTH-DEBT-024",
       "type": "debt",
       "severity": "minor",
-      "priority": "p2",
-      "confidence": "high",
+      "priority": "P2",
+      "confidence": "evidence",
       "title": "Schema Violation in security-privacy-auditor output",
       "proof_hooks": [
         {
-          "hook_type": "log",
+          "hook_type": "code_ref",
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
@@ -1173,9 +1354,16 @@
           "timestamp": "2026-03-06T19:09:44.815756Z",
           "actor": "synthesizer",
           "action": "created",
-          "notes": "Generated due to schema validation failure."
+          "notes": "Generated due to schema validation failure.",
+          "event": "created"
         }
-      ]
+      ],
+      "impact": "Impact not documented",
+      "suggested_fix": {
+        "approach": "Implement remediation described in finding."
+      },
+      "category": "schema-violation",
+      "description": "Schema Violation in security-privacy-auditor output"
     },
     {
       "finding_id": "f-foreign-keys-missing-on-delete-01",
@@ -1271,6 +1459,42 @@
   "rollups": {
     "by_status": {
       "open": 29
+    },
+    "by_severity": {
+      "blocker": 1,
+      "major": 2,
+      "minor": 26,
+      "nit": 0
+    },
+    "by_category": {
+      "null-ref": 1,
+      "missing-rls": 1,
+      "error-handling": 1,
+      "uncategorized": 24,
+      "constraint-violation": 1,
+      "ambiguous-behavior": 1
+    },
+    "by_type": {
+      "bug": 2,
+      "enhancement": 1,
+      "debt": 25,
+      "question": 1
     }
-  }
+  },
+  "run_id": "synthesizer_output",
+  "run_metadata": {
+    "timestamp": "2026-03-06T00:00:00Z",
+    "branch": "unknown",
+    "commit": "unknown",
+    "environment": "local",
+    "tool_platform": "cursor",
+    "model": "unknown"
+  },
+  "next_actions": [
+    {
+      "action": "Follow top_fixes plan",
+      "finding_id": "f-a3b7c9e1",
+      "rationale": "Auto-generated placeholder"
+    }
+  ]
 }
