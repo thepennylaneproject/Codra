@@ -1077,7 +1077,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "fixed_pending_verify",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815550Z",
@@ -1103,6 +1103,12 @@
           "event": "patch_applied",
           "notes": "Fix applied via session runner. Commit: 4582118",
           "commit": "4582118"
+        },
+        {
+          "timestamp": "2026-03-19T21:19:00.000Z",
+          "actor": "github-copilot",
+          "event": "status_changed",
+          "notes": "perf_audit_report.json updated to conform to LYRA audit output schema v1.1.0. All required fields added. Resolves PLP-71."
         }
       ]
     },
@@ -1119,7 +1125,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "fixed_pending_verify",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815553Z",
@@ -1145,6 +1151,12 @@
           "event": "patch_applied",
           "notes": "Fix applied via session runner. Commit: 4582118",
           "commit": "4582118"
+        },
+        {
+          "timestamp": "2026-03-19T21:19:00.000Z",
+          "actor": "github-copilot",
+          "event": "status_changed",
+          "notes": "perf_audit_report.json updated to conform to LYRA audit output schema v1.1.0. All required fields added. Resolves PLP-71."
         }
       ]
     },
@@ -1161,7 +1173,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "fixed_pending_verify",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815558Z",
@@ -1187,6 +1199,12 @@
           "event": "patch_applied",
           "notes": "Fix applied via session runner. Commit: 4582118",
           "commit": "4582118"
+        },
+        {
+          "timestamp": "2026-03-19T21:19:00.000Z",
+          "actor": "github-copilot",
+          "event": "status_changed",
+          "notes": "perf_audit_report.json updated to conform to LYRA audit output schema v1.1.0. All required fields added. Resolves PLP-71."
         }
       ]
     },
