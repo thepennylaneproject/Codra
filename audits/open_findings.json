@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1.0",
-  "last_updated": "2026-03-15T21:24:22Z",
+  "last_updated": "2026-03-19T20:36:13Z",
   "last_run_id": "syn-run-20260306190944",
   "findings": [
     {
@@ -28,7 +28,7 @@
         ],
         "estimated_effort": "small"
       },
-      "status": "in_progress",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T18:35:12.000Z",
@@ -46,6 +46,12 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-47): In Progress -> in_progress"
+        },
+        {
+          "timestamp": "2026-03-16T20:56:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-47): Done -> fixed_verified"
         }
       ]
     },
@@ -84,12 +90,18 @@
         ],
         "estimated_effort": "medium"
       },
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T18:35:12.000Z",
           "actor": "schema-auditor",
           "event": "created"
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-48): Todo -> accepted"
         }
       ]
     },
@@ -157,7 +169,7 @@
         ]
       },
       "owner": "solo-dev",
-      "status": "open",
+      "status": "fixed_verified",
       "related_ids": [
         "f-e2d4f6a8"
       ],
@@ -173,6 +185,12 @@
           "actor": "synthesizer",
           "action": "confidence_changed",
           "notes": "Triage rule 7: src/services/jobIngestion.ts does not exist in the codebase. Cannot reproduce. Confidence downgraded from 'evidence' to 'speculation'. Adding verification hook: confirm if jobIngestion logic lives elsewhere (e.g. src/pipeline/ or netlify/functions/). Keep open until verified or a matching file is located."
+        },
+        {
+          "timestamp": "2026-03-16T20:56:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-49): Done -> fixed_verified"
         }
       ],
       "artifacts": []
@@ -229,7 +247,7 @@
         ]
       },
       "owner": "solo-dev",
-      "status": "open",
+      "status": "fixed_verified",
       "related_ids": [
         "f-a3b7c9e1"
       ],
@@ -245,6 +263,12 @@
           "actor": "synthesizer",
           "action": "confidence_changed",
           "notes": "Triage rule 7: src/services/jobIngestion.ts does not exist in the codebase. Cannot reproduce. Confidence downgraded from 'inference' to 'speculation'. Adding verification hook: confirm if jobIngestion logic lives elsewhere (e.g. src/pipeline/ or netlify/functions/). Keep open until verified or a matching file is located."
+        },
+        {
+          "timestamp": "2026-03-16T20:56:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-50): Done -> fixed_verified"
         }
       ],
       "artifacts": []
@@ -262,7 +286,7 @@
           "summary": "Missing coverage object"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814548Z",
@@ -275,6 +299,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-51): Todo -> accepted"
         }
       ]
     },
@@ -291,7 +321,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814807Z",
@@ -304,6 +334,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-52): Todo -> accepted"
         }
       ]
     },
@@ -320,7 +356,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814811Z",
@@ -333,6 +369,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-53): Todo -> accepted"
         }
       ]
     },
@@ -349,7 +391,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814814Z",
@@ -362,6 +404,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-54): Todo -> accepted"
         }
       ]
     },
@@ -378,7 +426,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814817Z",
@@ -391,6 +439,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-55): Todo -> accepted"
         }
       ]
     },
@@ -407,7 +461,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814820Z",
@@ -420,6 +474,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-56): Todo -> accepted"
         }
       ]
     },
@@ -436,7 +496,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814823Z",
@@ -449,6 +509,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-57): Todo -> accepted"
         }
       ]
     },
@@ -465,7 +531,7 @@
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815069Z",
@@ -478,6 +544,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-58): Todo -> accepted"
         }
       ]
     },
@@ -494,7 +566,7 @@
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815074Z",
@@ -507,6 +579,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-59): Todo -> accepted"
         }
       ]
     },
@@ -523,7 +601,7 @@
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815077Z",
@@ -536,6 +614,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-60): Todo -> accepted"
         }
       ]
     },
@@ -552,7 +636,7 @@
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815080Z",
@@ -565,6 +649,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-61): Todo -> accepted"
         }
       ]
     },
@@ -581,7 +671,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815339Z",
@@ -594,6 +684,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-62): Todo -> accepted"
         }
       ]
     },
@@ -610,7 +706,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815343Z",
@@ -623,6 +719,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-63): Todo -> accepted"
         }
       ]
     },
@@ -639,7 +741,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815346Z",
@@ -652,6 +754,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-64): Todo -> accepted"
         }
       ]
     },
@@ -668,7 +776,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815349Z",
@@ -681,6 +789,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-65): Todo -> accepted"
         }
       ]
     },
@@ -697,7 +811,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815352Z",
@@ -710,6 +824,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-66): Todo -> accepted"
         }
       ]
     },
@@ -726,7 +846,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815355Z",
@@ -739,6 +859,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-67): Todo -> accepted"
         }
       ]
     },
@@ -755,7 +881,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815359Z",
@@ -768,6 +894,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-68): Todo -> accepted"
         }
       ]
     },
@@ -784,7 +916,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815550Z",
@@ -797,6 +929,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-69): Todo -> accepted"
         }
       ]
     },
@@ -813,7 +951,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815553Z",
@@ -826,6 +964,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-70): Todo -> accepted"
         }
       ]
     },
@@ -842,7 +986,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815558Z",
@@ -855,6 +999,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-71): Todo -> accepted"
         }
       ]
     },
@@ -871,7 +1021,7 @@
           "summary": "Missing coverage object"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815748Z",
@@ -884,6 +1034,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-72): Todo -> accepted"
         }
       ]
     },
@@ -900,7 +1056,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815753Z",
@@ -913,6 +1069,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-73): Todo -> accepted"
         }
       ]
     },
@@ -929,7 +1091,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "open",
+      "status": "accepted",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815756Z",
@@ -942,6 +1104,12 @@
           "actor": "cleanup-script",
           "event": "note_added",
           "notes": "Normalized priority from 'p2' to 'P2' per LYRA v1.1 enum rules."
+        },
+        {
+          "timestamp": "2026-03-19T20:36:13Z",
+          "actor": "linear-sync",
+          "event": "note_added",
+          "notes": "Status synced from Linear (PLP-74): Todo -> accepted"
         }
       ]
     }

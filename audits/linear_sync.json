@@ -4,226 +4,226 @@
       "linear_id": "cae78aac-29d4-492b-953c-b5d497c04383",
       "identifier": "PLP-47",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-47/major-missing-rls-policies-on-api-credentials-and-settings-tables",
-      "lyra_status": "in_progress",
+      "lyra_status": "fixed_verified",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-16T20:56:13Z"
     },
     "f-foreign-keys-missing-on-delete-01": {
       "linear_id": "3c4b4c57-87a6-4815-93d2-1cf60b38adc1",
       "identifier": "PLP-48",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-48/minor-foreign-keys-missing-on-delete-behaviors",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "f-a3b7c9e1": {
       "linear_id": "449161d3-9b14-49b7-a8be-49e4560773a1",
       "identifier": "PLP-49",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-49/blocker-unhandled-null-in-parsejobresponse-when-api-returns-empty",
-      "lyra_status": "open",
+      "lyra_status": "fixed_verified",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-16T20:56:13Z"
     },
     "f-e2d4f6a8": {
       "linear_id": "92ba5bf6-7f89-4969-ad2e-32019480457d",
       "identifier": "PLP-50",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-50/major-ingestion-pipeline-has-no-retry-logic-for-transient-api-failures",
-      "lyra_status": "open",
+      "lyra_status": "fixed_verified",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-16T20:56:13Z"
     },
     "SYNTH-DEBT-001": {
       "linear_id": "1440658f-e776-467e-b25e-553507734fba",
       "identifier": "PLP-51",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-51/minor-schema-violation-in-build-deploy-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-002": {
       "linear_id": "bf76d5fc-fa2d-4bbf-b8f1-0342ae494a4a",
       "identifier": "PLP-52",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-52/minor-schema-violation-in-build-deploy-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-003": {
       "linear_id": "e94c5536-72f8-456b-ba65-c70fdd26a2bf",
       "identifier": "PLP-53",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-53/minor-schema-violation-in-build-deploy-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-004": {
       "linear_id": "d3067435-d70f-412f-8eff-9a59fa842c30",
       "identifier": "PLP-54",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-54/minor-schema-violation-in-build-deploy-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-005": {
       "linear_id": "75bd6eb0-a91a-4bf3-b5c4-f5c61bbf5fbf",
       "identifier": "PLP-55",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-55/minor-schema-violation-in-build-deploy-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-006": {
       "linear_id": "042cd0df-7240-41cf-a2ea-baac5a5eeb2c",
       "identifier": "PLP-56",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-56/minor-schema-violation-in-build-deploy-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-007": {
       "linear_id": "d518f65e-488c-4bac-9b88-cfb7f50f8fc9",
       "identifier": "PLP-57",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-57/minor-schema-violation-in-build-deploy-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-008": {
       "linear_id": "12d0d1e5-9a6a-4b36-9176-e1ad11bd1274",
       "identifier": "PLP-58",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-58/minor-schema-violation-in-runtime-bug-hunter-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-009": {
       "linear_id": "096fc398-ae19-467c-af08-77c15cd8aa87",
       "identifier": "PLP-59",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-59/minor-schema-violation-in-runtime-bug-hunter-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-010": {
       "linear_id": "06744764-cccc-40ad-864a-05d8a75a551e",
       "identifier": "PLP-60",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-60/minor-schema-violation-in-runtime-bug-hunter-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-011": {
       "linear_id": "604449a9-49eb-4422-9b35-fa096954fb05",
       "identifier": "PLP-61",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-61/minor-schema-violation-in-runtime-bug-hunter-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-012": {
       "linear_id": "f3e3bf63-0e59-4e99-b212-9b1ffcfcb1e2",
       "identifier": "PLP-62",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-62/minor-schema-violation-in-ux-flow-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-013": {
       "linear_id": "ca74a9f9-6842-4a75-a110-d2933e0574fa",
       "identifier": "PLP-63",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-63/minor-schema-violation-in-ux-flow-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-014": {
       "linear_id": "1b56149a-12b3-4962-b924-259e06512fb6",
       "identifier": "PLP-64",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-64/minor-schema-violation-in-ux-flow-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-015": {
       "linear_id": "09cd41b9-764b-4d62-82e0-fceaabe15b93",
       "identifier": "PLP-65",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-65/minor-schema-violation-in-ux-flow-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-016": {
       "linear_id": "7a7b85c3-cd08-4423-aeab-7b4e48ac27a0",
       "identifier": "PLP-66",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-66/minor-schema-violation-in-ux-flow-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-017": {
       "linear_id": "66955292-d021-4a24-9533-c0f9616bfeb8",
       "identifier": "PLP-67",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-67/minor-schema-violation-in-ux-flow-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-018": {
       "linear_id": "7b60c5db-9af6-44a5-ab4a-c2b8d57c6237",
       "identifier": "PLP-68",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-68/minor-schema-violation-in-ux-flow-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-019": {
       "linear_id": "b92ecf8c-8de5-4a0f-92be-c411eda47419",
       "identifier": "PLP-69",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-69/minor-schema-violation-in-performance-cost-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-020": {
       "linear_id": "4e7dabc4-dfee-4e62-9ec9-27ad7f9f4a89",
       "identifier": "PLP-70",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-70/minor-schema-violation-in-performance-cost-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-021": {
       "linear_id": "7c086952-ffc7-43a8-871c-040cec9d1307",
       "identifier": "PLP-71",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-71/minor-schema-violation-in-performance-cost-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-022": {
       "linear_id": "67ee0106-6e9e-45c3-a343-7dad4c8d1b0b",
       "identifier": "PLP-72",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-72/minor-schema-violation-in-security-privacy-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-023": {
       "linear_id": "ff374f39-402e-4e71-ab20-0ed187474324",
       "identifier": "PLP-73",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-73/minor-schema-violation-in-security-privacy-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     },
     "SYNTH-DEBT-024": {
       "linear_id": "a4cf6e14-89a2-4b2f-bc1f-59fdc2b9cfc6",
       "identifier": "PLP-74",
       "url": "https://linear.app/the-penny-lane-project/issue/PLP-74/minor-schema-violation-in-security-privacy-auditor-output",
-      "lyra_status": "open",
+      "lyra_status": "accepted",
       "created_at": "2026-03-13T20:02:52Z",
-      "last_synced": "2026-03-13T20:02:52Z"
+      "last_synced": "2026-03-19T20:36:13Z"
     }
   },
-  "last_sync": "2026-03-15T21:24:22Z"
+  "last_sync": "2026-03-19T20:36:13Z"
 }
