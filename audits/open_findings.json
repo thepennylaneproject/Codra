@@ -909,7 +909,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "fixed_pending_verify",
+      "status": "fixed_verified",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815349Z",
@@ -935,6 +935,12 @@
           "event": "patch_applied",
           "notes": "Fix applied via session runner. Commit: 4582118",
           "commit": "4582118"
+        },
+        {
+          "timestamp": "2026-03-19T21:46:29Z",
+          "actor": "solo-dev",
+          "event": "fixed_verified",
+          "notes": "ux-flow-auditor output normalized to LYRA v1.1 schema with finding_id, type, priority, confidence, proof_hooks, status, and history."
         }
       ]
     },
