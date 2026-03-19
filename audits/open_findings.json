@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1.0",
-  "last_updated": "2026-03-19T20:36:13Z",
+  "last_updated": "2026-03-19T20:44:29Z",
   "last_run_id": "syn-run-20260306190944",
   "findings": [
     {
@@ -98,7 +98,7 @@
         ],
         "estimated_effort": "medium"
       },
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T18:35:12.000Z",
@@ -110,6 +110,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-48): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:27Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -294,7 +301,7 @@
           "summary": "Missing coverage object"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814548Z",
@@ -313,6 +320,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-51): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:27Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -329,7 +343,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814807Z",
@@ -348,6 +362,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-52): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:27Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -364,7 +385,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814811Z",
@@ -383,6 +404,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-53): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:27Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -399,7 +427,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814814Z",
@@ -418,6 +446,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-54): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:27Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -434,7 +469,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814817Z",
@@ -453,6 +488,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-55): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -469,7 +511,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814820Z",
@@ -488,6 +530,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-56): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -504,7 +553,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.814823Z",
@@ -523,6 +572,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-57): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -539,7 +595,7 @@
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815069Z",
@@ -558,6 +614,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-58): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -574,7 +637,7 @@
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815074Z",
@@ -593,6 +656,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-59): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -609,7 +679,7 @@
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815077Z",
@@ -628,6 +698,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-60): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -644,7 +721,7 @@
           "summary": "Schema errors: Missing finding_id, Missing priority, Missing proof_hooks, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815080Z",
@@ -663,6 +740,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-61): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -679,7 +763,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815339Z",
@@ -698,6 +782,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-62): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -714,7 +805,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815343Z",
@@ -733,6 +824,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-63): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -749,7 +847,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815346Z",
@@ -768,6 +866,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-64): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -784,7 +889,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815349Z",
@@ -803,6 +908,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-65): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -819,7 +931,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815352Z",
@@ -838,6 +950,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-66): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -854,7 +973,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815355Z",
@@ -873,6 +992,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-67): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -889,7 +1015,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815359Z",
@@ -908,6 +1034,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-68): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:28Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -924,7 +1057,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815550Z",
@@ -943,6 +1076,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-69): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:29Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -959,7 +1099,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815553Z",
@@ -978,6 +1118,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-70): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:29Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -994,7 +1141,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815558Z",
@@ -1013,6 +1160,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-71): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:29Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -1029,7 +1183,7 @@
           "summary": "Missing coverage object"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815748Z",
@@ -1048,6 +1202,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-72): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:29Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -1064,7 +1225,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815753Z",
@@ -1083,6 +1244,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-73): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:29Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     },
@@ -1099,7 +1267,7 @@
           "summary": "Schema errors: Missing finding_id, Missing type, Missing priority, Missing confidence, Missing proof_hooks, Missing status, Missing history"
         }
       ],
-      "status": "accepted",
+      "status": "fixed_pending_verify",
       "history": [
         {
           "timestamp": "2026-03-06T19:09:44.815756Z",
@@ -1118,6 +1286,13 @@
           "actor": "linear-sync",
           "event": "note_added",
           "notes": "Status synced from Linear (PLP-74): Todo -> accepted"
+        },
+        {
+          "timestamp": "2026-03-19T20:44:29Z",
+          "actor": "solo-dev",
+          "event": "patch_applied",
+          "notes": "Fix applied via session runner. Commit: 4582118",
+          "commit": "4582118"
         }
       ]
     }
