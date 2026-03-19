@@ -1,35 +1,27 @@
-import fs from 'fs';
-import path from 'path';
+import { describe, expect, it } from 'vitest';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
-import { describe, expect, it } from 'vitest';
-import { fileURLToPath } from 'url';
+import { readFileSync } from 'fs';
+import path from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const loadJson = (relativePath: string) =>
+  JSON.parse(readFileSync(path.resolve(__dirname, '../../..', relativePath), 'utf8'));
 
-const rootDir = path.resolve(__dirname, '../../..');
-const schemaPath = path.resolve(rootDir, 'audits/schema/audit-output.schema.json');
+describe('build-deploy-auditor output', () => {
+  it('conforms to LYRA audit-output schema v1.1', () => {
+    const schema = loadJson('audits/schema/audit-output.schema.json');
+    const deployReport = loadJson('audits/runs/2026-03-06/deploy_audit_report.json');
 
-const createValidator = () => {
-  const schema = JSON.parse(fs.readFileSync(schemaPath, 'utf8'));
-  const ajv = new Ajv({ allErrors: true, strict: false });
-  addFormats(ajv);
-  return ajv.compile(schema);
-};
+    const ajv = new Ajv({ allErrors: true });
+    addFormats(ajv);
 
-describe('LYRA audit artifacts', () => {
-  const validate = createValidator();
+    const validate = ajv.compile(schema);
+    const valid = validate(deployReport);
 
-  it('keeps build/deploy synthesizer output schema-aligned', () => {
-    const payloadPath = path.resolve(
-      rootDir,
-      'audits/runs/2026-03-06/synthesizer_output.json',
-    );
-    const payload = JSON.parse(fs.readFileSync(payloadPath, 'utf8'));
+    if (!valid && validate.errors) {
+      console.error(validate.errors);
+    }
 
-    const valid = validate(payload);
-    expect(validate.errors).toBeNull();
     expect(valid).toBe(true);
   });
 });
