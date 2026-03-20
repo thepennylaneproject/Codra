@@ -1,6 +1,18 @@
 import { NodeExecutor, ExecutionContext, ValidationResult } from '../types';
 import { AppNode } from '../../../types/flow';
 
+/** Equality that treats resolved numbers and string literals as comparable (e.g. 10 vs "10"). */
+function looseEqual(a: unknown, b: unknown): boolean {
+    if (a === b) return true;
+    if (typeof a === 'number' && typeof b === 'string') {
+        return !Number.isNaN(Number(b)) && a === Number(b);
+    }
+    if (typeof a === 'string' && typeof b === 'number') {
+        return !Number.isNaN(Number(a)) && Number(a) === b;
+    }
+    return String(a) === String(b);
+}
+
 export const conditionExecutor: NodeExecutor<AppNode> = {
     async execute(node: AppNode, _inputs: Record<string, any>, _context: ExecutionContext) {
         // Condition node logic
@@ -25,8 +37,8 @@ export const conditionExecutor: NodeExecutor<AppNode> = {
             const right = data.right; // resolved value
 
             switch (data.operator) {
-                case 'equals': result = left === right; break;
-                case 'notEquals': result = left !== right; break;
+                case 'equals': result = looseEqual(left, right); break;
+                case 'notEquals': result = !looseEqual(left, right); break;
                 case 'contains': result = String(left).includes(String(right)); break;
                 case 'greaterThan': result = Number(left) > Number(right); break;
                 case 'lessThan': result = Number(left) < Number(right); break;

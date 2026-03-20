@@ -6,25 +6,33 @@
  * Uses service role key to bypass RLS for system-level logging.
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { createHash } from 'crypto';
 import { getModelWithProvider } from '../../../src/lib/ai/registry/provider-registry';
 import type { RoutingTrace } from '../../../src/lib/ai/router/smart-router';
 
 // ============================================================
-// Supabase Service Client
+// Supabase Service Client (lazy — avoids import-time env in tests / scripts)
 // ============================================================
 
-const SUPABASE_URL = process.env.SUPABASE_URL!;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+let supabaseService: SupabaseClient | null = null;
 
-// Service role client bypasses RLS for system operations
-const supabaseService = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-    auth: {
-        autoRefreshToken: false,
-        persistSession: false
+function getSupabaseService(): SupabaseClient {
+    if (!supabaseService) {
+        const url = process.env.SUPABASE_URL;
+        const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        if (!url || !key) {
+            throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required for telemetry');
+        }
+        supabaseService = createClient(url, key, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        });
     }
-});
+    return supabaseService;
+}
 
 // ============================================================
 // Types
@@ -79,7 +87,7 @@ export async function logRetrievalRun(params: RetrievalRunParams): Promise<void>
     try {
         const queryHash = hashQuery(params.query);
 
-        const { error } = await supabaseService
+        const { error } = await getSupabaseService()
             .from('retrieval_runs')
             .insert({
                 user_id: params.userId,
@@ -127,7 +135,7 @@ export function hashQuery(query: string): string {
  */
 export async function logAIRunStart(params: AIRunStartParams): Promise<string | null> {
     try {
-        const { data, error } = await supabaseService
+        const { data, error } = await getSupabaseService()
             .from('ai_runs')
             .insert({
                 user_id: params.userId,
@@ -170,7 +178,7 @@ export async function logAIRunComplete(
     params: AIRunCompleteParams
 ): Promise<void> {
     try {
-        const { error } = await supabaseService
+        const { error } = await getSupabaseService()
             .from('ai_runs')
             .update({
                 actual_prompt_tokens: params.actualPromptTokens,
