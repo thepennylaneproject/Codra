@@ -6,6 +6,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { useAuth } from '../lib/auth/AuthProvider';
 import type { AIMessage, AIStreamChunk } from '../lib/ai/types';
+import { getErrorMessage } from '../utils/errors';
 
 interface UseAIStreamState {
     loading: boolean;
@@ -132,7 +133,7 @@ export function useAIStream() {
                     return; // Stream was cancelled
                 }
 
-                const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+                const errorMsg = getErrorMessage(error);
                 setState({
                     loading: false,
                     error: errorMsg,

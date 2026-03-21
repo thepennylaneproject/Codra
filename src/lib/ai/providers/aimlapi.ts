@@ -17,6 +17,7 @@ import {
     ModelInfo,
     AIStreamChunk,
 } from '../types';
+import { getErrorMessage } from '../../../utils/errors';
 
 interface AimlApiResponse {
     model: string;
@@ -165,7 +166,7 @@ export class AimlApiProvider implements AIProvider {
                 cost,
             };
         } catch (error) {
-            throw new Error(`aimlapi completion failed: ${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(`aimlapi completion failed: ${getErrorMessage(error)}`);
         }
     }
 
@@ -252,7 +253,7 @@ export class AimlApiProvider implements AIProvider {
                 cost,
             };
         } catch (error) {
-            throw new Error(`aimlapi stream failed: ${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(`aimlapi stream failed: ${getErrorMessage(error)}`);
         }
     }
 

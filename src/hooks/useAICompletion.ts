@@ -6,6 +6,7 @@
 import { useState, useCallback } from 'react';
 import { useAuth } from './../lib/auth/AuthProvider';
 import type { AIMessage, AICompletionResult } from '../lib/ai/types';
+import { getErrorMessage } from '../utils/errors';
 
 interface UseAICompletionOptions {
     model: string;
@@ -74,7 +75,7 @@ export function useAICompletion() {
 
                 return data.data;
             } catch (error) {
-                const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+                const errorMsg = getErrorMessage(error);
                 setState({ loading: false, error: errorMsg, result: null });
                 return null;
             }

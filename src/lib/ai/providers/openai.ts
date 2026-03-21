@@ -10,6 +10,8 @@ import {
     ModelInfo,
     AIStreamChunk,
 } from '../types';
+import { estimateCostFromCatalog } from '../provider-utils';
+import { getErrorMessage } from '../../../utils/errors';
 
 interface OpenAIResponse {
     model: string;
@@ -101,7 +103,7 @@ export class OpenAIProvider implements AIProvider {
                 cost: 0, // Calculated by registry/router
             };
         } catch (error) {
-            throw new Error(`OpenAI completion failed: ${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(`OpenAI completion failed: ${getErrorMessage(error)}`);
         }
     }
 
@@ -165,7 +167,7 @@ export class OpenAIProvider implements AIProvider {
                 cost: 0,
             };
         } catch (error) {
-            throw new Error(`OpenAI stream failed: ${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(`OpenAI stream failed: ${getErrorMessage(error)}`);
         }
     }
 
@@ -174,9 +176,7 @@ export class OpenAIProvider implements AIProvider {
     }
 
     estimateCost(model: string, promptTokens: number, completionTokens: number = 0): number {
-        const modelInfo = MODEL_CATALOG[model];
-        if (!modelInfo) return 0;
-        return (promptTokens / 1000) * modelInfo.costPer1kPrompt + (completionTokens / 1000) * modelInfo.costPer1kCompletion;
+        return estimateCostFromCatalog(MODEL_CATALOG, model, promptTokens, completionTokens);
     }
 
     async validate(): Promise<boolean> {
