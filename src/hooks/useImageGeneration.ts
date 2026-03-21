@@ -5,6 +5,7 @@
 
 import { useState, useCallback } from 'react';
 import { ImageGenerationResult, ImageGenerationRequest, ImageGenerationResponse } from '@/lib/ai/types-image';
+import { getErrorMessage } from '@/utils/errors';
 
 interface UseImageGenerationState {
   isLoading: boolean;
@@ -67,7 +68,7 @@ export function useImageGeneration() {
 
         return data;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+        const errorMessage = getErrorMessage(err);
         setState(prev => ({
           ...prev,
           isLoading: false,

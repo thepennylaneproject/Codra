@@ -11,6 +11,8 @@ import {
     ModelInfo,
     AIStreamChunk,
 } from '../types';
+import { estimateCostFromCatalog } from '../provider-utils';
+import { getErrorMessage } from '../../../utils/errors';
 
 interface DeepSeekResponse {
     id: string;
@@ -117,7 +119,7 @@ export class DeepSeekProvider implements AIProvider {
                 cost,
             };
         } catch (error) {
-            throw new Error(`DeepSeek completion failed: ${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(`DeepSeek completion failed: ${getErrorMessage(error)}`);
         }
     }
 
@@ -200,7 +202,7 @@ export class DeepSeekProvider implements AIProvider {
                 cost,
             };
         } catch (error) {
-            throw new Error(`DeepSeek stream failed: ${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(`DeepSeek stream failed: ${getErrorMessage(error)}`);
         }
     }
 
@@ -209,12 +211,7 @@ export class DeepSeekProvider implements AIProvider {
     }
 
     estimateCost(model: string, promptTokens: number, completionTokens: number = 0): number {
-        const modelInfo = MODEL_CATALOG[model];
-        if (!modelInfo) return 0;
-
-        const promptCost = (promptTokens / 1000) * modelInfo.costPer1kPrompt;
-        const completionCost = (completionTokens / 1000) * modelInfo.costPer1kCompletion;
-        return promptCost + completionCost;
+        return estimateCostFromCatalog(MODEL_CATALOG, model, promptTokens, completionTokens);
     }
 
     async validate(): Promise<boolean> {

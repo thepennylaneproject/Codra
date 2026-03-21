@@ -11,6 +11,8 @@ import {
     ModelInfo,
     AIStreamChunk,
 } from '../types';
+import { estimateCostFromCatalog } from '../provider-utils';
+import { getErrorMessage } from '../../../utils/errors';
 
 interface HFResponse {
     model: string;
@@ -106,7 +108,7 @@ export class HuggingFaceProvider implements AIProvider {
                 cost: 0,
             };
         } catch (error) {
-            throw new Error(`HuggingFace completion failed: ${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(`HuggingFace completion failed: ${getErrorMessage(error)}`);
         }
     }
 
@@ -170,7 +172,7 @@ export class HuggingFaceProvider implements AIProvider {
                 cost: 0,
             };
         } catch (error) {
-            throw new Error(`HuggingFace stream failed: ${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(`HuggingFace stream failed: ${getErrorMessage(error)}`);
         }
     }
 
@@ -179,9 +181,7 @@ export class HuggingFaceProvider implements AIProvider {
     }
 
     estimateCost(model: string, promptTokens: number, completionTokens: number = 0): number {
-        const modelInfo = MODEL_CATALOG[model];
-        if (!modelInfo) return 0;
-        return (promptTokens / 1000) * modelInfo.costPer1kPrompt + (completionTokens / 1000) * modelInfo.costPer1kCompletion;
+        return estimateCostFromCatalog(MODEL_CATALOG, model, promptTokens, completionTokens);
     }
 
     async validate(): Promise<boolean> {
