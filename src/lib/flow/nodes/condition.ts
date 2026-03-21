@@ -2,15 +2,15 @@ import { NodeExecutor, ExecutionContext, ValidationResult } from '../types';
 import { AppNode } from '../../../types/flow';
 
 /** Equality that treats resolved numbers and string literals as comparable (e.g. 10 vs "10"). */
-function looseEqual(a: unknown, b: unknown): boolean {
-    if (a === b) return true;
-    if (typeof a === 'number' && typeof b === 'string') {
-        return !Number.isNaN(Number(b)) && a === Number(b);
+function looseEqual(leftValue: unknown, rightValue: unknown): boolean {
+    if (leftValue === rightValue) return true;
+    if (typeof leftValue === 'number' && typeof rightValue === 'string') {
+        return !Number.isNaN(Number(rightValue)) && leftValue === Number(rightValue);
     }
-    if (typeof a === 'string' && typeof b === 'number') {
-        return !Number.isNaN(Number(a)) && Number(a) === b;
+    if (typeof leftValue === 'string' && typeof rightValue === 'number') {
+        return !Number.isNaN(Number(leftValue)) && Number(leftValue) === rightValue;
     }
-    return String(a) === String(b);
+    return String(leftValue) === String(rightValue);
 }
 
 export const conditionExecutor: NodeExecutor<AppNode> = {
@@ -29,37 +29,37 @@ export const conditionExecutor: NodeExecutor<AppNode> = {
         // Safer to use a simple comparison logic configuration:
         // { left: "{{var}}", operator: "equals", right: "value" }
 
-        const data = node.data as any;
-        let result = false;
+        const conditionConfig = node.data as any;
+        let conditionResult = false;
 
-        if (data.operator) {
-            const left = data.left; // resolved value
-            const right = data.right; // resolved value
+        if (conditionConfig.operator) {
+            const left = conditionConfig.left; // resolved value
+            const right = conditionConfig.right; // resolved value
 
-            switch (data.operator) {
-                case 'equals': result = looseEqual(left, right); break;
-                case 'notEquals': result = !looseEqual(left, right); break;
-                case 'contains': result = String(left).includes(String(right)); break;
-                case 'greaterThan': result = Number(left) > Number(right); break;
-                case 'lessThan': result = Number(left) < Number(right); break;
-                default: result = !!left;
+            switch (conditionConfig.operator) {
+                case 'equals': conditionResult = looseEqual(left, right); break;
+                case 'notEquals': conditionResult = !looseEqual(left, right); break;
+                case 'contains': conditionResult = String(left).includes(String(right)); break;
+                case 'greaterThan': conditionResult = Number(left) > Number(right); break;
+                case 'lessThan': conditionResult = Number(left) < Number(right); break;
+                default: conditionResult = !!left;
             }
         } else {
             // Fallback or simple boolean toggle
-            result = !!data.value;
+            conditionResult = !!conditionConfig.value;
         }
 
         // Return special property _nextHandle to tell executor which path to take.
         // Assuming handles are named 'true' and 'false' or similar.
         return {
-            result,
-            _nextHandle: result ? 'true' : 'false'
+            result: conditionResult,
+            _nextHandle: conditionResult ? 'true' : 'false'
         };
     },
 
     validate(node: AppNode): ValidationResult {
-        const data = node.data as any;
-        if (!data.operator && data.value === undefined) {
+        const conditionConfig = node.data as any;
+        if (!conditionConfig.operator && conditionConfig.value === undefined) {
             return { valid: false, errors: ['Missing condition configuration'] };
         }
         return { valid: true };

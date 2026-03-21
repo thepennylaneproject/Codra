@@ -25,7 +25,7 @@ export class CodraFlowExecutor implements FlowExecutor {
 
         // Find start nodes (triggers or nodes with no incoming edges if strictly DAG, but usually Triggers)
         // For now, looking for nodes of type 'trigger'
-        const startNodes = flow.nodes.filter(n => n.type === 'trigger');
+        const startNodes = flow.nodes.filter(node => node.type === 'trigger');
 
         if (startNodes.length === 0) {
             return {
@@ -74,17 +74,17 @@ export class CodraFlowExecutor implements FlowExecutor {
 
                 // Determine next nodes
                 // Logic depends on edges and potentially node output (e.g. condition nodes)
-                const outgoingEdges = flow.edges.filter(e => e.source === node.id);
+                const outgoingEdges = flow.edges.filter(edge => edge.source === node.id);
 
                 // Filter edges if the node was a condition node that returned a specific path
                 // Convention: Condition nodes return a 'port' or 'handle' that matches edge sourceHandle
                 let activeEdges = outgoingEdges;
                 if (result.outputs && result.outputs._nextHandle) {
-                    activeEdges = outgoingEdges.filter(e => e.sourceHandle === result.outputs._nextHandle);
+                    activeEdges = outgoingEdges.filter(edge => edge.sourceHandle === result.outputs._nextHandle);
                 }
 
                 for (const edge of activeEdges) {
-                    const targetNode = flow.nodes.find(n => n.id === edge.target);
+                    const targetNode = flow.nodes.find(node => node.id === edge.target);
                     if (targetNode) {
                         // Avoid infinite loops for now with visited check, 
                         // though loops might be valid in advanced flows.
@@ -103,7 +103,7 @@ export class CodraFlowExecutor implements FlowExecutor {
             this._context.status = 'completed';
 
             // Collect outputs from 'output' nodes
-            const outputNodes = flow.nodes.filter(n => n.type === 'output');
+            const outputNodes = flow.nodes.filter(node => node.type === 'output');
             const finalOutputs: Record<string, any> = {};
             for (const node of outputNodes) {
                 // merge outputs
@@ -135,7 +135,7 @@ export class CodraFlowExecutor implements FlowExecutor {
     }
 
     async executeStep(flow: Flow, nodeId: string, context: ExecutionContext): Promise<StepResult> {
-        const node = flow.nodes.find(n => n.id === nodeId);
+        const node = flow.nodes.find(node => node.id === nodeId);
         if (!node) {
             return { nodeId, success: false, duration: 0, timestamp: Date.now(), error: 'Node not found' };
         }
@@ -155,7 +155,7 @@ export class CodraFlowExecutor implements FlowExecutor {
             // inputs passed to execute() usually mean "intermediate data"
 
             // 1. Gather inputs from incoming edges
-            const incomingEdges = flow.edges.filter(e => e.target === nodeId);
+            const incomingEdges = flow.edges.filter(edge => edge.target === nodeId);
             const incomingData: Record<string, any> = {};
             for (const edge of incomingEdges) {
                 const sourceKey = edge.source;

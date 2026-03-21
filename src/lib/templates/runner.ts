@@ -100,15 +100,15 @@ function policyResultToResolvedSlot(
     reason: asset.reason,
   }));
   
-  const generatedImages: ResolvedGeneratedImage[] = result.generatedImages.map((img) => ({
+  const generatedImages: ResolvedGeneratedImage[] = result.generatedImages.map((generatedImage) => ({
     source: 'generated',
-    provider: img.provider,
-    model: img.model,
-    url: img.output.url,
-    width: img.output.width,
-    height: img.output.height,
-    format: img.output.format,
-    reason: img.reason,
+    provider: generatedImage.provider,
+    model: generatedImage.model,
+    url: generatedImage.output.url,
+    width: generatedImage.output.width,
+    height: generatedImage.output.height,
+    format: generatedImage.output.format,
+    reason: generatedImage.reason,
   }));
   
   return {

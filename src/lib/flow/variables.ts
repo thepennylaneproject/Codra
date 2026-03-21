@@ -15,7 +15,7 @@ export class VariableSystem {
         }
 
         // Handle string interpolation (e.g. "params: {{foo}}" -> "params: bar")
-        return template.replace(/\{\{([^}]+)\}\}/g, (_, path) => {
+        return template.replace(/\{\{([^}]+)\}\}/g, (_fullMatch, path) => {
             const value = this.evaluatePath(path.trim(), variables);
             return value !== undefined && value !== null ? String(value) : '';
         });
@@ -47,15 +47,15 @@ export class VariableSystem {
         try {
             // Try accessing directly first to avoid JSONPath overhead if it's just dot notation
             let current = context;
-            for (const part of parts) {
+            for (const pathSegment of parts) {
                 if (current === undefined || current === null) return undefined;
                 // robust handling for array access in dot notation e.g. items[0]
-                if (part.includes('[')) {
+                if (pathSegment.includes('[')) {
                     // Falls back to JSONPath for complex array syntax mixed with dots for now
                     // or we could implement a simple parser. JSONPath is safer.
                     throw new Error('Use JSONPath');
                 }
-                current = (current as any)[part];
+                current = (current as any)[pathSegment];
             }
             return current;
         } catch {

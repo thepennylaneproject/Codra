@@ -94,13 +94,13 @@ export interface AccentReport {
 }
 
 export function generateAccentReport(usages: AccentUsage[]): AccentReport {
-  const justified = usages.filter(u => u.isJustified);
-  const unjustified = usages.filter(u => !u.isJustified);
+  const justified = usages.filter(usage => usage.isJustified);
+  const unjustified = usages.filter(usage => !usage.isJustified);
 
-  const usagesByFile = usages.reduce((acc, usage) => {
+  const usagesByFile = usages.reduce((fileUsageMap, usage) => {
     const shortPath = usage.file.replace('/home/user/Codra/', '');
-    acc[shortPath] = (acc[shortPath] || 0) + 1;
-    return acc;
+    fileUsageMap[shortPath] = (fileUsageMap[shortPath] || 0) + 1;
+    return fileUsageMap;
   }, {} as Record<string, number>);
 
   const justificationRate = usages.length > 0
@@ -133,7 +133,7 @@ export function printAccentReport(report: AccentReport): void {
   if (report.unjustifiedUsages > 0) {
     console.log('⚠️  Unjustified Accent Usages:\n');
     report.usages
-      .filter(u => !u.isJustified)
+      .filter(usage => !usage.isJustified)
       .forEach(usage => {
         const shortPath = usage.file.replace('/home/user/Codra/', '');
         console.log(`  ${shortPath}:${usage.line}`);
@@ -144,10 +144,10 @@ export function printAccentReport(report: AccentReport): void {
 
   console.log('Usages by File:');
   Object.entries(report.usagesByFile)
-    .sort(([, a], [, b]) => b - a)
+    .sort(([, countA], [, countB]) => countB - countA)
     .forEach(([file, count]) => {
-      const justified = report.usages.filter(u =>
-        u.file.endsWith(file) && u.isJustified
+      const justified = report.usages.filter(usage =>
+        usage.file.endsWith(file) && usage.isJustified
       ).length;
       const marker = justified === count ? '✅' : '⚠️';
       console.log(`  ${marker} ${file}: ${justified}/${count} justified`);
