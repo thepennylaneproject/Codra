@@ -383,7 +383,7 @@ export function buildPromptContextFromProject(
         brand: project.brandConstraints,
         success: project.successCriteria,
         guardrails: project.guardrails,
-        activeTools: (project.deliverables?.map(d => d.type).filter((v, i, a) => a.indexOf(v) === i) || []) as unknown as ProjectToolId[],
+        activeTools: (project.deliverables ? [...new Set(project.deliverables.map(d => d.type))] : []) as unknown as ProjectToolId[],
         currentSection,
         pastMemories,
         contextArtifacts,
