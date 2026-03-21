@@ -175,6 +175,7 @@ class OfflineQueue {
    */
   private deduplicateQueue(queue: QueuedRequest[]): QueuedRequest[] {
     const seen = new Map<string, QueuedRequest>();
+    const idsToRemove = new Set<string>();
 
     // Process in order - later entries will overwrite earlier ones for same key
     for (const request of queue) {
@@ -183,15 +184,19 @@ class OfflineQueue {
 
       // Keep the most recent request
       if (!existing || request.timestamp > existing.timestamp) {
-        // If replacing, remove the old one from this.queue
         if (existing) {
-          this.queue = this.queue.filter((r) => r.id !== existing.id);
+          idsToRemove.add(existing.id);
         }
         seen.set(key, request);
       } else {
-        // This request is older - remove it from this.queue
-        this.queue = this.queue.filter((r) => r.id !== request.id);
+        // This request is older - mark it for removal
+        idsToRemove.add(request.id);
       }
+    }
+
+    // Single filter pass to remove all stale entries
+    if (idsToRemove.size > 0) {
+      this.queue = this.queue.filter((r) => !idsToRemove.has(r.id));
     }
 
     this.persist();

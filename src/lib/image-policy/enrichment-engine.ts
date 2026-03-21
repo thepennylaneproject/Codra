@@ -193,10 +193,14 @@ export class EnrichmentEngine {
             }
 
             // Raster Energy
-            const highEnergy = ['dynamic', 'bold', 'vibrant', 'energetic'];
-            const lowEnergy = ['calm', 'soft', 'minimal', 'subtle'];
-            const score = tags.filter(t => highEnergy.includes(t)).length - tags.filter(t => lowEnergy.includes(t)).length;
-            metadata.energy = score > 0 ? 'high' : (score < 0 ? 'low' : 'medium');
+            const highEnergySet = new Set(['dynamic', 'bold', 'vibrant', 'energetic']);
+            const lowEnergySet = new Set(['calm', 'soft', 'minimal', 'subtle']);
+            let energyScore = 0;
+            for (const tag of tags) {
+                if (highEnergySet.has(tag)) energyScore++;
+                else if (lowEnergySet.has(tag)) energyScore--;
+            }
+            metadata.energy = energyScore > 0 ? 'high' : (energyScore < 0 ? 'low' : 'medium');
             metadata.is_transparent = analysis.detectedTransparency ? 'true' : 'false';
         }
 

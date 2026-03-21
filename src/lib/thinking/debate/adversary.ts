@@ -13,7 +13,7 @@
  * Its job is to stress-test convictions before commitment.
  */
 
-import type { ThoughtFragment, ShadowProject } from '../types';
+import type { ThoughtFragment, ShadowProject, FragmentType } from '../types';
 
 // ============================================================================
 // ADVERSARY SCHEMA
@@ -230,9 +230,19 @@ export function challengeLocally(
     }
   }
 
-  // Pressure points from anxieties
-  const anxietyFragments = fragments.filter((f) => f.type === 'anxiety');
-  for (const fragment of anxietyFragments) {
+  // Pressure points from anxieties, anti-patterns, and questions — single pass
+  const pressureFragmentsByType: Partial<Record<FragmentType, ThoughtFragment[]>> = {
+    'anxiety': [],
+    'anti-pattern': [],
+    'question': [],
+  };
+  for (const fragment of fragments) {
+    if (fragment.type in pressureFragmentsByType) {
+      pressureFragmentsByType[fragment.type]!.push(fragment);
+    }
+  }
+
+  for (const fragment of pressureFragmentsByType['anxiety'] ?? []) {
     pressurePoints.push({
       point: 'Stated concern may indicate deeper doubt',
       userWords: fragment.content,
@@ -242,8 +252,7 @@ export function challengeLocally(
   }
 
   // Pressure points from anti-patterns
-  const antiPatternFragments = fragments.filter((f) => f.type === 'anti-pattern');
-  for (const fragment of antiPatternFragments) {
+  for (const fragment of pressureFragmentsByType['anti-pattern'] ?? []) {
     pressurePoints.push({
       point: 'Strong aversion may indicate past failure',
       userWords: fragment.content,
@@ -253,8 +262,7 @@ export function challengeLocally(
   }
 
   // Pressure points from questions
-  const questionFragments = fragments.filter((f) => f.type === 'question');
-  for (const fragment of questionFragments.slice(0, 2)) {
+  for (const fragment of (pressureFragmentsByType['question'] ?? []).slice(0, 2)) {
     pressurePoints.push({
       point: 'Unresolved question',
       userWords: fragment.content,
