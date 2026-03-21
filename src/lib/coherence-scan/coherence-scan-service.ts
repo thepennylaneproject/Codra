@@ -290,17 +290,17 @@ async function runAudit(
     }
     
     // Convert to ScanFinding with IDs
-    const findings: ScanFinding[] = parsed.findings.map(f => ({
+    const findings: ScanFinding[] = parsed.findings.map(parsedFinding => ({
         id: uuid(),
         auditType: decision.auditType,
-        category: f.category,
-        severity: f.severity,
-        title: f.title,
-        observation: f.observation,
-        whyItMatters: f.whyItMatters,
-        userImpact: f.userImpact,
-        recommendation: f.recommendation,
-        estimatedEffort: f.estimatedEffort,
+        category: parsedFinding.category,
+        severity: parsedFinding.severity,
+        title: parsedFinding.title,
+        observation: parsedFinding.observation,
+        whyItMatters: parsedFinding.whyItMatters,
+        userImpact: parsedFinding.userImpact,
+        recommendation: parsedFinding.recommendation,
+        estimatedEffort: parsedFinding.estimatedEffort,
         selected: false,
     }));
     
@@ -326,9 +326,9 @@ function calculateSummary(findings: ScanFinding[]): ScanSummary {
         large: 0,
     };
     
-    for (const f of findings) {
-        severityCounts[f.severity]++;
-        effortCounts[f.estimatedEffort]++;
+    for (const finding of findings) {
+        severityCounts[finding.severity]++;
+        effortCounts[finding.estimatedEffort]++;
     }
     
     return {
@@ -370,7 +370,7 @@ export function toggleFindingSelection(scanId: string, findingId: string): void 
     const scan = scansInProgress.get(scanId);
     if (!scan) return;
     
-    const finding = scan.findings.find(f => f.id === findingId);
+    const finding = scan.findings.find(scanFinding => scanFinding.id === findingId);
     if (finding) {
         finding.selected = !finding.selected;
     }
@@ -385,7 +385,7 @@ export function convertFindingsToTasks(
     projectContext: { projectId: string; title: string }
 ): SpecificationTask[] {
     void projectContext;
-    const selectedFindings = scan.findings.filter((f) => f.selected);
+    const selectedFindings = scan.findings.filter((selectedFinding) => selectedFinding.selected);
 
     return selectedFindings.map((finding, index) => {
         const deskId = categoryToDesk(finding.category);
